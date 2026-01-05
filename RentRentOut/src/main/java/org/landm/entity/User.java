@@ -1,22 +1,53 @@
 package org.landm.entity;
 
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "users")
 public class User {
 
-    private String userId;
+    @Id
+    @Column(name="user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long userId;
+    @Column(name="email", nullable = false, unique = true)
+    private String email;
+    @Column(name = "password", nullable = false)
+    private String password;
+    @Column(name="firstname", nullable = false)
     private String firstname;
+    @Column(name="lastname", nullable = false)
     private String lastname;
-    private float money;
+    @Column(name="money")
+    private BigDecimal money = BigDecimal.ZERO;
 
     public User(){
 
     }
 
-    public String getUserId() {
+    public User(String email, String password, String firstname, String lastname) {
+        this.email = email;
+        this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+    }
+
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstname() {
@@ -35,11 +66,11 @@ public class User {
         this.lastname = lastname;
     }
 
-    public float getMoney() {
+    public BigDecimal getMoney() {
         return money;
     }
 
-    public void setMoney(float money) {
+    public void setMoney(BigDecimal money) {
         this.money = money;
     }
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+       http://www.liquibase.org/xml/ns/dbchangelog
+       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
+
+    <changeSet id="1" author="luka">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastname" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="money" type="DOUBLE" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <insert tableName="users">
+            <column name="email" value="luka@gmail.com"/>
+            <!-- hashed password -->
+            <column name="password" value="$2a$10$OLBjX4KuSirnkGqNR/1e6eRdN7SmOfQFD4FutfjwdKLHAtTvSO7ui"/>
+<!--            password is luka12-->
+            <column name="firstname" value="Luka"/>
+            <column name="lastname" value="Hadzic"/>
+            <column name="money" valueNumeric="0"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="email" value="micko@gmail.com"/>
+            <!-- hashed password -->
+            <column name="password" value="$2a$10$wO0fssmD3wFtjPFwVSdiI.gseVbZim3Y1uM92idcSoxCpiG033yH2"/>
+<!--            password os micko1-->
+            <column name="firstname" value="Dimitrije"/>
+            <column name="lastname" value="Mitic"/>
+            <column name="money" valueNumeric="0"/>
+        </insert>
+
+
+    </changeSet>
+</databaseChangeLog>

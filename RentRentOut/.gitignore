@@ -37,3 +37,29 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Maven
+target/
+
+# Logs
+*.log
+logs/
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Spring Boot
+*.class
+spring-boot-devtools.properties
