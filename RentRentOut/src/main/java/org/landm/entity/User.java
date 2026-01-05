@@ -3,6 +3,7 @@ package org.landm.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +23,8 @@ public class User {
     private String lastname;
     @Column(name="money")
     private BigDecimal money = BigDecimal.ZERO;
+    @OneToMany
+    private List<Item> items;
 
     public User(){
 
@@ -32,6 +35,14 @@ public class User {
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
     public long getUserId() {

@@ -1,11 +1,10 @@
 package org.landm.repository;
+
+import org.landm.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.landm.entity.User;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    boolean existsByEmail(String email);
 }
-

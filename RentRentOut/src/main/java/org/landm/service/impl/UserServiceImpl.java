@@ -25,9 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto register(RegisterUserRequestDto req) {
-        try {
+
             if (userRepository.existsByEmail(req.getEmail())) {
-                throw new Exception("Email already exists!");
+                throw new RuntimeException("Email already exists!");
             } else {
                 userRepository.save(new User(
                         req.getEmail(),
@@ -37,9 +37,5 @@ public class UserServiceImpl implements UserService {
                 return new UserDto(req.getFirstname(), req.getLastname(),
                         req.getEmail(), BigDecimal.ZERO);
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
     }
 }

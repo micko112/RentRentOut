@@ -17,7 +17,10 @@ public class Item {
     private float itemPrice;
     @Column(name="days")
     private int days;
-//    private User owner;
+
+    @ManyToOne
+    @JoinColumn(name="owner_id")
+    private User owner;
 
     public Item(){
 
@@ -31,13 +34,13 @@ public class Item {
         this.itemId = itemId;
     }
 
-//    public User getOwner() {
-//        return owner;
-//    }
+    public User getOwner() {
+        return owner;
+    }
 
-//    public void setOwner(User owner) {
-//        this.owner = owner;
-//    }
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 
     public String getItemName() {
         return itemName;
