@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="2-create-items-table" author="micko">
+        <createTable tableName="item">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="price" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="days" type="INT"/>
+            <column name="owner_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_item_owner" referencedTableName="users" referencedColumnNames="user_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

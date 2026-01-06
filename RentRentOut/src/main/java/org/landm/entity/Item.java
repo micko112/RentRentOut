@@ -1,23 +1,25 @@
 package org.landm.entity;
 
 
-import jakarta.persistence.*; 
-import org.landm.entity.User;
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 
 @Entity
 public class Item {
 
     @Id
-    @Column(name="item_id")
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long itemId;
-    @Column(name="item_name")
-    private String itemName;
-    @Column(name="item_price")
-    private float itemPrice;
+    private Long id;
+    @Column(nullable = false, name="name")
+    private String name;
+    @Column(nullable = false, name="price")
+    private BigDecimal price;
     @Column(name="days")
     private int days;
-
+    @Column(name="description")
+    private String description;
     @ManyToOne
     @JoinColumn(name="owner_id")
     private User owner;
@@ -26,12 +28,28 @@ public class Item {
 
     }
 
-    public long getItemId() {
-        return itemId;
+    public Item(String name, BigDecimal price, int days, String description, User owner) {
+        this.name = name;
+        this.price = price;
+        this.days = days;
+        this.description = description;
+        this.owner = owner;
     }
 
-    public void setItemId(long itemId) {
-        this.itemId = itemId;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long itemId) {
+        this.id = itemId;
     }
 
     public User getOwner() {
@@ -42,20 +60,20 @@ public class Item {
         this.owner = owner;
     }
 
-    public String getItemName() {
-        return itemName;
+    public String getName() {
+        return name;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setName(String itemName) {
+        this.name = itemName;
     }
 
-    public float getItemPrice() {
-        return itemPrice;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setItemPrice(float itemPrice) {
-        this.itemPrice = itemPrice;
+    public void setPrice(BigDecimal itemPrice) {
+        this.price = itemPrice;
     }
 
     public int getDays() {

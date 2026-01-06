@@ -7,11 +7,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ItemMapper {
     public ItemDto toDto(Item item){
-        return new ItemDto(
-                item.getItemName(),
-                item.getItemPrice(),
-                item.getDays()
-        );
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setPrice(item.getPrice());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setDays(item.getDays());
+    return itemDto;
     }
 
 }

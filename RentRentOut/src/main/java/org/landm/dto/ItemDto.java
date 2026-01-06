@@ -1,34 +1,47 @@
 package org.landm.dto;
 
-public class ItemDto {
+import java.math.BigDecimal;
 
-    private String itemName;
-    private float itemPrice;
+public class ItemDto {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    private Long id;
+    private String name;
+    private BigDecimal price;
+    private String description;
     private int days;
 
     public ItemDto() {
     }
 
-    public ItemDto(String itemName, float itemPrice, int days) {
-        this.itemName = itemName;
-        this.itemPrice = itemPrice;
-        this.days = days;
+    public String getDescription() {
+        return description;
     }
 
-    public String getItemName() {
-        return itemName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public String getName() {
+        return name;
     }
 
-    public float getItemPrice() {
-        return itemPrice;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setItemPrice(float itemPrice) {
-        this.itemPrice = itemPrice;
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public int getDays() {

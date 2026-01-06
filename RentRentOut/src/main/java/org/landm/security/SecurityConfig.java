@@ -15,13 +15,23 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/user/register").permitAll()
-                        .anyRequest().authenticated());
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http.csrf(csrf -> csrf.disable())
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/api/user/register").permitAll()
+//                        .anyRequest().authenticated());
+//
+//        return http.build();
+//    }
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                    // Proširujemo listu dozvoljenih putanja
+                    .requestMatchers("/api/user/register", "/api/items/**").permitAll()
+                    .anyRequest().authenticated());
 
-        return http.build();
-    }
+    return http.build();
+}
 }
