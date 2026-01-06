@@ -3,15 +3,15 @@ package org.landm.dto;
 import java.math.BigDecimal;
 
 public class ItemDto {
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    private Long id;
+    private long id;
     private String name;
     private BigDecimal price;
     private String description;

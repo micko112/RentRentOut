@@ -5,7 +5,7 @@ import org.landm.dto.ItemDto;
 
 public interface ItemService {
 
-    public ItemDto create(Long userId, CreateItemRequestDto req);
+    public ItemDto create(CreateItemRequestDto req, String authHeader);
 
    // ItemDto create(CreateItemRequestDto req);
 }

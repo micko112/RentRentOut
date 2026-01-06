@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/items")
-
 public class ItemController {
 
     private ItemService itemService;
@@ -18,10 +17,10 @@ public class ItemController {
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
-    @PostMapping
-    public ResponseEntity<ItemDto> createItem(@Valid @RequestBody CreateItemRequestDto req){
-        Long userId=1L; // ovde posle treba da uzme id od kreatora
-        return new ResponseEntity<>(itemService.create(userId, req), HttpStatus.CREATED);
+    @PostMapping("create")
+    public ResponseEntity<ItemDto> createItem(@Valid @RequestBody CreateItemRequestDto req,
+                                              @RequestHeader("Authorization") String authHeader){
+        return new ResponseEntity<>(itemService.create(req, authHeader), HttpStatus.CREATED);
     }
 
 

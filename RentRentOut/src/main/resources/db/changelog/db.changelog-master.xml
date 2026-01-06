@@ -8,5 +8,5 @@
 
     <!-- Uvezi prvu migraciju -->
     <include file="db/changelog/db.changelog-1-create-users.xml"/>
-    <include file="db/changelog/db.changelog-2-create-items.xml"/>
+<!--    <include file="db/changelog/db.changelog-2-create-items.xml"/>-->
 </databaseChangeLog>

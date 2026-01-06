@@ -11,7 +11,7 @@ public class Item {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     @Column(nullable = false, name="name")
     private String name;
     @Column(nullable = false, name="price")
@@ -24,7 +24,7 @@ public class Item {
     @JoinColumn(name="owner_id")
     private User owner;
 
-    public Item(){
+    public Item(String name, BigDecimal price, int days, String description, long userId){
 
     }
 
@@ -36,6 +36,10 @@ public class Item {
         this.owner = owner;
     }
 
+    public Item() {
+
+    }
+
     public String getDescription() {
         return description;
     }
@@ -44,11 +48,11 @@ public class Item {
         this.description = description;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long itemId) {
+    public void setId(long itemId) {
         this.id = itemId;
     }
 

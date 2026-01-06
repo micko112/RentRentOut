@@ -9,14 +9,14 @@ import java.math.BigDecimal;
 
 public class CreateItemRequestDto {
     @NotBlank
-private String name;
+    private String name;
 
-private String description;
-@NotNull
-@Positive
-private BigDecimal price;
-@Positive
-private int days;
+    private String description;
+    @NotNull
+    @Positive
+    private BigDecimal price;
+    @Positive
+    private int days;
 
     public String getName() {
         return name;

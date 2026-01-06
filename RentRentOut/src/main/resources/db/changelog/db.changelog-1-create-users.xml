@@ -8,13 +8,13 @@
 
     <changeSet id="1" author="luka">
         <createTable tableName="users">
-            <column name="user_id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="email" type="VARCHAR(100)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="password" type="VARCHAR(255)">
+            <column name="password" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="firstname" type="VARCHAR(50)">
@@ -23,7 +23,7 @@
             <column name="lastname" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="money" type="DECIMAL(19, 2)" defaultValueNumeric="0">
+            <column name="money" type="DOUBLE" defaultValueNumeric="0">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -47,5 +47,26 @@
         </insert>
 
 
+    </changeSet>
+
+    <changeSet id="2" author="micko">
+        <renameColumn tableName="users"
+                      oldColumnName="id"
+                      newColumnName="user_id"
+                      columnDataType="BIGINT"/>
+        <modifyDataType
+                tableName="users"
+                columnName="password"
+                newDataType="VARCHAR(255)"/>
+        <modifyDataType tableName="users"
+                        columnName="money"
+                        newDataType="DECIMAL(19, 2)"/>
+    </changeSet>
+    
+    <changeSet id="3" author="luka">
+        <modifyDataType
+                tableName="users"
+                columnName="user_id"
+                newDataType="BIGINT AUTO_INCREMENT"/>
     </changeSet>
 </databaseChangeLog>

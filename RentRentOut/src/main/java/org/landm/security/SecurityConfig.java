@@ -29,8 +29,12 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                     // Proširujemo listu dozvoljenih putanja
-                    .requestMatchers("/api/user/register", "/api/items/**").permitAll()
-                    .anyRequest().authenticated());
+                    .requestMatchers("/api/user/register",
+                            "/api/items/**",
+                            "/api/user/login",
+                            "/auth/**").permitAll()
+                    //.anyRequest().authenticated()
+            );
 
     return http.build();
 }
