@@ -12,7 +12,7 @@ public class User {
     @Id
     @Column(name="user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
+    private Long userId;
     @Column(name="email", nullable = false, unique = true)
     private String email;
     @Column(name = "password", nullable = false)
@@ -23,7 +23,7 @@ public class User {
     private String lastname;
     @Column(name="money")
     private BigDecimal money = BigDecimal.ZERO;
-    @OneToMany
+    @OneToMany(mappedBy = "owner")
     private List<Item> items;
 
     public User(){
@@ -45,11 +45,11 @@ public class User {
         this.items = items;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

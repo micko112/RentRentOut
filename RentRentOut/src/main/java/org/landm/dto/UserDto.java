@@ -12,12 +12,6 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(String firstName, String lastname, String email, BigDecimal money) {
-        this.firstName = firstName;
-        this.lastname = lastname;
-        this.email = email;
-        this.money = money;
-    }
 
     public String getFirstName() {
         return firstName;
