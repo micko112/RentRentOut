@@ -6,10 +6,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
+	private JwtFilter jwtFilter;
+	
+	public SecurityConfig(JwtFilter jwtFilter) {
+		this.jwtFilter = jwtFilter;
+	}
+	
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -24,18 +31,18 @@ public class SecurityConfig {
 //
 //        return http.build();
 //    }
-@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                    // Proširujemo listu dozvoljenih putanja
-                    .requestMatchers("/api/user/register",
-                            "/api/items/**",
-                            "/api/user/login",
-                            "/auth/**").permitAll()
-                    //.anyRequest().authenticated()
-            );
-
-    return http.build();
-}
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	    http.csrf(csrf -> csrf.disable())
+	            .authorizeHttpRequests(auth -> auth
+	                    // Proširujemo listu dozvoljenih putanja
+	                    .requestMatchers("/api/user/register",
+	                            "/api/items/**",
+	                            "/api/user/login",
+	                            "/auth/**").permitAll()
+	                    //.anyRequest().authenticated()
+	            ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+	
+	    return http.build();
+	}
 }

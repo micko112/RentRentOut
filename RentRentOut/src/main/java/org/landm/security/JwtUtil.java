@@ -32,4 +32,5 @@ public class JwtUtil {
                 .getSubject();
         return Long.parseLong(subj);
     }
+    	
 }
