@@ -11,4 +11,6 @@ public interface UserService {
     public UserDto register(RegisterUserRequestDto req);
 
     public Map<String, Object> login(LoginUserRequestDto req);
+    
+    public UserDto update(UserDto newInfo, String authHeader);
 }
