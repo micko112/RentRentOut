@@ -3,11 +3,15 @@
 *.iml
 *.iws
 
-# Maven
+# Maven build output
 target/
 
 # Log files
 *.log
 
-# Other
+# Compiled files
+*.class
+
+# OS-specific files
 .DS_Store
+Thumbs.db

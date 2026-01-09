@@ -4,8 +4,10 @@ package org.landm.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
+@Table(name = "item")
 public class Item {
 
     @Id
@@ -24,20 +26,33 @@ public class Item {
     @JoinColumn(name="owner_id")
     private User owner;
 
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    private Category category;
+
     public Item(String name, BigDecimal price, int days, String description, long userId){
 
     }
 
-    public Item(String name, BigDecimal price, int days, String description, User owner) {
+    public Item(String name, BigDecimal price, int days, String description, User owner, Category category) {
         this.name = name;
         this.price = price;
         this.days = days;
         this.description = description;
         this.owner = owner;
+        this.category = category;
     }
 
     public Item() {
 
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getDescription() {
@@ -86,5 +101,30 @@ public class Item {
 
     public void setDays(int days) {
         this.days = days;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return id == item.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", days=" + days +
+                ", description='" + description + '\'' +
+                ", owner=" + owner +
+                ", category= " + category +
+                '}';
     }
 }
