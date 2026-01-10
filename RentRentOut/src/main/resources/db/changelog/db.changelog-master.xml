@@ -6,7 +6,9 @@
        http://www.liquibase.org/xml/ns/dbchangelog
        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
 
-    <!-- Uvezi prvu migraciju -->
-    <include file="db/changelog/db.changelog-1-create-users.xml"/>
-<!--    <include file="db/changelog/db.changelog-2-create-items.xml"/>-->
+    <!-- Uvezi poslednju migraciju -->
+    <include file="db/changelog/db.changelog-1-create-user.xml"/>
+    <include file="db/changelog/db.changelog-2-create-item.xml"/>
+    <include file="db/changelog/db.changelog-3-create-category.xml"/>
+
 </databaseChangeLog>

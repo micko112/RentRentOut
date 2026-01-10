@@ -10,6 +10,8 @@ import java.util.List;
 @Table(name = "category")
 public class Category {
     @Id
+    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false, unique = true)
@@ -21,8 +23,7 @@ public class Category {
     public Category() {
     }
 
-    public Category(long id, String name, List<Item> items) {
-        this.id = id;
+    public Category(String name, List<Item> items) {
         this.name = name;
         this.items = items;
     }

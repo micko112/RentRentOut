@@ -6,13 +6,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User {
 
     @Id
-    @Column(name="user_id")
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
+    private long id;
     @Column(name="email", nullable = false, unique = true)
     private String email;
     @Column(name = "password", nullable = false)
@@ -45,12 +45,12 @@ public class User {
         this.items = items;
     }
 
-    public long getUserId() {
-        return userId;
+    public long getId() {
+        return id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setId(long userId) {
+        this.id = userId;
     }
 
     public String getEmail() {

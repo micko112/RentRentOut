@@ -1,10 +1,25 @@
 package org.landm.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import org.landm.entity.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateCategoryRequestDto {
    @NotBlank
     private String name;
+
+
+    List<Item> items = new ArrayList<>();
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
 
     public String getName() {
         return name;

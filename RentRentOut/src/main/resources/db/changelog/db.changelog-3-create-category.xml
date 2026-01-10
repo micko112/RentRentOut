@@ -17,12 +17,6 @@
                 </createTable>
             </changeSet>
 
-<!--            <changeSet id="4-add-category_id-to-item-table" author="micko">-->
-<!--                <addColumn tableName="item">-->
-<!--                    <column name="category_id" type="BIGINT">-->
-<!--                        <constraints nullable="true" foreignKeyName="fk_item_category" referencedTableName="category" referencedColumnNames="id"/>-->
-<!--                    </column>-->
-<!--                </addColumn>-->
-<!--            </changeSet>-->
+
 
         </databaseChangeLog>
