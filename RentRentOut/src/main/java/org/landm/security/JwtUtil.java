@@ -1,11 +1,21 @@
 package org.landm.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -13,9 +23,13 @@ public class JwtUtil {
     private final String secret = "mySecretJWT123456789012345678901";
 
     //Generates JWT token for remembering logged user
-    public String generateToken(long userId){
+    public String generateToken(long userId, List<String> roles){
+    	Map<String, Object> claims = new HashMap<>();
+    	claims.put("roles", roles);
+    	
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))
+                .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
@@ -31,6 +45,43 @@ public class JwtUtil {
                 .getBody()
                 .getSubject();
         return Long.parseLong(subj);
+    }
+    
+    public List<GrantedAuthority> extractRoles(String token) {
+    	Claims claims = Jwts.parserBuilder()
+    	        .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+    	        .build()
+    	        .parseClaimsJws(token)
+    	        .getBody();
+
+        List<String> roles = (List<String>) claims.get("roles");
+
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+    
+    public Date extractExpiration(String token) {
+    	return Jwts.parserBuilder()
+    			.setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+    			.build()
+    			.parseClaimsJws(token)
+    			.getBody()
+    			.getExpiration();
+    }
+    
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+    			.getBody()
+    			.getExpiration();
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
     	
 }

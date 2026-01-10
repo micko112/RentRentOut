@@ -32,7 +32,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto create(CreateItemRequestDto req, String token) {
+    public ItemDto create(CreateItemRequestDto req, long userId) {
 
 //        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //        String email = auth.getName();
@@ -48,7 +48,6 @@ public class ItemServiceImpl implements ItemService {
 //                req.getDescription(),
 //                owner.getUserId()
 //        );
-        long userId = jwtUtil.extractUserId(token);
         User owner = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         Category category = categoryRepository.findById(req.getCategoryId())

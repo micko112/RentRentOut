@@ -23,6 +23,8 @@ public class User {
     private String lastname;
     @Column(name="money")
     private BigDecimal money = BigDecimal.ZERO;
+    @OneToMany(mappedBy = "roles")
+    private List<String> roles;
     @OneToMany(mappedBy = "owner")
     private List<Item> items;
 
@@ -30,11 +32,12 @@ public class User {
 
     }
 
-    public User(String email, String password, String firstname, String lastname) {
+    public User(String email, String password, String firstname, String lastname, List<String> roles) {
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.roles = roles;
     }
 
     public List<Item> getItems() {
@@ -92,4 +95,14 @@ public class User {
     public void setMoney(BigDecimal money) {
         this.money = money;
     }
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
+    
+    
 }
