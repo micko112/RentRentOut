@@ -1,7 +1,7 @@
 package org.landm.controller;
 
 import jakarta.validation.Valid;
-import org.landm.dto.CreateItemRequestDto;
+import org.landm.dto.requestDto.CreateItemRequestDto;
 import org.landm.dto.ItemDto;
 import org.landm.service.ItemService;
 import org.springframework.http.HttpStatus;
@@ -17,10 +17,11 @@ public class ItemController {
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
-    @PostMapping("create")
+    @PostMapping("/create")
     public ResponseEntity<ItemDto> createItem(@Valid @RequestBody CreateItemRequestDto req,
                                               @RequestHeader("Authorization") String authHeader){
-        return new ResponseEntity<>(itemService.create(req, authHeader), HttpStatus.CREATED);
+        String token = authHeader.substring(7);
+        return new ResponseEntity<>(itemService.create(req, token), HttpStatus.CREATED);
     }
 
 

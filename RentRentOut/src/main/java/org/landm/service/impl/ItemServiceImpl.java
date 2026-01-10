@@ -1,19 +1,17 @@
 package org.landm.service.impl;
 
-import org.landm.dto.CreateItemRequestDto;
+import org.landm.dto.requestDto.CreateItemRequestDto;
 import org.landm.dto.ItemDto;
+import org.landm.entity.Category;
 import org.landm.entity.Item;
 import org.landm.entity.User;
 import org.landm.mapper.ItemMapper;
+import org.landm.repository.CategoryRepository;
 import org.landm.repository.ItemRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.ItemService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -22,17 +20,19 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final JwtUtil jwtUtil;
+    private final CategoryRepository categoryRepository;
 
     public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository,
-                           ItemMapper itemMapper, JwtUtil jwtUtil) {
+                           ItemMapper itemMapper, CategoryRepository categoryRepository, JwtUtil jwtUtil) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.itemMapper = itemMapper;
+        this.categoryRepository = categoryRepository;
         this.jwtUtil = jwtUtil;
     }
 
     @Override
-    public ItemDto create(CreateItemRequestDto req, String authHeader) {
+    public ItemDto create(CreateItemRequestDto req, String token) {
 
 //        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //        String email = auth.getName();
@@ -48,19 +48,19 @@ public class ItemServiceImpl implements ItemService {
 //                req.getDescription(),
 //                owner.getUserId()
 //        );
-        long userId = jwtUtil.extractUserId(authHeader.substring(7));
-        User tempUser = new User();
-        tempUser.setId(userId);
+        long userId = jwtUtil.extractUserId(token);
+        User owner = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
+        Category category = categoryRepository.findById(req.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + req.getCategoryId()));
         Item itemToCreate = new Item(
             req.getName(),
                 req.getPrice(),
                 req.getDays(),
                 req.getDescription(),
-                tempUser
+                owner,
+                category
         );
-
-        Item savedItem = itemRepository.save(itemToCreate);
-        return itemMapper.toDto(savedItem);
+        return itemMapper.toDto(itemRepository.save(itemToCreate));
     }
 }

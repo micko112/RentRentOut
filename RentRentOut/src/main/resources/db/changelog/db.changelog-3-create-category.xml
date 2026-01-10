@@ -15,6 +15,16 @@
                         <constraints nullable="false" unique="true"/>
                     </column>
                 </createTable>
+
+            <insert tableName="category">
+                <column name="name" value="Alati"/>
+            </insert>
+            <insert tableName="category">
+                <column name="name" value="Nekretnine"/>
+            </insert>
+            <insert tableName="category">
+                <column name="name" value="Vozila"/>
+            </insert>
             </changeSet>
 
 

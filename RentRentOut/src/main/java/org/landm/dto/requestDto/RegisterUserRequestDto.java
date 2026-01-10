@@ -1,4 +1,4 @@
-package org.landm.dto;
+package org.landm.dto.requestDto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

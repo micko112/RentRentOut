@@ -1,6 +1,6 @@
 package org.landm.service.impl;
 
-import org.landm.dto.LoginUserRequestDto;
+import org.landm.dto.requestDto.LoginUserRequestDto;
 import org.landm.dto.UserDto;
 import org.landm.entity.User;
 //import org.landm.exception.UserNotFoundException;
@@ -11,9 +11,8 @@ import org.landm.security.JwtUtil;
 import org.landm.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.landm.dto.RegisterUserRequestDto;
+import org.landm.dto.requestDto.RegisterUserRequestDto;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

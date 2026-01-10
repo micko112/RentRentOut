@@ -13,6 +13,7 @@ public class ItemMapper {
         itemDto.setPrice(item.getPrice());
         itemDto.setDescription(item.getDescription());
         itemDto.setDays(item.getDays());
+        itemDto.setCategoryId(item.getCategory().getId());
     return itemDto;
     }
 

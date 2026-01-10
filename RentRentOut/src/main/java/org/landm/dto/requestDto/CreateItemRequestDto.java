@@ -1,9 +1,8 @@
-package org.landm.dto;
+package org.landm.dto.requestDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.landm.entity.Category;
 
 
 import java.math.BigDecimal;
@@ -48,12 +47,13 @@ public class CreateItemRequestDto {
     }
 
     @NotNull
-    public Category category;
+    public long categoryId;
 
-    public Category getCategory() {
-        return category;
+    public long getCategoryId() {
+        return categoryId;
     }
-    public void setCategory(Category category) {
-        this.category = category;
+
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
     }
 }

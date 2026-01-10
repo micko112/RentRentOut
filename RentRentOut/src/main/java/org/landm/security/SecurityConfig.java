@@ -37,10 +37,10 @@ public class SecurityConfig {
 	            .authorizeHttpRequests(auth -> auth
 	                    // Proširujemo listu dozvoljenih putanja
 	                    .requestMatchers("/api/user/register",
-	                            "/api/items/**",
 	                            "/api/user/login",
 	                            "/auth/**").permitAll()
-	                    //.anyRequest().authenticated()
+						.requestMatchers("/api/items/**").authenticated()
+						.anyRequest().authenticated()
 	            ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	
 	    return http.build();
