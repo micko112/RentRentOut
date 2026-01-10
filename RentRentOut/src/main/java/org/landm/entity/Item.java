@@ -30,7 +30,7 @@ public class Item {
     @JoinColumn(name="category_id")
     private Category category;
 
-    public Item(String name, BigDecimal price, int days, String description, long userId){
+    public Item(String name, BigDecimal price, int days, String description, User user){
 
     }
 
