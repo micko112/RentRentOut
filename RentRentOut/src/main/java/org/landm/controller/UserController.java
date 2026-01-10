@@ -1,8 +1,8 @@
 package org.landm.controller;
 
 import jakarta.validation.Valid;
-import org.landm.dto.LoginUserRequestDto;
-import org.landm.dto.RegisterUserRequestDto;
+import org.landm.dto.requestDto.LoginUserRequestDto;
+import org.landm.dto.requestDto.RegisterUserRequestDto;
 import org.landm.dto.UserDto;
 import org.landm.service.UserService;
 import org.springframework.http.HttpStatus;

@@ -16,8 +16,17 @@ public class ItemDto {
     private BigDecimal price;
     private String description;
     private int days;
+    private long categoryId;
 
     public ItemDto() {
+    }
+
+    public long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getDescription() {

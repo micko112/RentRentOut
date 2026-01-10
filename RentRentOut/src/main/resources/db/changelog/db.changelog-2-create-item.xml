@@ -18,9 +18,20 @@
             </column>
             <column name="days" type="INT"/>
             <column name="owner_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_item_owner" referencedTableName="users" referencedColumnNames="user_id"/>
+                <constraints nullable="false" foreignKeyName="fk_item_owner" referencedTableName="user" referencedColumnNames="id"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_item_category" referencedTableName="category" referencedColumnNames="id"/>
             </column>
         </createTable>
+        <insert tableName="item">
+            <column name="name" value="Hilti udarna busilica"/>
+            <column name="description" value="HILTI Udarna busilica TOP KAO NOVA"/>
+            <column name="price" valueNumeric="3000"/>
+            <column name="days" valueNumeric="10"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="1"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

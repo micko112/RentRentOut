@@ -30,10 +30,6 @@ public class Item {
     @JoinColumn(name="category_id")
     private Category category;
 
-    public Item(String name, BigDecimal price, int days, String description, User user){
-
-    }
-
     public Item(String name, BigDecimal price, int days, String description, User owner, Category category) {
         this.name = name;
         this.price = price;

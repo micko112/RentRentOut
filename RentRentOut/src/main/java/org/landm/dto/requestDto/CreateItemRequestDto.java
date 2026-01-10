@@ -1,4 +1,4 @@
-package org.landm.dto;
+package org.landm.dto.requestDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,14 +21,13 @@ public class CreateItemRequestDto {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
+
     public int getDays() {
         return days;
     }
-
     public void setDays(int days) {
         this.days = days;
     }
@@ -36,7 +35,6 @@ public class CreateItemRequestDto {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -48,4 +46,14 @@ public class CreateItemRequestDto {
         this.price = price;
     }
 
+    @NotNull
+    public long categoryId;
+
+    public long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
+    }
 }

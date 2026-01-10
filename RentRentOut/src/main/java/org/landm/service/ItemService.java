@@ -1,6 +1,6 @@
 package org.landm.service;
 
-import org.landm.dto.CreateItemRequestDto;
+import org.landm.dto.requestDto.CreateItemRequestDto;
 import org.landm.dto.ItemDto;
 
 public interface ItemService {

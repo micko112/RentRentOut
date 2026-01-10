@@ -1,4 +1,4 @@
-package org.landm.dto;
+package org.landm.dto.requestDto;
 
 public class LoginUserRequestDto {
 
