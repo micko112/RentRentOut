@@ -10,15 +10,14 @@ public class CreateCategoryRequestDto {
    @NotBlank
     private String name;
 
+   private Long parentId;
 
-    List<Item> items = new ArrayList<>();
-
-    public List<Item> getItems() {
-        return items;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     public String getName() {

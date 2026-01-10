@@ -14,6 +14,9 @@
                     <column name="name" type="VARCHAR(100)">
                         <constraints nullable="false" unique="true"/>
                     </column>
+                    <column name="parent_id" type="BIGINT">
+                        <constraints foreignKeyName="fk_category_parent" referencedTableName="category" referencedColumnNames="id"/>
+                    </column>
                 </createTable>
 
             <insert tableName="category">
@@ -21,6 +24,10 @@
             </insert>
             <insert tableName="category">
                 <column name="name" value="Nekretnine"/>
+            </insert>
+            <insert tableName="category">
+                <column name="name" value="Stanovi"/>
+                <column name="parent_id" value="2"/>
             </insert>
             <insert tableName="category">
                 <column name="name" value="Vozila"/>

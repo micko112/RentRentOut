@@ -25,14 +25,15 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public CategoryDto create(CreateCategoryRequestDto req, String authHeader) {
+        Category categoryToCreate = new Category();
+        categoryToCreate.setName(req.getName());
 
-        List<Item> items = new ArrayList<>();
-        Category categoryToCreate = new Category(
-                req.getName(),
-                items
-        );
-        Category savedCategory = categoryRepository.save(categoryToCreate);
-        return categoryMapper.toDto(savedCategory);
+        if(req.getParentId() != null){
+            Category parent = categoryRepository.findById(req.getParentId()).orElseThrow(() -> new RuntimeException("Parent category not found"));
+            categoryToCreate.setParent(parent);
+        }
+
+        return categoryMapper.toDto(categoryRepository.save(categoryToCreate));
 
     }
 }

@@ -7,22 +7,22 @@ import java.util.List;
 public class CategoryDto {
     private long id;
     private String name;
-    private List<Item> items;
+    private Long parentId;
     public CategoryDto() {
     }
 
-    public CategoryDto(long id, String name, List<Item> items) {
+    public CategoryDto(long id, String name, long parentId) {
         this.id = id;
         this.name = name;
-        this.items = items;
+this.parentId = parentId;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     public long getId() {

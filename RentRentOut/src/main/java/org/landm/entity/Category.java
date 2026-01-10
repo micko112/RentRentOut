@@ -12,20 +12,29 @@ public class Category {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "category")
-    private List<Item> items = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parent;
 
     public Category() {
     }
 
-    public Category(String name, List<Item> items) {
+    public Category(String name, Category parent) {
         this.name = name;
-        this.items = items;
+        this.parent = parent;
+    }
+
+    public Category getParent() {
+        return parent;
+    }
+
+    public void setParent(Category parent) {
+        this.parent = parent;
     }
 
     public String getName() {
@@ -34,14 +43,6 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
     }
 
     public void setId(long id) {
@@ -57,7 +58,6 @@ public class Category {
         return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", items=" + items +
                 '}';
     }
 }
