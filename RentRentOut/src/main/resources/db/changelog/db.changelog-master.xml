@@ -8,7 +8,8 @@
 
     <!-- Uvezi poslednju migraciju -->
     <include file="db/changelog/db.changelog-1-create-user.xml"/>
-    <include file="db/changelog/db.changelog-2-create-item.xml"/>
     <include file="db/changelog/db.changelog-3-create-category.xml"/>
+    <include file="db/changelog/db.changelog-2-create-item.xml"/>
+
 
 </databaseChangeLog>

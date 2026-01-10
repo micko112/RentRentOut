@@ -3,8 +3,8 @@ package org.landm.service.impl;
 import org.landm.dto.LoginUserRequestDto;
 import org.landm.dto.UserDto;
 import org.landm.entity.User;
-import org.landm.exception.UserNotFoundException;
-import org.landm.exception.WrongCredentialsException;
+//import org.landm.exception.UserNotFoundException;
+//import org.landm.exception.WrongCredentialsException;
 import org.landm.mapper.UserMapper;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
@@ -40,7 +40,8 @@ public class UserServiceImpl implements UserService {
     public UserDto register(RegisterUserRequestDto req) {
 
             if (userRepository.existsByEmail(req.getEmail())) {
-                throw new WrongCredentialsException("Email already exists!");
+                throw new RuntimeException("Email already exists!");
+                //throw new WrongCredentialsException("Email already exists!");
             } else {
                 User userToSave = new User(
                         req.getEmail(),
@@ -61,14 +62,16 @@ public class UserServiceImpl implements UserService {
 
         if (user != null) {
             if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
-                throw new WrongCredentialsException("Wrong email or password!");
+                throw new RuntimeException("Wrong email or password!");
+                //throw new WrongCredentialsException("Wrong email or password!");
             }
             Map<String, Object> respMap = new HashMap<>();
-            respMap.put("token", jwtUtil.generateToken(user.getUserId()));
+            respMap.put("token", jwtUtil.generateToken(user.getId()));
             respMap.put("user", userMapper.toDto(user));
             return respMap;
         } else {
-            throw new UserNotFoundException("User not found!");
+            throw new RuntimeException("User not found!");
+            //throw new UserNotFoundException("User not found!");
         }
     }
     
@@ -82,7 +85,8 @@ public class UserServiceImpl implements UserService {
     		userToUpdate = userRepository.save(userToUpdate);
     		return userMapper.toDto(userToUpdate);
     	}else {
-    		throw new UserNotFoundException("Error with updating user data!");
+            throw new RuntimeException("Error with updating user data!");
+    		//throw new UserNotFoundException("Error with updating user data!");
     	}
     }
 }

@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
 //        );
         long userId = jwtUtil.extractUserId(authHeader.substring(7));
         User tempUser = new User();
-        tempUser.setUserId(userId);
+        tempUser.setId(userId);
 
         Item itemToCreate = new Item(
             req.getName(),
