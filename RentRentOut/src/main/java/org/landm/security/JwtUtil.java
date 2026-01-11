@@ -7,10 +7,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+import org.landm.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,13 +25,14 @@ public class JwtUtil {
     private final String secret = "mySecretJWT123456789012345678901";
 
     //Generates JWT token for remembering logged user
-    public String generateToken(long userId, List<String> roles){
+    public String generateToken(User user){
     	Map<String, Object> claims = new HashMap<>();
-    	claims.put("roles", roles);
+    	claims.put("roles", user.getStringRoles());
+    	long userId = user.getId();
     	
         return Jwts.builder()
+        		.setClaims(claims)
                 .setSubject(String.valueOf(userId))
-                .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
@@ -54,8 +57,14 @@ public class JwtUtil {
     	        .parseClaimsJws(token)
     	        .getBody();
 
-        List<String> roles = (List<String>) claims.get("roles");
+//        String rolesString = (String) claims.get("roles");
+//        
+//        List<String> roles = Arrays.stream(rolesString.split(" "))
+//        		.filter(r -> r.isBlank())
+//        		.collect(Collectors.toList());
 
+    	List<String> roles = (List<String>) claims.get("roles");
+    	
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());

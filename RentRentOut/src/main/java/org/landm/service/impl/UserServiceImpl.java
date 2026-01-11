@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
             }
     }
 
-    public Map<String, Object> login(LoginUserRequestDto req) {
+    public User login(LoginUserRequestDto req) {
 
         User user = userRepository.findByEmail(req.getEmail());
 
@@ -68,11 +68,14 @@ public class UserServiceImpl implements UserService {
 //                throw new RuntimeException("Wrong email or password!");
                 throw new WrongCredentialsException("Wrong email or password!");
             }
-            Map<String, Object> respMap = new HashMap<>();
-            List<String> roles = user.getRoles();
-            respMap.put("token", jwtUtil.generateToken(user.getId(), roles));
-            respMap.put("user", userMapper.toDto(user));
-            return respMap;
+//            Map<String, Object> respMap = new HashMap<>();
+//            List<String> roles = user.getStringRoles();
+//            respMap.put("token", jwtUtil.generateToken(user.getId(), roles));
+//            respMap.put("user", userMapper.toDto(user));
+//            return respMap;
+            
+            return user;
+            
         } else {
 //            throw new RuntimeException("User not found!");
             throw new UserNotFoundException("User not found!");

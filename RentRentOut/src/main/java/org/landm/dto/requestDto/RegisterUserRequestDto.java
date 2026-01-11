@@ -23,7 +23,7 @@ public class RegisterUserRequestDto {
     private String password;
     
     @NotBlank
-    private List<String> roles;
+    private String roles;
 
     public RegisterUserRequestDto() {
     }
@@ -60,11 +60,11 @@ public class RegisterUserRequestDto {
         this.password = password;
     }
 
-	public List<String> getRoles() {
+	public String getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<String> roles) {
+	public void setRoles(String roles) {
 		this.roles = roles;
 	}
     

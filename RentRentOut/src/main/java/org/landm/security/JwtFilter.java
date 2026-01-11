@@ -49,7 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
             		
                     long userId = jwtUtil.extractUserId(token);
                     
-                    request.setAttribute("userId", userId);
+//                    request.setAttribute("userId", userId);
                     
                     List<GrantedAuthority> authorities = jwtUtil.extractRoles(token);
                     

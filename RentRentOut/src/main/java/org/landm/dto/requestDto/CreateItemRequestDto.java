@@ -12,11 +12,16 @@ public class CreateItemRequestDto {
     private String name;
 
     private String description;
+    
     @NotNull
     @Positive
     private BigDecimal price;
+    
     @Positive
     private int days;
+    
+    @NotNull
+    public long categoryId;
 
     public String getName() {
         return name;
@@ -45,9 +50,6 @@ public class CreateItemRequestDto {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-
-    @NotNull
-    public long categoryId;
 
     public long getCategoryId() {
         return categoryId;

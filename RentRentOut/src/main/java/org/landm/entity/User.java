@@ -3,7 +3,10 @@ package org.landm.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "user")
@@ -23,21 +26,24 @@ public class User {
     private String lastname;
     @Column(name="money")
     private BigDecimal money = BigDecimal.ZERO;
-    @OneToMany(mappedBy = "roles")
-    private List<String> roles;
+//    @OneToMany(mappedBy = "roles")
+//    private List<String> roles;
     @OneToMany(mappedBy = "owner")
     private List<Item> items;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="role_id", nullable=false)
+    private Role role;
 
     public User(){
 
     }
 
-    public User(String email, String password, String firstname, String lastname, List<String> roles) {
+    public User(String email, String password, String firstname, String lastname, String role) {
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.roles = roles;
+        this.role = new Role(role);
     }
 
     public List<Item> getItems() {
@@ -95,13 +101,20 @@ public class User {
     public void setMoney(BigDecimal money) {
         this.money = money;
     }
-
-	public List<String> getRoles() {
-		return roles;
+    
+	public Role getRole() {
+		return role;
 	}
 
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public List<String> getStringRoles() {
+		List<String> roles = Arrays.stream(role.getName().split(" "))
+				.collect(Collectors.toList());
+		
+		return roles;
 	}
     
     
