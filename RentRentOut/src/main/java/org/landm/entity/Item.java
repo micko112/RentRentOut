@@ -30,17 +30,31 @@ public class Item {
     @JoinColumn(name="category_id")
     private Category category;
 
-    public Item(String name, BigDecimal price, int days, String description, User owner, Category category) {
+//    treba dodati nullable = false kad svaki item ima lokaciju!!!!
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
+
+    public Item(String name, BigDecimal price, int days, String description, User owner, Category category, Location location) {
         this.name = name;
         this.price = price;
         this.days = days;
         this.description = description;
         this.owner = owner;
         this.category = category;
+        this.location= location;
     }
 
     public Item() {
 
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public Category getCategory() {

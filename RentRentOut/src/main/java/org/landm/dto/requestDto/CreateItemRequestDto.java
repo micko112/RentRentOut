@@ -23,6 +23,9 @@ public class CreateItemRequestDto {
     @NotNull
     public long categoryId;
 
+    @NotNull
+    public LocationRequestDto location;
+
     public String getName() {
         return name;
     }
@@ -57,5 +60,13 @@ public class CreateItemRequestDto {
 
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public LocationRequestDto getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationRequestDto location) {
+        this.location = location;
     }
 }

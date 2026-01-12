@@ -10,6 +10,7 @@
     <include file="db/changelog/db.changelog-4-create-role.xml"/>
     <include file="db/changelog/db.changelog-1-create-user.xml"/>
     <include file="db/changelog/db.changelog-3-create-category.xml"/>
+    <include file="/db/changelog/db.changelog-5-create-location.xml"/>
     <include file="db/changelog/db.changelog-2-create-item.xml"/>
 
 

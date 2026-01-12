@@ -34,4 +34,14 @@
         </insert>
     </changeSet>
 
+<!--    treba dodati not null kad svaki item ima lokaciju!!!!-->
+    <changeSet id="3-add-location-to-item" author="micko112">
+        <addColumn tableName="item">
+            <column name="location_id" type="bigint"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="item" baseColumnNames="location_id" constraintName="fk_item_location"
+                                 referencedTableName="location"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>
