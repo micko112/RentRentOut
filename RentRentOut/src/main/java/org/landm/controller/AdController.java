@@ -1,10 +1,11 @@
 package org.landm.controller;
 
 import jakarta.validation.Valid;
-import org.landm.dto.requestDto.CreateItemRequestDto;
-import org.landm.entity.User;
-import org.landm.dto.ItemDto;
-import org.landm.service.ItemService;
+import org.landm.dto.AdDto;
+import org.landm.dto.requestDto.CreateAdRequestDto;
+
+
+import org.landm.service.AdService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
@@ -13,19 +14,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/items")
-public class ItemController {
+@RequestMapping("/api/ads")
+public class AdController {
 
-    private ItemService itemService;
+    private AdService adService;
 
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
+    public AdController(AdService adService) {
+        this.adService = adService;
     }
     
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping("/create")
-    public ResponseEntity<ItemDto> createItem(@Valid @RequestBody CreateItemRequestDto req,
-                                              @RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<AdDto> createAd(@Valid @RequestBody CreateAdRequestDto req,
+                                            @RequestHeader("Authorization") String authHeader){
         
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //        User user = (User) auth.getPrincipal();
@@ -34,7 +35,7 @@ public class ItemController {
         
         long userId = (long) auth.getPrincipal();
         
-        return new ResponseEntity<>(itemService.create(req, userId), HttpStatus.CREATED);
+        return new ResponseEntity<>(adService.create(req, userId), HttpStatus.CREATED);
     }
 
 

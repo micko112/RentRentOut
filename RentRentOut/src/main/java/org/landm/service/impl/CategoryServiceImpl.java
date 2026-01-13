@@ -3,7 +3,6 @@ package org.landm.service.impl;
 import org.landm.dto.CategoryDto;
 import org.landm.dto.requestDto.CreateCategoryRequestDto;
 import org.landm.entity.Category;
-import org.landm.entity.Item;
 import org.landm.mapper.CategoryMapper;
 import org.landm.repository.CategoryRepository;
 import org.landm.service.CategoryService;

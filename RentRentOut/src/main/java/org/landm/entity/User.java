@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @Table(name = "user")
 public class User {
 
+    // ovde bi trebalo username da se vidi umesto first i last name
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +29,7 @@ public class User {
     private BigDecimal money = BigDecimal.ZERO;
 //    @OneToMany(mappedBy = "roles")
 //    private List<String> roles;
-    @OneToMany(mappedBy = "owner")
-    private List<Item> items;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id", nullable=false)
     private Role role;
@@ -46,13 +46,6 @@ public class User {
         this.role = new Role(role);
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
 
     public long getId() {
         return id;

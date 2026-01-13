@@ -1,7 +1,6 @@
 package org.landm.dto.requestDto;
 
 import jakarta.validation.constraints.NotBlank;
-import org.landm.entity.Item;
 
 import java.util.ArrayList;
 import java.util.List;

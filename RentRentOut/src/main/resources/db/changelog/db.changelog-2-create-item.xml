@@ -43,5 +43,8 @@
                                  referencedTableName="location"
                                  referencedColumnNames="id"/>
     </changeSet>
+    <changeSet id="4-drop-item-table" author="micko112">
+        <dropTable tableName="item" cascadeConstraints="true"/>
+    </changeSet>
 
 </databaseChangeLog>
