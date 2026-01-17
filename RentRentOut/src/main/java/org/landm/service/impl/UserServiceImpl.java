@@ -1,7 +1,10 @@
 package org.landm.service.impl;
 
-import org.landm.dto.requestDto.LoginUserRequestDto;
 import org.landm.dto.UserDto;
+import org.landm.dto.requestDto.user.ChangeUserPasswordDto;
+import org.landm.dto.requestDto.user.LoginUserRequestDto;
+import org.landm.dto.requestDto.user.RegisterUserRequestDto;
+import org.landm.dto.requestDto.user.UpdateUserDto;
 import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
 import org.landm.exception.WrongCredentialsException;
@@ -13,7 +16,8 @@ import org.landm.security.JwtUtil;
 import org.landm.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.landm.dto.requestDto.RegisterUserRequestDto;
+
+import jakarta.transaction.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +63,7 @@ public class UserServiceImpl implements UserService {
             }
     }
 
+    @Override
     public User login(LoginUserRequestDto req) {
 
         User user = userRepository.findByEmail(req.getEmail());
@@ -82,18 +87,53 @@ public class UserServiceImpl implements UserService {
         }
     }
     
-    public UserDto update(UserDto newInfo, String authHeader){
-    	long userId = jwtUtil.extractUserId(authHeader.substring(7));
-    	Optional<User> userToUpdateOpt = userRepository.findById(userId);
-    	if(userToUpdateOpt.isPresent()) {
-    		User userToUpdate = userToUpdateOpt.get();
-    		userToUpdate.setFirstname(newInfo.getFirstName());
-    		userToUpdate.setLastname(newInfo.getLastname());
-    		userToUpdate = userRepository.save(userToUpdate);
-    		return userMapper.toDto(userToUpdate);
-    	}else {
-//            throw new RuntimeException("Error with updating user data!");
-    		throw new UserNotFoundException("Error with updating user data!");
-    	}
+//    public UserDto update(UserDto newInfo, String authHeader){
+//    	long userId = jwtUtil.extractUserId(authHeader.substring(7));
+//    	Optional<User> userToUpdateOpt = userRepository.findById(userId);
+//    	if(userToUpdateOpt.isPresent()) {
+//    		User userToUpdate = userToUpdateOpt.get();
+//    		userToUpdate.setFirstname(newInfo.getFirstName());
+//    		userToUpdate.setLastname(newInfo.getLastname());
+//    		userToUpdate = userRepository.save(userToUpdate);
+//    		return userMapper.toDto(userToUpdate);
+//    	}else {
+////            throw new RuntimeException("Error with updating user data!");
+//    		throw new UserNotFoundException("Error with updating user data!");
+//    	}
+//    }
+    
+    @Override
+    public UpdateUserDto getMe(long userId) {
+    	User userToReturn = userRepository.findById(userId)
+    			.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
+    	return userMapper.toEditDto(userToReturn);
     }
+	
+    @Transactional
+	@Override
+	public UpdateUserDto updateMe(UpdateUserDto editUserDto, long userId) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
+    	if(editUserDto.getFirstname() != null) user.setFirstname(editUserDto.getFirstname());
+    	if(editUserDto.getLastname() != null) user.setLastname(editUserDto.getLastname());
+    	if(editUserDto.getEmail() != null) user.setEmail(editUserDto.getEmail());
+    	user = userRepository.save(user);
+    	return userMapper.toEditDto(user);
+	}
+
+    @Transactional
+	@Override
+	public String updatePassword(ChangeUserPasswordDto data, long userId) {
+    	User user = userRepository.findById(userId)
+    			.orElseThrow(() -> new UserNotFoundException("Error while changing password!"));
+    	if(passwordEncoder.matches(data.getOldPassword(), user.getPassword())) {
+    		user.setPassword(passwordEncoder.encode(data.getNewPassword()));
+    		return "Successfully changed password!";
+    	}else {
+    		throw new WrongCredentialsException("Error while changing password!");
+    	}
+	}
+    
+    
+    
 }
