@@ -15,9 +15,13 @@ public interface UserService {
 
     public User login(LoginUserRequestDto req);
     
+    public UserDto get(long userId);
+    
     public UpdateUserDto getMe(long userId); 
     
-    public UpdateUserDto updateMe(UpdateUserDto editUserDto, long userId);
+    public UpdateUserDto update(UpdateUserDto editUserDto, long userId);
     
     public String updatePassword(ChangeUserPasswordDto data, long userId);
+    
+    public String deleteMe(long myId);
 }

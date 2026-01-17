@@ -14,6 +14,7 @@ import org.landm.mapper.UserMapper;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.UserService;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -102,6 +103,13 @@ public class UserServiceImpl implements UserService {
 //    	}
 //    }
     
+	@Override
+	public UserDto get(long userId) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found!"));
+		return userMapper.toDto(user);
+	}
+    
     @Override
     public UpdateUserDto getMe(long userId) {
     	User userToReturn = userRepository.findById(userId)
@@ -111,7 +119,7 @@ public class UserServiceImpl implements UserService {
 	
     @Transactional
 	@Override
-	public UpdateUserDto updateMe(UpdateUserDto editUserDto, long userId) {
+	public UpdateUserDto update(UpdateUserDto editUserDto, long userId) {
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
     	if(editUserDto.getFirstname() != null) user.setFirstname(editUserDto.getFirstname());
@@ -133,7 +141,16 @@ public class UserServiceImpl implements UserService {
     		throw new WrongCredentialsException("Error while changing password!");
     	}
 	}
-    
-    
+
+    @Transactional
+	@Override
+	public String deleteMe(long myId) {
+    	try {
+    		userRepository.deleteById(myId);
+    		return "Successfully deleted Your account!";
+    	} catch(EmptyResultDataAccessException ex) {
+    		throw new UserNotFoundException("User not found!");
+    	}
+	}  
     
 }
