@@ -49,8 +49,8 @@ public class RentalContractServiceImpl implements RentalContractService {
     }
 
     @Override
-    public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, String token) {
-        long userId = jwtUtil.extractUserId(token);
+    public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, long userId) {
+
         RentalContract contract = rentalContractRepository.findById(contractId)
                 .orElseThrow(() -> new RuntimeException("Contract not found"));
 

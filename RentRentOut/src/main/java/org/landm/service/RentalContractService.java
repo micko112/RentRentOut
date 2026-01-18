@@ -8,5 +8,5 @@ public interface RentalContractService {
     public RentalContractDto create(CreateRentalContractRequestDto req, String token);
     public RentalContractDto updateStatus(long contractId,
                         UpdateRentalContractStatusRequestDto req,
-                        String token);
+                        long userId);
 }

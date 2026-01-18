@@ -14,6 +14,6 @@ public interface AdService {
     public AdDto create(CreateAdRequestDto req, long userId);
     public AdDto getAdById(long id);
     public Page<AdPreviewDto> getAllActiveAds(Pageable pageable);
-    public AdDto updateAd(UpdateAdRequestDto req, long id, String token);
+    public AdDto updateAd(UpdateAdRequestDto req, long id, long userId);
    // ItemDto create(CreateItemRequestDto req);
 }
