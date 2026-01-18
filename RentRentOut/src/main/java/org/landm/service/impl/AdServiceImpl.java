@@ -92,8 +92,8 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public AdDto updateAd(UpdateAdRequestDto req, long id, String token) {
-        long userId = jwtUtil.extractUserId(token);
+    public AdDto updateAd(UpdateAdRequestDto req, long id, long userId) {
+
         Ad adToUpdate = adRepository.findById(id).orElseThrow(() -> new RuntimeException("There is no ad"));
         if (adToUpdate.getOwner().getId() != (userId)) {
             throw new RuntimeException("You are not the owner of this ad");
