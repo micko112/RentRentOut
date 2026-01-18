@@ -12,5 +12,6 @@
     <include file="db/changelog/db.changelog-3-create-category.xml"/>
     <include file="/db/changelog/db.changelog-5-create-location.xml"/>
     <include file="/db/changelog/db.changelog-6-create-ad.xml"/>
+    <include file="/db/changelog/db.changelog-7-create-rental-contract.xml"/>
 
 </databaseChangeLog>

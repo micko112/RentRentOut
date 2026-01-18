@@ -44,5 +44,27 @@
         </createTable>
     </changeSet>
 
+	<changeSet id="2-insert-one-rental-contract" author="Luka">
+		<insert tableName="rental_contract"> 
+			<column name="ad_id" valueNumeric="2"/>
+			<column name="lessee_id" valueNumeric="1"/>
+			<column name="start_date" valueDate="2025-03-20"/>
+			<column name="end_date" valueDate="2025-04-20"/>
+			<column name="agreed_price" valueNumeric="7000"/>
+			<column name="contract_status" value="REQUESTED"/>
+		</insert>
+	</changeSet>
+	
+		<changeSet id="3-insert-one-rental-contract" author="Luka">
+		<insert tableName="rental_contract"> 
+			<column name="ad_id" valueNumeric="1"/>
+			<column name="lessee_id" valueNumeric="2"/>
+			<column name="start_date" valueDate="2025-03-20"/>
+			<column name="end_date" valueDate="2025-04-20"/>
+			<column name="agreed_price" valueNumeric="78000"/>
+			<column name="contract_status" value="REQUESTED"/>
+		</insert>
+	</changeSet>
+
 </databaseChangeLog>
 

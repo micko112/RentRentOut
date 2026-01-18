@@ -57,7 +57,7 @@ public class AdController {
     public ResponseEntity<AdDto> updateAd(@PathVariable long id,
                                           @Valid @RequestBody UpdateAdRequestDto req,
                                           @RequestHeader("Authorization") String authHeader){
-        AdDto updatedAd = adService.updateAd(req, id, authHeader);
+        AdDto updatedAd = adService.updateAd(req, id, authHeader.substring(7));
         return ResponseEntity.ok(updatedAd);
     }
 }

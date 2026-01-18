@@ -1,6 +1,10 @@
 package org.landm.service.impl;
 
 import org.landm.dto.rentalContract.RentalContractDto;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.entity.Ad;
@@ -103,4 +107,21 @@ public class RentalContractServiceImpl implements RentalContractService {
             default -> false;
         };
     }
+
+	@Override
+	public RentalContractDto getRentalContractById(long rentalId) {
+		RentalContract contract = rentalContractRepository.findById(rentalId)
+				.orElseThrow(() -> new RuntimeException("No rental contract found!"));
+		return rentalContractMapper.toDto(contract);
+	}
+
+	@Override
+	public List<RentalContractDto> getAll(long userId) {
+		return rentalContractRepository.findAllByUser(userId)
+				.stream()
+				.map(rentalContractMapper::toDto)
+				.toList();
+	}
+	
+	
 }
