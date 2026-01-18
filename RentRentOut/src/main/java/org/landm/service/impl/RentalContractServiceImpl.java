@@ -53,6 +53,11 @@ public class RentalContractServiceImpl implements RentalContractService {
     }
 
     @Override
+    public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, HEAD String) {
+        return null;
+    }
+
+    @Override
     public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, long userId) {
 
         RentalContract contract = rentalContractRepository.findById(contractId)

@@ -20,5 +20,5 @@ public interface RentalContractService {
     
 =======
                         long userId);
->>>>>>> 60c6d62dce84a24d7dab6618c77adacc20ad7467
+//>>>>>>> 60c6d62dce84a24d7dab6618c77adacc20ad7467
 }
