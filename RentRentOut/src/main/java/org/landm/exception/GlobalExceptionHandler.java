@@ -21,5 +21,11 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handle(WrongCredentialsException ex){
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
 	}
-	
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<String> handle(AccessDeniedException ex){
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+	}
+
+
 }

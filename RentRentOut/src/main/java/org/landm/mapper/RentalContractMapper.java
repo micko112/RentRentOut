@@ -1,7 +1,7 @@
 package org.landm.mapper;
 
-import org.landm.dto.RentalContractDto;
-import org.landm.dto.requestDto.CreateRentalContractRequestDto;
+import org.landm.dto.rentalContract.RentalContractDto;
+import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.entity.RentalContract;
 import org.springframework.stereotype.Component;
 

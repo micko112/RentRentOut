@@ -1,7 +1,8 @@
 package org.landm.service.impl;
 
-import org.landm.dto.RentalContractDto;
-import org.landm.dto.requestDto.CreateRentalContractRequestDto;
+import org.landm.dto.rentalContract.RentalContractDto;
+import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
+import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.entity.Ad;
 import org.landm.entity.Enums.ContractStatus;
 import org.landm.entity.RentalContract;
@@ -44,8 +45,62 @@ public class RentalContractServiceImpl implements RentalContractService {
         rentalToCreate.setAd(ad);
         rentalToCreate.setLessee(lessee);
 
-
-
         return rentalContractMapper.toDto(rentalContractRepository.save(rentalToCreate));
+    }
+
+    @Override
+    public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, String token) {
+        long userId = jwtUtil.extractUserId(token);
+        RentalContract contract = rentalContractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("Contract not found"));
+
+        Ad ad = contract.getAd();
+
+        if (ad.getOwner().getId() != (userId)) {
+            throw new RuntimeException("Not allowed");
+        }
+        ContractStatus oldStatus = contract.getContractStatus();
+        ContractStatus newStatus = req.getNewStatus();
+
+        if (!isValidTransition(oldStatus, newStatus)) {
+            throw new RuntimeException("Invalid status transition");
+        }
+        if (oldStatus == ContractStatus.REQUESTED &&
+                newStatus == ContractStatus.ACCEPTED) {
+
+            if (ad.getAvailableQuantity() <= 0) {
+                throw new RuntimeException("No available quantity");
+            }
+            ad.setAvailableQuantity(ad.getAvailableQuantity() - 1);
+        }
+        if (oldStatus == ContractStatus.ACTIVE &&
+                (newStatus == ContractStatus.CANCELLED ||
+                        newStatus == ContractStatus.FINISHED)) {
+
+            ad.setAvailableQuantity(ad.getAvailableQuantity() + 1);
+        }
+        contract.setContractStatus(newStatus);
+
+        return rentalContractMapper.toDto(contract);
+    }
+
+
+
+    private boolean isValidTransition(ContractStatus from, ContractStatus to) {
+
+        return switch (from) {
+            case REQUESTED ->
+                    to == ContractStatus.ACCEPTED ||
+                            to == ContractStatus.REJECTED;
+
+            case ACCEPTED ->
+                    to == ContractStatus.ACTIVE;
+
+            case ACTIVE ->
+                    to == ContractStatus.FINISHED ||
+                            to == ContractStatus.CANCELLED;
+
+            default -> false;
+        };
     }
 }

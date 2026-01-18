@@ -1,5 +1,6 @@
 package org.landm.entity.Enums;
 
 public enum ContractStatus {
-    REQUESTED, ACTIVE, FINISHED, CANCELED;
+    REQUESTED, ACTIVE, FINISHED, CANCELLED,
+    ACCEPTED, REJECTED;
 }

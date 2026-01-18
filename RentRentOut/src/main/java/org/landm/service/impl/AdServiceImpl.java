@@ -4,6 +4,7 @@ import org.landm.dto.ad.AdDto;
 import org.landm.dto.ad.AdPreviewDto;
 import org.landm.dto.ad.CreateAdRequestDto;
 
+import org.landm.dto.ad.UpdateAdRequestDto;
 import org.landm.entity.Ad;
 import org.landm.entity.Category;
 import org.landm.entity.Enums.AdStatus;
@@ -20,6 +21,7 @@ import org.landm.security.JwtUtil;
 import org.landm.service.AdService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -89,5 +91,41 @@ public class AdServiceImpl implements AdService {
         return adPage.map(adMapper::toPreviewDto);
     }
 
+    @Override
+    public AdDto updateAd(UpdateAdRequestDto req, long id, String token) {
+        long userId = jwtUtil.extractUserId(token);
+        Ad adToUpdate = adRepository.findById(id).orElseThrow(() -> new RuntimeException("There is no ad"));
+        if (adToUpdate.getOwner().getId() != (userId)) {
+            throw new RuntimeException("You are not the owner of this ad");
+        }
 
+        if (adToUpdate.getAdStatus() == AdStatus.DELETED) {
+            throw new IllegalStateException("Cannot update ad with status: " + adToUpdate.getAdStatus());
+        }
+        Category category = categoryRepository.findById(req.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + req.getCategoryId()));
+
+        Location location = null;
+        if(req.getLocationId() != null){
+            location = locationRepository.findById(req.getLocationId()).orElseThrow(() ->
+                    new RuntimeException("Location not found with id: " + req.getLocationId()));
+        }
+        adToUpdate.setTitle(req.getTitle());
+        adToUpdate.setDescription(req.getDescription());
+        adToUpdate.setPrice(req.getPrice());
+        adToUpdate.setPriceInterval(req.getPriceInterval());
+        adToUpdate.setImages(req.getImages());
+        adToUpdate.setCategory(category);
+        adToUpdate.setLocation(location);
+
+        int rentedQuantity = adToUpdate.getTotalQuantity() - adToUpdate.getAvailableQuantity();
+        if(req.getTotalQuantity() < rentedQuantity){
+            throw new IllegalStateException("Total quantity cannot be less than the number of items currently rented.");
+        }
+        adToUpdate.setTotalQuantity(req.getTotalQuantity());
+        adToUpdate.setAvailableQuantity(req.getTotalQuantity() - rentedQuantity);
+
+        Ad savedAd = adRepository.save(adToUpdate);
+        return adMapper.toDto(savedAd);
+    }
 }

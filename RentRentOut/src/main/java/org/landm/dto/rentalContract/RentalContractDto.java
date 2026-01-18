@@ -1,4 +1,4 @@
-package org.landm.dto;
+package org.landm.dto.rentalContract;
 
 import org.landm.dto.ad.AdDto;
 import org.landm.dto.user.UserDto;

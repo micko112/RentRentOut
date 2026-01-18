@@ -6,6 +6,7 @@ import org.landm.dto.ad.AdPreviewDto;
 import org.landm.dto.ad.CreateAdRequestDto;
 
 
+import org.landm.dto.ad.UpdateAdRequestDto;
 import org.landm.service.AdService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,5 +51,13 @@ public class AdController {
     public ResponseEntity<Page<AdPreviewDto>> getAllAds(Pageable pageable){
         Page<AdPreviewDto> adsPage = adService.getAllActiveAds(pageable);
         return ResponseEntity.ok(adsPage);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AdDto> updateAd(@PathVariable long id,
+                                          @Valid @RequestBody UpdateAdRequestDto req,
+                                          @RequestHeader("Authorization") String authHeader){
+        AdDto updatedAd = adService.updateAd(req, id, authHeader);
+        return ResponseEntity.ok(updatedAd);
     }
 }

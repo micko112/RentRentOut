@@ -1,4 +1,4 @@
-package org.landm.dto.requestDto;
+package org.landm.dto.rentalContract;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
