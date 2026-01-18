@@ -1,12 +1,18 @@
 package org.landm.service;
 
-import org.landm.dto.AdDto;
-import org.landm.dto.requestDto.CreateAdRequestDto;
+import org.landm.dto.ad.AdDto;
+import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.ad.CreateAdRequestDto;
+import org.landm.entity.Enums.AdStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 public interface AdService {
 
     public AdDto create(CreateAdRequestDto req, long userId);
-
+    public AdDto getAdById(long id);
+    public Page<AdPreviewDto> getAllActiveAds(Pageable pageable);
+   // public AdDto update(Upda)
    // ItemDto create(CreateItemRequestDto req);
 }

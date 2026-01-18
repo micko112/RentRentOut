@@ -5,11 +5,11 @@ import jakarta.validation.Valid;
 import org.landm.entity.User;
 import org.landm.mapper.UserMapper;
 import org.landm.security.JwtUtil;
-import org.landm.dto.UserDto;
-import org.landm.dto.requestDto.user.ChangeUserPasswordDto;
-import org.landm.dto.requestDto.user.LoginUserRequestDto;
-import org.landm.dto.requestDto.user.RegisterUserRequestDto;
-import org.landm.dto.requestDto.user.UpdateUserDto;
+import org.landm.dto.user.UserDto;
+import org.landm.dto.user.ChangeUserPasswordDto;
+import org.landm.dto.user.LoginUserRequestDto;
+import org.landm.dto.user.RegisterUserRequestDto;
+import org.landm.dto.user.UpdateUserDto;
 import org.landm.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import ch.qos.logback.core.status.Status;
 
 import java.util.HashMap;
 import java.util.Map;

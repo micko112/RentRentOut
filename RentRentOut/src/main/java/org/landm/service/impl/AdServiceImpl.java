@@ -1,7 +1,8 @@
 package org.landm.service.impl;
 
-import org.landm.dto.AdDto;
-import org.landm.dto.requestDto.CreateAdRequestDto;
+import org.landm.dto.ad.AdDto;
+import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.ad.CreateAdRequestDto;
 
 import org.landm.entity.Ad;
 import org.landm.entity.Category;
@@ -17,6 +18,8 @@ import org.landm.repository.LocationRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.AdService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -72,4 +75,19 @@ public class AdServiceImpl implements AdService {
                 );
         return adMapper.toDto(adRepository.save(adToCreate));
     }
+
+    @Override
+    public AdDto getAdById(long id) {
+        Ad ad = adRepository.findById(id).orElseThrow(() -> new RuntimeException("Ad not found with id: " + id));
+        return adMapper.toDto(ad);
+    }
+
+    @Override
+    public Page<AdPreviewDto> getAllActiveAds(Pageable pageable) {
+
+        Page<Ad> adPage = adRepository.findAllByAdStatus(AdStatus.ACTIVE, pageable);
+        return adPage.map(adMapper::toPreviewDto);
+    }
+
+
 }

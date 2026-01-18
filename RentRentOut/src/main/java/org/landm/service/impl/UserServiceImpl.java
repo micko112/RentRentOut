@@ -1,10 +1,10 @@
 package org.landm.service.impl;
 
-import org.landm.dto.UserDto;
-import org.landm.dto.requestDto.user.ChangeUserPasswordDto;
-import org.landm.dto.requestDto.user.LoginUserRequestDto;
-import org.landm.dto.requestDto.user.RegisterUserRequestDto;
-import org.landm.dto.requestDto.user.UpdateUserDto;
+import org.landm.dto.user.UserDto;
+import org.landm.dto.user.ChangeUserPasswordDto;
+import org.landm.dto.user.LoginUserRequestDto;
+import org.landm.dto.user.RegisterUserRequestDto;
+import org.landm.dto.user.UpdateUserDto;
 import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
 import org.landm.exception.WrongCredentialsException;
@@ -19,11 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {

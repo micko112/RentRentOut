@@ -1,5 +1,7 @@
 package org.landm.dto;
 
+import org.landm.dto.ad.AdDto;
+import org.landm.dto.user.UserDto;
 import org.landm.entity.Enums.ContractStatus;
 
 import java.math.BigDecimal;

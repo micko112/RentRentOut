@@ -1,4 +1,4 @@
-package org.landm.dto.requestDto.user;
+package org.landm.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

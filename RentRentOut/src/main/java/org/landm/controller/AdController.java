@@ -1,11 +1,14 @@
 package org.landm.controller;
 
 import jakarta.validation.Valid;
-import org.landm.dto.AdDto;
-import org.landm.dto.requestDto.CreateAdRequestDto;
+import org.landm.dto.ad.AdDto;
+import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.ad.CreateAdRequestDto;
 
 
 import org.landm.service.AdService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
@@ -38,6 +41,14 @@ public class AdController {
         return new ResponseEntity<>(adService.create(req, userId), HttpStatus.CREATED);
     }
 
-
-
+    @GetMapping("/{id}")
+    public ResponseEntity<AdDto> getAdById(@PathVariable long id){
+        AdDto adDto = adService.getAdById(id);
+        return  ResponseEntity.ok(adDto);
+    }
+    @GetMapping()
+    public ResponseEntity<Page<AdPreviewDto>> getAllAds(Pageable pageable){
+        Page<AdPreviewDto> adsPage = adService.getAllActiveAds(pageable);
+        return ResponseEntity.ok(adsPage);
+    }
 }

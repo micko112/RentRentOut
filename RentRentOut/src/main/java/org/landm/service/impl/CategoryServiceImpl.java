@@ -2,6 +2,7 @@ package org.landm.service.impl;
 
 import org.landm.dto.CategoryDto;
 import org.landm.dto.requestDto.CreateCategoryRequestDto;
+import org.landm.entity.Ad;
 import org.landm.entity.Category;
 import org.landm.mapper.CategoryMapper;
 import org.landm.repository.CategoryRepository;
@@ -34,5 +35,11 @@ public class CategoryServiceImpl implements CategoryService{
 
         return categoryMapper.toDto(categoryRepository.save(categoryToCreate));
 
+    }
+
+    @Override
+    public CategoryDto get(long id) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+        return categoryMapper.toDto(category);
     }
 }

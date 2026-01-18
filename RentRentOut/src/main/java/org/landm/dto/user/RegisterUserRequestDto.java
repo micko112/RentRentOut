@@ -1,6 +1,4 @@
-package org.landm.dto.requestDto.user;
-
-import java.util.List;
+package org.landm.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

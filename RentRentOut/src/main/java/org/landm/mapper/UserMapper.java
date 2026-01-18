@@ -1,8 +1,8 @@
 package org.landm.mapper;
 
 
-import org.landm.dto.UserDto;
-import org.landm.dto.requestDto.user.UpdateUserDto;
+import org.landm.dto.user.UserDto;
+import org.landm.dto.user.UpdateUserDto;
 import org.landm.entity.User;
 import org.springframework.stereotype.Component;
 

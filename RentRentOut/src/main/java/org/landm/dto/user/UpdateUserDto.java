@@ -1,6 +1,4 @@
-package org.landm.dto.requestDto.user;
-
-import java.math.BigDecimal;
+package org.landm.dto.user;
 
 import org.springframework.stereotype.Component;
 

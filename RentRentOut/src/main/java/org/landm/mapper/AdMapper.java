@@ -2,16 +2,12 @@ package org.landm.mapper;
 
 
 
-import org.landm.dto.AdDto;
-import org.landm.dto.CategoryDto;
-import org.landm.dto.LocationDto;
-import org.landm.dto.UserDto;
-import org.landm.dto.requestDto.CreateAdRequestDto;
+import org.landm.dto.ad.AdDto;
+import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.ad.CreateAdRequestDto;
 import org.landm.entity.Ad;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PriceInterval;
-import org.landm.entity.Location;
-import org.landm.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -45,6 +41,23 @@ public class AdMapper {
 
         return dto;
     }
+    public AdPreviewDto toPreviewDto(Ad ad){
+        AdPreviewDto dto = new AdPreviewDto();
+        dto.setId(ad.getId());
+        dto.setTitle(ad.getTitle());
+        dto.setDescription(ad.getDescription());
+        dto.setPrice(ad.getPrice());
+        dto.setPriceInterval(PriceInterval.valueOf(ad.getPriceInterval().name()));
+
+        if (ad.getImages() != null && !ad.getImages().isEmpty()) {
+            dto.setThumbnail(ad.getImages().get(0));
+        }
+        dto.setCity(ad.getLocation().getCity());
+        dto.setMunicipality(ad.getLocation().getMunicipality());
+
+        return dto;
+    }
+
 
     public Ad toEntity(CreateAdRequestDto dto){
         if (dto == null) {

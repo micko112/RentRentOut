@@ -1,13 +1,11 @@
 package org.landm.service;
 
 import org.landm.entity.User;
-import org.landm.dto.UserDto;
-import org.landm.dto.requestDto.user.ChangeUserPasswordDto;
-import org.landm.dto.requestDto.user.LoginUserRequestDto;
-import org.landm.dto.requestDto.user.RegisterUserRequestDto;
-import org.landm.dto.requestDto.user.UpdateUserDto;
-
-import java.util.Map;
+import org.landm.dto.user.UserDto;
+import org.landm.dto.user.ChangeUserPasswordDto;
+import org.landm.dto.user.LoginUserRequestDto;
+import org.landm.dto.user.RegisterUserRequestDto;
+import org.landm.dto.user.UpdateUserDto;
 
 public interface UserService {
 

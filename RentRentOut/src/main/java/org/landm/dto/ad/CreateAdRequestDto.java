@@ -1,13 +1,9 @@
-package org.landm.dto.requestDto;
+package org.landm.dto.ad;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.landm.dto.CategoryDto;
-import org.landm.dto.LocationDto;
-import org.landm.dto.UserDto;
-import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PriceInterval;
 
 import java.math.BigDecimal;

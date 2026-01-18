@@ -1,4 +1,4 @@
-package org.landm.dto;
+package org.landm.dto.user;
 
 import java.math.BigDecimal;
 

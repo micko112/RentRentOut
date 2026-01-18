@@ -1,5 +1,8 @@
-package org.landm.dto;
+package org.landm.dto.ad;
 
+import org.landm.dto.CategoryDto;
+import org.landm.dto.LocationDto;
+import org.landm.dto.user.UserDto;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PriceInterval;
 
@@ -16,7 +19,7 @@ public class AdDto {
     private int totalQuantity;
     private int availableQuantity;
     private List<String> images;
-
+    private String email;
     private UserDto owner;
     private CategoryDto category;
     private LocationDto location;
