@@ -8,6 +8,7 @@ import java.util.List;
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.entity.Ad;
+import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.ContractStatus;
 import org.landm.exception.UserNotFoundException;
 import org.landm.entity.RentalContract;
@@ -151,6 +152,42 @@ public class RentalContractServiceImpl implements RentalContractService {
 				.map(rentalContractMapper::toDto)
 				.toList();
 	}
+	
+	public boolean isActiveOrAccepted(ContractStatus status) {
+		return (status == ContractStatus.ACCEPTED || status == ContractStatus.ACTIVE);
+	}
+	
+	@Transactional
+	@Override
+	public String delete(long userId, long rentalId) {
+		
+		RentalContract currContr = rentalContractRepository.findById(rentalId)
+				.orElseThrow(() -> new RuntimeException("Error deleting contract - contract not found"));
+		
+		if(currContr.getLessee().getId() != userId) {
+			throw new RuntimeException("Deleting someone's contract - not allowed!");
+		}
+		
+		if(isActiveOrAccepted(currContr.getContractStatus())) {
+			throw new RuntimeException("Trying to delete ongoing contract - not allowed!");
+		}
+		
+		if(currContr.getContractStatus() != ContractStatus.DELETED) {
+			currContr.setContractStatus(ContractStatus.DELETED);
+		}else {
+			throw new RuntimeException("Contract already deleted!");
+		}
+		rentalContractRepository.save(currContr);
+		
+		return "Successfully deleted your contract!";
+	}
+	
+	@Override
+	public void markToAdDeleted(long adId) {
+		rentalContractRepository.markToAdDeleted(adId);
+		
+	}
+
 	
 	
 }

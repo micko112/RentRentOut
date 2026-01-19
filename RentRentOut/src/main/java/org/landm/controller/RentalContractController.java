@@ -50,4 +50,10 @@ public class RentalContractController {
         long userId = Long.parseLong(auth.getName());
         return ResponseEntity.ok(service.updateStatus(id, req, userId));
 	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteRentalContract(@PathVariable long id, Authentication auth){
+		long userId = Long.parseLong(auth.getName());
+		return new ResponseEntity<>(service.delete(userId, id), HttpStatus.OK);
+	}
 }

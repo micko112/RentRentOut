@@ -27,8 +27,19 @@ public class AdController {
         this.adService = adService;
     }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<AdDto> getAdById(@PathVariable long id){
+        AdDto adDto = adService.getAdById(id);
+        return  ResponseEntity.ok(adDto);
+    }
+    @GetMapping()
+    public ResponseEntity<Page<AdPreviewDto>> getAllAds(Pageable pageable){
+        Page<AdPreviewDto> adsPage = adService.getAllActiveAds(pageable);
+        return ResponseEntity.ok(adsPage);
+    }
+    
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<AdDto> createAd(@Valid @RequestBody CreateAdRequestDto req,
                                             @RequestHeader("Authorization") String authHeader){
         
@@ -42,17 +53,6 @@ public class AdController {
         return new ResponseEntity<>(adService.create(req, userId), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AdDto> getAdById(@PathVariable long id){
-        AdDto adDto = adService.getAdById(id);
-        return  ResponseEntity.ok(adDto);
-    }
-    @GetMapping()
-    public ResponseEntity<Page<AdPreviewDto>> getAllAds(Pageable pageable){
-        Page<AdPreviewDto> adsPage = adService.getAllActiveAds(pageable);
-        return ResponseEntity.ok(adsPage);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<AdDto> updateAd(@PathVariable long id,
                                           @Valid @RequestBody UpdateAdRequestDto req,
@@ -60,5 +60,11 @@ public class AdController {
         long userId = Long.parseLong(auth.getName());
         AdDto updatedAd = adService.updateAd(req, id, userId);
         return ResponseEntity.ok(updatedAd);
+    }
+    
+    @DeleteMapping("/{adId}")
+    public ResponseEntity<String> deleteAd(@PathVariable long adId, Authentication auth){
+    	long userId = Long.parseLong(auth.getName());
+    	return new ResponseEntity<>(adService.deleteAd(adId, userId), HttpStatus.OK);
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
+import org.landm.entity.Enums.ContractStatus;
 
 public interface RentalContractService {
 	
@@ -17,4 +18,10 @@ public interface RentalContractService {
     public RentalContractDto getRentalContractById(long rentalId);
     
     public List<RentalContractDto> getAll(long userId);
+    
+    public boolean isActiveOrAccepted(ContractStatus status);
+    
+    public String delete(long userId, long rentalId);
+    
+    public void markToAdDeleted(long adId);
 }

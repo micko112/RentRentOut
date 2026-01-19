@@ -8,7 +8,7 @@ import org.landm.dto.ad.UpdateAdRequestDto;
 import org.landm.entity.Ad;
 import org.landm.entity.Category;
 import org.landm.entity.Enums.AdStatus;
-
+import org.landm.exception.UserNotFoundException;
 import org.landm.entity.Location;
 import org.landm.entity.User;
 import org.landm.mapper.AdMapper;
@@ -16,13 +16,18 @@ import org.landm.mapper.LocationMapper;
 import org.landm.repository.CategoryRepository;
 import org.landm.repository.AdRepository;
 import org.landm.repository.LocationRepository;
+import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.AdService;
+import org.landm.service.RentalContractService;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class AdServiceImpl implements AdService {
@@ -35,9 +40,14 @@ public class AdServiceImpl implements AdService {
     private final JwtUtil jwtUtil;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
+    private final RentalContractRepository rentalContractRepository;
+    private final RentalContractService rentalContractService;
 
     public AdServiceImpl(AdRepository adRepository, UserRepository userRepository,
-                         AdMapper adMapper, LocationMapper locationMapper, CategoryRepository categoryRepository, LocationRepository locationRepository, JwtUtil jwtUtil) {
+                         AdMapper adMapper, LocationMapper locationMapper, 
+                         CategoryRepository categoryRepository, LocationRepository locationRepository, 
+                         JwtUtil jwtUtil, RentalContractRepository rentalContractRepository, 
+                         RentalContractService rentalContractService) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adMapper = adMapper;
@@ -45,6 +55,8 @@ public class AdServiceImpl implements AdService {
         this.locationMapper = locationMapper;
         this.locationRepository = locationRepository;
         this.jwtUtil = jwtUtil;
+        this.rentalContractRepository = rentalContractRepository;
+        this.rentalContractService = rentalContractService ;
     }
 
 //    @Override
@@ -128,4 +140,29 @@ public class AdServiceImpl implements AdService {
         Ad savedAd = adRepository.save(adToUpdate);
         return adMapper.toDto(savedAd);
     }
+
+    @Transactional
+	@Override
+	public String deleteAd(long adId, long userId) {
+		
+		Ad currAd = adRepository.findById(adId)
+				.orElseThrow(() -> new RuntimeException("Error deleting ad - ad not found"));
+		
+		if(currAd.getOwner().getId() != userId) {
+			throw new RuntimeException("Deleting someone's ad - not allowed!");
+		}
+		
+		if(rentalContractRepository.hasActiveOrFutureContracts(adId)) { //Mora da se zove servis koji zove repository! - popraviti
+			throw new RuntimeException("Trying to delete Ad contained in ongoing contract - not allowed!");
+		}
+		
+		if(currAd.getAdStatus() != AdStatus.DELETED) {
+			currAd.setAdStatus(AdStatus.DELETED);
+			rentalContractService.markToAdDeleted(currAd.getId());
+		}else {
+			throw new RuntimeException("Ad already deleted!");
+		}
+		
+		return "Successfully deleted your Ad!";
+	}
 }

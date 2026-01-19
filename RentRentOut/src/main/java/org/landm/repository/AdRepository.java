@@ -23,4 +23,5 @@ public interface AdRepository extends JpaRepository<Ad, Long> {
     		WHERE a.id = :adId
     		""")
     public Ad findByIdForUpdate(long adId);
+    
 }

@@ -3,6 +3,7 @@ package org.landm.entity;
 
 import jakarta.persistence.*;
 import org.landm.entity.Enums.AdStatus;
+import org.landm.entity.Enums.DeleteStatus;
 import org.landm.entity.Enums.PriceInterval;
 
 import java.math.BigDecimal;
@@ -57,7 +58,6 @@ public class Ad {
     @CollectionTable(name = "ad_image", joinColumns = @JoinColumn(name = "ad_id"))
     @Column(name="image_url")
     private List<String> images = new ArrayList<>();
-
 
     public Ad(String title, String description, BigDecimal price, PriceInterval priceInterval, User owner, Category category,
               Location location, AdStatus adStatus, int totalQuantity, int availableQuantity, List<String> images) {
@@ -169,7 +169,7 @@ public class Ad {
         this.images = images;
     }
 
-    @Override
+	@Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Ad ad = (Ad) o;

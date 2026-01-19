@@ -3,7 +3,9 @@ package org.landm.repository;
 import java.util.List;
 
 import org.landm.entity.RentalContract;
+import org.landm.entity.Enums.ContractStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface RentalContractRepository extends JpaRepository<RentalContract, Long> {
@@ -18,4 +20,19 @@ public interface RentalContractRepository extends JpaRepository<RentalContract, 
 			""")
 	public RentalContract findByIdForUpdate(long contractId);
 	
+	
+    @Query("""
+    		SELECT count(rc) > 0
+    		FROM RentalContract rc
+    		WHERE rc.ad.id = :adId 
+    			AND rc.contractStatus IN (ACCEPTED, ACTIVE)
+    		""")
+    public boolean hasActiveOrFutureContracts(long adId);
+    
+    @Modifying
+    @Query("UPDATE RentalContract rc " +
+    		"SET rc.contractStatus = 'AD_DELETED' " +
+    		"WHERE rc.ad.id = :adId")
+    public void markToAdDeleted(long adId);
+    
 }
