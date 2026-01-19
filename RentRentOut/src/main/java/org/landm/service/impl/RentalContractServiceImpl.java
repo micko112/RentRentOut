@@ -77,7 +77,9 @@ public class RentalContractServiceImpl implements RentalContractService {
         if (oldStatus == ContractStatus.REQUESTED &&
                 newStatus == ContractStatus.ACCEPTED) {
         	
-        	if(contract.getOfferSender().getId() == userId) {
+        	if(contract.getOfferSender().getId() == userId || 
+        			(userId != contract.getLessee().getId() && 
+        			userId!= ad.getOwner().getId())) {
         		throw new RuntimeException("Not allowed!");
         	}  
         	
@@ -86,7 +88,14 @@ public class RentalContractServiceImpl implements RentalContractService {
             }
             ad.setAvailableQuantity(ad.getAvailableQuantity() - 1);
         }
-     // Napraviti ako je newStatus Rejected
+        
+        if(oldStatus == ContractStatus.REQUESTED && 
+        		newStatus == ContractStatus.REJECTED) {
+				if(userId != contract.getLessee().getId() && 
+					userId!= ad.getOwner().getId()) {
+					throw new RuntimeException("Not allowed!");
+		        }
+        }
         
         if (oldStatus == ContractStatus.ACTIVE &&
                 (newStatus == ContractStatus.CANCELLED ||

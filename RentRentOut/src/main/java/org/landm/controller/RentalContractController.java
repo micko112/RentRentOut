@@ -25,11 +25,11 @@ public class RentalContractController {
         this.service = service;
 
     }
-@PostMapping("/create")
+    @PostMapping("/create")
     public ResponseEntity<RentalContractDto> createRentalContract(@Valid @RequestBody CreateRentalContractRequestDto req,
                                                                   @RequestHeader("Authorization") String authHeader){
-    RentalContractDto newRental = service.create(req, authHeader);
-    return new ResponseEntity<>(newRental, HttpStatus.CREATED);
+	    RentalContractDto newRental = service.create(req, authHeader);
+	    return new ResponseEntity<>(newRental, HttpStatus.CREATED);
     }
 
 	@GetMapping("/{id}")
@@ -47,7 +47,7 @@ public class RentalContractController {
 	public ResponseEntity<RentalContractDto> updateStatus(@PathVariable long id,
 	                                                      @Valid @RequestBody UpdateRentalContractStatusRequestDto req, 
 	                                                      Authentication auth){
-	        long userId = Long.parseLong(auth.getName());
-	        return ResponseEntity.ok(service.updateStatus(id, req, userId));
+        long userId = Long.parseLong(auth.getName());
+        return ResponseEntity.ok(service.updateStatus(id, req, userId));
 	}
 }
