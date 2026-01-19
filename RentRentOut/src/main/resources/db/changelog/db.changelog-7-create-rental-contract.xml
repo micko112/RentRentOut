@@ -65,6 +65,30 @@
 			<column name="contract_status" value="REQUESTED"/>
 		</insert>
 	</changeSet>
+	
+	<changeSet id="4-add-offer_sender_id-column" author="Luka">
+		<addColumn tableName="rental_contract">
+			<column name="offer_sender_id" type="BIGINT"/>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="5-fill-data" author="Luka">
+		<update tableName="rental_contract">
+			<column name="offer_sender_id" valueComputed="lessee_id"/>
+		</update>
+	</changeSet>
+	
+	<changeSet id="6-creating-foreign-key-column" author="Luka">
+		<addForeignKeyConstraint baseTableName="rental_contract"	 
+		baseColumnNames="offer_sender_id" 
+		constraintName="fk__offer_sender_id" 
+		referencedTableName="user" 
+		referencedColumnNames="id" />
+	</changeSet>
+	
+	<changeSet id="7-setting-foreign-key-to-notnull" author="Luka">
+		<addNotNullConstraint tableName="rental_contract" columnName="offer_sender_id" columnDataType="BIGINT"/>
+	</changeSet>
 
 </databaseChangeLog>
 

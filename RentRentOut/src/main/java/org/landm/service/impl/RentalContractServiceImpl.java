@@ -9,6 +9,7 @@ import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.entity.Ad;
 import org.landm.entity.Enums.ContractStatus;
+import org.landm.exception.UserNotFoundException;
 import org.landm.entity.RentalContract;
 import org.landm.entity.User;
 import org.landm.mapper.RentalContractMapper;
@@ -18,6 +19,8 @@ import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.RentalContractService;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class RentalContractServiceImpl implements RentalContractService {
@@ -48,59 +51,71 @@ public class RentalContractServiceImpl implements RentalContractService {
         RentalContract rentalToCreate = rentalContractMapper.toEntity(req);
         rentalToCreate.setAd(ad);
         rentalToCreate.setLessee(lessee);
+        rentalToCreate.setOfferSender(lessee);
 
         return rentalContractMapper.toDto(rentalContractRepository.save(rentalToCreate));
     }
 
+    @Transactional
     @Override
-    public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, HEAD String) {
-        return null;
-    }
+    public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, 
+    		long userId) {
 
-    @Override
-    public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, long userId) {
+        RentalContract contract = rentalContractRepository.findByIdForUpdate(contractId);
+        
+        if(contract == null) throw new RuntimeException("Error searching contract!");
 
-        RentalContract contract = rentalContractRepository.findById(contractId)
-                .orElseThrow(() -> new RuntimeException("Contract not found"));
+        Ad ad = adRepository.findByIdForUpdate(contract.getAd().getId());
 
-        Ad ad = contract.getAd();
-
-        if (ad.getOwner().getId() != (userId)) {
-            throw new RuntimeException("Not allowed");
-        }
         ContractStatus oldStatus = contract.getContractStatus();
         ContractStatus newStatus = req.getNewStatus();
 
         if (!isValidTransition(oldStatus, newStatus)) {
             throw new RuntimeException("Invalid status transition");
         }
+        
         if (oldStatus == ContractStatus.REQUESTED &&
                 newStatus == ContractStatus.ACCEPTED) {
-
+        	
+        	if(contract.getOfferSender().getId() == userId) {
+        		throw new RuntimeException("Not allowed!");
+        	}  
+        	
             if (ad.getAvailableQuantity() <= 0) {
                 throw new RuntimeException("No available quantity");
             }
             ad.setAvailableQuantity(ad.getAvailableQuantity() - 1);
         }
+     // Napraviti ako je newStatus Rejected
+        
         if (oldStatus == ContractStatus.ACTIVE &&
                 (newStatus == ContractStatus.CANCELLED ||
                         newStatus == ContractStatus.FINISHED)) {
 
             ad.setAvailableQuantity(ad.getAvailableQuantity() + 1);
         }
+        
+        if(newStatus == ContractStatus.REQUESTED) {
+            contract.setOfferSender(
+            		userRepository.findById(userId)
+            		.orElseThrow(() -> new UserNotFoundException("User not found!")));
+            
+            if(req.getNewPrice() == null) throw new RuntimeException("New price must be bidded!");
+            contract.setAgreedPrice(req.getNewPrice());
+        }
+        
         contract.setContractStatus(newStatus);
-
+        
         return rentalContractMapper.toDto(contract);
     }
-
-
 
     private boolean isValidTransition(ContractStatus from, ContractStatus to) {
 
         return switch (from) {
             case REQUESTED ->
                     to == ContractStatus.ACCEPTED ||
-                            to == ContractStatus.REJECTED;
+                            to == ContractStatus.REJECTED || 
+                            to == ContractStatus.REQUESTED;
 
             case ACCEPTED ->
                     to == ContractStatus.ACTIVE;

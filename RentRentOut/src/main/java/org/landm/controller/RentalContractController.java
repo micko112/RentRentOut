@@ -43,11 +43,11 @@ public class RentalContractController {
 		return new ResponseEntity<>(service.getAll(userId), HttpStatus.OK);
 	}
 
-@PatchMapping("/{id}/status")
-public ResponseEntity<RentalContractDto> updateStatus(@PathVariable long id,
-                                                      @Valid @RequestBody UpdateRentalContractStatusRequestDto req,
-                                                      Authentication auth){
-        long userId = Long.parseLong(auth.getName());
-        return ResponseEntity.ok(service.updateStatus(id, req, userId));
-}
+	@PatchMapping("/{id}/status")
+	public ResponseEntity<RentalContractDto> updateStatus(@PathVariable long id,
+	                                                      @Valid @RequestBody UpdateRentalContractStatusRequestDto req, 
+	                                                      Authentication auth){
+	        long userId = Long.parseLong(auth.getName());
+	        return ResponseEntity.ok(service.updateStatus(id, req, userId));
+	}
 }

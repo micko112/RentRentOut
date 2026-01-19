@@ -11,4 +11,11 @@ public interface RentalContractRepository extends JpaRepository<RentalContract, 
 	@Query(" SELECT rc FROM RentalContract rc WHERE rc.lessee.id = :userId OR rc.ad.owner.id = :userId ")
 	public List<RentalContract> findAllByUser(long userId);
 	
+	@Query("""
+			SELECT rc 
+			FROM RentalContract rc
+			WHERE rc.id = :contractId
+			""")
+	public RentalContract findByIdForUpdate(long contractId);
+	
 }

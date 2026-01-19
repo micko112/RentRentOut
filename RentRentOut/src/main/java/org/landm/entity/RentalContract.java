@@ -36,16 +36,22 @@ public class RentalContract {
     @Column(name = "contract_status")
     private ContractStatus contractStatus;
 
+    @ManyToOne
+    @JoinColumn(name="offer_sender_id")
+    private User offerSender;
+    
     public RentalContract() {
     }
 
-    public RentalContract(Ad ad, User lessee, LocalDate startDate, LocalDate endDate, BigDecimal agreedPrice, ContractStatus contractStatus) {
+    public RentalContract(Ad ad, User lessee, LocalDate startDate, LocalDate endDate, 
+    		BigDecimal agreedPrice, ContractStatus contractStatus, User offerSender) {
         this.ad = ad;
         this.lessee = lessee;
         this.startDate = startDate;
         this.endDate = endDate;
         this.agreedPrice = agreedPrice;
         this.contractStatus = contractStatus;
+        this.offerSender = offerSender;
     }
 
     public User getLessee() {
@@ -104,7 +110,15 @@ public class RentalContract {
         return id;
     }
 
-    @Override
+    public User getOfferSender() {
+		return offerSender;
+	}
+
+	public void setOfferSender(User offerSender) {
+		this.offerSender = offerSender;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         RentalContract that = (RentalContract) o;
