@@ -2,6 +2,7 @@ package org.landm.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,7 +42,11 @@ public class SecurityConfig {
 	                    .requestMatchers("/api/user/register",
 	                            "/api/user/login",
 	                            "/auth/**").permitAll()
-						.requestMatchers("/api/ads/**").authenticated()
+						.requestMatchers(HttpMethod.GET, "/api/ads/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/ads").authenticated()
+						.requestMatchers(HttpMethod.PUT, "/api/ads/**").authenticated()
+						.requestMatchers(HttpMethod.DELETE, "/api/ads/**").authenticated()
+
 						.anyRequest().authenticated()
 	            ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	

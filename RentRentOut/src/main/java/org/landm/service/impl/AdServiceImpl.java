@@ -1,10 +1,9 @@
 package org.landm.service.impl;
 
-import org.landm.dto.ad.AdDto;
-import org.landm.dto.ad.AdPreviewDto;
-import org.landm.dto.ad.CreateAdRequestDto;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import org.landm.dto.ad.*;
 
-import org.landm.dto.ad.UpdateAdRequestDto;
 import org.landm.entity.Ad;
 import org.landm.entity.Category;
 import org.landm.entity.Enums.AdStatus;
@@ -20,14 +19,20 @@ import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.AdService;
+import org.landm.service.CategoryService;
 import org.landm.service.RentalContractService;
-import org.springframework.dao.EmptyResultDataAccessException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.data.jpa.domain.Specification;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 public class AdServiceImpl implements AdService {
@@ -36,7 +41,7 @@ public class AdServiceImpl implements AdService {
     private final AdRepository adRepository;
     private final AdMapper adMapper;
     private final LocationMapper locationMapper;
-
+    private final CategoryService categoryService;
     private final JwtUtil jwtUtil;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
@@ -47,7 +52,7 @@ public class AdServiceImpl implements AdService {
                          AdMapper adMapper, LocationMapper locationMapper, 
                          CategoryRepository categoryRepository, LocationRepository locationRepository, 
                          JwtUtil jwtUtil, RentalContractRepository rentalContractRepository, 
-                         RentalContractService rentalContractService) {
+                         RentalContractService rentalContractService, CategoryService categoryService) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adMapper = adMapper;
@@ -57,6 +62,7 @@ public class AdServiceImpl implements AdService {
         this.jwtUtil = jwtUtil;
         this.rentalContractRepository = rentalContractRepository;
         this.rentalContractService = rentalContractService ;
+        this.categoryService = categoryService;
     }
 
 //    @Override
@@ -165,4 +171,38 @@ public class AdServiceImpl implements AdService {
 		
 		return "Successfully deleted your Ad!";
 	}
+
+    @Override
+    public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable) {
+        Specification<Ad> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if(criteria.getKeyword() != null && !criteria.getKeyword().isBlank()){
+                String keywordPattern = "%" + criteria.getKeyword().toLowerCase() + "%";
+                Predicate titleLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), keywordPattern);
+                Predicate descriptionLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), keywordPattern);
+                predicates.add(criteriaBuilder.or(titleLike, descriptionLike));
+            }
+            if(criteria.getCategoryId() != null){
+                List<Long> categoryIds = categoryService.findAllSubCategoryId(criteria.getCategoryId());
+                if (!categoryIds.isEmpty()){
+                    predicates.add(root.get("category").get("id").in(categoryIds));
+
+                }
+            }
+            if (criteria.getMinPrice() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), criteria.getMinPrice()));
+            }
+            if (criteria.getMaxPrice() != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), criteria.getMaxPrice()));
+            }
+            if (criteria.getLocationId() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("location").get("id"), criteria.getLocationId()));
+            }
+            predicates.add(criteriaBuilder.equal(root.get("adStatus"), AdStatus.ACTIVE));
+            predicates.add(criteriaBuilder.greaterThan(root.get("availableQuantity"), 0));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Page<Ad> adPage = adRepository.findAll(specification, pageable);
+        return adPage.map(adMapper::toPreviewDto);
+    }
 }

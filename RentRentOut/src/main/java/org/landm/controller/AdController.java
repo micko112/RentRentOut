@@ -1,12 +1,9 @@
 package org.landm.controller;
 
 import jakarta.validation.Valid;
-import org.landm.dto.ad.AdDto;
-import org.landm.dto.ad.AdPreviewDto;
-import org.landm.dto.ad.CreateAdRequestDto;
+import org.landm.dto.ad.*;
 
 
-import org.landm.dto.ad.UpdateAdRequestDto;
 import org.landm.service.AdService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/ads")
 public class AdController {
 
-    private AdService adService;
+    private final AdService adService;
 
     public AdController(AdService adService) {
         this.adService = adService;
@@ -61,5 +60,10 @@ public class AdController {
     public ResponseEntity<String> deleteAd(@PathVariable long adId, Authentication auth){
     	long userId = Long.parseLong(auth.getName());
     	return new ResponseEntity<>(adService.deleteAd(adId, userId), HttpStatus.OK);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<Page<AdPreviewDto>> searchAd(AdSearchCriteriaDto criteria, Pageable pageable){
+        Page<AdPreviewDto> results = adService.search(criteria, pageable);
+        return ResponseEntity.ok(results);
     }
 }
