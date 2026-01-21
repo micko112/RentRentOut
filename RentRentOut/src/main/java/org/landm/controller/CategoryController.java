@@ -7,11 +7,12 @@ import org.landm.dto.requestDto.CreateCategoryRequestDto;
 import org.landm.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/categories")
 public class CategoryController {
         private CategoryService categoryService;
 
@@ -19,11 +20,11 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<CategoryDto> post(@Valid @RequestBody CreateCategoryRequestDto req,
-                                            @RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
-        return new ResponseEntity<>(categoryService.create(req, token), HttpStatus.CREATED);
+                                            Authentication auth) {
+        long userId = Long.parseLong(auth.getName());
+        return new ResponseEntity<>(categoryService.create(req, userId), HttpStatus.CREATED);
 
     }
 

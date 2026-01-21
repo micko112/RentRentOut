@@ -10,7 +10,7 @@ import org.landm.entity.Enums.ContractStatus;
 
 public interface RentalContractService {
 	
-    public RentalContractDto create(CreateRentalContractRequestDto req, String token);
+    public RentalContractDto create(CreateRentalContractRequestDto req, long userId);
     
     public RentalContractDto updateStatus(long contractId,
                         UpdateRentalContractStatusRequestDto req, long userId);

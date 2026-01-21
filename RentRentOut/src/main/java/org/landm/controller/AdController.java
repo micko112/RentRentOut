@@ -39,16 +39,11 @@ public class AdController {
     }
     
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<AdDto> createAd(@Valid @RequestBody CreateAdRequestDto req,
-                                            @RequestHeader("Authorization") String authHeader){
-        
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        User user = (User) auth.getPrincipal();
-//        
-//        long userId = user.getId();
-        
-        long userId = (long) auth.getPrincipal();
+                                            Authentication auth){
+
+        long userId = Long.parseLong(auth.getName());
         
         return new ResponseEntity<>(adService.create(req, userId), HttpStatus.CREATED);
     }

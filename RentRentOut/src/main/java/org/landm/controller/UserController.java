@@ -98,9 +98,8 @@ public class UserController {
     
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/me")
-    public ResponseEntity<String> deleteMe(Authentication auth){
-    	long myId = Long.parseLong(auth.getName());
-    	return new ResponseEntity<>(userService.deleteMe(myId), HttpStatus.OK);
+    public ResponseEntity<String> deleteMe(Authentication auth) {
+        long myId = Long.parseLong(auth.getName());
+        return new ResponseEntity<>(userService.deleteMe(myId), HttpStatus.OK);
     }
-    
 }

@@ -24,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public CategoryDto create(CreateCategoryRequestDto req, String authHeader) {
+    public CategoryDto create(CreateCategoryRequestDto req, long userId) {
         Category categoryToCreate = new Category();
         categoryToCreate.setName(req.getName());
 

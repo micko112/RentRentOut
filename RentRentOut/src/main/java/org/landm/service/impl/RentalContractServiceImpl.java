@@ -19,6 +19,7 @@ import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.RentalContractService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -42,9 +43,9 @@ public class RentalContractServiceImpl implements RentalContractService {
     }
 
     @Override
-    public RentalContractDto create(CreateRentalContractRequestDto req, String token) {
-        long lesseeId = jwtUtil.extractUserId(token);
-        User lessee = userRepository.findById(lesseeId)
+    public RentalContractDto create(CreateRentalContractRequestDto req, long userId) {
+
+        User lessee = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Ad ad = adRepository.findById(req.getAdId())
                 .orElseThrow(() -> new RuntimeException("Ad not found"));
@@ -53,7 +54,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         rentalToCreate.setAd(ad);
         rentalToCreate.setLessee(lessee);
         rentalToCreate.setOfferSender(lessee);
-
+        rentalToCreate.setContractStatus(ContractStatus.REQUESTED);
         return rentalContractMapper.toDto(rentalContractRepository.save(rentalToCreate));
     }
 
@@ -63,10 +64,9 @@ public class RentalContractServiceImpl implements RentalContractService {
     		long userId) {
 
         RentalContract contract = rentalContractRepository.findByIdForUpdate(contractId);
-        
         if(contract == null) throw new RuntimeException("Error searching contract!");
 
-        Ad ad = adRepository.findByIdForUpdate(contract.getAd().getId());
+        checkPermissions(userId, contract);
 
         ContractStatus oldStatus = contract.getContractStatus();
         ContractStatus newStatus = req.getNewStatus();
@@ -74,46 +74,10 @@ public class RentalContractServiceImpl implements RentalContractService {
         if (!isValidTransition(oldStatus, newStatus)) {
             throw new RuntimeException("Invalid status transition");
         }
-        
-        if (oldStatus == ContractStatus.REQUESTED &&
-                newStatus == ContractStatus.ACCEPTED) {
-        	
-        	if(contract.getOfferSender().getId() == userId || 
-        			(userId != contract.getLessee().getId() && 
-        			userId!= ad.getOwner().getId())) {
-        		throw new RuntimeException("Not allowed!");
-        	}  
-        	
-            if (ad.getAvailableQuantity() <= 0) {
-                throw new RuntimeException("No available quantity");
-            }
-            ad.setAvailableQuantity(ad.getAvailableQuantity() - 1);
-        }
-        
-        if(oldStatus == ContractStatus.REQUESTED && 
-        		newStatus == ContractStatus.REJECTED) {
-				if(userId != contract.getLessee().getId() && 
-					userId!= ad.getOwner().getId()) {
-					throw new RuntimeException("Not allowed!");
-		        }
-        }
-        
-        if (oldStatus == ContractStatus.ACTIVE &&
-                (newStatus == ContractStatus.CANCELLED ||
-                        newStatus == ContractStatus.FINISHED)) {
 
-            ad.setAvailableQuantity(ad.getAvailableQuantity() + 1);
-        }
-        
-        if(newStatus == ContractStatus.REQUESTED) {
-            contract.setOfferSender(
-            		userRepository.findById(userId)
-            		.orElseThrow(() -> new UserNotFoundException("User not found!")));
-            
-            if(req.getNewPrice() == null) throw new RuntimeException("New price must be bidded!");
-            contract.setAgreedPrice(req.getNewPrice());
-        }
-        
+        updatedAdAvailability(contract, req.getNewStatus());
+
+        handlePriceNegotiation(contract, req, userId);
         contract.setContractStatus(newStatus);
         
         return rentalContractMapper.toDto(contract);
@@ -136,6 +100,44 @@ public class RentalContractServiceImpl implements RentalContractService {
 
             default -> false;
         };
+    }
+    private void checkPermissions(long userId, RentalContract contract){
+        boolean isOwner = contract.getAd().getOwner().getId() == userId;
+        boolean isLessee = contract.getLessee().getId() == userId;
+        if(!isOwner && !isLessee){
+            throw new AccessDeniedException("User is not in contract");
+        }
+    }
+    private void updatedAdAvailability(RentalContract contract, ContractStatus newStatus){
+        Ad ad = contract.getAd();
+        ContractStatus oldStatus = contract.getContractStatus();
+        if(oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.ACCEPTED){
+            if(ad.getAvailableQuantity() <=0){
+                throw new RuntimeException("Not available");
+            }
+            ad.setAvailableQuantity(ad.getAvailableQuantity()-1);
+            adRepository.save(ad);
+        }
+        if (oldStatus == ContractStatus.ACTIVE && (newStatus == ContractStatus.CANCELLED || newStatus == ContractStatus.FINISHED)) {
+            ad.setAvailableQuantity(ad.getAvailableQuantity() + 1);
+            adRepository.save(ad);
+        }
+
+    }
+
+    private void handlePriceNegotiation(RentalContract contract, UpdateRentalContractStatusRequestDto req, long userId){
+        ContractStatus oldStatus = contract.getContractStatus();
+        ContractStatus newStatus = req.getNewStatus();
+        if(newStatus == ContractStatus.REQUESTED && contract.getContractStatus() == ContractStatus.REQUESTED) {
+            if(contract.getOfferSender().getId() == userId){
+                throw new IllegalStateException("You cannot send counter-offer to yourself");
+            }
+            contract.setOfferSender(
+                    userRepository.findById(userId)
+                            .orElseThrow(() -> new UserNotFoundException("User not found!")));
+            if(req.getNewPrice() == null) throw new RuntimeException("New price must be bidded!");
+            contract.setAgreedPrice(req.getNewPrice());
+        }
     }
 
 	@Override

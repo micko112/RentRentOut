@@ -4,6 +4,6 @@ import org.landm.dto.CategoryDto;
 import org.landm.dto.requestDto.CreateCategoryRequestDto;
 
 public interface CategoryService {
-    public CategoryDto create(CreateCategoryRequestDto req, String authHeader);
+    public CategoryDto create(CreateCategoryRequestDto req, long userId);
     public CategoryDto get(long id);
 }
