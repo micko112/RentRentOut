@@ -5,12 +5,15 @@ import org.landm.dto.user.ChangeUserPasswordDto;
 import org.landm.dto.user.LoginUserRequestDto;
 import org.landm.dto.user.RegisterUserRequestDto;
 import org.landm.dto.user.UpdateUserDto;
+import org.landm.entity.Category;
+import org.landm.entity.Role;
 import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
 import org.landm.exception.WrongCredentialsException;
 //import org.landm.exception.UserNotFoundException;
 //import org.landm.exception.WrongCredentialsException;
 import org.landm.mapper.UserMapper;
+import org.landm.repository.RoleRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.UserService;
@@ -27,20 +30,23 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
+    private final RoleRepository roleRepository;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder, UserMapper userMapper,
-                           JwtUtil jwtUtil) {
+                           JwtUtil jwtUtil, RoleRepository roleRepository) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.jwtUtil = jwtUtil;
+		this.roleRepository = roleRepository;
     }
 
     @Override
     public UserDto register(RegisterUserRequestDto req) {
 
+		Role role = roleRepository.findByName(req.getRole());
             if (userRepository.existsByEmail(req.getEmail())) {
 //                throw new RuntimeException("Email already exists!");
                 throw new WrongCredentialsException("Email already exists!");
@@ -50,8 +56,8 @@ public class UserServiceImpl implements UserService {
                         passwordEncoder.encode(req.getPassword()),
                         req.getFirstname(),
                         req.getLastname(),
-                        req.getRoles());
-
+						role
+                        );
                 User savedUser = userRepository.save(userToSave);
                 return userMapper.toDto(savedUser);
                 //return new UserDto(req.getFirstname(), req.getLastname(),

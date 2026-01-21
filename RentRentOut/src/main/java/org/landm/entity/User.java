@@ -37,12 +37,12 @@ public class User {
     public User(){
     }
 
-    public User(String email, String password, String firstname, String lastname, String role) {
+    public User(String email, String password, String firstname, String lastname, Role role) {
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.role = new Role(role);
+        this.role = role;
     }
 
 
