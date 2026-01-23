@@ -17,6 +17,8 @@ public interface RentalContractService {
     
     public RentalContractDto getRentalContractById(long rentalId);
     
+    public List<RentalContractDto> search(String term, long userId, boolean isAdmin);
+    
     public List<RentalContractDto> getAll(long userId);
     
     public boolean isActiveOrAccepted(ContractStatus status);

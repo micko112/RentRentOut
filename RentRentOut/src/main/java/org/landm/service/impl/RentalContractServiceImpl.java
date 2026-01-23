@@ -19,6 +19,7 @@ import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.RentalContractService;
+import org.landm.specification.RentalContractSpecification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -155,6 +156,18 @@ public class RentalContractServiceImpl implements RentalContractService {
 				.toList();
 	}
 	
+	@Override
+	public List<RentalContractDto> search(String term, long userId, boolean isAdmin) {
+		
+		List contracts = new ArrayList<>();
+		
+		return rentalContractRepository
+				.findAll(RentalContractSpecification.search(term, userId, isAdmin))
+				.stream()
+				.map(rentalContractMapper::toDto)
+				.toList();
+	}
+
 	public boolean isActiveOrAccepted(ContractStatus status) {
 		return (status == ContractStatus.ACCEPTED || status == ContractStatus.ACTIVE);
 	}
