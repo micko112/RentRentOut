@@ -6,21 +6,26 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.landm.dto.rentalContract.RentalContractSearchDto;
 import org.landm.entity.Ad;
 import org.landm.entity.RentalContract;
 import org.landm.entity.User;
+import org.landm.entity.Enums.ContractStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 
 public class RentalContractSpecification {
 
-	public static Specification<RentalContract> search(String term, long userId, boolean isAdmin){
+	public static Specification<RentalContract> search(long userId, boolean isAdmin, RentalContractSearchDto searchDto){
 		return(root, query, cb) -> {
 			
-			query.distinct(true);
+			String term = searchDto.getTerm();
+			
+			//query.distinct(true);
 			
 			List<Predicate> predicates = new ArrayList<>();
 
@@ -34,10 +39,52 @@ public class RentalContractSpecification {
 			Predicate isOwner = 
 					cb.equal(ownerJoin.get("id"), userId);
 			
-			Predicate canAccess = cb.or(isLessee, isOwner);
+			Predicate canAccess = isAdmin ? cb.conjunction() : cb.or(isLessee, isOwner);
+			
+			Predicate isDeleted = isAdmin ? cb.conjunction() : cb.notEqual(root.get("contractStatus"), ContractStatus.DELETED);
+			
+			if(searchDto != null) {
+				if(searchDto.getStatus() != null) {
+					predicates.add(
+							cb.equal(root.get("contractStatus"), searchDto.getStatus())
+							);
+				}
+				if(searchDto.getPriceFrom() != null) {
+					predicates.add(
+							cb.greaterThanOrEqualTo(root.get("agreedPrice"), searchDto.getPriceFrom())
+							);
+				}
+				if(searchDto.getPriceTo() != null) {
+					predicates.add(
+							cb.lessThanOrEqualTo(root.get("agreedPrice"), searchDto.getPriceTo())
+							);
+				}
+				if(searchDto.getStartDateFrom() != null) {
+					predicates.add(
+							cb.greaterThanOrEqualTo(root.get("startDate"), searchDto.getStartDateFrom())
+							);
+				}
+				if(searchDto.getStartDateTo() != null) {
+					predicates.add(
+							cb.lessThanOrEqualTo(root.get("startDate"), searchDto.getStartDateTo())
+							);
+				}
+				if(searchDto.getEndDateFrom() != null) {
+					predicates.add(
+							cb.greaterThanOrEqualTo(root.get("endDate"), searchDto.getEndDateFrom())
+							);
+				}
+				if(searchDto.getEndDateTo() != null) {
+					predicates.add(
+							cb.lessThanOrEqualTo(root.get("endDate"), searchDto.getEndDateTo())
+							);
+				}
+			}
+			
+			Predicate filterPredicate = cb.and(predicates.toArray(new Predicate[0]));
 			
 			if(term == null || term.isBlank()) {
-				return canAccess;
+				return cb.and(canAccess, isDeleted, filterPredicate);
 			}
 			
 			String likeTerm = "%" + term.toLowerCase() + "%";
@@ -78,9 +125,7 @@ public class RentalContractSpecification {
 			
 			Predicate searchPredicate = cb.or(predicates.toArray(new Predicate[0]));
 			
-			if(isAdmin == true) return searchPredicate;
-			
-			return cb.and(searchPredicate, canAccess);
+			return cb.and(searchPredicate, filterPredicate, canAccess, isDeleted);
 			
 		};
 	}

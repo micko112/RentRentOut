@@ -2,6 +2,7 @@ package org.landm.controller;
 
 import jakarta.validation.Valid;
 import org.landm.dto.rentalContract.RentalContractDto;
+import org.landm.dto.rentalContract.RentalContractSearchDto;
 
 import java.io.Console;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.service.RentalContractService;
 import org.landm.service.impl.RentalContractServiceImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -50,15 +52,15 @@ public class RentalContractController {
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<Map<String, List<RentalContractDto>>> searchContracts(@RequestParam(required = false) String q,
-			Authentication auth){
+	public ResponseEntity<Map<String, Page<RentalContractDto>>> searchContracts(Authentication auth, 
+			@ModelAttribute RentalContractSearchDto searchDto){
 		long userId = Long.parseLong(auth.getName());
 		boolean isAdmin = auth.getAuthorities()
 				.stream()
 				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 		System.out.println(isAdmin);
 		Map res = new HashMap<>();
-		res.put("Contracts: ", service.search(q, userId, isAdmin));
+		res.put("Contracts: ", service.search(userId, isAdmin, searchDto));
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	} 
 	

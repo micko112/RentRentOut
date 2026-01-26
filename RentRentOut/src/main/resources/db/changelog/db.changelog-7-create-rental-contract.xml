@@ -89,6 +89,19 @@
 	<changeSet id="7-setting-foreign-key-to-notnull" author="Luka">
 		<addNotNullConstraint tableName="rental_contract" columnName="offer_sender_id" columnDataType="BIGINT"/>
 	</changeSet>
+	
+	<changeSet id="8-insert-one-rental-contract" author="Luka">
+		<insert tableName="rental_contract">
+			<column name="ad_id" valueNumeric="2"/>
+			<column name="lessee_id" valueNumeric="3"/>
+			<column name="start_date" valueNumeric="3"/>
+			<column name="start_date" valueDate="2025-03-20"/>
+			<column name="end_date" valueDate="2025-04-20"/>
+			<column name="agreed_price" valueNumeric="9000"/>
+			<column name="contract_status" value="REQUESTED"/>
+			<column name="offer_sender_id" valueNumeric="3"></column>
+		</insert>
+	</changeSet>
 
 </databaseChangeLog>
 

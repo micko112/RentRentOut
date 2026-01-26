@@ -73,4 +73,23 @@
 		<addNotNullConstraint tableName="user" columnName="role_id" columnDataType="int"/>
 	</changeSet>
 	
+	<changeSet id="6-adding-one-more-user" author="Luka">
+		        <insert tableName="user">
+            <column name="email" value="zeljko@gmail.com"/>
+            <!-- password wrong - fixed in next changeset-->
+            <column name="password" value="'$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca'"/>
+            <column name="firstname" value="Zeljko"/>
+            <column name="lastname" value="Stojkovic"/>
+            <column name="money" valueNumeric="0"/>
+            <column name="role_id" value="2"/>
+        </insert>
+	</changeSet>
+	
+	<changeSet id="7-change-users-password" author="Luka">
+		<update tableName="user">
+			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
+			<where>email = 'zeljko@gmail.com'</where>
+		</update>
+	</changeSet>
+	
 </databaseChangeLog>

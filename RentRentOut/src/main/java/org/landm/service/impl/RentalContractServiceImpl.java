@@ -1,6 +1,7 @@
 package org.landm.service.impl;
 
 import org.landm.dto.rentalContract.RentalContractDto;
+import org.landm.dto.rentalContract.RentalContractSearchDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,10 @@ import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.RentalContractService;
 import org.landm.specification.RentalContractSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -157,15 +162,28 @@ public class RentalContractServiceImpl implements RentalContractService {
 	}
 	
 	@Override
-	public List<RentalContractDto> search(String term, long userId, boolean isAdmin) {
+	public Page<RentalContractDto> search(long userId, boolean isAdmin, RentalContractSearchDto searchDto) {
 		
-		List contracts = new ArrayList<>();
+		String sortBy = mapSortField(searchDto.getSortBy());
+		
+		Sort sort = searchDto.isDescending() 
+				? Sort.by(sortBy).descending()
+				: Sort.by(sortBy).ascending();
+		
+		Pageable pageable = PageRequest.of(searchDto.getPage(), searchDto.getSize(), sort);
 		
 		return rentalContractRepository
-				.findAll(RentalContractSpecification.search(term, userId, isAdmin))
-				.stream()
+				.findAll(RentalContractSpecification.search(userId, isAdmin, searchDto), pageable)
 				.map(rentalContractMapper::toDto)
-				.toList();
+				;
+	}
+	
+	public String mapSortField(String frontendField) {
+		return switch(frontendField) {
+		case "adTitle" -> "ad.title";
+		case "firstname" -> "ad.owner.firstname";
+		default -> frontendField;
+		};
 	}
 
 	public boolean isActiveOrAccepted(ContractStatus status) {

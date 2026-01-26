@@ -1,12 +1,14 @@
 package org.landm.service;
 
 import org.landm.dto.rentalContract.RentalContractDto;
+import org.landm.dto.rentalContract.RentalContractSearchDto;
 
 import java.util.List;
 
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.entity.Enums.ContractStatus;
+import org.springframework.data.domain.Page;
 
 public interface RentalContractService {
 	
@@ -17,7 +19,7 @@ public interface RentalContractService {
     
     public RentalContractDto getRentalContractById(long rentalId);
     
-    public List<RentalContractDto> search(String term, long userId, boolean isAdmin);
+    public Page<RentalContractDto> search(long userId, boolean isAdmin, RentalContractSearchDto searchDto);
     
     public List<RentalContractDto> getAll(long userId);
     
