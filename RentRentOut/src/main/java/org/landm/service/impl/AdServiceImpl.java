@@ -205,4 +205,10 @@ public class AdServiceImpl implements AdService {
         Page<Ad> adPage = adRepository.findAll(specification, pageable);
         return adPage.map(adMapper::toPreviewDto);
     }
+
+    @Override
+    public Page<AdPreviewDto> findAll(Pageable pageable) {
+        Page<Ad> adPage = adRepository.findAll(pageable);
+        return adPage.map(adMapper::toPreviewDto);
+    }
 }

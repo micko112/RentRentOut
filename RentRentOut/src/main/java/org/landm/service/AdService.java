@@ -15,4 +15,5 @@ public interface AdService {
    // ItemDto create(CreateItemRequestDto req);
     public String deleteAd(long adId, long userId);
     public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable);
+    public Page<AdPreviewDto> findAll(Pageable pageable);
 }

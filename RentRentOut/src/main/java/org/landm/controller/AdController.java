@@ -66,4 +66,5 @@ public class AdController {
         Page<AdPreviewDto> results = adService.search(criteria, pageable);
         return ResponseEntity.ok(results);
     }
+
 }

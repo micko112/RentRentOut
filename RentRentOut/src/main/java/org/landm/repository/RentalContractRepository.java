@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface RentalContractRepository 
 extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalContract> {
@@ -36,5 +37,10 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
     		"SET rc.contractStatus = 'AD_DELETED' " +
     		"WHERE rc.ad.id = :adId")
     public void markToAdDeleted(long adId);
-    
+
+
+	@Query("SELECT rc FROM RentalContract rc WHERE rc.ad.id = :adId AND rc.contractStatus IN :statuses ")
+	List<RentalContract> findActiveContractForAd(
+			@Param("adId") long adId,
+			@Param("statuses") List<ContractStatus> statuses);
 }
