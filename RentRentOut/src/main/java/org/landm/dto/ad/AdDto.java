@@ -5,8 +5,10 @@ import org.landm.dto.LocationDto;
 import org.landm.dto.user.UserDto;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PriceInterval;
+import org.landm.helper.DateInterval;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class AdDto {
@@ -24,6 +26,8 @@ public class AdDto {
     private UserDto owner;
     private CategoryDto category;
     private LocationDto location;
+    
+    private List<DateInterval> blockedIntervals;
 
     public String getTitle() {
         return title;
@@ -97,4 +101,17 @@ public class AdDto {
     public void setId(long id) {
         this.id = id;
     }
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public List<DateInterval> getBlockedIntervals() {
+		return blockedIntervals;
+	}
+	public void setBlockedIntervals(List<DateInterval> blockedIntervals) {
+		this.blockedIntervals = blockedIntervals;
+	}    
+    
 }

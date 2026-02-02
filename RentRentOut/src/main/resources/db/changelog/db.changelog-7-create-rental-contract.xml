@@ -102,6 +102,22 @@
 			<column name="offer_sender_id" valueNumeric="3"></column>
 		</insert>
 	</changeSet>
+	
+	<changeSet id="9-add-amount-column" author="Luka">
+		<addColumn tableName="rental_contract">
+			<column name="amount" type="numeric"/>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="10-fill-data" author="Luka">
+		<update tableName="rental_contract">
+			<column name="amount" valueNumeric="1"/>
+		</update>
+	</changeSet>
+	
+	<changeSet id="11-set-not-null" author="Luka">
+		<addNotNullConstraint tableName="rental_contract" columnName="amount" columnDataType="numeric"/>
+	</changeSet>
 
 </databaseChangeLog>
 

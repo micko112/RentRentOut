@@ -47,7 +47,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         this.rentalContractMapper = rentalContractMapper;
         this.rentalContractRepository = rentalContractRepository;
     }
-
+    
     @Override
     public RentalContractDto create(CreateRentalContractRequestDto req, long userId) {
 
@@ -61,9 +61,15 @@ public class RentalContractServiceImpl implements RentalContractService {
         rentalToCreate.setLessee(lessee);
         rentalToCreate.setOfferSender(lessee);
         rentalToCreate.setContractStatus(ContractStatus.REQUESTED);
+        rentalToCreate.setAmount(req.getAmount());
         return rentalContractMapper.toDto(rentalContractRepository.save(rentalToCreate));
     }
 
+    @Override
+    public List<RentalContract> findByAdIdAndContractStatusIn(long adId, List<ContractStatus> statusList){
+    	return rentalContractRepository.findByAdIdAndContractStatusIn(adId, statusList);
+    }
+    
     @Transactional
     @Override
     public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, 

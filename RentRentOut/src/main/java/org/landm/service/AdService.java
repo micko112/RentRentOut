@@ -1,7 +1,11 @@
 package org.landm.service;
 
+import java.util.List;
+
 import org.landm.dto.ad.*;
+import org.landm.entity.RentalContract;
 import org.landm.entity.Enums.AdStatus;
+import org.landm.helper.DateInterval;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

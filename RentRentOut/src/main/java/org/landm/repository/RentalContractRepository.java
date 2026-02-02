@@ -23,6 +23,7 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 			""")
 	public RentalContract findByIdForUpdate(long contractId);
 	
+	public List<RentalContract> findByAdIdAndContractStatusIn(long adId, List<ContractStatus> statusList);
 	
     @Query("""
     		SELECT count(rc) > 0

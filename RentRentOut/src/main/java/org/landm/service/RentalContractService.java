@@ -7,12 +7,15 @@ import java.util.List;
 
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
+import org.landm.entity.RentalContract;
 import org.landm.entity.Enums.ContractStatus;
 import org.springframework.data.domain.Page;
 
 public interface RentalContractService {
 	
     public RentalContractDto create(CreateRentalContractRequestDto req, long userId);
+    
+    public List<RentalContract> findByAdIdAndContractStatusIn(long adId, List<ContractStatus> statusList);
     
     public RentalContractDto updateStatus(long contractId,
                         UpdateRentalContractStatusRequestDto req, long userId);

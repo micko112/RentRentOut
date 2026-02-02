@@ -92,4 +92,25 @@
 		</update>
 	</changeSet>
 	
+	<changeSet id="8-add-enabled-column-for-email-verification" author="Luka">
+		<addColumn tableName="user">
+			<column name="enabled" type="BOOLEAN"/>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="9-fill-enabled-column" author="Luka">
+		<update tableName="user">
+			<column name="enabled" valueBoolean="true"></column>
+		</update>
+	</changeSet>
+	
+	<changeSet id="10-make-default-value-for-enabled" author="Luka">
+		
+		<addDefaultValue tableName="user" columnName="enabled" 
+		columnDataType="BOOLEAN" defaultValueBoolean="false"/>
+		
+		<addNotNullConstraint tableName="user" columnName="enabled" columnDataType="BOOLEAN"/>
+		
+	</changeSet>
+	
 </databaseChangeLog>

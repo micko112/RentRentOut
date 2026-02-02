@@ -32,6 +32,9 @@ public class RentalContract {
     @Column(name = "agreed_price", nullable = false)
     private BigDecimal agreedPrice;
 
+    @Column(name = "amount", nullable = false)
+    private long amount;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "contract_status")
     private ContractStatus contractStatus;
@@ -44,12 +47,13 @@ public class RentalContract {
     }
 
     public RentalContract(Ad ad, User lessee, LocalDate startDate, LocalDate endDate, 
-    		BigDecimal agreedPrice, ContractStatus contractStatus, User offerSender) {
+    		BigDecimal agreedPrice, long amount, ContractStatus contractStatus, User offerSender) {
         this.ad = ad;
         this.lessee = lessee;
         this.startDate = startDate;
         this.endDate = endDate;
         this.agreedPrice = agreedPrice;
+        this.amount = amount;
         this.contractStatus = contractStatus;
         this.offerSender = offerSender;
     }
@@ -116,6 +120,14 @@ public class RentalContract {
 
 	public void setOfferSender(User offerSender) {
 		this.offerSender = offerSender;
+	}
+
+	public long getAmount() {
+		return amount;
+	}
+
+	public void setAmount(long amount) {
+		this.amount = amount;
 	}
 
 	@Override

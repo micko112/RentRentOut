@@ -17,6 +17,8 @@ public class CreateRentalContractRequestDto {
     private LocalDate endDate;
     @Positive
     private BigDecimal agreedPrice;
+    @Positive 
+    private long amount;
 
     public Long getAdId() {
         return adId;
@@ -49,4 +51,14 @@ public class CreateRentalContractRequestDto {
     public void setAgreedPrice(BigDecimal agreedPrice) {
         this.agreedPrice = agreedPrice;
     }
+
+	public long getAmount() {
+		return amount;
+	}
+
+	public void setAmount(long amount) {
+		this.amount = amount;
+	}
+    
+    
 }

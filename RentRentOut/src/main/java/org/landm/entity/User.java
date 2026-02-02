@@ -1,6 +1,7 @@
 package org.landm.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,6 +34,10 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id", nullable=false)
     private Role role;
+    
+    @Column(name="enabled")
+    @NotNull
+    private boolean enabled = false;
 
     public User(){
     }
@@ -108,6 +113,15 @@ public class User {
 		
 		return roles;
 	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
     
+	
     
 }

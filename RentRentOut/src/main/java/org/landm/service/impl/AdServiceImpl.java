@@ -7,8 +7,11 @@ import org.landm.dto.ad.*;
 import org.landm.entity.Ad;
 import org.landm.entity.Category;
 import org.landm.entity.Enums.AdStatus;
+import org.landm.entity.Enums.ContractStatus;
 import org.landm.exception.UserNotFoundException;
+import org.landm.helper.DateInterval;
 import org.landm.entity.Location;
+import org.landm.entity.RentalContract;
 import org.landm.entity.User;
 import org.landm.mapper.AdMapper;
 import org.landm.mapper.LocationMapper;
@@ -30,7 +33,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -99,7 +105,61 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdDto getAdById(long id) {
         Ad ad = adRepository.findById(id).orElseThrow(() -> new RuntimeException("Ad not found with id: " + id));
-        return adMapper.toDto(ad);
+        
+        List<RentalContract> contracts = rentalContractService
+        		.findByAdIdAndContractStatusIn(ad.getId(), List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE));
+        //TREBA TRANSACTIONAL
+        List<DateInterval> blockedIntervals = getBlockedIntervals(contracts, ad.getTotalQuantity());
+        
+        AdDto adDto = adMapper.toDto(ad);
+        adDto.setBlockedIntervals(blockedIntervals);
+        
+        return adDto;
+    }
+    
+    private static class Event{
+    	LocalDate date;
+    	long itemCount;
+    	
+    	Event(LocalDate date, long amount){
+    		this.date = date;
+    		this.itemCount = amount;
+    	}
+    }
+    
+    public List<DateInterval> getBlockedIntervals(List<RentalContract> contracts, int quantity){
+    	
+    	List<Event> events = new ArrayList<>(); 
+    	
+    	List<DateInterval> blockedIntervals = new ArrayList<>();
+    	
+    	for (RentalContract rc : contracts) {
+    		events.add(new Event(rc.getStartDate(), rc.getAmount()));
+    		
+    		events.add(new Event(rc.getEndDate().plusDays(1), -rc.getAmount()));
+    	}
+    	
+    	events.sort(Comparator.comparing(e -> e.date));
+    	
+    	int active = 0;
+    	LocalDate blockedStart = null;
+    	
+    	for(Event event : events) {
+    		
+    		int prevActive = active;
+    		active += event.itemCount;
+    		
+    		if(prevActive < quantity && active >= quantity) {
+    			blockedStart = event.date;
+    		}
+    		
+    		if(prevActive >= quantity && active < quantity) {
+    			blockedIntervals.add(new DateInterval(blockedStart, event.date.minusDays(1)));
+    			blockedStart = null;
+    		}
+    	}
+    	
+    	return blockedIntervals;
     }
 
     @Override
