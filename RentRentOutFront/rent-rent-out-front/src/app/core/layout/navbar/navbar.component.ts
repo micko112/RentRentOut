@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Category} from '../../../shared/models/category.model';
 import {CategoryService} from '../../../features/ads/services/category.service';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })

@@ -1,0 +1,35 @@
+import { Injectable } from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {AdPreview, Page} from '../../../shared/models/adPreview';
+import {Observable} from 'rxjs';
+import {API_BASE_URL} from '../../../core/config/api.config';
+import {AdSearchCriteria} from '../../../shared/models/adSearchCriteria';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AdService {
+
+
+  constructor(private http: HttpClient) { }
+  private adApiUrl = `${API_BASE_URL}/ads`;
+  search(criteria: AdSearchCriteria) : Observable<Page<AdPreview>> {
+    let params = new HttpParams();
+
+    if(criteria.keyword){
+      params = params.append('keyword', criteria.keyword)
+    }
+    if (criteria.categoryId) params = params.append('categoryId', criteria.categoryId.toString());
+    if (criteria.minPrice) params = params.append('minPrice', criteria.minPrice.toString());
+    if (criteria.maxPrice) params = params.append('maxPrice', criteria.maxPrice.toString());
+    if (criteria.locationId) params = params.append('locationId', criteria.locationId);
+
+    if (criteria.page) params = params.append('page', criteria.page.toString());
+    if (criteria.size) params = params.append('size', criteria.size.toString());
+    if (criteria.sort) params = params.append('sort', criteria.sort);
+
+
+    return this.http.get<Page<AdPreview>>(`${this.adApiUrl}/search`, { params });
+  }
+
+}
