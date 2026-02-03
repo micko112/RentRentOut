@@ -9,5 +9,6 @@ public interface CategoryService {
     public CategoryDto create(CreateCategoryRequestDto req, long userId);
     public CategoryDto get(long id);
     public List<Long> findAllSubCategoryId(Long parentId);
+    public List<CategoryDto> getAll();
 
 }
