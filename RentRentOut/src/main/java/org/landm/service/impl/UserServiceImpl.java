@@ -6,6 +6,7 @@ import org.landm.dto.user.LoginUserRequestDto;
 import org.landm.dto.user.RegisterUserRequestDto;
 import org.landm.dto.user.UpdateUserDto;
 import org.landm.entity.Category;
+import org.landm.entity.EmailVerificationToken;
 import org.landm.entity.Role;
 import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
@@ -16,6 +17,7 @@ import org.landm.mapper.UserMapper;
 import org.landm.repository.RoleRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
+import org.landm.service.EmailVerificationMailService;
 import org.landm.service.UserService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,18 +33,22 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
     private final RoleRepository roleRepository;
+    private final EmailVerificationMailService emailVerificationService;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder, UserMapper userMapper,
-                           JwtUtil jwtUtil, RoleRepository roleRepository) {
+                           JwtUtil jwtUtil, RoleRepository roleRepository, 
+                           EmailVerificationMailService emailVerificationService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.jwtUtil = jwtUtil;
 		this.roleRepository = roleRepository;
+		this.emailVerificationService = emailVerificationService;
     }
 
+    @Transactional
     @Override
     public UserDto register(RegisterUserRequestDto req) {
 
@@ -59,12 +65,21 @@ public class UserServiceImpl implements UserService {
 						role
                         );
                 User savedUser = userRepository.save(userToSave);
+                
+                EmailVerificationToken verificationToken = 
+                		emailVerificationService.createAndSaveToken(savedUser);
+                
+                emailVerificationService.sendVerificationEmail(savedUser.getEmail(), 
+                		verificationToken.getToken());
+                
                 return userMapper.toDto(savedUser);
                 //return new UserDto(req.getFirstname(), req.getLastname(),
                   //      req.getEmail(), BigDecimal.ZERO);
             }
     }
 
+    
+    
     @Override
     public User login(LoginUserRequestDto req) {
 
