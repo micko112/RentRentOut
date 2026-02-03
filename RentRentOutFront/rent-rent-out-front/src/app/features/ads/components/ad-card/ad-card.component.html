@@ -1,0 +1,18 @@
+<div class="ad-card" [routerLink]="['/ads', ad.id]">
+
+
+  <div class="image-wrapper">
+    <img [src]="imageUrl"
+         (error)="handleImageError($event)"
+         alt="{{ ad.title }}">
+  </div>
+
+  <div class="ad-info">
+    <a class="ad-title">{{ ad.title }}</a>
+    <p class="ad-location">{{ ad.city }}, {{ ad.municipality }}</p>
+    <div class="price-tag">
+      <p class="price">{{ ad.price | currency: 'RSD':'symbol':'1.0-0' }}</p>
+      <p class="interval">{{ ad.priceInterval }}</p>
+    </div>
+  </div>
+</div>

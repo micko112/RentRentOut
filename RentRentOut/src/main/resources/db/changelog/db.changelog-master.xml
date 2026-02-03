@@ -14,5 +14,5 @@
     <include file="/db/changelog/db.changelog-6-create-ad.xml"/>
     <include file="/db/changelog/db.changelog-7-create-rental-contract.xml"/>
     <include file="/db/changelog/db.changelog-8-create-email-verification-token.xml"/>
-
+    <include file="/db/changelog/db.changelog-9-image-url.xml"/>
 </databaseChangeLog>

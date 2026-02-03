@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1-image-url" author="micko112">
+        <insert tableName="ad_image">
+            <column name="ad_id" valueNumeric="1"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60"/>
+        </insert>
+        <insert tableName="ad_image">
+            <column name="ad_id" valueNumeric="1"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60"/>        </insert>
+        <insert tableName="ad_image">
+            <column name="ad_id" valueNumeric="2"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60"/>
+        </insert>
+        <insert tableName="ad_image">
+            <column name="ad_id" valueNumeric="2"/>
+            <column name="image_url" value="https://images.unsplash.com/photo-1504148455328-c376907d081c?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=500&amp;q=60"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

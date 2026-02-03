@@ -1,0 +1,9 @@
+<div class="ads-list-container">
+  <h1>Svi oglasi</h1>
+  <ng-container *ngIf="adsPage$ | async as adsPage">
+    <div class="grid">
+      <app-ad-card *ngFor="let ad of adsPage.content" [ad]="ad">
+      </app-ad-card>
+    </div>
+  </ng-container>
+</div>
