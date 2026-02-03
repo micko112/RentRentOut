@@ -3,30 +3,37 @@ package org.landm.service.impl;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.landm.dto.user.UserDto;
 import org.landm.entity.EmailVerificationToken;
 import org.landm.entity.User;
-import org.landm.repository.EmailVerificationTokenRepository;
+import org.landm.mapper.UserMapper;
+import org.landm.repository.EmailVerificationRepository;
 import org.landm.repository.UserRepository;
-import org.landm.service.EmailVerificationMailService;
+import org.landm.service.EmailVerificationService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
 @Service
-public class EmailVerificationServiceImpl implements  EmailVerificationMailService{
+public class EmailVerificationServiceImpl implements  EmailVerificationService{
 	
 //	@Value("${app.frontend.url}")
-	private String frontendUrl = "/api/user";
-	private EmailVerificationTokenRepository tokenRepository;
+	private String frontendUrl = "http://localhost:8080/api/auth";
+	private EmailVerificationRepository tokenRepository;
 	private UserRepository userRepository;
-//	private final JavaMailSender javaMailSender;
+	private final JavaMailSender javaMailSender;
+	private final UserMapper userMapper;
 	
-	public EmailVerificationServiceImpl(EmailVerificationTokenRepository tokenRepo, 
-			UserRepository userRepository) {
-//		this.javaMailSender = javaMailSender;
+	public EmailVerificationServiceImpl(EmailVerificationRepository tokenRepo, 
+			UserRepository userRepository, JavaMailSender javaMailSender, 
+			UserMapper userMapper) {
+		this.javaMailSender = javaMailSender;
 		this.tokenRepository = tokenRepo;
 		this.userRepository = userRepository;
+		this.userMapper = userMapper;
 	}
 	
 	@Override
@@ -48,19 +55,20 @@ public class EmailVerificationServiceImpl implements  EmailVerificationMailServi
 		
 		String link = frontendUrl + "/validate-email?token=" + token;
 		
-//		SimpleMailMessage msg = new SimpleMailMessage();
-//		msg.setTo(email);
-//		msg.setFrom("kreiraniEmail");
-//		msg.setSubject("Please confirm Your e-mail address");
-//		msg.setText("Use link provided below to confirm Your e-mail address. \n" + link);
-//		
-//		javaMailSender.send(msg);
+		SimpleMailMessage msg = new SimpleMailMessage();
+		msg.setTo(email);
+		msg.setFrom("rentrentout@gmail.com");
+		msg.setSubject("Please confirm Your e-mail address");
+		msg.setText("Use link provided below to confirm Your e-mail address.\n\n"
+		+ link + "\n\nThank You for choosing us! \n\nSincerely, \nRentRentOut team");
+		
+		javaMailSender.send(msg);
 		
 	}
 
 	@Transactional
 	@Override
-	public void verifyEmail(String token) {
+	public UserDto verifyEmail(String token) {
 		
 		EmailVerificationToken verificationToken = tokenRepository.findByToken(token)
 				.orElseThrow(() -> new RuntimeException("Token is not valid.")); 
@@ -80,6 +88,8 @@ public class EmailVerificationServiceImpl implements  EmailVerificationMailServi
 		user.setEnabled(true);
 		
 		userRepository.save(user);
+		
+		return userMapper.toDto(user);
 		
 	}
 	

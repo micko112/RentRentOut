@@ -17,7 +17,7 @@ import org.landm.mapper.UserMapper;
 import org.landm.repository.RoleRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
-import org.landm.service.EmailVerificationMailService;
+import org.landm.service.EmailVerificationService;
 import org.landm.service.UserService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,12 +33,12 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
     private final RoleRepository roleRepository;
-    private final EmailVerificationMailService emailVerificationService;
+    private final EmailVerificationService emailVerificationService;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder, UserMapper userMapper,
                            JwtUtil jwtUtil, RoleRepository roleRepository, 
-                           EmailVerificationMailService emailVerificationService) {
+                           EmailVerificationService emailVerificationService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
