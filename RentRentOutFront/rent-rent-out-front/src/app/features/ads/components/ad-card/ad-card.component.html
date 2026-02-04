@@ -1,18 +1,26 @@
-<div class="ad-card" [routerLink]="['/ads', ad.id]">
+
+<div class="listing-card" [ngClass]="{'list-view': viewMode === 'list'}" [routerLink]="['/ads', ad.id]">
 
 
   <div class="image-wrapper">
     <img [src]="imageUrl"
          (error)="handleImageError($event)"
-         alt="{{ ad.title }}">
+         alt="{{ ad.title }}" style="">
   </div>
 
-  <div class="ad-info">
-    <a class="ad-title">{{ ad.title }}</a>
-    <p class="ad-location">{{ ad.city }}, {{ ad.municipality }}</p>
+  <div class="listing-info">
+    <a class="listing-title">{{ ad.title }}</a>
+    <p class="listing-location">{{ ad.city }}, {{ ad.municipality }}</p>
     <div class="price-tag">
-      <p class="price">{{ ad.price | currency: 'RSD':'symbol':'1.0-0' }}</p>
-      <p class="interval">{{ ad.priceInterval }}</p>
+
+<!--      <p class="price">{{ ad.price | currency: 'RSD':'din':'1.0-0' }}</p>-->
+      <p class="listing-price">{{ ad.price | number: '1.0-0' }}</p>
+      <div class="currency-interval">
+        <span class="currency">din</span>
+        <!-- <span class="currency" *ngIf="ad.currency === 'EUR'">€</span> -->
+        <p class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</p>
+
+      </div>
     </div>
   </div>
 </div>

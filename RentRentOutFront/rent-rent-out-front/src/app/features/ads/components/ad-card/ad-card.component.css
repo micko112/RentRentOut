@@ -1,52 +1,118 @@
-.ad-card {
+.listing-card {
   display: flex;
   flex-direction: column;
-  background: white;
   border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
+  border-radius: 5px;
+  width: 162px;
+  height: 280px;
   cursor: pointer;
-  height: 100%; /* Da sve kartice budu iste visine */
+  font-family: sans-serif;
+  overflow: hidden;
+  background-color: white;
   transition: transform 0.2s, box-shadow 0.2s;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
-  .image-wrapper {
-    width: 100%;
-    height: 200px; /* FIKSNA VISINA - OVO SPREČAVA NESTAJANJE */
-    background-color: #f5f5f5; /* Siva pozadina dok se slika učitava */
+    .listing-title {
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* Slika popunjava prostor bez deformacije */
-      display: block;
+      text-decoration: underline;
     }
   }
 
-  .ad-info {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1; /* Da popuni ostatak visine */
-  }
-
-  .ad-title {
-    font-weight: 600;
-    font-size: 16px;
-    color: #333;
-    margin-bottom: 4px;
+  img {
+    width: 162px;
+    height: 162px;
     display: block;
-
-    /* Skraćivanje teksta u 2 reda ako je predugačak */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    object-fit: cover;
+    border-radius: 6px;
   }
 
-  /* ... ostali stilovi za cenu i lokaciju ... */
+  .image-wrapper {
+    width: 162px;
+    height: 162px;
+    background-color: #f5f5f5
+  }
 }
+
+.listing-info {
+padding: 2px 2px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.listing-title {
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: normal;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Maksimalno 2 reda */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listing-location {
+  font-size: 13px;
+  margin-bottom: auto;
+}
+
+.price-tag {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: baseline;
+  margin-top: auto;
+
+  .currency-interval {
+    align-items: baseline;
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+  }
+
+  .listing-price {
+    color: red;
+    font-weight: 700;
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .currency {
+
+    font-size: 15px;
+  }
+
+  .interval {
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+
+}
+.listing-card.list-view {
+  width: 100%;
+  height: 160px;
+  flex-direction: row;
+
+  .image-wrapper {
+    width: 220px;
+    height: 100%;
+  }
+
+  .listing-info {
+    padding: 15px;
+  }
+
+  .listing-title {
+    font-size: 18px;
+    font-weight: bold;
+    -webkit-line-clamp: 1;
+  }
+}
+
+
+

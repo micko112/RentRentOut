@@ -1,1 +1,17 @@
-<p>header works!</p>
+<header class="site-header">
+  <div class="container header-content">
+    <div class="logo">
+      <a routerLink="/">Izdajem Iznajmljujem</a>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Sve što zamislite.. "
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="onSearch()">
+      <button class="search-btn" (click)="onSearch()">Traži</button>
+    </div>
+    <div class="user-actions">
+      <button class="log-in-btn">Uloguj se</button>
+      <button class="btn-post-ad">+ Postavi oglas</button>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,26 @@
+.page-layout{
+  display: flex;
+  gap: 20px;
+  padding-top: 20px;
+  margin-bottom: 40px;;
+}
+.categories-sidebar{
+  display: flex;
+  flex-direction: column;
+  s:  2px 2px 2px 2px rgba(0,0,0,0.23);
+  padding: 10px;
+  width: 180px; /* Fiksna širina za sidebar */
+  flex-shrink: 0;
+  background-color: rgba(255, 255, 255, 0.91);
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  height: fit-content;
+}
+.ads-grid-section {
+  flex-grow: 1;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Malo širi grid */
+
+}

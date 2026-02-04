@@ -4,6 +4,7 @@ import {AdPreview, Page} from '../../../shared/models/adPreview';
 import {Observable} from 'rxjs';
 import {API_BASE_URL} from '../../../core/config/api.config';
 import {AdSearchCriteria} from '../../../shared/models/adSearchCriteria';
+import {Ad} from '../../../shared/models/ad';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,7 @@ export class AdService {
 
     return this.http.get<Page<AdPreview>>(`${this.adApiUrl}/search`, { params });
   }
-
+  getAdById(id: number) : Observable<Ad> {
+    return this.http.get<Ad>(`${this.adApiUrl}/${id}`);
+  }
 }

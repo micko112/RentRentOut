@@ -1,9 +1,22 @@
-<div class="ads-list-container">
-  <h1>Svi oglasi</h1>
-  <ng-container *ngIf="adsPage$ | async as adsPage">
-    <div class="grid">
-      <app-ad-card *ngFor="let ad of adsPage.content" [ad]="ad">
-      </app-ad-card>
-    </div>
-  </ng-container>
+
+<div class="container page-layout">
+  <aside class="categories-sidebar">
+    <h3>Sve kategorije</h3>
+    <ul class="Categories" >
+      <li *ngFor="let category of categories">
+        <a href="#">{{category.name}}</a>
+      </li>
+    </ul>
+  </aside>
+  <main class="ads-grid-section">
+      <h1>Svi oglasi</h1>
+      <ng-container *ngIf="adsPage$ | async as adsPage">
+        <div class="grid">
+          <app-ad-card *ngFor="let ad of adsPage.content" [ad]="ad">
+          </app-ad-card>
+        </div>
+      </ng-container>
+  </main>
+
 </div>
+

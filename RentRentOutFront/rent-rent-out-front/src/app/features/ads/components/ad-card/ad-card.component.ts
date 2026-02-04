@@ -13,6 +13,7 @@ import {AdService} from '../../services/ad.service';
 })
 export class AdCardComponent {
   @Input() ad!: AdPreview;
+  @Input() viewMode: 'grid' | 'list' = 'grid';
 
   get imageUrl(): string {
     if (this.ad.thumbnail) {
@@ -25,6 +26,11 @@ export class AdCardComponent {
     event.target.src = 'assets/images/placeholder.png';
     event.target.onerror = null;
   }
+  intervalMap: {[key: string]: string} = {
+    'PER_DAY': '/dan',
+    'PER_HOUR': '/sat',
+    'PER_MONTH': '/mesečno'
+  };
 
 
 }

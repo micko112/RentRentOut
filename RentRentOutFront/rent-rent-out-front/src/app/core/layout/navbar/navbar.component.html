@@ -1,11 +1,8 @@
-<div class="navbar-container">
-  <div>
-    <h2>Sve kategorije</h2>
-    <ul class="Categories" >
-      <li *ngFor="let category of categories">
-        <a href="#">{{category.name}}</a>
-      </li>
-    </ul>
-  </div>
-
-</div>
+<li *ngFor="let category of categories">
+  <!-- RouterLink automatski pravi URL: /ads?categoryId=5 -->
+  <a [routerLink]="['/ads']"
+     [queryParams]="{ categoryId: category.id }"
+     routerLinkActive="active">
+    {{ category.name }}
+  </a>
+</li>
