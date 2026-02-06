@@ -1,0 +1,27 @@
+<div class="container" *ngIf="ad$ | async as ad">
+
+  <div class="details-layout">
+    <!-- DESNA STRANA: INFORMACIJE O OGLASU -->
+    <div class="info">
+      <h1>{{ ad.title }}</h1>
+      <div class="price">{{ ad.price | number }} din</div>
+
+      <h3>Detalji</h3>
+      <div class="details-grid">
+        <div class="detail-item">
+          <strong>Kategorija:</strong>
+          <span>{{ ad.category?.name || 'Nije navedeno' }}</span>
+        </div>
+        <div class="detail-item">
+          <strong>Lokacija:</strong>
+          <span>{{ ad.location?.city || 'Nije navedeno' }}</span>
+        </div>
+        <!-- Dodaj još detalja ovde -->
+      </div>
+
+      <h3>Opis</h3>
+      <p class="description" >{{ ad.description }}</p>
+    </div>
+
+  </div>
+</div>```

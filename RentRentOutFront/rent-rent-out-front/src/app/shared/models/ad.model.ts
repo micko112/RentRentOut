@@ -1,6 +1,7 @@
 import {Category} from './category.model';
 import {Location} from './location.model';
 import {User} from './user.model';
+import {DateInterval} from './date-interval.model';
 
 export interface Ad {
 id: number;
@@ -17,4 +18,5 @@ owner: User;
 category: Category;
 location: Location;
 dateIntervals: string;
+blockedIntervals: DateInterval[];
 }
