@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterLink, RouterModule} from '@angular/router';
-import {AdPreview} from '../../../../shared/models/adPreview';
+import {AdPreview} from '../../../../shared/models/adPreview.model';
 import {AdService} from '../../services/ad.service';
 
 @Component({

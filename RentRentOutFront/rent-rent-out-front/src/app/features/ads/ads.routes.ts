@@ -1,0 +1,14 @@
+import {Routes} from '@angular/router';
+import {AdListComponent} from './pages/ad-list/ad-list.component';
+import {AdDetailsComponent} from './pages/ad-details/ad-details.component';
+
+export const ADS_ROUTES: Routes = [
+  {
+    path: '',
+    component: AdListComponent
+  },
+  {
+    path: ':id',
+    component: AdDetailsComponent
+  }
+]

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AdCardComponent} from '../../components/ad-card/ad-card.component';
 import {CommonModule} from '@angular/common';
-import {AdPreview, Page} from '../../../../shared/models/adPreview';
+import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
 import {Observable, switchMap} from 'rxjs';
 
 import {AdService} from '../../services/ad.service';
@@ -36,17 +36,18 @@ export class AdListComponent implements OnInit {
       switchMap(params => {
         const criteria: AdSearchCriteria = {
           keyword: params['keyword'],
-          categoryId: params['categoryId'] ? Number(params['categoryId']) : undefined,
-          minPrice: params['minPrice'] ? Number(params['minPrice']) : undefined,
-          maxPrice: params['maxPrice'] ? Number(params['maxPrice']) : undefined,
-          locationId: params['locationId'] ? Number(params['locationId']) : undefined,
-          page: params['page'] ? Number(params['page']) : undefined,
-          size: params['size'] ? Number(params['size']) : undefined,
-          sort: params['sort'] ? Number(params['sort']) : undefined
+                    categoryId: params['categoryId'] ? Number(params['categoryId']) : undefined,
+                    minPrice: params['minPrice'] ? Number(params['minPrice']) : undefined,
+                    maxPrice: params['maxPrice'] ? Number(params['maxPrice']) : undefined,
+                    locationId: params['locationId'] ? Number(params['locationId']) : undefined,
+                    page: params['page'] ? Number(params['page']) : undefined,
+                    size: params['size'] ? Number(params['size']) : undefined,
+                    sort: params['sort']
         };
         return this.adService.search(criteria);
 
-      })
+      }
+      )
     )
 
     this.adsPage$.subscribe(res => {

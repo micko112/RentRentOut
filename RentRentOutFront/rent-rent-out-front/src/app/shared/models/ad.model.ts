@@ -1,3 +1,7 @@
+import {Category} from './category.model';
+import {Location} from './location.model';
+import {User} from './user.model';
+
 export interface Ad {
 id: number;
 title: string;
@@ -9,8 +13,8 @@ totalQuantity: number;
 availableQuantity: number;
 images: string[];
 email: string;
-owner: object;
-category: object;
-location: object;
+owner: User;
+category: Category;
+location: Location;
 dateIntervals: string;
 }

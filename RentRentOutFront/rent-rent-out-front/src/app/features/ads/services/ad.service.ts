@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {AdPreview, Page} from '../../../shared/models/adPreview';
+import {AdPreview, Page} from '../../../shared/models/adPreview.model';
 import {Observable} from 'rxjs';
 import {API_BASE_URL} from '../../../core/config/api.config';
 import {AdSearchCriteria} from '../../../shared/models/adSearchCriteria';
-import {Ad} from '../../../shared/models/ad';
+import {Ad} from '../../../shared/models/ad.model';
 
 @Injectable({
   providedIn: 'root'

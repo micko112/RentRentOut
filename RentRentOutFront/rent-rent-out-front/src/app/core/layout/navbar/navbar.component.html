@@ -1,8 +1,0 @@
-<li *ngFor="let category of categories">
-  <!-- RouterLink automatski pravi URL: /ads?categoryId=5 -->
-  <a [routerLink]="['/ads']"
-     [queryParams]="{ categoryId: category.id }"
-     routerLinkActive="active">
-    {{ category.name }}
-  </a>
-</li>

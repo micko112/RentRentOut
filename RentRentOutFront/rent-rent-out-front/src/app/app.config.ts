@@ -6,6 +6,7 @@ import localeSr from '@angular/common/locales/sr-Latn';
 
 import { routes } from './app.routes';
 import {registerLocaleData} from '@angular/common';
+
 registerLocaleData(localeSr)
 export const appConfig: ApplicationConfig = {
   providers:

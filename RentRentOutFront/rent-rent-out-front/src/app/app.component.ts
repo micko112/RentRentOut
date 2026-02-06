@@ -14,6 +14,7 @@ import {AdListComponent} from './features/ads/pages/ad-list/ad-list.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
+
 export class AppComponent {
   title = 'rent-rent-out-front';
 }
