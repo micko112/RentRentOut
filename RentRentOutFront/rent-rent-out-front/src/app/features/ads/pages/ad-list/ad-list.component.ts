@@ -7,15 +7,16 @@ import {Observable, switchMap} from 'rxjs';
 import {AdService} from '../../services/ad.service';
 import {CategoryService} from '../../services/category.service';
 import {Category} from '../../../../shared/models/category.model';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {AdSearchCriteria} from '../../../../shared/models/adSearchCriteria';
+import {FiltersSidebarComponent} from '../../components/filters-sidebar/filters-sidebar.component';
 
 
 
 @Component({
   selector: 'app-ad-list',
   standalone: true,
-  imports: [CommonModule, AdCardComponent],
+  imports: [CommonModule, AdCardComponent, RouterLink, FiltersSidebarComponent],
   templateUrl: './ad-list.component.html',
   styleUrl: './ad-list.component.css'
 })
@@ -24,7 +25,10 @@ export class AdListComponent implements OnInit {
   adsPage$!: Observable<Page<AdPreview>>
   categories: Category[] = [];
 
-  constructor(private adService: AdService, private categoryService: CategoryService, private route: ActivatedRoute,) {
+  constructor(private adService: AdService,
+              private categoryService: CategoryService,
+              private route: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -49,10 +53,14 @@ export class AdListComponent implements OnInit {
       }
       )
     )
-
     this.adsPage$.subscribe(res => {
       console.log('ADS PAGE:', res);
     });
-
   }
+  onCategoryFiltered(categoryId: number): void {
+    this.router.navigate([],
+      {relativeTo: this.route,
+        queryParams: { categoryId: categoryId },
+        queryParamsHandling: 'merge'})
+  };
 }

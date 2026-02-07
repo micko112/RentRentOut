@@ -3,25 +3,23 @@
 
     <!-- LEVA KOLONA: Slike i Informacije -->
     <div class="left-column">
-      <div class="gallery">
-        <div class="main-image-wrapper">
-          <img [src]="selectedImageUrl"
-               (error)="handleImageError($event)"
-               alt="Glavna slika: {{ ad.title }}">
-        </div>
-
-        <!-- Lista malih slika (thumbnails) -->
-        <div class="thumbnail-list" *ngIf="ad.images && ad.images.length > 1">
-          <div class="thumbnail"
-               *ngFor="let imageUrl of ad.images"
-               (click)="selectImage(imageUrl)"
-               [class.active]="imageUrl === selectedImageUrl">
-            <img [src]="imageUrl"
-                 (error)="handleImageError($event)"
-                 alt="Mala slika">
+        <div class="gallery">
+          <div class="thumbnail-list" *ngIf="ad.images && ad.images.length > 1">
+            <div class="thumbnail"
+                 *ngFor="let imageUrl of ad.images"
+                 (click)="selectImage(imageUrl)"
+                 [class.active] = "imageUrl === selectedImageUrl">
+              <img [src]="imageUrl"
+                   (error)="handleImageError($event)"
+                   alt="Mala slika">
+            </div>
+          </div>
+          <div class="main-image-wrapper">
+            <img [src]="selectedImageUrl"
+            (error)="handleImageError($event)"
+                 alt="Glavna slika: {{ ad.title }}">
           </div>
         </div>
-      </div>
       <div class="info">
         <h1>{{ ad.title }}</h1>
         <div class="price">{{ ad.price | number }} din</div>
@@ -43,58 +41,55 @@
         <p class="description" >{{ ad.description }}</p>
       </div>
     </div>
-
     <!-- DESNA KOLONA: Kalendar i Korisnik -->
     <div class="right-column">
       <div class="calendar-widget">
-        <div class="month-header">
-          <div class="nav-arrow" (click)="changeMonth(-1)">&lt;</div>
-          <div class="month-name">{{ displayDate | date:'MMMM yyyy' }}</div>
-          <div class="nav-arrow" (click)="changeMonth(1)">&gt;</div>
-        </div>
-        <div class="weekdays">
-          <div *ngFor="let day of weekdays" class="weekday">{{ day }}</div>
-        </div>
-        <div class="days-grid">
-          <div *ngFor="let day of daysInMonth"
-               class="day-cell"
-               [ngClass]="{
-                 'past': day?.isPast,
-                 'blocked': day?.isBlocked,
-                 'selected': day?.isSelected,
-                 'start-date': day?.isStartDate,
-                 'end-date': day?.isEndDate
-               }"
-               (click)="selectDate(day)">
-            <span *ngIf="day?.isCurrentMonth">{{ day.dayOfMonth }}</span>
+        <div class="month">
+          <div class="nav">
+            <div class="nav-arrow" (click)="changeMonth(-1)">&lt;</div>
+            <div class="month-name">{{ displayDate | date:'MMMM yyyy' }}</div>
+            <div class="nav-arrow" (click)="changeMonth(1)">&gt;</div>
+          </div>
+          <div class="weekdays">
+            <div *ngFor="let day of weekdays" class="weekday">{{ day }}</div>
+          </div>
+          <div class="dates">
+            <div *ngFor="let day of daysInMonth"
+            class="day-cell"
+            [ngClass]="{
+            'past': day?.isPast,
+            'blocked': day?.isBlocked,
+            'selected': day?.isSelected,
+            'start-date': day?.isStartDate,
+            'end-date': day?.isEndDate
+            }"
+            (click)="selectDate(day)">
+              <span *ngIf="day?.isCurrentMonth">{{ day?.dayOfMonth}}</span>
+            </div>
+          </div>
+          <div class="pickup-dropoff-wrapper">
+            <div class="date-info">
+              <span class="label">Pickup </span>
+              <span class="date-value">{{ startDate | date:'dd MMM' | uppercase }}</span>
+            </div>
+            <div class="date-info">
+              <span class="label">Drop-off </span>
+              <span class="date-value">{{ endDate | date:'dd MMM' | uppercase }}</span>
+            </div>
+          </div>
+          <div class="payment-section">
+            <div class="price-calculation" *ngIf="numberOfDays > 0">
+              <span class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</span>
+              <span class="total-price">{{ (ad.price * numberOfDays) | number }} din</span>
+            </div>
+            <button class="request-btn" [disabled]="!startDate || !endDate">Pošalji zahtev</button>
+            <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
           </div>
         </div>
-
-        <div class="pickup-dropoff-wrapper">
-          <div class="date-info">
-            <span class="label">Pickup</span>
-            <span class="date-value">{{ startDate | date:'dd MMM' | uppercase }}</span>
-          </div>
-          <div class="date-info">
-            <span class="label">Drop-off</span>
-            <span class="date-value">{{ endDate | date:'dd MMM' | uppercase }}</span>
-          </div>
-        </div>
-
-        <div class="payment-section">
-          <div class="price-calculation" *ngIf="numberOfDays > 0">
-            <span class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</span>
-            <span class="total-price">{{ (ad.price * numberOfDays) | number }} din</span>
-          </div>
-          <button class="request-btn" [disabled]="!startDate || !endDate">Pošalji zahtev</button>
-          <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
-        </div>
-      </div>
-
+    </div>
       <div class="user-info">
         <p>Vlasnik: {{ ad.owner?.firstName }}</p>
       </div>
     </div>
-
   </div>
 </div>

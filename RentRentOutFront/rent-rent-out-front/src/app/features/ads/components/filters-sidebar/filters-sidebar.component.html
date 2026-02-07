@@ -1,0 +1,9 @@
+<div class="filters-container">
+  <h4>Kategorije</h4>
+  <span></span>
+  <div class="category-list">
+    <a *ngFor="let c of categories"
+    (click)="onCategoryClick(c.id)"> {{c.name}}</a>
+  </div>
+
+</div>

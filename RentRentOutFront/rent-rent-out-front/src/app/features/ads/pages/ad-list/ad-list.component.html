@@ -1,12 +1,9 @@
 
 <div class="container page-layout">
-  <aside class="categories-sidebar">
-    <h3>Sve kategorije</h3>
-    <ul class="Categories" >
-      <li *ngFor="let category of categories">
-        <a href="#">{{category.name}}</a>
-      </li>
-    </ul>
+  <aside class="filters-sidebar">
+    <app-filters-sidebar (categorySelected)="onCategoryFiltered($event)">
+
+    </app-filters-sidebar>
   </aside>
   <main class="ads-grid-section">
       <h1>Svi oglasi</h1>

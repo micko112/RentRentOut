@@ -1,132 +1,85 @@
-.container {
+.container{
   max-width: 1200px;
   margin: 30px auto;
-  padding: 0 15px;
 }
-
-.main-layout {
+.main-layout{
   display: flex;
   flex-wrap: wrap;
-gap: 40px;
+  gap: 40px
 }
-
 .left-column {
   flex: 2;
-min-width: 500px; /
+  flex-wrap: wrap;
+  min-width: 624px;
 }
-
-.right-column {
-  flex: 1;
-min-width: 380px; /
-}
-
-       .gallery {
-         margin-bottom: 30px;
-
-         .main-image-wrapper {
-           width: 100%;
-           aspect-ratio: 16 / 10; // Lepši odnos stranica za slike
-         background-color: #f0f0f0;
-           margin-bottom: 10px;
-           border-radius: 8px;
-           overflow: hidden;
-
-           img {
-             width: 100%;
-             height: 100%;
-             object-fit: cover; // 'cover' izgleda bolje od 'contain'
-           }
-         }
-
-         .thumbnail-list {
-           display: flex;
-           gap: 10px;
-           flex-wrap: wrap;
-
-           .thumbnail {
-             width: 100px;
-             height: 75px;
-             cursor: pointer;
-             border: 2px solid transparent;
-             border-radius: 4px;
-             overflow: hidden;
-             transition: border-color 0.2s;
-
-             &:hover {
-               border-color: #aaa;
-             }
-
-             &.active {
-               border-color: #333; // Tamni okvir oko aktivne slike
-             }
-
-             img {
-               width: 100%;
-               height: 100%;
-               object-fit: cover;
-             }
-           }
-         }
-       }
-
-
-       .info {
-         background: white;
-         padding: 24px;
-         border: 1px solid #e0e0e0;
-         border-radius: 8px;
-
-         h1 {
-           font-size: 28px;
-           line-height: 1.2;
-           margin-bottom: 10px;
-         }
-
-         h3 {
-           margin-top: 24px;
-           margin-bottom: 12px;
-           border-bottom: 1px solid #eee;
-           padding-bottom: 8px;
-         }
-
-         .description {
-           line-height: 1.7;
-           white-space: pre-wrap; // Poštuje prelome redova iz opisa
-         }
-
-         .details-grid {
-           display: grid;
-           grid-template-columns: 1fr 1fr;
-           gap: 10px;
-
-           .detail-item {
-             font-size: 14px;
-             strong {
-               color: #777;
-               margin-right: 8px;
-             }
-           }
-         }
-       }
-
-
-
-       .calendar-widget {
-         border: 1px solid #e0e0e0;
-         border-radius: 12px;
-         overflow: hidden;
-         font-family: Inter, Arial, sans-serif;
-         background-color: white;
-         position: sticky; // Da ostane vidljiv dok se skroluje
-       top: 100px; // Razmak od headera
-       }
-
-.month-header {
+.gallery {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
+  flex-direction: row;
 
+}
+.thumbnail {
+  width: 95px;
+  height: 95px;
+  cursor:  pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+  &:hover {
+    border-color: #787878;
+  }
+  &.active {
+    border-color: #333;
+  }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+  }}
+.thumbnail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+.main-image-wrapper {
+  aspect-ratio: 16 / 10;
+  padding: 0px 16px 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  img{
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit:  cover;
+  }
+}
+
+.right-column{
+  flex: 1;
+  position: sticky;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  min-width: 380px;
+}
+.calendar-widget{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+
+}
+.month {
+  display: flex;
+  flex-direction: column;
+}
+.nav {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 13px;
+  align-items: center;
   .nav-arrow {
     font-size: 20px;
     cursor: pointer;
@@ -134,61 +87,57 @@ min-width: 380px; /
     border-radius: 50%;
     &:hover { background-color: #f0f0f0; }
   }
-
   .month-name { font-weight: 600; }
 }
+  .weekdays, .dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 0 16px;
 
-.weekdays, .days-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  padding: 0 16px;
-}
-
-.weekday {
-  font-size: 12px;
-  color: #777;
-  text-align: center;
-  padding-bottom: 8px;
-}
-
-.day-cell {
-  aspect-ratio: 1 / 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  border: 1px solid transparent; // Da ne "skače" kad se doda border
-
-&:hover:not(.past):not(.blocked) {
-  border-color: #333;
-}
-
-  &.past, &.blocked {
-    color: #ccc;
-    text-decoration: line-through;
-    cursor: not-allowed;
-  }
-
-  &.selected {
-    background-color: #f0f0f0;
-    border-radius: 0;
-  }
-
-  &.start-date, &.end-date {
-    background-color: #333;
-    color: white;
+  ul {
+    list-style-type: none;
   }
 }
+  .weekday {
+    font-size: 12px;
+    text-align: center;
+    padding-bottom: 8px;
+  }
+  .day-cell{
+    aspect-ratio: 1 / 1;
+    display:  flex;
+    padding: 4px;
+    align-items: center;
+    justify-content:  center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    border: 1px solid transparent;
+    &:hover:not(.past):not(.blocked) {
+      border-color: #e0e0e0;
+    }
+    &.past, &.blocked {
+      color: #ccc;
+      text-decoration: line-through;
+      cursor: not-allowed;
+    }
 
+    &.selected {
+      background-color: #f0f0f0;
+      border-radius: 0;
+    }
+
+    &.start-date, &.end-date {
+      background-color: #333;
+      color: white;
+    }
+
+  }
 .pickup-dropoff-wrapper {
   display: flex;
-  justify-content: space-between; // Bolje nego space-around
+  justify-content: space-evenly;
 padding: 16px;
   border-top: 1px solid #e0e0e0;
-
   .date-info {
     text-align: left; // Lepše izgleda
   .label {
@@ -247,12 +196,50 @@ padding: 16px;
     color: #777;
   }
 }
+.info {
+  background: white;
+  padding: 24px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
 
+  h1 {
+    font-size: 28px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
 
-       .user-info {
-         margin-top: 20px;
-         padding: 16px;
-         background: white;
-         border: 1px solid #e0e0e0;
-         border-radius: 8px;
-       }
+  h3 {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+
+  .description {
+    line-height: 1.7;
+    white-space: pre-wrap; // Poštuje prelome redova iz opisa
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+
+    .detail-item {
+      font-size: 14px;
+      strong {
+        color: #777;
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.user-info {
+  margin-top: 20px;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
