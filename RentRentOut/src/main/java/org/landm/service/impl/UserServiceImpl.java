@@ -52,7 +52,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto register(RegisterUserRequestDto req) {
 
-		Role role = roleRepository.findByName(req.getRole());
+		String roleName = req.getRole();
+		if (roleName == null || roleName.isBlank()) {
+			roleName = "ROLE_USER";
+		}
+		Role role = roleRepository.findByName(roleName);
+		if (role == null) {
+			throw new RuntimeException("Role not found in database: " + roleName);
+		}
             if (userRepository.existsByEmail(req.getEmail())) {
 //                throw new RuntimeException("Email already exists!");
                 throw new WrongCredentialsException("Email already exists!");

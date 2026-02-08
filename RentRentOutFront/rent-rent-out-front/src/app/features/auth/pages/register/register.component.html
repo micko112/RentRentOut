@@ -1,7 +1,7 @@
 <div class="form-container">
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <h2>Registracija</h2>
-    <!-- Ime -->
+
     <div class="form-field">
       <label for="firstname">Ime</label>
       <input id="firstname" type="text" formControlName="firstname">
@@ -11,7 +11,6 @@
       </div>
     </div>
 
-    <!-- Prezime -->
     <div class="form-field">
       <label for="lastname">Prezime</label>
       <input id="lastname" type="text" formControlName="lastname">
@@ -21,7 +20,6 @@
       </div>
     </div>
 
-    <!-- Email -->
     <div class="form-field">
       <label for="email">Email</label>
       <input id="email" type="email" formControlName="email">
@@ -31,7 +29,6 @@
       </div>
     </div>
 
-    <!-- Lozinka -->
     <div class="form-field">
       <label for="password">Lozinka</label>
       <input id="password" type="password" formControlName="password">
@@ -41,7 +38,6 @@
       </div>
     </div>
 
-    <!-- Prikaz greške sa servera -->
     <div *ngIf="errorMessage" class="server-error-message">
       {{ errorMessage }}
     </div>

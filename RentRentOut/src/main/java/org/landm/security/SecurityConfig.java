@@ -39,9 +39,8 @@ public class SecurityConfig {
 	    http.csrf(csrf -> csrf.disable())
 	            .authorizeHttpRequests(auth -> auth
 	                    // Proširujemo listu dozvoljenih putanja
-	                    .requestMatchers("/api/user/register",
-	                            "/api/user/login",
-	                            "/auth/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/ads/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/ads").authenticated()
 						.requestMatchers(HttpMethod.PUT, "/api/ads/**").authenticated()

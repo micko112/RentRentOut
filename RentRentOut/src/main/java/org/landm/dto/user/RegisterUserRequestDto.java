@@ -1,5 +1,6 @@
 package org.landm.dto.user;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,7 +21,7 @@ public class RegisterUserRequestDto {
     @Size(min = 6)
     private String password;
     
-    @NotBlank
+
     private String role;
 
     public RegisterUserRequestDto() {

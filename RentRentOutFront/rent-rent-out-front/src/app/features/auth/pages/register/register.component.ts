@@ -37,22 +37,18 @@ export class RegisterComponent {
   get password() { return this.registerForm.get('password'); }
 
   onSubmit(): void {
-    // Proveri da li je forma validna
+
     if (this.registerForm.invalid) {
-      // Markiraj sva polja kao "dodirnuta" da se prikažu greške
       this.registerForm.markAllAsTouched();
       return;
     }
 
-    // Pozovi servis
+
     this.authService.register(this.registerForm.value).subscribe({
       next: () => {
-        // Uspeh! Preusmeri na login stranicu sa porukom.
-        // Kasnije ovde možeš dodati i "flash" poruku "Uspešno ste se registrovali!"
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        // Prikaz greške sa backenda (npr. "Email already exists")
         this.errorMessage = err.error.message || 'Došlo je do greške. Molimo pokušajte ponovo.';
         console.error('Registration failed', err);
       }
