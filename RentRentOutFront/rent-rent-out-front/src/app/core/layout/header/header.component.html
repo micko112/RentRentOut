@@ -9,9 +9,19 @@
       (keyup.enter)="onSearch()">
       <button class="search-btn" (click)="onSearch()">Traži</button>
     </div>
-    <div class="user-actions">
-      <button class="log-in-btn">Uloguj se</button>
+    <div class="user-actions" *ngIf="currentUser$ | async as user; else notLoggedIn">
+      <span class="welcome-message">Zdravo, {{ user.firstName }}</span>
+      <button class="btn-profile">Moj Profil</button>
+      <button class="btn-logout" (click)="logout()">Odjavi se</button>
       <button class="btn-post-ad">+ Postavi oglas</button>
     </div>
+
+    <ng-template #notLoggedIn>
+      <div class="user-actions">
+        <button class="log-in-btn" (click)="login()">Uloguj se</button>
+        <button class="btn-register" (click)="register()">Registruj se</button>
+        <button class="btn-post-ad">+ Postavi oglas</button>
+      </div>
+    </ng-template>
   </div>
 </header>
