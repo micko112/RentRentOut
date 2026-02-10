@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {CommonModule} from '@angular/common';
 
@@ -10,6 +10,7 @@ import {CommonModule} from '@angular/common';
   imports: [
     ReactiveFormsModule,
     CommonModule,
+    RouterLink,
 
   ],
   templateUrl: './login.component.html',
@@ -17,7 +18,7 @@ import {CommonModule} from '@angular/common';
 })
 export class LoginComponent {
   form!: FormGroup;
-
+  submitted = false;
   constructor(private fb: FormBuilder,
               private router: Router,
               private authService: AuthService) {
@@ -50,7 +51,7 @@ export class LoginComponent {
 
         }
       )
-
+    this.submitted = true;
 
   }
 }

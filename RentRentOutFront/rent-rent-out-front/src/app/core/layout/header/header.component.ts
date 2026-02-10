@@ -5,6 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {User} from '../../../shared/models/user.model';
 import {AuthService} from '../../../features/auth/services/auth.service';
+import {AdService} from '../../../features/ads/services/ad.service';
 
 @Component({
   selector: 'app-header',
@@ -18,7 +19,8 @@ export class HeaderComponent {
 
       currentUser$!: Observable<User | null>;
       constructor(private router: Router,
-                  private authService: AuthService,) {
+                  private authService: AuthService,
+                  private adService: AdService,) {
       }
     ngOnInit() {
         this.currentUser$ = this.authService.currentUser$;
@@ -37,4 +39,7 @@ export class HeaderComponent {
       register() {
         this.router.navigate(["/register"], {})
       }
+      createAd() {
+        this.router.navigate(["/ads/create"], {})
+  }
 }

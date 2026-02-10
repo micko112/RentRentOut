@@ -1,0 +1,168 @@
+.page-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.form-card {
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border: 1px solid #e0e0e0;
+}
+
+.header {
+  margin-bottom: 40px;
+  text-align: center;
+  h2 { margin-bottom: 5px; color: #333; }
+  p { color: #666; font-size: 14px; }
+}
+
+/* --- STIL ZA KORAKE (STEPS) --- */
+.step {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px; /* Razmak između koraka */
+
+  /* Linija koja spaja brojeve (opciono, izgleda kul) */
+  position: relative;
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 19px; /* Centrirano ispod broja */
+    width: 2px;
+    height: calc(100% - 20px);
+    background-color: #eee;
+    z-index: 0;
+  }
+}
+
+.numeration {
+  width: 40px;
+  height: 40px;
+  background-color: #333;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  flex-shrink: 0; /* Da se ne spljošti */
+  z-index: 1; /* Da bude iznad linije */
+}
+
+.content {
+  flex-grow: 1;
+  padding-top: 5px; /* Da se poravna sa brojem */
+
+  h3 { margin: 0 0 5px 0; font-size: 18px; color: #333; }
+  .hint { color: #888; font-size: 13px; margin-bottom: 15px; margin-top: 0; }
+}
+
+/* --- FORME I INPUTI --- */
+.form-group {
+  margin-bottom: 15px;
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+  background-color: #fff;
+  font-family: inherit;
+
+  &:focus {
+    border-color: #333;
+    outline: none;
+  }
+
+  &.invalid {
+    border-color: #d32f2f;
+  }
+}
+
+textarea { resize: vertical; }
+
+.short-input { width: 100px; } /* Za količinu */
+
+.error {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* --- GRID ZA CENU --- */
+.row {
+  display: flex;
+  gap: 20px;
+  .half { flex: 1; }
+}
+
+/* --- DUMMY FILE UPLOAD --- */
+.file-upload-disabled {
+  border: 2px dashed #ccc;
+  padding: 30px;
+  text-align: center;
+  border-radius: 4px;
+  color: #999;
+  background-color: #fafafa;
+  cursor: not-allowed;
+}
+
+/* --- DUGMIĆI --- */
+.actions {
+  margin-top: 40px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+
+  button {
+    padding: 12px 30px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .btn-cancel {
+    background: white;
+    border: 1px solid #ccc;
+    color: #555;
+    &:hover { background: #f5f5f5; }
+  }
+
+  .btn-submit {
+    background: #d32f2f; /* KP Crvena */
+    color: white;
+    border: none;
+
+    &:hover:not(:disabled) {
+      background: rgba(211, 47, 47, 0.1);
+    }
+
+    &:disabled {
+      background: #e0e0e0;
+      color: #999;
+      cursor: not-allowed;
+    }
+  }
+}

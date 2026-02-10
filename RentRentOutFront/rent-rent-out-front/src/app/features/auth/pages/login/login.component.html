@@ -1,19 +1,42 @@
-<form [formGroup]="form">
-  <fieldset>
-    <legend>Login</legend>
-    <div class="form-field">
-      <label>Email</label>
-      <input name="email" formControlName="email">
+
+<div class="form-container">
+  <form [formGroup]="form" (ngSubmit)="login()">
+    <div class="title">
+      <h2> Login</h2>
     </div>
     <div class="form-field">
-      <label>Lozinka</label>
-      <input name="password" formControlName="password">
+      <label for="email" >Email</label>
+      <input id="email" formControlName="email" placeholder="Email">
+      <div *ngIf="submitted &&
+                  form.get('email')?.errors &&
+                  form.get('email')?.errors?.['required'] &&
+                  form.get('email')?.errors?.['email']"
+           class="error-msg">
+        Unesite validan email.
+      </div>
     </div>
-  </fieldset>
-  <div class="buttons">
-    <button class="button button-primary"
-            (click)="login()">
-      Login
-    </button>
-  </div>
-</form>
+    <div class="form-field">
+      <label for="password" >Lozinka</label>
+      <input id="password" type="password" formControlName="password" placeholder="Lozinka">
+      <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="error-msg">
+        Unesite ispravnu lozinku.
+      </div>
+    </div>
+    <div class="checkbox-forgot-password">
+      <div class="checkbox">
+        <input id="remember" type="checkbox">
+        <label for="remember" >Zapamti me</label>
+      </div>
+      <label>Zaboravljena lozinka?</label>
+    </div>
+
+    <div class="btn-reg">
+      <button type="submit" [disabled]="form.invalid">Log in</button>
+    </div>
+    <hr/>
+    <p class="register-link">Nemaš nalog? <a routerLink="/register">Registruj se</a></p>
+
+
+  </form>
+</div>
+

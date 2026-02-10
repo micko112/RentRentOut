@@ -35,4 +35,8 @@ export class AdService {
   getAdById(id: number) : Observable<Ad> {
     return this.http.get<Ad>(`${this.adApiUrl}/${id}`);
   }
+  createAd(ad: Ad) :Observable<Ad> {
+
+    return this.http.post<Ad>(`${this.adApiUrl}`, ad);
+  }
 }

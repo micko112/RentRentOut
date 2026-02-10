@@ -13,7 +13,7 @@
       <span class="welcome-message">Zdravo, {{ user.firstName }}</span>
       <button class="btn-profile">Moj Profil</button>
       <button class="btn-logout" (click)="logout()">Odjavi se</button>
-      <button class="btn-post-ad">+ Postavi oglas</button>
+      <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
     </div>
 
     <ng-template #notLoggedIn>
