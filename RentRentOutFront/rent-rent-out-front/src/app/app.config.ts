@@ -11,7 +11,7 @@ import { importProvidersFrom } from '@angular/core';
 import localeSr from '@angular/common/locales/sr-Latn';
 
 import { routes } from './app.routes';
-import {registerLocaleData} from '@angular/common';
+import {DatePipe, registerLocaleData} from '@angular/common';
 
 import {Observable} from 'rxjs';
 
@@ -36,5 +36,7 @@ export const appConfig: ApplicationConfig = {
     [provideZoneChangeDetection({ eventCoalescing: true }),
       provideRouter(routes),
       provideHttpClient(withInterceptors([authInterceptor])),
-      {provide: LOCALE_ID, useValue: 'sr-Latn'},]
+      {provide: LOCALE_ID, useValue: 'sr-Latn'},
+    DatePipe
+    ]
 };

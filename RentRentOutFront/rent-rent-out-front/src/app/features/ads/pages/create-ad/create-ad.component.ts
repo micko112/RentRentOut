@@ -47,9 +47,7 @@ export class CreateAdComponent implements OnInit {
       totalQuantity: [1, [Validators.required, Validators.min(1)]],
       images: [['https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=1000&auto=format&fit=crop']]
     })
-
   }
-
 
   onSubmit() {
     if (this.form.invalid) {

@@ -82,7 +82,7 @@
               <span class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</span>
               <span class="total-price">{{ (ad.price * numberOfDays) | number }} din</span>
             </div>
-            <button class="request-btn" [disabled]="!startDate || !endDate">Pošalji zahtev</button>
+            <button class="request-btn" [disabled]="!startDate || !endDate" (click)="sendRequest()">Pošalji zahtev</button>
             <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
           </div>
         </div>

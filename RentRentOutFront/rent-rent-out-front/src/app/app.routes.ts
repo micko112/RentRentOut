@@ -3,6 +3,7 @@ import {AdListComponent} from './features/ads/pages/ad-list/ad-list.component';
 import {AdDetailsComponent} from './features/ads/pages/ad-details/ad-details.component';
 import {LoginComponent} from './features/auth/pages/login/login.component';
 import {RegisterComponent} from './features/auth/pages/register/register.component';
+import {MyProfileComponent} from './features/user/pages/my-profile/my-profile.component';
 
 export const routes: Routes = [
   {path:'ads', loadChildren: () => import('./features/ads/ads.routes').then(m=>m.ADS_ROUTES) },
@@ -12,11 +13,16 @@ export const routes: Routes = [
   },
   {path: 'login',  component: LoginComponent
   },
+  {
+    path: 'user/my-profile',
+    component: MyProfileComponent
+  },
   {path: 'register',  component: RegisterComponent},
   {
     path: '**',
     redirectTo: '/ads'
   },
+
 
 
 ];

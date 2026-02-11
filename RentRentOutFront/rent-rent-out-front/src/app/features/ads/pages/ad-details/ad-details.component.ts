@@ -1,15 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {Ad} from '../../../../shared/models/ad.model';
-import {CommonModule} from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import {Observable, switchMap, tap} from 'rxjs';
 import {AdService} from '../../services/ad.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {CalendarDay} from '../../../../shared/models/day.model';
+import {ContractService} from '../../../contracts/services/contract.service';
+import {CreateRentalContractRequest} from '../../../../shared/models/create-rental-contract-request';
 
 @Component({
   selector: 'app-ad-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './ad-details.component.html',
   styleUrl: './ad-details.component.css'
 })
@@ -27,11 +29,16 @@ export class AdDetailsComponent implements OnInit {
   endDate: Date | null = null;
   numberOfDays: number = 0;
   totalPrice: number = 0;
+  currentAd!: Ad;
+
 
   private blockedIntervals: { start: Date, end: Date }[] = [];
 
   constructor(private adService: AdService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private contractService: ContractService,
+              private router: Router,
+              private datePipe: DatePipe,) {
   }
 
   ngOnInit() {
@@ -41,6 +48,7 @@ export class AdDetailsComponent implements OnInit {
         return this.adService.getAdById(id);
       }),
       tap(ad => {
+        this.currentAd = ad;
         if (ad.images && ad.images.length > 0) {
           this.selectedImageUrl = ad.images[0];
         } else {
@@ -51,6 +59,7 @@ export class AdDetailsComponent implements OnInit {
           end: new Date(interval.to),
         }));
         this.generateCalendar();
+
       })
     )
   }
@@ -128,8 +137,9 @@ export class AdDetailsComponent implements OnInit {
   recalculatePrice(): void {
     if (this.startDate && this.endDate) {
       const diffTime = Math.abs(this.endDate.getTime() - this.startDate.getTime());
+      console.log("recalculatePrice", diffTime);
       this.numberOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 25)) + 1
-      // this.totalPrice = this.numberOfDays * ad.price;
+      this.totalPrice = this.numberOfDays * this.currentAd.price;
     } else {
       this.numberOfDays = 0;
       this.totalPrice = 0;
@@ -165,6 +175,32 @@ export class AdDetailsComponent implements OnInit {
 
   handleImageError(event: any) {
     event.target.src = 'assets/images/placeholder.png';
+  }
+
+  sendRequest(){
+    if(!this.startDate || !this.endDate || !this.ad$) {
+      return;
+    }
+    if (!this.currentAd) return;
+
+    const request: CreateRentalContractRequest = {
+      adId: this.currentAd.id,
+      startDate: this.datePipe.transform(this.startDate, 'yyyy-MM-dd')!,
+      endDate: this.datePipe.transform(this.endDate, 'yyyy-MM-dd')!,
+      agreedPrice: this.totalPrice,
+      amount: 1
+    };
+    this.contractService.createRentalContract(request).subscribe({
+      next: (response) => {
+        alert('Zahtev uspesno poslat');
+
+    },
+      error: (err) => {
+        console.error(err);
+        alert('Došlo je do greške prilikom slanja zahteva.');
+      }
+      }
+    )
   }
 
 }

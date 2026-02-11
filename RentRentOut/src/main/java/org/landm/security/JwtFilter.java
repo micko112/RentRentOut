@@ -41,37 +41,27 @@ public class JwtFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-        	
             String token = authHeader.substring(7);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            	
+
             	if(jwtUtil.validateToken(token)) {
-            		
                     long userId = jwtUtil.extractUserId(token);
-                    
 //                    request.setAttribute("userId", userId);
-                    
                     List<GrantedAuthority> authorities = jwtUtil.extractRoles(token);
-                    
                     UsernamePasswordAuthenticationToken authInfo =
                             new UsernamePasswordAuthenticationToken(
                                 userId, null, authorities);
-
                     SecurityContextHolder.getContext().setAuthentication(authInfo);
-                    
-            	}else{
-            		
-            		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            		response.setContentType("application/json");
-            		
-            		String message = "{\"error\": \"JWT token is either modified, malformed or expired!\"}";
-            		
-            		response.getWriter().write(message);
-            		response.getWriter().flush();
-            		
-            		return;
             	}
+//                else{
+//            		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            		response.setContentType("application/json");
+//            		String message = "{\"error\": \"JWT token is either modified, malformed or expired!\"}";
+//            		response.getWriter().write(message);
+//            		response.getWriter().flush();
+//
+//            	}
             }
         }
 

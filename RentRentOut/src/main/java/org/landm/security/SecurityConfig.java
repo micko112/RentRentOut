@@ -38,14 +38,15 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http.csrf(csrf -> csrf.disable())
 	            .authorizeHttpRequests(auth -> auth
-	                    // Proširujemo listu dozvoljenih putanja
 						.requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/ads/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/api/ads").authenticated()
 						.requestMatchers(HttpMethod.PUT, "/api/ads/**").authenticated()
+						.requestMatchers(HttpMethod.POST, "/api/ads/**").authenticated()
+						.requestMatchers(HttpMethod.POST, "/api/rental-contract").authenticated()
 						.requestMatchers(HttpMethod.DELETE, "/api/ads/**").authenticated()
 						.requestMatchers(HttpMethod.DELETE, "api/admin/**").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/auth/validate-email").permitAll()
 						.anyRequest().authenticated()
