@@ -5,18 +5,18 @@ import {ProfileDetailsComponent} from './pages/profile-details/profile-details.c
 
 export const USER_ROUTES: Routes = [
   {
-    path: '',
+    path: 'me',
     component: MyProfileComponent,
     children: [
       {
-        path: 'me/ads',
-        component: MyAdsComponent
+        path: '',
+        component: ProfileDetailsComponent
       },
       {
-        path: 'me',
-        component: ProfileDetailsComponent
-      }
+        path: 'ads',
+        component: MyAdsComponent
+      },
+
     ]
   },
-
 ]

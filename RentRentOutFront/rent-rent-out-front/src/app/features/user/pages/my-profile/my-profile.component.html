@@ -11,13 +11,13 @@
       </div>
 
       <nav class="menu-links">
-        <a routerLink="/my-profile" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           Lični podaci
         </a>
-        <a routerLink="/me/ads" routerLinkActive="active">
+        <a routerLink="/user/me/ads" routerLinkActive="active">
           Moji oglasi
         </a>
-        <a routerLink="/my-profile/contracts" routerLinkActive="active">
+        <a routerLink="/user/me/contracts" routerLinkActive="active">
           Moji Ugovori (Zahtevi)
         </a>
         <a class="logout" (click)="logout()">
@@ -27,8 +27,7 @@
     </aside>
 
     <main class="content">
-
-
+      <router-outlet></router-outlet>
     </main>
 
   </div>

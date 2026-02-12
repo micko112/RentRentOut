@@ -3,13 +3,13 @@ import {AsyncPipe, CommonModule, NgIf} from '@angular/common';
 import {Observable, switchMap} from 'rxjs';
 import {User} from '../../../../shared/models/user.model';
 import {UserService} from '../../services/user.service';
-import {ActivatedRoute, Router, RouterLink, RouterLinkActive} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-my-profile',
-  imports: [CommonModule, NgIf, AsyncPipe, RouterLinkActive, RouterLink],
+  imports: [CommonModule, NgIf, AsyncPipe, RouterLinkActive, RouterLink, RouterOutlet],
   standalone: true,
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.css'

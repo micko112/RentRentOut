@@ -7,7 +7,7 @@ import {MyProfileComponent} from './features/user/pages/my-profile/my-profile.co
 
 export const routes: Routes = [
   {path:'ads', loadChildren: () => import('./features/ads/ads.routes').then(m=>m.ADS_ROUTES) },
-  {path:'me', loadChildren: () => import('./features/user/user.routes').then(m=>m.USER_ROUTES)},
+  {path:'user', loadChildren: () => import('./features/user/user.routes').then(m=>m.USER_ROUTES)},
   {path: '',
     redirectTo: '/ads',
     pathMatch: 'full'
@@ -21,7 +21,4 @@ export const routes: Routes = [
     path: '**',
     redirectTo: '/ads'
   },
-
-
-
 ];

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NgIf} from '@angular/common';
+import {NgIf,AsyncPipe, CommonModule,} from '@angular/common';
 import {User} from '../../../../shared/models/user.model';
 import {Observable} from 'rxjs';
 import {Ad} from '../../../../shared/models/ad.model';
@@ -13,7 +13,8 @@ import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component
   selector: 'app-my-ads',
   imports: [
     NgIf,
-    AdCardComponent
+    AdCardComponent,
+    CommonModule
   ],
   templateUrl: './my-ads.component.html',
   styleUrl: './my-ads.component.css'
