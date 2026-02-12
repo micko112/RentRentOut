@@ -1,0 +1,21 @@
+<div class="details" *ngIf="user$ | async as user">
+  <h2>Lični podaci</h2>
+
+  <div class="info-card">
+    <div class="info-row">
+      <label>Ime i Prezime:</label>
+      <span>{{ user.firstname }} {{ user.lastname }}</span>
+    </div>
+    <div class="info-row">
+      <label>Email adresa:</label>
+      <span>{{ user.email }}</span>
+    </div>
+    <div class="info-row">
+      <label>Stanje na računu:</label>
+      <span class="money">{{ user.money || 0 | number }} din</span>
+    </div>
+  </div>
+
+  <button class="btn-edit">Izmeni podatke</button>
+
+</div>

@@ -1,0 +1,7 @@
+<div class="my-ads-grid">
+  <app-ad-card
+    *ngFor="let ad of (ads$ | async)?.content"
+    [ad]="ad"
+    viewMode="list">
+  </app-ad-card>
+</div>
