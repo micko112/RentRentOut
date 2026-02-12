@@ -39,4 +39,11 @@ export class AdService {
 
     return this.http.post<Ad>(`${this.adApiUrl}`, ad);
   }
+
+  getMyAds(page: number = 0, size: number=10 ): Observable<Page<AdPreview>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<Page<AdPreview>>(`${this.adApiUrl}/me`, {params})
+  }
 }

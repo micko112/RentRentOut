@@ -20,4 +20,5 @@ public interface AdService {
     public String deleteAd(long adId, long userId);
     public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable);
     public Page<AdPreviewDto> findAll(Pageable pageable);
+    public Page<AdPreviewDto> findAllByUser(Pageable pageable, long userId);
 }

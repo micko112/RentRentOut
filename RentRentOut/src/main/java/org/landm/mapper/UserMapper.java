@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
     public UserDto toDto(User user){
         UserDto userDto = new UserDto();
-        userDto.setFirstName(user.getFirstname());
+        userDto.setFirstname(user.getFirstname());
         userDto.setLastname(user.getLastname());
         userDto.setEmail(user.getEmail());
         userDto.setMoney(user.getMoney());

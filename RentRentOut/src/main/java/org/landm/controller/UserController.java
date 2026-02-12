@@ -48,13 +48,11 @@ public class UserController {
     	return new ResponseEntity<>(userService.get(userId), HttpStatus.OK);
     }
     
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/my-profile")
-    public ResponseEntity<Map<String, Object>> getMe(Authentication auth){
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> getMe(Authentication auth){
     	long myId = Long.parseLong(auth.getName());
-    	Map<String, Object> res = new HashMap<>();
-    	res.put("user", userService.getMe(myId));
-    	return new ResponseEntity<>(res, HttpStatus.OK);
+    	return ResponseEntity.ok(userService.getMe(myId));
     }
     
     @PostMapping("/register")
@@ -75,7 +73,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PatchMapping("/my-profile")
+    @PatchMapping("/me")
     public ResponseEntity<Map<String, Object>> updateMe(@Valid @RequestBody UpdateUserDto userInfo, Authentication auth){
     	long myId = Long.parseLong(auth.getName());
     	Map<String, Object> res = new HashMap<>();
@@ -84,7 +82,7 @@ public class UserController {
     }
     
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PatchMapping("/my-profile/password")
+    @PatchMapping("/me/password")
     public ResponseEntity<String> updatePassword(@Valid @RequestBody ChangeUserPasswordDto data, Authentication auth){
     	long myId = Long.parseLong(auth.getName());
 		return new ResponseEntity<>(userService.updatePassword(data, myId), HttpStatus.OK);	
@@ -97,7 +95,7 @@ public class UserController {
     }
     
     @PreAuthorize("hasRole('ROLE_USER')")
-    @DeleteMapping("/my-profile")
+    @DeleteMapping("/me")
     public ResponseEntity<String> deleteMe(Authentication auth) {
         long myId = Long.parseLong(auth.getName());
         return new ResponseEntity<>(userService.deleteMe(myId), HttpStatus.OK);

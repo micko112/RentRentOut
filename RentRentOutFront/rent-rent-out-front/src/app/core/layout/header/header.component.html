@@ -10,7 +10,7 @@
       <button class="search-btn" (click)="onSearch()">Traži</button>
     </div>
     <div class="user-actions" *ngIf="currentUser$ | async as user; else notLoggedIn">
-      <span class="welcome-message">Zdravo, {{ user.firstName }}</span>
+      <span class="welcome-message">Zdravo, {{ user.firstname }}</span>
       <button class="btn-profile" (click)="myProfile()">Moj Profil</button>
       <button class="btn-logout" (click)="logout()">Odjavi se</button>
       <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>

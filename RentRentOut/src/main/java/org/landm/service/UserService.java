@@ -15,7 +15,7 @@ public interface UserService {
     
     public UserDto get(long userId);
     
-    public UpdateUserDto getMe(long userId); 
+    public UserDto getMe(long userId);
     
     public UpdateUserDto update(UpdateUserDto editUserDto, long userId);
     

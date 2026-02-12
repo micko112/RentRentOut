@@ -134,10 +134,10 @@ public class UserServiceImpl implements UserService {
 	}
     
     @Override
-    public UpdateUserDto getMe(long userId) {
+    public UserDto getMe(long userId) {
     	User userToReturn = userRepository.findById(userId)
     			.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
-    	return userMapper.toEditDto(userToReturn);
+    	return userMapper.toDto(userToReturn);
     }
 	
     @Transactional

@@ -50,7 +50,7 @@ export class HeaderComponent {
     this.router.navigate(["/ads/create"], {})
   }
   myProfile() {
-    this.router.navigate(["/user/my-profile"], {})
+    this.router.navigate(["/user/me"], {})
   }
 
 }

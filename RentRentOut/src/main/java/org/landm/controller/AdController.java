@@ -66,5 +66,11 @@ public class AdController {
         Page<AdPreviewDto> results = adService.search(criteria, pageable);
         return ResponseEntity.ok(results);
     }
+    @GetMapping("/me")
+    public ResponseEntity<Page<AdPreviewDto>> getMyAds(Authentication auth, Pageable pageable){
+        long userId = Long.parseLong(auth.getName());
+        Page<AdPreviewDto> results = adService.findAllByUser(pageable, userId);
+        return ResponseEntity.ok(results);
+    }
 
 }

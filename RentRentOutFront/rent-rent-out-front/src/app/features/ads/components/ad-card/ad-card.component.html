@@ -1,7 +1,5 @@
 
 <div class="listing-card" [ngClass]="{'list-view': viewMode === 'list'}" [routerLink]="['/ads', ad.id]">
-
-
   <div class="image-wrapper">
     <img [src]="imageUrl"
          (error)="handleImageError($event)"

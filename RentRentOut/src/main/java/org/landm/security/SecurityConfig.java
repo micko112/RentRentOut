@@ -48,6 +48,8 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.DELETE, "api/admin/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/user/**").authenticated()
+
 						.requestMatchers(HttpMethod.GET, "/api/auth/validate-email").permitAll()
 						.anyRequest().authenticated()
 	            ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

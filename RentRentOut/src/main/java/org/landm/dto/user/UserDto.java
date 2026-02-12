@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class UserDto {
 
-    private String firstName;
+    private String firstname;
     private String lastname;
     private String email;
     private BigDecimal money;
@@ -13,12 +13,12 @@ public class UserDto {
     }
 
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
     public String getLastname() {
