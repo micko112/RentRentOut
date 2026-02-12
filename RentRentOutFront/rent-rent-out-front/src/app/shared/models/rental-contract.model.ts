@@ -4,8 +4,8 @@ import {User} from './user.model';
 
 export interface RentalContract {
   id: number;
-  ad: Ad;
-  lessee: User;
+  adDto: Ad;
+  lesseeDto: User;
   startDate: string;
   endDate:  string;
   agreedPrice:  number;

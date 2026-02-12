@@ -31,4 +31,6 @@ public interface RentalContractService {
     public String delete(long userId, long rentalId);
     
     public void markToAdDeleted(long adId);
+
+
 }

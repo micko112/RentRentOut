@@ -1,6 +1,6 @@
-<div class="my-ads-grid">
+<div class="my-ads-grid" *ngIf="ads$ | async as adsPage">
   <app-ad-card
-    *ngFor="let ad of (ads$ | async)?.content"
+    *ngFor="let ad of adsPage.content"
     [ad]="ad"
     viewMode="list">
   </app-ad-card>

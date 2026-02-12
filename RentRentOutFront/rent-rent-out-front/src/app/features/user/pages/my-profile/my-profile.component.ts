@@ -15,7 +15,7 @@ import {AuthService} from '../../../auth/services/auth.service';
   styleUrl: './my-profile.component.css'
 })
 export class MyProfileComponent implements OnInit {
-  user$!: Observable<User>;
+  user$!: Observable<User | null>;
   constructor(private userService: UserService,
               private http: HttpClient,
               private authService: AuthService,
@@ -24,7 +24,7 @@ export class MyProfileComponent implements OnInit {
 
   }
   ngOnInit() {
-    this.user$ = this.userService.getMe();
+    this.user$ = this.authService.currentUser$;
   }
 
   logout() {

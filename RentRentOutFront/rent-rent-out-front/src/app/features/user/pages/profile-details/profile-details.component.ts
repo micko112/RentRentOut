@@ -22,13 +22,13 @@ import {RouterModule, RouterOutlet} from '@angular/router';
   styleUrl: './profile-details.component.css'
 })
 export class ProfileDetailsComponent implements OnInit {
-  user$!: Observable<User>;
+  user$!: Observable<User | null>;
   constructor(private userService: UserService,
               private http: HttpClient,
               private authService: AuthService,
   ) {
   }
   ngOnInit() {
-    this.user$ = this.userService.getMe();
+    this.user$ = this.authService.currentUser$
   }
 }

@@ -1,1 +1,7 @@
-<p>contracts works!</p>
+<div class="content" *ngIf="contracts$ | async as contracts">
+  <div class="contracts" >
+    <app-contract-card *ngFor="let contract of contracts" [contract]="contract">
+
+    </app-contract-card>
+  </div>
+</div>

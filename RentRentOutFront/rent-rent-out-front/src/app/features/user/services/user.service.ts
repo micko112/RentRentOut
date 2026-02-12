@@ -4,16 +4,21 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {User} from '../../../shared/models/user.model';
 import {Ad} from '../../../shared/models/ad.model';
+import {RentalContract} from '../../../shared/models/rental-contract.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private url = `${API_BASE_URL}/user`
+  private url = `${API_BASE_URL}`
   constructor(private http: HttpClient) { }
 
   getMe(): Observable<User> {
-    return this.http.get<User>(`${this.url}/me`);
+    return this.http.get<User>(`${this.url}/user/me`);
+  }
+  getAllContract(): Observable<RentalContract[]> {
+    return this.http.get<RentalContract[]>(`${this.url}/rental-contract/my-contracts`);
   }
 
 }
