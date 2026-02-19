@@ -3,7 +3,10 @@ package org.landm.service.impl;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.rentalContract.RentalContractSearchDto;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
@@ -19,15 +22,20 @@ import org.landm.repository.AdRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
+import org.landm.service.AdService;
 import org.landm.service.RentalContractService;
 import org.landm.specification.RentalContractSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -49,13 +57,45 @@ public class RentalContractServiceImpl implements RentalContractService {
     }
     
     @Override
+    @Retryable(
+    		value = OptimisticLockException.class,
+    		maxAttempts = 3,
+    		backoff = @Backoff(delay = 100)
+    		)
+    @Transactional
     public RentalContractDto create(CreateRentalContractRequestDto req, long userId) {
-
-        User lessee = userRepository.findById(userId)
+    	
+        User lessee = userRepository.findByIdForCheck(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        System.out.println("Found user");
+        
+        if (lessee.getMoney().compareTo(req.getAgreedPrice()) >= 0) { //CHANGE TO < 0 
+        	//Doesn't allow user without enough money to send offer -> 
+        	//Opt_Read because someone can accept earlier users's offers from other ads and spend user's money
+        	System.out.println("No enough money");
+        	throw new RuntimeException("You don't have enough money for this offer!");
+        }
+        
+        
+        
         Ad ad = adRepository.findById(req.getAdId())
                 .orElseThrow(() -> new RuntimeException("Ad not found"));
 
+    	// Should check for amount of available items and allow sending offer only if there are some
+        List<RentalContract> contractsInInterval = rentalContractRepository.
+        		findContractsInDateInterval(req.getAdId(), 
+        				req.getStartDate(), 
+        				req.getEndDate());
+        
+        int availableAmountForAd = getAvailableAmountForInterval(contractsInInterval, req.getStartDate(), req.getEndDate(), 
+        				ad.getTotalQuantity());
+        
+        if(req.getAmount() > availableAmountForAd) {
+        	throw new RuntimeException("No enough available items for this Ad.");
+        }
+        
+        //If these checks are passed app creates and saves offer
         RentalContract rentalToCreate = rentalContractMapper.toEntity(req);
         rentalToCreate.setAd(ad);
         rentalToCreate.setLessee(lessee);
@@ -95,6 +135,50 @@ public class RentalContractServiceImpl implements RentalContractService {
         return rentalContractMapper.toDto(contract);
     }
 
+    private static class Event{
+    	LocalDate date;
+    	long itemCount;
+    	
+    	Event(LocalDate date, long amount){
+    		this.date = date;
+    		this.itemCount = amount;
+    	}
+    }
+    
+    public int getAvailableAmountForInterval(List<RentalContract> contracts, LocalDate startDate, 
+    		LocalDate endDate, int totalAmount) {
+    	List<Event> events = new ArrayList<>();
+    	
+    	int avaliableAmountForDates = totalAmount;
+    	
+    	for(RentalContract rc : contracts) {
+    		events.add(new Event(rc.getStartDate(), rc.getAmount()));
+    		
+    		events.add(new Event(rc.getEndDate().plusDays(1), -rc.getAmount()));
+    	}
+    	
+    	events.sort(Comparator.comparing(e -> e.date));
+    	
+    	int currUsed = 0;
+    	int availableItems = totalAmount;
+    	
+    	for (Event e : events) {
+    		if(e.date.isAfter(endDate)) break;
+    		
+    		if(e.date.isBefore(startDate)) {
+    			currUsed += e.itemCount;
+    			continue;
+    		}
+    		
+    		currUsed += e.itemCount;
+    		int availableNow = availableItems - currUsed;
+    		avaliableAmountForDates = Math.min(availableNow, avaliableAmountForDates);
+    		
+    	}
+    	
+    	return avaliableAmountForDates;
+    } 
+    
     private boolean isValidTransition(ContractStatus from, ContractStatus to) {
 
         return switch (from) {
@@ -227,6 +311,9 @@ public class RentalContractServiceImpl implements RentalContractService {
 		
 	}
 
-	
+	@Recover 
+	public void recover(OptimisticLockException e) {
+		throw new RuntimeException("Another operation modified Your account, please try again.");
+	}
 	
 }

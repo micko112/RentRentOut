@@ -30,7 +30,11 @@ public class User {
     private BigDecimal money = BigDecimal.ZERO;
 //    @OneToMany(mappedBy = "roles")
 //    private List<String> roles;
-
+    @Version
+    @Column(name="version", nullable = false)
+    private long version;
+    
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id", nullable=false)
     private Role role;

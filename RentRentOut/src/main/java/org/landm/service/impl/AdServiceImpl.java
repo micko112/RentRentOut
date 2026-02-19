@@ -161,6 +161,41 @@ public class AdServiceImpl implements AdService {
     	
     	return blockedIntervals;
     }
+    
+    public int getAvailableAmountForInterval(List<RentalContract> contracts, LocalDate startDate, 
+    		LocalDate endDate, int totalAmount) {
+    	List<Event> events = new ArrayList<>();
+    	
+    	int avaliableAmountForDates = 0;
+    	
+    	for(RentalContract rc : contracts) {
+    		events.add(new Event(rc.getStartDate(), rc.getAmount()));
+    		
+    		events.add(new Event(rc.getEndDate().plusDays(1), -rc.getAmount()));
+    	}
+    	
+    	events.sort(Comparator.comparing(e -> e.date));
+    	
+    	int currUsed = 0;
+    	int availableItems = totalAmount;
+    	
+    	for (Event e : events) {
+    		if(e.date.isAfter(endDate)) break;
+    		
+    		if(e.date.isBefore(startDate)) {
+    			currUsed += e.itemCount;
+    			continue;
+    		}
+    		
+    		currUsed += e.itemCount;
+    		int availableNow = availableItems - currUsed;
+    		avaliableAmountForDates = Math.min(availableNow, avaliableAmountForDates);
+    		
+    	}
+    	
+    	return avaliableAmountForDates;
+    	
+    } 
 
     @Override
     public Page<AdPreviewDto> getAllActiveAds(Pageable pageable) {
@@ -218,7 +253,7 @@ public class AdServiceImpl implements AdService {
 			throw new RuntimeException("Deleting someone's ad - not allowed!");
 		}
 		
-		if(rentalContractRepository.hasActiveOrFutureContracts(adId)) { //Mora da se zove servis koji zove repository! - popraviti
+		if(rentalContractRepository.hasActiveOrFutureContracts(adId)) {
 			throw new RuntimeException("Trying to delete Ad contained in ongoing contract - not allowed!");
 		}
 		

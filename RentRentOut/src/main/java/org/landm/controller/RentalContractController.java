@@ -18,6 +18,7 @@ import org.landm.service.impl.RentalContractServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +33,13 @@ public class RentalContractController {
         this.service = service;
 
     }
-    @PostMapping
+    
+    @PostMapping("/")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<RentalContractDto> createRentalContract(@Valid @RequestBody CreateRentalContractRequestDto req,
                                                                   Authentication auth){
 		long userId = Long.parseLong(auth.getName());
+		System.out.println("Calling service");
 	    RentalContractDto newRental = service.create(req, userId);
 	    return new ResponseEntity<>(newRental, HttpStatus.CREATED);
     }

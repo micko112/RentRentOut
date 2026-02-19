@@ -113,4 +113,17 @@
 		
 	</changeSet>
 	
+	<changeSet id="11-add-version-enable-optimistic" author="Luka">
+		<addColumn tableName="user">
+			<column name="version" type="BIGINT"></column>
+		</addColumn>
+		
+		<update tableName="user">
+			<column name="version" valueNumeric="0"></column>
+		</update>
+		
+		<addNotNullConstraint tableName="user" columnName="version" columnDataType="BIGINT"/>
+		
+	</changeSet>
+	
 </databaseChangeLog>

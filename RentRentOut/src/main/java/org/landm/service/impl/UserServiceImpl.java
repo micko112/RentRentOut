@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByEmail(req.getEmail());
 
-        if (user != null) {
+        if (user != null && user.isEnabled()) {
             if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
 //                throw new RuntimeException("Wrong email or password!");
                 throw new WrongCredentialsException("Wrong email or password!");

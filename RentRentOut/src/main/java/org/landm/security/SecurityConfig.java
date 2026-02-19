@@ -43,13 +43,13 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/ads/**").permitAll()
 						.requestMatchers(HttpMethod.PUT, "/api/ads/**").authenticated()
 						.requestMatchers(HttpMethod.POST, "/api/ads/**").authenticated()
-						.requestMatchers(HttpMethod.POST, "/api/rental-contract").authenticated()
+						.requestMatchers(HttpMethod.POST, "/api/rental-contract/").permitAll()
 						.requestMatchers(HttpMethod.DELETE, "/api/ads/**").authenticated()
 						.requestMatchers(HttpMethod.DELETE, "api/admin/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/user/**").authenticated()
-
+						
 						.requestMatchers(HttpMethod.GET, "/api/auth/validate-email").permitAll()
 						.anyRequest().authenticated()
 	            ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
