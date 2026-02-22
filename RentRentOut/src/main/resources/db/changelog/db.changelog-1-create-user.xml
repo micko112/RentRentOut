@@ -126,4 +126,21 @@
 		
 	</changeSet>
 	
+	<changeSet author="Luka" id="12-add-currency-column">
+		<addColumn tableName="user">
+			<column name="currency" type="VARCHAR(16)"></column>
+		</addColumn>
+		
+		<update tableName="user">
+			<column name="currency" value="RSD"></column>
+		</update>
+		
+		<addNotNullConstraint tableName="user" columnName="currency" columnDataType="VARCHAR(16)"/>
+		
+	</changeSet>
+	
+	<changeSet author="Luka" id="13-add-default-currency">
+		<addDefaultValue columnName="currency" tableName="user" defaultValue="RSD"/>
+	</changeSet>
+	
 </databaseChangeLog>

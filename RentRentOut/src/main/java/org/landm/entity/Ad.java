@@ -4,6 +4,7 @@ package org.landm.entity;
 import jakarta.persistence.*;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.DeleteStatus;
+import org.landm.entity.Enums.PriceCurrency;
 import org.landm.entity.Enums.PriceInterval;
 
 import java.math.BigDecimal;
@@ -26,6 +27,11 @@ public class Ad {
 
     @Column(nullable = false, name="price")
     private BigDecimal price;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false, name="currency")
+    private PriceCurrency priceCurrency;
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name="price_interval")
     private PriceInterval priceInterval;
@@ -115,7 +121,14 @@ public class Ad {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-    public PriceInterval getPriceInterval() {
+    
+    public PriceCurrency getPriceCurrency() {
+		return priceCurrency;
+	}
+	public void setPriceCurrency(PriceCurrency priceCurrency) {
+		this.priceCurrency = priceCurrency;
+	}
+	public PriceInterval getPriceInterval() {
         return priceInterval;
     }
     public void setPriceInterval(PriceInterval priceInterval) {

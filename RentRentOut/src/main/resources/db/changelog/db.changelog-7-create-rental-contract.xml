@@ -118,6 +118,23 @@
 	<changeSet id="11-set-not-null" author="Luka">
 		<addNotNullConstraint tableName="rental_contract" columnName="amount" columnDataType="numeric"/>
 	</changeSet>
+	
+	<changeSet author="Luka" id="12-add-currency-column">
+		<addColumn tableName="rental_contract">
+			<column name="currency" type="VARCHAR(16)"></column>
+		</addColumn>
+		
+		<update tableName="rental_contract">
+			<column name="currency" value="RSD"></column>
+		</update>
+		
+		<addNotNullConstraint tableName="rental_contract" columnName="currency" columnDataType="VARCHAR(16)"/>
+		
+	</changeSet>
+	
+	<changeSet author="Luka" id="13-add-default-currency">
+		<addDefaultValue columnName="currency" tableName="rental_contract" defaultValue="RSD"/>
+	</changeSet>
 
 </databaseChangeLog>
 

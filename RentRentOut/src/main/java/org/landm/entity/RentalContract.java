@@ -2,6 +2,7 @@ package org.landm.entity;
 
 import jakarta.persistence.*;
 import org.landm.entity.Enums.ContractStatus;
+import org.landm.entity.Enums.PriceCurrency;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,6 +33,9 @@ public class RentalContract {
     @Column(name = "agreed_price", nullable = false)
     private BigDecimal agreedPrice;
 
+    @Column(name="currency", nullable=false)
+    private PriceCurrency priceCurrency;
+    
     @Column(name = "amount", nullable = false)
     private long amount;
     
@@ -97,8 +101,16 @@ public class RentalContract {
     public void setAgreedPrice(BigDecimal agreedPrice) {
         this.agreedPrice = agreedPrice;
     }
+    
+    public PriceCurrency getPriceCurrency() {
+		return priceCurrency;
+	}
 
-    public ContractStatus getContractStatus() {
+	public void setPriceCurrency(PriceCurrency priceCurrency) {
+		this.priceCurrency = priceCurrency;
+	}
+
+	public ContractStatus getContractStatus() {
         return contractStatus;
     }
 

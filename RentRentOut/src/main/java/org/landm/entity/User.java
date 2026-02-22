@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.landm.entity.Enums.PriceCurrency;
+
 @Entity
 @Table(name = "user")
 public class User {
@@ -30,6 +32,11 @@ public class User {
     private BigDecimal money = BigDecimal.ZERO;
 //    @OneToMany(mappedBy = "roles")
 //    private List<String> roles;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="currency", nullable=false)
+    private PriceCurrency priceCurrency;
+    
     @Version
     @Column(name="version", nullable = false)
     private long version;
@@ -103,6 +110,14 @@ public class User {
         this.money = money;
     }
     
+	public PriceCurrency getPriceCurrency() {
+		return priceCurrency;
+	}
+
+	public void setPriceCurrency(PriceCurrency priceCurrency) {
+		this.priceCurrency = priceCurrency;
+	}
+
 	public Role getRole() {
 		return role;
 	}

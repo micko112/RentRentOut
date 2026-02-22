@@ -83,7 +83,21 @@
         </createTable>
     </changeSet>
     
-
+    <changeSet author="Luka" id="8-add-currency-column">
+    	<addColumn tableName="ad">
+    		<column name="currency" type="VARCHAR(16)"></column>
+    	</addColumn>
+    	
+    	<update tableName="ad">
+    		<column name="currency" value="RSD"></column>
+    	</update>
+    	
+    	<addNotNullConstraint tableName="ad" columnName="currency" columnDataType="VARCHAR(16)"/>
+    </changeSet>
+    
+	<changeSet author="Luka" id="9-add-default-currency">
+		<addDefaultValue columnName="currency" tableName="ad" defaultValue="RSD"/>
+	</changeSet>
 
 </databaseChangeLog>
 
