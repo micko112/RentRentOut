@@ -56,16 +56,20 @@ public class AdController {
         return ResponseEntity.ok(updatedAd);
     }
     
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{adId}")
     public ResponseEntity<String> deleteAd(@PathVariable long adId, Authentication auth){
     	long userId = Long.parseLong(auth.getName());
     	return new ResponseEntity<>(adService.deleteAd(adId, userId), HttpStatus.OK);
     }
+    
     @GetMapping("/search")
     public ResponseEntity<Page<AdPreviewDto>> searchAd(AdSearchCriteriaDto criteria, Pageable pageable){
         Page<AdPreviewDto> results = adService.search(criteria, pageable);
         return ResponseEntity.ok(results);
     }
+    
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/me")
     public ResponseEntity<Page<AdPreviewDto>> getMyAds(Authentication auth, Pageable pageable){
         long userId = Long.parseLong(auth.getName());

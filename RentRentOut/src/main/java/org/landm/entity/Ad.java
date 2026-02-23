@@ -30,7 +30,7 @@ public class Ad {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable=false, name="currency")
-    private PriceCurrency priceCurrency;
+    private PriceCurrency priceCurrency = PriceCurrency.RSD;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name="price_interval")

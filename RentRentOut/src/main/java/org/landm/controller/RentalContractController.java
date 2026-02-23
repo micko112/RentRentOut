@@ -44,17 +44,20 @@ public class RentalContractController {
 	    return new ResponseEntity<>(newRental, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/{id}")
 	public ResponseEntity<RentalContractDto> getRentalContractById(@PathVariable long rentalId){
 		return new ResponseEntity<>(service.getRentalContractById(rentalId), HttpStatus.OK);
 	}
 	
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/my-contracts")
 	public ResponseEntity<List<RentalContractDto>> getAllRentalContracts(Authentication auth){
 		long userId = Long.parseLong(auth.getName());
 		return new ResponseEntity<>(service.getAll(userId), HttpStatus.OK);
 	}
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/search")
 	public ResponseEntity<Map<String, Page<RentalContractDto>>> searchContracts(Authentication auth, 
 			@ModelAttribute RentalContractSearchDto searchDto){
@@ -68,6 +71,7 @@ public class RentalContractController {
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	} 
 	
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@PatchMapping("/{id}/status")
 	public ResponseEntity<RentalContractDto> updateStatus(@PathVariable long id,
 	                                                      @Valid @RequestBody UpdateRentalContractStatusRequestDto req, 
@@ -76,6 +80,7 @@ public class RentalContractController {
         return ResponseEntity.ok(service.updateStatus(id, req, userId));
 	}
 	
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteRentalContract(@PathVariable long id, Authentication auth){
 		long userId = Long.parseLong(auth.getName());

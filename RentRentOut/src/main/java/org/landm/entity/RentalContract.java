@@ -34,7 +34,7 @@ public class RentalContract {
     private BigDecimal agreedPrice;
 
     @Column(name="currency", nullable=false)
-    private PriceCurrency priceCurrency;
+    private PriceCurrency priceCurrency = PriceCurrency.RSD;
     
     @Column(name = "amount", nullable = false)
     private long amount;

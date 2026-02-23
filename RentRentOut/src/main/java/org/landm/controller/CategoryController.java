@@ -7,6 +7,7 @@ import org.landm.dto.requestDto.CreateCategoryRequestDto;
 import org.landm.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class CategoryController {
         return ResponseEntity.ok(category);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryDto> post(@Valid @RequestBody CreateCategoryRequestDto req,
                                             Authentication auth) {

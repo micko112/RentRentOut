@@ -44,13 +44,13 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> get(@PathVariable("id") long userId){
     	return new ResponseEntity<>(userService.get(userId), HttpStatus.OK);
     }
     
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/me")
     public ResponseEntity<UserDto> getMe(Authentication auth){
     	long myId = Long.parseLong(auth.getName());
@@ -83,7 +83,7 @@ public class UserController {
     	return new ResponseEntity<>(userService.depositMoney(userId, req), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/me")
     public ResponseEntity<Map<String, Object>> updateMe(@Valid @RequestBody UpdateUserDto userInfo, Authentication auth){
     	long myId = Long.parseLong(auth.getName());
@@ -92,20 +92,20 @@ public class UserController {
     	return new ResponseEntity<>(res, HttpStatus.OK);
     }
     
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/me/password")
     public ResponseEntity<String> updatePassword(@Valid @RequestBody ChangeUserPasswordDto data, Authentication auth){
     	long myId = Long.parseLong(auth.getName());
 		return new ResponseEntity<>(userService.updatePassword(data, myId), HttpStatus.OK);	
     }
     
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<Object> update(@Valid @RequestBody UpdateUserDto userInfo, @PathVariable("id") long userId){
     	return new ResponseEntity<>(userService.update(userInfo, userId), HttpStatus.OK);
     }
     
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/me")
     public ResponseEntity<String> deleteMe(Authentication auth) {
         long myId = Long.parseLong(auth.getName());
