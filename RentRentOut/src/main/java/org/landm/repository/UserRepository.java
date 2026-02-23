@@ -25,5 +25,13 @@ public interface UserRepository extends JpaRepository<User, Long>{
     		""")
     public Optional<User> findByIdForCheck(long userId);
     
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+    		SELECT u
+    		FROM User u
+    		WHERE u.id = :userId
+    		""")
+    public Optional<User> findByIdForUpdate(long userId);
+    
 }
 

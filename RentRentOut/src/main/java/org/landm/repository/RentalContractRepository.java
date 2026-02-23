@@ -7,9 +7,12 @@ import org.landm.entity.RentalContract;
 import org.landm.entity.Enums.ContractStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import jakarta.persistence.LockModeType;
 
 public interface RentalContractRepository 
 extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalContract> {
@@ -23,6 +26,14 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 			WHERE rc.id = :contractId
 			""")
 	public RentalContract findByIdForUpdate(long contractId);
+	
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@Query("""
+			SELECT rc 
+			FROM RentalContract rc
+			WHERE rc.id = :contractId
+			""")
+	public RentalContract findByIdPessWriteLock(long contractId);
 	
 	public List<RentalContract> findByAdIdAndContractStatusIn(long adId, List<ContractStatus> statusList);
 	

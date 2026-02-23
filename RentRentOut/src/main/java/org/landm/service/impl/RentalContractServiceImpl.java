@@ -5,6 +5,7 @@ import org.landm.dto.rentalContract.RentalContractSearchDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -115,7 +116,11 @@ public class RentalContractServiceImpl implements RentalContractService {
     public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, 
     		long userId) {
 
-        RentalContract contract = rentalContractRepository.findByIdForUpdate(contractId);
+		// Ugovor mora da se zakljuca - moze optimistic_force_increment? ili pessimistic_write
+    	
+    	// Korisnik takodje mora da se zakljuca, skidanje para 
+    	
+        RentalContract contract = rentalContractRepository.findByIdPessWriteLock(contractId);
         if(contract == null) throw new RuntimeException("Error searching contract!");
 
         checkPermissions(userId, contract);
@@ -127,10 +132,15 @@ public class RentalContractServiceImpl implements RentalContractService {
             throw new RuntimeException("Invalid status transition");
         }
 
-        updatedAdAvailability(contract, req.getNewStatus());
+        if (newStatus == ContractStatus.ACCEPTED || newStatus == ContractStatus.FINISHED 
+        		|| newStatus == ContractStatus.CANCELLED) {
+            changeStatus(contract, req.getNewStatus(), userId);	
+        }
 
-        handlePriceNegotiation(contract, req, userId);
-        contract.setContractStatus(newStatus);
+        if(newStatus == ContractStatus.REQUESTED) {
+            handlePriceNegotiation(contract, req, userId);
+            contract.setContractStatus(newStatus);
+        }
         
         return rentalContractMapper.toDto(contract);
     }
@@ -204,21 +214,93 @@ public class RentalContractServiceImpl implements RentalContractService {
             throw new AccessDeniedException("User is not in contract");
         }
     }
-    private void updatedAdAvailability(RentalContract contract, ContractStatus newStatus){
+    
+    private void changeStatus(RentalContract contract, ContractStatus newStatus, long userId){
         Ad ad = contract.getAd();
         ContractStatus oldStatus = contract.getContractStatus();
-        if(oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.ACCEPTED){
-            if(ad.getAvailableQuantity() <=0){
-                throw new RuntimeException("Not available");
+        if(oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.ACCEPTED){ // ovde treba logika za prihvatanje - provera i  
+            
+        	User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId()) // lessee - zakljucan
+        			.orElseThrow(() -> new RuntimeException("No user found!"));
+        	
+        	User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId()) // owner - zakljucan
+        			.orElseThrow(() -> new RuntimeException("No user found!"));
+        	
+        	if(lessee.getMoney().compareTo(contract.getAgreedPrice()) < 0) {
+        		throw new RuntimeException("No enough funds at lessee's side.");
+        	}
+        	
+        	Ad contrAd = adRepository.findByIdForUpdate(ad.getId()); // ad - zakljucan
+        	LocalDate startDate = contract.getStartDate();
+        	LocalDate endDate = contract.getEndDate();
+        	List<ContractStatus> statusses = new ArrayList<>();
+        	statusses.add(ContractStatus.ACCEPTED);
+        	statusses.add(ContractStatus.ACTIVE);
+        	List<RentalContract> contracts = rentalContractRepository.findActiveContractForAd(ad.getId(), statusses);
+        	
+        	int availableQuantity = getAvailableAmountForInterval(contracts, startDate, endDate, contrAd.getTotalQuantity());
+        	
+        	if(availableQuantity < contract.getAmount()){ // smanjivanje qntity i logika za proveru i smanjivanje para korisniku
+                throw new RuntimeException("Not enough items."); // i povecavanje para korisniku koji je vlasnik
             }
-            ad.setAvailableQuantity(ad.getAvailableQuantity()-1);
-            adRepository.save(ad);
+        	
+        	//sve provere su prosle, smanjivanje i povecavanje para, promena statusa i cuvanje ugovora
+        	
+        	lessee.setMoney(
+        			lessee.getMoney().subtract(contract.getAgreedPrice()));
+        	
+        	owner.setMoney(
+        			owner.getMoney().add(contract.getAgreedPrice()));
+        	
+        	userRepository.save(lessee);
+        	userRepository.save(owner);
+        	
+        	contract.setContractStatus(ContractStatus.ACCEPTED);
+            rentalContractRepository.save(contract);
         }
-        if (oldStatus == ContractStatus.ACTIVE && (newStatus == ContractStatus.CANCELLED || newStatus == ContractStatus.FINISHED)) {
-            ad.setAvailableQuantity(ad.getAvailableQuantity() + 1);
-            adRepository.save(ad);
+        if (oldStatus == ContractStatus.ACTIVE &&  newStatus == ContractStatus.FINISHED) {
+            contract.setContractStatus(newStatus);
+            rentalContractRepository.save(contract);
         }
 
+        if (oldStatus == ContractStatus.ACTIVE && newStatus == ContractStatus.CANCELLED) {
+        	// Prvo pogledati ko je raskinuo ugovor
+        	
+        	//Ako je raskinuo korisnik nikom nista
+        	if(userId == contract.getLessee().getId()) {
+                contract.setContractStatus(newStatus);
+                rentalContractRepository.save(contract);
+        	}
+        	else {
+            	//Ako je raskinuo vlasnik onda korisniku refund proporcionalan broju dana
+            	
+            	// Prvo izracunati ukupan broj dana ugovora kao i broj preostalih dana 
+            	LocalDate currDate = LocalDate.now();
+            	long totaldays = ChronoUnit.DAYS.between(contract.getStartDate(), contract.getEndDate()) + 1;
+            	long usedDays = ChronoUnit.DAYS.between(contract.getEndDate(), currDate);
+            	
+            	//Na osnovu toga odrediti cenu po danu i vratiti kolicinu u skladu sa brojem 
+            	//preostalih dana
+            	BigDecimal pricePerDay = contract.getAgreedPrice().divide(BigDecimal.valueOf(totaldays));
+            	BigDecimal refund = pricePerDay.multiply(BigDecimal.valueOf(totaldays - usedDays));
+            	
+            	User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId())
+            			.orElseThrow(() -> new RuntimeException("User not found!"));
+            	
+            	User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())
+            			.orElseThrow(() -> new RuntimeException("User not found!"));
+            	
+            	lessee.setMoney(lessee.getMoney().add(refund));
+            	owner.setMoney(owner.getMoney().subtract(refund));
+            	
+            	userRepository.save(lessee);
+            	userRepository.save(owner);
+            	
+                contract.setContractStatus(newStatus);
+                rentalContractRepository.save(contract);	
+        	}
+        }
+        
     }
 
     private void handlePriceNegotiation(RentalContract contract, UpdateRentalContractStatusRequestDto req, long userId){
