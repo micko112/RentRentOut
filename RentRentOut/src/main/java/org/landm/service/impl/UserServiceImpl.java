@@ -1,6 +1,10 @@
 package org.landm.service.impl;
 
 import org.landm.dto.user.UserDto;
+
+import java.math.BigDecimal;
+
+import org.landm.dto.requestDto.DepositRequestDto;
 import org.landm.dto.user.ChangeUserPasswordDto;
 import org.landm.dto.user.LoginUserRequestDto;
 import org.landm.dto.user.RegisterUserRequestDto;
@@ -20,9 +24,13 @@ import org.landm.security.JwtUtil;
 import org.landm.service.EmailVerificationService;
 import org.landm.service.UserService;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -84,8 +92,6 @@ public class UserServiceImpl implements UserService {
                   //      req.getEmail(), BigDecimal.ZERO);
             }
     }
-
-    
     
     @Override
     public User login(LoginUserRequestDto req) {
@@ -139,8 +145,31 @@ public class UserServiceImpl implements UserService {
     			.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
     	return userMapper.toDto(userToReturn);
     }
-	
+    
+    @Override
+    @Retryable(
+    		retryFor = OptimisticLockException.class,
+    		maxAttempts = 3,
+    		backoff = @Backoff(delay = 100)
+    		)
     @Transactional
+	public UserDto depositMoney(long userId, DepositRequestDto req) {
+		
+    	BigDecimal amount = req.getAmount();
+    	
+    	User user = userRepository.findByIdForCheck(userId)
+    			.orElseThrow(() -> new RuntimeException("User not found!"));
+    	
+    	if(true) {
+    		BigDecimal userMoney = user.getMoney();
+    		user.setMoney(userMoney.add(amount));
+    	}
+    	
+		return userMapper.toDto(
+				userRepository.save(user));
+	}
+
+	@Transactional
 	@Override
 	public UpdateUserDto update(UpdateUserDto editUserDto, long userId) {
 		User user = userRepository.findById(userId)
@@ -175,5 +204,10 @@ public class UserServiceImpl implements UserService {
     		throw new UserNotFoundException("User not found!");
     	}
 	}  
+    
+    @Recover
+    public UserDto recover(OptimisticLockException e) {
+    	throw new RuntimeException("Your request could not be processed due to concurrent update. Please try again.");
+    }
     
 }

@@ -6,12 +6,14 @@ import org.landm.entity.User;
 import org.landm.mapper.UserMapper;
 import org.landm.security.JwtUtil;
 import org.landm.dto.user.UserDto;
+import org.landm.dto.requestDto.DepositRequestDto;
 import org.landm.dto.user.ChangeUserPasswordDto;
 import org.landm.dto.user.LoginUserRequestDto;
 import org.landm.dto.user.RegisterUserRequestDto;
 import org.landm.dto.user.UpdateUserDto;
 import org.landm.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -70,6 +72,15 @@ public class UserController {
         response.put("user", userMapper.toDto(user));
         response.put("token", token);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PostMapping("/me/deposits")
+    public ResponseEntity<UserDto> depositMoney(Authentication auth, @RequestBody @Valid DepositRequestDto req){
+    
+    	long userId = Long.parseLong(auth.getName());
+    	
+    	return new ResponseEntity<>(userService.depositMoney(userId, req), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
