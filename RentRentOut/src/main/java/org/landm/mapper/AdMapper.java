@@ -32,7 +32,6 @@ public class AdMapper {
         dto.setPriceInterval(PriceInterval.valueOf(ad.getPriceInterval().name()));
         dto.setAdStatus(AdStatus.valueOf(ad.getAdStatus().name()));
         dto.setTotalQuantity(ad.getTotalQuantity());
-        dto.setAvailableQuantity(ad.getAvailableQuantity());
         dto.setImages(ad.getImages());
 
         dto.setOwner(userMapper.toDto(ad.getOwner()));

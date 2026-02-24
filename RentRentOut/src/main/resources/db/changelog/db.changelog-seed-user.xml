@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+	<changeSet id="seed-users-data" author="luka">
+		<!-- 1. Korisnik Luka (Admin) -->
+		<insert tableName="user">
+			<column name="email" value="luka@gmail.com"/>
+			<column name="password" value="$2a$10$OLBjX4KuSirnkGqNR/1e6eRdN7SmOfQFD4FutfjwdKLHAtTvSO7ui"/>
+			<column name="firstname" value="Luka"/>
+			<column name="lastname" value="Hadzic"/>
+			<column name="money" valueNumeric="0"/>
+			<column name="role_id" valueComputed="(SELECT id FROM role WHERE name = 'ROLE_ADMIN')"/>
+			<column name="enabled" valueBoolean="true"/>
+			<column name="version" valueNumeric="0"/>
+			<column name="currency" value="RSD"/>
+		</insert>
+
+		<!-- 2. Korisnik Micko (Admin/User zavisno od tvoje postavke, stavio sam admin kao ranije) -->
+		<insert tableName="user">
+			<column name="email" value="micko@gmail.com"/>
+			<column name="password" value="$2a$10$wO0fssmD3wFtjPFwVSdiI.gseVbZim3Y1uM92idcSoxCpiG033yH2"/>
+			<column name="firstname" value="Dimitrije"/>
+			<column name="lastname" value="Mitic"/>
+			<column name="money" valueNumeric="0"/>
+			<column name="role_id" valueComputed="(SELECT id FROM role WHERE name = 'ROLE_ADMIN')"/>
+			<column name="enabled" valueBoolean="true"/>
+			<column name="version" valueNumeric="0"/>
+			<column name="currency" value="RSD"/>
+		</insert>
+
+		<!-- 3. Korisnik Željko (Običan User - role_id 2) -->
+		<insert tableName="user">
+			<column name="email" value="zeljko@gmail.com"/>
+			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
+			<column name="firstname" value="Zeljko"/>
+			<column name="lastname" value="Stojkovic"/>
+			<column name="money" valueNumeric="0"/>
+			<!-- Pretpostavka da je role_id 2 zapravo ROLE_USER -->
+			<column name="role_id" valueNumeric="2"/>
+			<column name="enabled" valueBoolean="true"/>
+			<column name="version" valueNumeric="0"/>
+			<column name="currency" value="RSD"/>
+		</insert>
+	</changeSet>
+
+</databaseChangeLog>

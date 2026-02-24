@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="7-insert-initial-locations" author="micko112">
+
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Vračar"/>
+            <column name="lat" valueNumeric="44.7975018"/>
+            <column name="lng" valueNumeric="20.4741334"/>
+        </insert>
+
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Vozdovac"/>
+            <column name="lat" valueNumeric="44.7451172"/>
+            <column name="lng" valueNumeric="20.4881893"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

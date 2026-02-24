@@ -54,33 +54,15 @@ public class Ad {
     private AdStatus adStatus;
     @Column(name = "total_quantity", nullable = false)
     private int totalQuantity = 1; // Podrazumevano 1 za unikatne stvari
-    @Column(name = "available_quantity", nullable = false)
-    private int availableQuantity = 1;
-//    @PrePersist
-//    public void onPrePersist() {
-//        this.availableQuantity = this.totalQuantity;
-//    }
+
+
     @ElementCollection
     @CollectionTable(name = "ad_image", joinColumns = @JoinColumn(name = "ad_id"))
     @Column(name="image_url")
     private List<String> images = new ArrayList<>();
 
     public Ad(String title, String description, BigDecimal price, PriceInterval priceInterval, User owner, Category category,
-              Location location, AdStatus adStatus, int totalQuantity, int availableQuantity, List<String> images) {
-        this.title = title;
-        this.description = description;
-        this.price = price;
-        this.priceInterval = priceInterval;
-        this.owner = owner;
-        this.category = category;
-        this.location = location;
-        this.adStatus = adStatus;
-        this.totalQuantity = totalQuantity;
-        this.availableQuantity = availableQuantity;
-        this.images = images;
-    }
-    public Ad(String title, String description, BigDecimal price, PriceInterval priceInterval, User owner, Category category,
-              Location location, AdStatus adStatus, int totalQuantity, List<String> images) {
+              Location location, AdStatus adStatus, int totalQuantity,  List<String> images) {
         this.title = title;
         this.description = description;
         this.price = price;
@@ -92,6 +74,7 @@ public class Ad {
         this.totalQuantity = totalQuantity;
         this.images = images;
     }
+
 
     public Ad() {
 
@@ -167,14 +150,6 @@ public class Ad {
         this.totalQuantity = totalQuantity;
     }
 
-    public int getAvailableQuantity() {
-        return availableQuantity;
-    }
-
-    public void setAvailableQuantity(int availableQuantity) {
-        this.availableQuantity = availableQuantity;
-    }
-
     public List<String> getImages() {
         return images;
     }
@@ -207,7 +182,6 @@ public class Ad {
                 ", location=" + location +
                 ", adStatus=" + adStatus +
                 ", total_quantity=" + totalQuantity +
-                ", available_quantity=" + availableQuantity +
                 ", images=" + images +
                 '}';
     }

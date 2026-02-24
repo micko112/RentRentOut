@@ -23,7 +23,6 @@ public class UpdateAdRequestDto {
     // ad status se automatski menja
     @NotNull
     private int totalQuantity;
-    // availableQuantity se automatski menja
     @NotEmpty
     private List<String> images;
     // email znaci username

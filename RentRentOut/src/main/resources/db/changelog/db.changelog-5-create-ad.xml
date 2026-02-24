@@ -5,8 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-
-    <changeSet id="6-create-ad" author="micko112">
+    <changeSet id="6-create-ad-tables-final" author="micko112">
+        <!-- Kreiranje tabele Oglasi (ad) -->
         <createTable tableName="ad">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -29,9 +29,13 @@
             <column name="total_quantity" type="INT" defaultValueNumeric="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="available_quantity" type="INT" defaultValueNumeric="1">
+
+            <!-- Nova kolona zgnječena u kreiranje tabele -->
+            <column name="currency" type="VARCHAR(16)" defaultValue="RSD">
                 <constraints nullable="false"/>
             </column>
+
+            <!-- Strani ključevi -->
             <column name="owner_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_ad_owner" referencedTableName="user" referencedColumnNames="id"/>
             </column>
@@ -42,37 +46,8 @@
                 <constraints nullable="true" foreignKeyName="fk_ad_location" referencedTableName="location" referencedColumnNames="id"/>
             </column>
         </createTable>
-        <insert tableName="ad">
-            <column name="title" value="Izdaje se stan na dan - Vračar"/>
-            <column name="description" value="Kompletno opremljen stan u srcu Vračara, idealan za 2 osobe. Klima, Wi-Fi, kablovska. Blizu Hrama Svetog Save."/>
-            <column name="price" valueNumeric="5000.00"/>
-            <column name="price_interval" value="PER_DAY"/>
-            <column name="ad_status" value="ACTIVE"/>
 
-            <column name="total_quantity" valueNumeric="1"/>
-            <column name="available_quantity" valueNumeric="1"/>
-
-            <column name="owner_id" valueNumeric="1"/>     <!-- ID korisnika 'Luka' -->
-            <column name="category_id" valueNumeric="3"/>  <!-- ID kategorije 'Nekretnine' -->
-            <column name="location_id" valueNumeric="1"/>  <!-- ID neke lokacije -->
-        </insert>
-
-        <insert tableName="ad">
-            <column name="title" value="Iznajmljivanje profesionalne Hilti bušilice"/>
-            <column name="description" value="Model TE 70-AVR. Dolazi sa kompletom burgija za beton. Moguće iznajmljivanje više komada odjednom."/>
-            <column name="price" valueNumeric="2500.00"/>
-            <column name="price_interval" value="PER_DAY"/>
-            <column name="ad_status" value="ACTIVE"/>
-
-            <column name="total_quantity" valueNumeric="15"/>
-            <column name="available_quantity" valueNumeric="15"/>
-
-            <column name="owner_id" valueNumeric="2"/>
-            <column name="category_id" valueNumeric="1"/>
-            <column name="location_id" valueNumeric="2"/>
-        </insert>
-    </changeSet>
-    <changeSet id="7-create-ad-image-table" author="micko112">
+        <!-- Kreiranje tabele za slike (odmah ovde, jer usko zavisi od 'ad') -->
         <createTable tableName="ad_image">
             <column name="ad_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_adimage_ad" referencedTableName="ad" referencedColumnNames="id"/>
@@ -82,22 +57,5 @@
             </column>
         </createTable>
     </changeSet>
-    
-    <changeSet author="Luka" id="8-add-currency-column">
-    	<addColumn tableName="ad">
-    		<column name="currency" type="VARCHAR(16)"></column>
-    	</addColumn>
-    	
-    	<update tableName="ad">
-    		<column name="currency" value="RSD"></column>
-    	</update>
-    	
-    	<addNotNullConstraint tableName="ad" columnName="currency" columnDataType="VARCHAR(16)"/>
-    </changeSet>
-    
-	<changeSet author="Luka" id="9-add-default-currency">
-		<addDefaultValue columnName="currency" tableName="ad" defaultValue="RSD"/>
-	</changeSet>
 
 </databaseChangeLog>
-

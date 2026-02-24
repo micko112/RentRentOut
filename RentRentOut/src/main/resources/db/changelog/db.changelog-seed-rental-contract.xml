@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="seed-rental-contracts" author="Luka">
+        <!-- Ugovor 1 -->
+        <insert tableName="rental_contract">
+            <column name="ad_id" valueNumeric="2"/>
+            <column name="lessee_id" valueNumeric="1"/>
+            <column name="start_date" valueDate="2025-03-20"/>
+            <column name="end_date" valueDate="2025-04-20"/>
+            <column name="agreed_price" valueNumeric="7000"/>
+            <column name="contract_status" value="REQUESTED"/>
+            <column name="offer_sender_id" valueNumeric="1"/>
+            <column name="amount" valueNumeric="1"/>
+            <column name="currency" value="RSD"/>
+        </insert>
+
+        <!-- Ugovor 2 -->
+        <insert tableName="rental_contract">
+            <column name="ad_id" valueNumeric="1"/>
+            <column name="lessee_id" valueNumeric="2"/>
+            <column name="start_date" valueDate="2025-03-20"/>
+            <column name="end_date" valueDate="2025-04-20"/>
+            <column name="agreed_price" valueNumeric="78000"/>
+            <column name="contract_status" value="REQUESTED"/>
+            <column name="offer_sender_id" valueNumeric="2"/>
+            <column name="amount" valueNumeric="1"/>
+            <column name="currency" value="RSD"/>
+        </insert>
+
+        <!-- Ugovor 3 (Ispravljena greška sa duplim start_date) -->
+        <insert tableName="rental_contract">
+            <column name="ad_id" valueNumeric="2"/>
+            <column name="lessee_id" valueNumeric="3"/>
+            <column name="start_date" valueDate="2025-03-20"/>
+            <column name="end_date" valueDate="2025-04-20"/>
+            <column name="agreed_price" valueNumeric="9000"/>
+            <column name="contract_status" value="REQUESTED"/>
+            <column name="offer_sender_id" valueNumeric="3"/>
+            <column name="amount" valueNumeric="1"/>
+            <column name="currency" value="RSD"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

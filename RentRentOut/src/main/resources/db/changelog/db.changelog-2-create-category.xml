@@ -6,7 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
 
-        <changeSet id="3-create-category-table" author="micko">
+        <changeSet id="2-create-category-table" author="micko">
                 <createTable tableName="category">
                     <column name="id" type="BIGINT" autoIncrement="true">
                         <constraints primaryKey="true" nullable="false"/>
@@ -18,22 +18,5 @@
                         <constraints foreignKeyName="fk_category_parent" referencedTableName="category" referencedColumnNames="id"/>
                     </column>
                 </createTable>
-
-            <insert tableName="category">
-                <column name="name" value="Alati"/>
-            </insert>
-            <insert tableName="category">
-                <column name="name" value="Nekretnine"/>
-            </insert>
-            <insert tableName="category">
-                <column name="name" value="Stanovi"/>
-                <column name="parent_id" value="2"/>
-            </insert>
-            <insert tableName="category">
-                <column name="name" value="Vozila"/>
-            </insert>
             </changeSet>
-
-
-
         </databaseChangeLog>

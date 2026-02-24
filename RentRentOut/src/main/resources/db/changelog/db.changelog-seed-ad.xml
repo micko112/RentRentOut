@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="seed-ads-data" author="micko112">
+        <!-- Oglas 1 -->
+        <insert tableName="ad">
+            <column name="title" value="Izdaje se stan na dan - Vračar"/>
+            <column name="description" value="Kompletno opremljen stan u srcu Vračara, idealan za 2 osobe. Klima, Wi-Fi, kablovska. Blizu Hrama Svetog Save."/>
+            <column name="price" valueNumeric="5000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="1"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="3"/>
+            <column name="location_id" valueNumeric="1"/>
+        </insert>
+
+        <!-- Oglas 2 -->
+        <insert tableName="ad">
+            <column name="title" value="Iznajmljivanje profesionalne Hilti bušilice"/>
+            <column name="description" value="Model TE 70-AVR. Dolazi sa kompletom burgija za beton. Moguće iznajmljivanje više komada odjednom."/>
+            <column name="price" valueNumeric="2500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="15"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="1"/>
+            <column name="location_id" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -231,12 +231,7 @@ public class AdServiceImpl implements AdService {
         adToUpdate.setCategory(category);
         adToUpdate.setLocation(location);
 
-        int rentedQuantity = adToUpdate.getTotalQuantity() - adToUpdate.getAvailableQuantity();
-        if(req.getTotalQuantity() < rentedQuantity){
-            throw new IllegalStateException("Total quantity cannot be less than the number of items currently rented.");
-        }
         adToUpdate.setTotalQuantity(req.getTotalQuantity());
-        adToUpdate.setAvailableQuantity(req.getTotalQuantity() - rentedQuantity);
 
         Ad savedAd = adRepository.save(adToUpdate);
         return adMapper.toDto(savedAd);
@@ -294,7 +289,6 @@ public class AdServiceImpl implements AdService {
                 predicates.add(criteriaBuilder.equal(root.get("location").get("id"), criteria.getLocationId()));
             }
             predicates.add(criteriaBuilder.equal(root.get("adStatus"), AdStatus.ACTIVE));
-            predicates.add(criteriaBuilder.greaterThan(root.get("availableQuantity"), 0));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
         Page<Ad> adPage = adRepository.findAll(specification, pageable);

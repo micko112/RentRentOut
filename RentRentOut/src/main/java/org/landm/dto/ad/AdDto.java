@@ -19,7 +19,7 @@ public class AdDto {
     private PriceInterval priceInterval;
     private AdStatus adStatus;
     private int totalQuantity;
-    private int availableQuantity;
+
     private List<String> images;
     // email znaci username
     private String email;
@@ -64,12 +64,6 @@ public class AdDto {
     }
     public void setTotalQuantity(int totalQuantity) {
         this.totalQuantity = totalQuantity;
-    }
-    public int getAvailableQuantity() {
-        return availableQuantity;
-    }
-    public void setAvailableQuantity(int availableQuantity) {
-        this.availableQuantity = availableQuantity;
     }
     public List<String> getImages() {
         return images;

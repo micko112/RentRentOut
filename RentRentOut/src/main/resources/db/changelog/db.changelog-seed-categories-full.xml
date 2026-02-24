@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="seed-all-categories" author="micko112">
+
+        <!-- ========================================== -->
+        <!-- 1. Građevinska oprema i alati (ID: 100)    -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="100"/><column name="name" value="Građevinska oprema i alati"/></insert>
+        <insert tableName="category"><column name="name" value="Bušilice i šrafilice"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Struja i agregati"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Testerisanje i sečenje"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Brušenje i poliranje"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Ventilacija i grejanje"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Merni instrumenti"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Ručni alati"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Krečenje i tapete"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Glodanje i hoblovanje"/><column name="parent_id" valueNumeric="100"/></insert>
+        <insert tableName="category"><column name="name" value="Skele i podupirači"/><column name="parent_id" valueNumeric="100"/></insert>
+
+        <!-- ========================================== -->
+        <!-- 2. Elektronika (ID: 200)                   -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="200"/><column name="name" value="Elektronika"/></insert>
+        <insert tableName="category"><column name="name" value="Audio oprema i zvuk"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="Dronovi"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="Projektori i televizori"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="Računari i oprema"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="Video igre i konzole"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="Mobilni telefoni i tableti"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="Radio stanice i toki-voki"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="Kancelarijske mašine"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="POS terminali"/><column name="parent_id" valueNumeric="200"/></insert>
+        <insert tableName="category"><column name="name" value="Ostalo u elektronici"/><column name="parent_id" valueNumeric="200"/></insert>
+
+        <!-- ========================================== -->
+        <!-- 3. Foto i Video (ID: 300)                  -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="300"/><column name="name" value="Foto i Video"/></insert>
+        <insert tableName="category"><column name="name" value="Fotoaparati i kamere"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Objektivi"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Blicevi i rasveta"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Stativi i rigovi"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Foto/Video paketi"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Monitori"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Baterije za kamere"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Memorijske kartice"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Foto pozadine"/><column name="parent_id" valueNumeric="300"/></insert>
+        <insert tableName="category"><column name="name" value="Ostalo u foto i video"/><column name="parent_id" valueNumeric="300"/></insert>
+
+        <!-- ========================================== -->
+        <!-- 4. Bašta (ID: 400)                         -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="400"/><column name="name" value="Bašta"/></insert>
+        <insert tableName="category"><column name="name" value="Baštenske mašine"/><column name="parent_id" valueNumeric="400"/></insert>
+        <insert tableName="category"><column name="name" value="Merdevine"/><column name="parent_id" valueNumeric="400"/></insert>
+        <insert tableName="category"><column name="name" value="Održavanje travnjaka"/><column name="parent_id" valueNumeric="400"/></insert>
+        <insert tableName="category"><column name="name" value="Baštenski alati"/><column name="parent_id" valueNumeric="400"/></insert>
+        <insert tableName="category"><column name="name" value="Baštenski nameštaj"/><column name="parent_id" valueNumeric="400"/></insert>
+        <insert tableName="category"><column name="name" value="Ostalo u bašti"/><column name="parent_id" valueNumeric="400"/></insert>
+
+        <!-- ========================================== -->
+        <!-- 5. Kuća (ID: 500)                          -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="500"/><column name="name" value="Kuća i dom"/></insert>
+        <insert tableName="category"><column name="name" value="Stilizovanje i dekoracija"/><column name="parent_id" valueNumeric="500"/></insert>
+        <insert tableName="category"><column name="name" value="Čišćenje i pranje"/><column name="parent_id" valueNumeric="500"/></insert>
+        <insert tableName="category"><column name="name" value="Kuhinjski aparati"/><column name="parent_id" valueNumeric="500"/></insert>
+        <insert tableName="category"><column name="name" value="Oprema za decu"/><column name="parent_id" valueNumeric="500"/></insert>
+        <insert tableName="category"><column name="name" value="Lična nega"/><column name="parent_id" valueNumeric="500"/></insert>
+        <insert tableName="category"><column name="name" value="Mašine za šivenje"/><column name="parent_id" valueNumeric="500"/></insert>
+        <insert tableName="category"><column name="name" value="Oprema za selidbe"/><column name="parent_id" valueNumeric="500"/></insert>
+        <insert tableName="category"><column name="name" value="Oprema za kućne ljubimce"/><column name="parent_id" valueNumeric="500"/></insert>
+        <insert tableName="category"><column name="name" value="Ostalo u kući"/><column name="parent_id" valueNumeric="500"/></insert>
+
+        <!-- ========================================== -->
+        <!-- 6. Proslave i Događaji (ID: 600)           -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="600"/><column name="name" value="Proslave i događaji"/></insert>
+        <insert tableName="category"><column name="name" value="Zvuk, rasveta i bina"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Odeća i kostimi"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Nameštaj za proslave"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Ketering i kuhinja"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Aktivnosti i zabava"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Šatori i tende"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Dekoracija"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Party paketi"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Grejalice i pečurke"/><column name="parent_id" valueNumeric="600"/></insert>
+        <insert tableName="category"><column name="name" value="Ostalo za proslave"/><column name="parent_id" valueNumeric="600"/></insert>
+
+        <!-- ========================================== -->
+        <!-- 7. Sport i Rekreacija (ID: 700)            -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="700"/><column name="name" value="Sport i rekreacija"/></insert>
+        <insert tableName="category"><column name="name" value="Muzički instrumenti"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Kampovanje i outdoor"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Biciklizam"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Igra i hobi"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Sportski rekviziti"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Sportovi na vodi"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Trening i teretana"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Zimski sportovi"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Putovanja i koferi"/><column name="parent_id" valueNumeric="700"/></insert>
+        <insert tableName="category"><column name="name" value="Mobilnost i medicinska nega"/><column name="parent_id" valueNumeric="700"/></insert>
+
+        <!-- ========================================== -->
+        <!-- 8. Vozila (ID: 800)                        -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="800"/><column name="name" value="Vozila i oprema"/></insert>
+        <insert tableName="category"><column name="name" value="Auto oprema"/><column name="parent_id" valueNumeric="800"/></insert>
+        <insert tableName="category"><column name="name" value="Alati za radionicu"/><column name="parent_id" valueNumeric="800"/></insert>
+        <insert tableName="category"><column name="name" value="Čamci i plovila"/><column name="parent_id" valueNumeric="800"/></insert>
+        <insert tableName="category"><column name="name" value="Prikolice"/><column name="parent_id" valueNumeric="800"/></insert>
+        <insert tableName="category"><column name="name" value="Kamperi i kamp prikolice"/><column name="parent_id" valueNumeric="800"/></insert>
+        <insert tableName="category"><column name="name" value="Motocikli i oprema"/><column name="parent_id" valueNumeric="800"/></insert>
+        <insert tableName="category"><column name="name" value="Prikolice za konje"/><column name="parent_id" valueNumeric="800"/></insert>
+        <insert tableName="category"><column name="name" value="Ostala vozila"/><column name="parent_id" valueNumeric="800"/></insert>
+
+        <!-- ========================================== -->
+        <!-- 9. Nekretnine (ID: 900)                    -->
+        <!-- ========================================== -->
+        <insert tableName="category"><column name="id" valueNumeric="900"/><column name="name" value="Nekretnine"/></insert>
+        <insert tableName="category"><column name="name" value="Stanovi na dan"/><column name="parent_id" valueNumeric="900"/></insert>
+        <insert tableName="category"><column name="name" value="Stanovi (dugoročno)"/><column name="parent_id" valueNumeric="900"/></insert>
+        <insert tableName="category"><column name="name" value="Kuće i vile"/><column name="parent_id" valueNumeric="900"/></insert>
+        <insert tableName="category"><column name="name" value="Vikendice i brvnare"/><column name="parent_id" valueNumeric="900"/></insert>
+        <insert tableName="category"><column name="name" value="Poslovni prostori"/><column name="parent_id" valueNumeric="900"/></insert>
+        <insert tableName="category"><column name="name" value="Garaže i parking"/><column name="parent_id" valueNumeric="900"/></insert>
+        <insert tableName="category"><column name="name" value="Sobe"/><column name="parent_id" valueNumeric="900"/></insert>
+    </changeSet>
+</databaseChangeLog>
