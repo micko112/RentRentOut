@@ -60,8 +60,9 @@
 .right-column{
   flex: 1;
   position: sticky;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border: 0 solid #e0e0e0;
+  box-shadow: 0 4px 10px rgba(40, 56, 89, 0.25);
+  border-radius: 16px;
   min-width: 380px;
 }
 .calendar-widget{

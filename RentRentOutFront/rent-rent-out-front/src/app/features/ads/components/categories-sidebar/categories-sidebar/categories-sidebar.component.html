@@ -1,0 +1,25 @@
+<div class="filters-container">
+
+  <div class="filter-section">
+    <h4 class="filter-title">Kategorije</h4>
+
+    <div class="category-list">
+      <!-- Opcija za resetovanje / prikaz svih oglasa -->
+      <a class="category-item"
+         [class.active]="selectedCategoryId === null"
+         (click)="onCategoryClick(selectedCategoryId)">
+        Sve kategorije
+      </a>
+
+      <!-- Lista kategorija sa backenda -->
+      <a class="category-item"
+         *ngFor="let c of categories"
+         [class.active]="c.id === selectedCategoryId"
+         (click)="onCategoryClick(c.id)">
+        {{ c.name }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Ovde sutra lako dodaš novu .filter-section za Cenu -->
+</div>

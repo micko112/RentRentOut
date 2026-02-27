@@ -1,29 +1,131 @@
-.filters-container{
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  width: 180px;
-  flex-shrink: 0;
-  background-color: rgba(255, 255, 255, 0.91);
+.sidebar-wrapper {
+  width: 280px; /* Identična širina kao Categories Sidebar */
+  background-color: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 14px;
-  height: fit-content;
-  gap: 10px
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
 
+.sidebar-header {
+  padding: 20px 20px 10px;
+
+  .sidebar-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #283859; /* Tvoja teget boja */
+    margin: 0;
+  }
 }
-span{
-    border-bottom: 1px solid rgb(170, 170, 170);
+
+.sidebar-content {
+  padding: 0 20px 20px;
 }
-.category-list{
+
+.filter-group {
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
   display: flex;
   flex-direction: column;
-  align-items: start;
-  gap: 3px;
+  gap: 8px;
 
-  a{
-    cursor: pointer;
-    &:hover {
-      text-decoration: underline;  }
+  &:last-of-type {
+    border-bottom: none;
   }
 
+  .group-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* Input polja i Selectovi */
+.custom-select, .price-input, .text-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #283859;
+  }
+}
+
+/* Cena Red */
+.price-row {
+  display: flex;
+  gap: 10px;
+}
+
+.currency-selector {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+
+  .radio-pill {
+    cursor: pointer;
+    input { display: none; }
+    span {
+      display: inline-block;
+      padding: 4px 12px;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+    }
+    input:checked + span {
+      background-color: #283859;
+      color: white;
+      border-color: #283859;
+    }
+  }
+}
+
+/* Dugmad */
+.sidebar-actions {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-apply {
+    background-color: #6ecf7e; /* Tvoja zelena boja */
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(110, 207, 126, 0.2);
+
+    &:hover {
+      background-color: #4baf5c;
+      transform: translateY(-1px);
+    }
+  }
+
+  .btn-clear {
+    background-color: transparent;
+    color: #888;
+    border: 1px solid #ddd;
+
+    &:hover {
+      background-color: #f9f9f9;
+      color: #333;
+    }
+  }
 }

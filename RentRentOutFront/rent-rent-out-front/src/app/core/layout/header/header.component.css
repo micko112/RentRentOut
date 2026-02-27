@@ -2,55 +2,240 @@
   position: sticky;
   top: 0;
   z-index: 999;
-  padding: 15px 0;
-  border-bottom: 1px solid black;
+  padding: 40px;
+  border-bottom: 1px solid #e5e5e5;
   background-color: white;
+
 }
+.site-header .container {
+  max-width: 100%;
+  margin: 0;
+
+}
+
 .header-content {
-  display:  flex;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
 }
 
-.logo a {
-  font-size: 24px;
-  font-weight: bold;
-  text-decoration: none;
-  align-self: start;
+.logo {
+  flex: 0 0 auto; /* ne raste, samo koliko treba */
+  position: static;
+
+  a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .logo-img {
+    width: 205px;
+    height: 61px;
+    display: block;
+  }
 }
 
-.search-bar{
-  flex-grow: 1; /* Zauzmi sav slobodan prostor */
+.search-bar {
+  flex: 1 1 auto;
   display: flex;
+  align-items: center;
+  border: 1.5px solid #ccc;
+  height: 48px;
+  border-radius: 24px;
+  position: relative;
+  padding-right: 4px;
+  box-shadow: 0 4px 10px rgba(40, 56, 89, 0.25);
 
-  input{
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-right: none;
-    border-radius: 4px 0 0 4px;
+  .search-icon {
+    margin: 5px 10px;
+    width: 28px;
+    height: 28px;
+    opacity: 0.6;
+    flex-shrink: 0;
   }
-  button{
-    border: 1px solid #ccc;
-    border-left: none;
-    border-radius: 0 4px 4px 0;
-    padding: 10px 20px;
+
+  input {
+    flex: 1 1 auto;
+    border: none;
+    outline: none;
+    background: transparent;
+    line-height: 48px;
+    height: auto;
+    padding: 0 10px;
+    font-size: 14px;
+    &::placeholder {
+      font-family: 'Lato', serif;
+      color: rgba(76, 76, 76, 0.91);
+      font-size: 14px;
+    }
+  }
+
+
+  .search-btn {
+    border-radius: 25px;
+    padding: 9px 25px;
     cursor: pointer;
-    background-color: #283859;
+    background-color: #6ecf7e;
     color: white;
+    border: none;
+    font-size: 15px;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: #4baf5c;
+      transition: 0.2s;
+      box-shadow: 0 4px 10px rgba(40, 56, 89, 0.25);
+
+    }
   }
+}
+.search-bar:focus-within {
+  border: 1px solid #813181;
+  box-shadow: 0 4px 10px rgba(129, 49, 129, 0.27);
 }
 .user-actions {
+  flex: 0 0 auto;
   display: flex;
+  align-items: center;
+  white-space: nowrap;
   gap: 10px;
-  .log-in-btn{
 
+  .btn-post-ad {
+    border-radius: 15px;
+    padding: 12px 30px;
+    cursor: pointer;
+    background-color: #6ecf7e;
+    color: white;
+    border: none;
+    font-size: 15px;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    margin-right: 60px;
+
+    &:hover {
+      background-color: #4baf5c;
+      transition: 0.2s;
+      box-shadow: 0 4px 10px rgba(40, 56, 89, 0.25);
+    }
   }
-  .btn-post-ad{
-    color: red;
+  .btn-profile{
+    background-color: white;
+    border-radius: 15px;
+    padding: 12px 30px;
+    cursor: pointer;
+    color: black;
+    border: 1px solid black;
+    font-size: 15px;
+    font-weight: bold;
+
+    &:hover {
+      opacity: 0.6;
+      transition: 0.2s;
+      box-shadow: 0 4px 10px rgba(40, 56, 89, 0.25);
+    }
+  }
+  .auth-button {
+    background-color: white;
+    border-radius: 15px;
+    padding: 12px 30px;
+    cursor: pointer;
+    color: black;
+    border: 1px solid black;
+    font-size: 15px;
+    font-weight: bold;
+
+    &:hover {
+      opacity: 0.6;
+      transition: 0.2s;
+      box-shadow: 0 4px 10px rgba(40, 56, 89, 0.25);
+    }
+  }
+}
+@media (max-width: 1159px) {
+  .user-actions .btn-post-ad{
+    margin-right: 0;
+  }
+    .user-actions .auth-button,
+    .user-actions .btn-post-ad {
+      padding: 12px 18px;
+
+    }
+}
+@media (max-width: 1000px) {
+  .header-content {
+    display: flex;
+    flex-wrap: wrap;          /* dozvoli prelazak u drugi red */
+    align-items: center;
   }
 
+  .logo {
+    flex: 0 0 auto;           /* ostaje kompaktan */
+    margin-bottom: 8px;
+  }
 
+  .search-bar {
+    flex: 1 1 auto;           /* širi se pored loga */
+    min-width: 0;
+    margin-bottom: 8px;
+  }
+
+  .user-actions {
+    flex: 1 0 100%;           /* zauzme ceo drugi red */
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .user-actions .auth-button,
+  .user-actions .btn-post-ad {
+    padding: 8px 16px;        /* još manji na mobilnijem */
+    font-size: 13px;
+  }
+
+  .user-actions .btn-post-ad {
+    margin-right: 0;          /* da razmak ne vuče layout */
+    margin-left: 6px;         /* mali razmak od auth dugmeta */
+  }
+}
+
+@media (max-width: 992px) {
+  .header-content {
+    gap: 12px;
+  }
+
+  .search-bar {
+    max-width: none;
+  }
+
+  .user-actions .auth-button,
+  .user-actions .btn-post-ad {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    padding: 16px 0;
+  }
+  .user-actions .auth-button,
+  .user-actions .btn-post-ad {
+    padding: 8px 18px;
+    font-size: 13px;
+  }
+
+  .user-actions .btn-post-ad {
+    margin-left: 6px;
+  }
 }
 

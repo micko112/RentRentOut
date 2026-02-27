@@ -1,18 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'Lato';
+  src: url('/assets/fonts/lato/LatoLatin-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('/assets/fonts/lato/LatoLatin-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+}
+html{
+  font-family: 'Lato', Arial, sans-serif;
+}
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 body {
-  font-family: sans-serif, Arial, Helvetica;
-
-  background-color: #f8f8f8;
-
-
+  margin: 0;
+  background-color: #ffffff;
 }
 .container {
   max-width: 1180px;
   margin: 0 auto;
   padding: 0 15px;
+
 }
+

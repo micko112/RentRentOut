@@ -8,15 +8,15 @@
 
   <div class="listing-info">
     <a class="listing-title">{{ ad.title }}</a>
-    <p class="listing-location">{{ ad.city }}, {{ ad.municipality }}</p>
-    <div class="price-tag">
+    <div class="listing-location">{{ ad.city }}, {{ ad.municipality }}</div>
 
+    <div class="price-tag">
 <!--      <p class="price">{{ ad.price | currency: 'RSD':'din':'1.0-0' }}</p>-->
-      <p class="listing-price">{{ ad.price | number: '1.0-0' }}</p>
+      <div class="listing-price">{{ ad.price | number: '1.0-0' }}</div>
       <div class="currency-interval">
         <span class="currency">din</span>
         <!-- <span class="currency" *ngIf="ad.currency === 'EUR'">€</span> -->
-        <p class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</p>
+        <span class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</span>
 
       </div>
     </div>

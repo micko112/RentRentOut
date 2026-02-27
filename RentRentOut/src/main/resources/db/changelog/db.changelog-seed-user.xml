@@ -45,6 +45,65 @@
 			<column name="version" valueNumeric="0"/>
 			<column name="currency" value="RSD"/>
 		</insert>
+		<insert tableName="user">
+			<column name="email" value="nikola.jokic@gmail.com"/>
+			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
+			<column name="firstname" value="Nikola"/>
+			<column name="lastname" value="Jokic"/>
+			<column name="money" valueNumeric="0"/>
+			<column name="role_id" valueNumeric="2"/>
+			<column name="enabled" valueBoolean="true"/>
+			<column name="version" valueNumeric="0"/>
+			<column name="currency" value="RSD"/>
+		</insert>
+
+		<insert tableName="user">
+			<column name="email" value="ivan.milosevic@gmail.com"/>
+			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
+			<column name="firstname" value="Ivan"/>
+			<column name="lastname" value="Milosevic"/>
+			<column name="money" valueNumeric="0"/>
+			<column name="role_id" valueNumeric="2"/>
+			<column name="enabled" valueBoolean="true"/>
+			<column name="version" valueNumeric="0"/>
+			<column name="currency" value="RSD"/>
+		</insert>
+
+		<insert tableName="user">
+			<column name="email" value="marija.stojanovic@gmail.com"/>
+			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
+			<column name="firstname" value="Marija"/>
+			<column name="lastname" value="Stojanovic"/>
+			<column name="money" valueNumeric="0"/>
+			<column name="role_id" valueNumeric="2"/>
+			<column name="enabled" valueBoolean="true"/>
+			<column name="version" valueNumeric="0"/>
+			<column name="currency" value="RSD"/>
+		</insert>
+
+		<insert tableName="user">
+			<column name="email" value="petar.petrovic@gmail.com"/>
+			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
+			<column name="firstname" value="Petar"/>
+			<column name="lastname" value="Petrovic"/>
+			<column name="money" valueNumeric="0"/>
+			<column name="role_id" valueNumeric="2"/>
+			<column name="enabled" valueBoolean="true"/>
+			<column name="version" valueNumeric="0"/>
+			<column name="currency" value="RSD"/>
+		</insert>
+
+		<insert tableName="user">
+			<column name="email" value="jovana.radovic@gmail.com"/>
+			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
+			<column name="firstname" value="Jovana"/>
+			<column name="lastname" value="Radovic"/>
+			<column name="money" valueNumeric="0"/>
+			<column name="role_id" valueNumeric="2"/>
+			<column name="enabled" valueBoolean="true"/>
+			<column name="version" valueNumeric="0"/>
+			<column name="currency" value="RSD"/>
+		</insert>
 	</changeSet>
 
 </databaseChangeLog>

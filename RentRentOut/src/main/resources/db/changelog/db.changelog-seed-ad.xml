@@ -33,6 +33,593 @@
             <column name="category_id" valueNumeric="101"/>
             <column name="location_id" valueNumeric="2"/>
         </insert>
+        <!-- ========================================== -->
+        <!-- 1. GRAĐEVINSKA OPREMA I ALATI (kategorije 101-110) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Električni čekić Makita HR5202C"/>
+            <column name="description" value="SDS-MAX čekić sa 1500W, idealan za rušenje i bušenje betona. Ima 3 funkcije: bušenje, čekić, bušenje sa čekićem. U kompletu 3 šila i kofer."/>
+            <column name="price" valueNumeric="2000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="8"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="101"/>
+            <column name="location_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Agregat za struju Honda EU30is"/>
+            <column name="description" value="Inverter agregat 3.2kW, izuzetno tih rad. Idealan za građevinu, kampovanje ili kao rezervni izvor struje. Sa trofaznim i monofaznim priključcima."/>
+            <column name="price" valueNumeric="4500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="5"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="102"/>
+            <column name="location_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Stona testera Bosch GTS 10 XC"/>
+            <column name="description" value="Precizna stona testera sa laserom i produžnim postoljem. Dubina reza do 90mm. Idealna za nameštaj i parket."/>
+            <column name="price" valueNumeric="3000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="3"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="103"/>
+            <column name="location_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Set skela za visoke radove"/>
+            <column name="description" value="Mobilne skele visine do 10m. Komplet uključuje platforme, točkove i stabilizatore. Atestirano i bezbedno."/>
+            <column name="price" valueNumeric="6000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="4"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="110"/>
+            <column name="location_id" valueNumeric="1"/>
+        </insert>
+        <!-- ========================================== -->
+        <!-- 2. ELEKTRONIKA (kategorije 201-211) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Projektor Epson EB-U50"/>
+            <column name="description" value="Full HD projektor sa 3LCD tehnologijom, 3700 lumena. Idealno za bioskopske večeri, prezentacije ili igranje igrica. HDMI, USB, Wi-Fi."/>
+            <column name="price" valueNumeric="3500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="203"/>
+            <column name="location_id" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="DJI Mavic 3 dron sa ekranom"/>
+            <column name="description" value="Profesionalni dron sa 4/3 CMOS senzorom, 20MP, 5.1K video. Uključuje 3 baterije, daljinski sa ekranom, torba."/>
+            <column name="price" valueNumeric="8000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="1"/>
+            <column name="owner_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="202"/>
+            <column name="location_id" valueNumeric="5"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="PlayStation 5 sa 2 džojstika"/>
+            <column name="description" value="Iznajmi PS5 za žurku ili vikend. Dolazi sa 2 kontrolera, punjačem i 3 igre. Savršeno za društvo."/>
+            <column name="price" valueNumeric="2500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="3"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="205"/>
+            <column name="location_id" valueNumeric="2"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 3. FOTO I VIDEO (kategorije 301-310) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Sony A7 IV sa 24-70mm GM"/>
+            <column name="description" value="Full frame fotoaparat sa 33MP. Savršen za svadbe, portrete i profesionalne snimke. U kompletu dodatna baterija i brzi punjač."/>
+            <column name="price" valueNumeric="7000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="5"/>
+            <column name="category_id" valueNumeric="301"/>
+            <column name="location_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Studio stativ Manfrotto sa fluidnom glavom"/>
+            <column name="description" value="Profesionalni video stativ sa glavom za teške kamere. Maksimalna visina 180cm, nosivost 12kg."/>
+            <column name="price" valueNumeric="1500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="6"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="304"/>
+            <column name="location_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="LED rasveta set za intervju"/>
+            <column name="description" value="2x Godox LED lampe sa softboxovima, stativi, pozadinski platno. Komplet za profesionalno osvetljenje."/>
+            <column name="price" valueNumeric="4000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="3"/>
+            <column name="owner_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="303"/>
+            <column name="location_id" valueNumeric="4"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 4. BAŠTA (kategorije 401-406) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Stihl MS 261 C-M motorna testera"/>
+            <column name="description" value="Profesionalna motor testera za seču drva. 50cc, 3.5kW. Sa setom za oštrenje i zaštitnom opremom."/>
+            <column name="price" valueNumeric="3500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="4"/>
+            <column name="owner_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="401"/>
+            <column name="location_id" valueNumeric="2"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Montažne merdevine 12m"/>
+            <column name="description" value="Aluminijumske merdevine, sklopive u razne konfiguracije. Nosivost 150kg, sa stabilizatorima."/>
+            <column name="price" valueNumeric="1800.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="5"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="402"/>
+            <column name="location_id" valueNumeric="5"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 5. KUĆA I DOM (kategorije 501-510) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Profesionalni šampon za tepihe Karcher"/>
+            <column name="description" value="Mašina za dubinsko pranje tepiha, nameštaja i enterijera automobila. Sa setom hemije."/>
+            <column name="price" valueNumeric="3000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="7"/>
+            <column name="owner_id" valueNumeric="5"/>
+            <column name="category_id" valueNumeric="502"/>
+            <column name="location_id" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Traktor za travu Husqvarna"/>
+            <column name="description" value="Rider traktor sa mulč funkcijom, širina košnje 110cm. Idealno za velike travnjake."/>
+            <column name="price" valueNumeric="8000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="403"/>
+            <column name="location_id" valueNumeric="3"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 6. PROSLAVE I DOGAĐAJI (kategorije 601-610) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="JBL PartyBox 310 zvučnik"/>
+            <column name="description" value="Moćan bluetooth zvučnik sa svetlosnim efektima, 2 mikrofona uključena. Baterija traje 18h."/>
+            <column name="price" valueNumeric="4000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="4"/>
+            <column name="owner_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="601"/>
+            <column name="location_id" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Mesingani samovar za svadbu"/>
+            <column name="description" value="Tradicionalni ruski samovar, kapacitet 5L. Idealan za rustične svadbe i proslave."/>
+            <column name="price" valueNumeric="2500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="1"/>
+            <column name="owner_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="604"/>
+            <column name="location_id" valueNumeric="2"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 7. SPORT I REKREACIJA (kategorije 701-710) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Električni bicikl Cube Kathmandu"/>
+            <column name="description" value="Hybrid electric bike sa Bosch motorom, 625Wh baterija. Kompletno opremljen za duge ture."/>
+            <column name="price" valueNumeric="3500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="3"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="703"/>
+            <column name="location_id" valueNumeric="5"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Set za skijanje sa pancericama"/>
+            <column name="description" value="Skije sa vezovima, štapovi i pancerice (veličina 42). Idealno za Kopaonik."/>
+            <column name="price" valueNumeric="2500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="6"/>
+            <column name="owner_id" valueNumeric="5"/>
+            <column name="category_id" valueNumeric="708"/>
+            <column name="location_id" valueNumeric="1"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 8. VOZILA I OPREMA (kategorije 801-808) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Prikolica za auto 2.5t"/>
+            <column name="description" value="Kiper prikolica, nosivost 2.5t, dimenzija 3x1.8m. Sa atestom i rezervnim točkom."/>
+            <column name="price" valueNumeric="3000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="3"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="804"/>
+            <column name="location_id" valueNumeric="3"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 9. NEKRETNINE (kategorije 901-907) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Vikendica na Zlatiboru"/>
+            <column name="description" value="Brvnara sa 3 spavaće sobe, terasom i pogledom na jezero. Idealno za odmor tokom cele godine."/>
+            <column name="price" valueNumeric="10000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="1"/>
+            <column name="owner_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="904"/>
+            <column name="location_id" valueNumeric="5"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Kancelarijski prostor u Novom Sadu"/>
+            <column name="description" value="Moderan poslovni prostor 45m2, klimatizovan, u blizini Bulevara. Idealno za IT firmu ili agenciju."/>
+            <column name="price" valueNumeric="3000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="1"/>
+            <column name="owner_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="905"/>
+            <column name="location_id" valueNumeric="2"/>
+        </insert>
+        <!-- ========================================== -->
+        <!-- 1. GRAĐEVINSKA OPREMA - DOPUNA -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Profesionalni laser za nivelaciju"/>
+            <column name="description" value="Rotacioni laser Leica sa prijemnikom, domet 100m. Idealno za postavljanje plafona, gips-karton ploča i keramike."/>
+            <column name="price" valueNumeric="3500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="5"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="107"/>
+            <column name="location_id" valueNumeric="6"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Industrijska mašina za pranje fasada"/>
+            <column name="description" value="Karcher visokopritisni čistač sa grejačem, protok 900l/h. Sa setom za penu i produžnim lancem."/>
+            <column name="price" valueNumeric="5500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="3"/>
+            <column name="owner_id" valueNumeric="5"/>
+            <column name="category_id" valueNumeric="104"/>
+            <column name="location_id" valueNumeric="7"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 2. ELEKTRONIKA - DOPUNA -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Motolola profesionalni toki-voki set"/>
+            <column name="description" value="Set od 6 ručnih radio stanica, domet do 10km. Idealno za organizaciju događaja, obezbeđenje ili gradilište."/>
+            <column name="price" valueNumeric="2000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="8"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="207"/>
+            <column name="location_id" valueNumeric="8"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="POS terminali za ugostiteljstvo"/>
+            <column name="description" value="Set od 3 POS terminala sa štampačima i sandukom za keš. Idealno za restorane, kafiće i fensi prodavnice."/>
+            <column name="price" valueNumeric="4000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="209"/>
+            <column name="location_id" valueNumeric="9"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 3. FOTO I VIDEO - DOPUNA -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Memory card set za snimanje"/>
+            <column name="description" value="Profesionalne CFexpress i SD kartice, ukupno 512GB. Idealno za duge intervjue i svadbe."/>
+            <column name="price" valueNumeric="1000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="10"/>
+            <column name="owner_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="308"/>
+            <column name="location_id" valueNumeric="6"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Foto pozadine i reflektori"/>
+            <column name="description" value="Set od 5 različitih pozadina (zelena, siva, bela, drvena) + 2 reflektora sa stativima."/>
+            <column name="price" valueNumeric="2500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="4"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="309"/>
+            <column name="location_id" valueNumeric="7"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 4. BAŠTA - DOPUNA -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Komplet za zalivanje - kap po kap"/>
+            <column name="description" value="Sistem za navodnjavanje sa timerom, crevima i kapaljkama. Pokriva površinu do 200m2."/>
+            <column name="price" valueNumeric="1800.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="6"/>
+            <column name="owner_id" valueNumeric="5"/>
+            <column name="category_id" valueNumeric="404"/>
+            <column name="location_id" valueNumeric="8"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Lux baštenski nameštaj za 6 osoba"/>
+            <column name="description" value="Ratan garnitura sa 6 fotelja, staklenim stolom i 2 ležaljke. Sa jastucima i tendom."/>
+            <column name="price" valueNumeric="5000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="405"/>
+            <column name="location_id" valueNumeric="9"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 5. KUĆA I DOM - DOPUNA -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Mašina za šivenje Bernina"/>
+            <column name="description" value="Profesionalna šivaća mašina sa 1000 programa, vezilica uključena. Idealno za krojačke radove i popravke."/>
+            <column name="price" valueNumeric="3000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="507"/>
+            <column name="location_id" valueNumeric="6"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Oprema za bebe - komplet"/>
+            <column name="description" value="Kolevka, kolica, nosiljka, stolica za hranjenje, monitor za bebe. Komplet za prve mesece."/>
+            <column name="price" valueNumeric="4000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="3"/>
+            <column name="owner_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="504"/>
+            <column name="location_id" valueNumeric="7"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 6. PROSLAVE I DOGAĐAJI - DOPUNA -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Šator za venčanje 100m2"/>
+            <column name="description" value="Luksuzni šator sa transparentnim zidovima, podijumom i lusterima. Kapacitet do 120 osoba."/>
+            <column name="price" valueNumeric="15000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="1"/>
+            <column name="owner_id" valueNumeric="5"/>
+            <column name="category_id" valueNumeric="606"/>
+            <column name="location_id" valueNumeric="8"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Profesionalne grejalice - pečurke"/>
+            <column name="description" value="Set od 10 gasnih grejalica za zimska venčanja i događaje na otvorenom."/>
+            <column name="price" valueNumeric="8000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="609"/>
+            <column name="location_id" valueNumeric="9"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 7. SPORT I REKREACIJA - DOPUNA -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Električni trotinet Dualtron"/>
+            <column name="description" value="Eco-trotinet, maksimalna brzina 80km/h, domet 100km. Sa bravom i kacigom."/>
+            <column name="price" valueNumeric="3500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="4"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="703"/>
+            <column name="location_id" valueNumeric="6"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Kajak za 2 osobe"/>
+            <column name="description" value="Naduvajući kajak sa veslima, prslucima i pumpom. Savršen za avanture na vodi."/>
+            <column name="price" valueNumeric="2500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="5"/>
+            <column name="owner_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="706"/>
+            <column name="location_id" valueNumeric="7"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 8. VOZILA I OPREMA - DOPUNA -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Čamac na vesla za ribolov"/>
+            <column name="description" value="Aluminijumski čamac 4.2m, sa dva vesla, motorom 5KS i prikolicom za transport."/>
+            <column name="price" valueNumeric="5000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="803"/>
+            <column name="location_id" valueNumeric="8"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Auto-dizalica za radionicu"/>
+            <column name="description" value="Dizalica za automobile, nosivost 3 tone. Sa setom za dizanje i sigurnosnim stopama."/>
+            <column name="price" valueNumeric="4000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="3"/>
+            <column name="owner_id" valueNumeric="5"/>
+            <column name="category_id" valueNumeric="802"/>
+            <column name="location_id" valueNumeric="9"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 9. MUZIČKI INSTRUMENTI (podkategorija sporta 701) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Akustična gitara Yamaha"/>
+            <column name="description" value="Profesionalna akustična gitara sa koferom, štimerom i rezervnim žicama. Idealno za kampovanje i druženja."/>
+            <column name="price" valueNumeric="1500.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="7"/>
+            <column name="owner_id" valueNumeric="1"/>
+            <column name="category_id" valueNumeric="701"/>
+            <column name="location_id" valueNumeric="6"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Klasični klavir - za svadbu"/>
+            <column name="description" value="Klavir sa klupom i notnim stalcima. Dostava i štimanje uključeni."/>
+            <column name="price" valueNumeric="12000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="1"/>
+            <column name="owner_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="701"/>
+            <column name="location_id" valueNumeric="7"/>
+        </insert>
+
+        <!-- ========================================== -->
+        <!-- 10. ZDRAVSTVENA OPREMA (podkategorija sporta 710) -->
+        <!-- ========================================== -->
+        <insert tableName="ad">
+            <column name="title" value="Invalidska kolica - električna"/>
+            <column name="description" value="Električna kolica sa džojstikom, maksimalna težina 120kg. Baterija traje 8h."/>
+            <column name="price" valueNumeric="2000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="4"/>
+            <column name="owner_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="710"/>
+            <column name="location_id" valueNumeric="8"/>
+        </insert>
+
+        <insert tableName="ad">
+            <column name="title" value="Krevet na razvlačenje za negu"/>
+            <column name="description" value="Bolnički krevet sa električnim podešavanjem, antidekubitalni dušek. Idealno za kućnu negu."/>
+            <column name="price" valueNumeric="3000.00"/>
+            <column name="price_interval" value="PER_DAY"/>
+            <column name="currency" value="RSD"/>
+            <column name="ad_status" value="ACTIVE"/>
+            <column name="total_quantity" valueNumeric="2"/>
+            <column name="owner_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="710"/>
+            <column name="location_id" valueNumeric="9"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

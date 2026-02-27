@@ -1,15 +1,115 @@
-.page-layout{
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px;
+}
+
+.search-info {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+padding: 16px 24px;
+  margin-bottom: 20px;
   display: flex;
-  gap: 20px;
-  padding-top: 20px;
-  margin-bottom: 40px;;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  .breadcrumb-nav {
+    font-size: 14px;
+    color: #888;
+
+    a {
+      text-decoration: none;
+      color: #283859;
+    font-weight: 500;
+      &:hover { text-decoration: underline; }
+    }
+    .separator { margin: 0 8px; }
+    .current-path { color: #555; }
+  }
+
+  .results-count {
+    font-size: 15px;
+    color: #333;
+    .search-term {
+      color: #283859;
+      font-weight: 600;
+    }
+  }
 }
 
-.ads-grid-section {
+.main-content-wrapper {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.sidebar-area {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+}
+
+.ads-display-area {
   flex-grow: 1;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Malo širi grid */
+  min-width: 0;
 
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #283859;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+
+.list-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+   .list-controls {
+     display: flex;
+     justify-content: flex-end;
+     margin-bottom: 15px;
+
+     .sort-select {
+       font-size: 14px;
+       color: #666;
+
+       select {
+         border: none;
+         background: transparent;
+         font-weight: 700;
+         color: #283859;
+         cursor: pointer;
+         margin-left: 5px;
+         outline: none;
+       }
+     }
+   }
+@media (max-width: 900px) {
+  .main-content-wrapper {
+    flex-direction: column;
+  }
+  .sidebar-area {
+    width: 100%;
+    position: static;
+  }
+  .search-info-bubble {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }

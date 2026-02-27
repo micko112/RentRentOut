@@ -1,0 +1,64 @@
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  width: 280px; /* Malo uže, izgleda elegantnije */
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 12px; /* Hygglo stil: mekše ivice */
+  padding: 24px 20px; /* Malo više unutrašnjeg prostora da "diše" */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); /* Veoma suptilna senka */
+  height: fit-content;
+}
+
+.filter-section {
+  display: flex;
+  flex-direction: column;
+
+  .filter-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+    margin: 0 0 16px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0; /* Čista linija umesto praznog span-a */
+  }
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Manji razmak jer stavljamo padding na same elemente */
+
+  .category-item {
+    padding: 10px 14px;
+    border-radius: 8px; /* Mali radius na samim stavkama */
+    color: #555;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+
+    /* HYGGLO EFEKAT: Na hover dobija sivu pozadinu i malo se pomeri udesno */
+    &:hover {
+      background-color: rgba(247, 247, 247, 0.5);
+      color: #111;
+      transform: translateX(4px);
+    }
+
+    /* KADA JE SELEKTOVANO */
+    &.active {
+      background-color: #eef2ff; /* Nežna plava/brand pozadina */
+      color: #0056b3; /* Jaka brand boja teksta */
+      font-weight: 600;
+
+      /* Ako je već aktivno, ne želimo da se pomera na hover */
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+}

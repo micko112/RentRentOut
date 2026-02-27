@@ -1,19 +1,60 @@
-
 <div class="container page-layout">
-  <aside class="filters-sidebar">
-    <app-filters-sidebar (categorySelected)="onCategoryFiltered($event)">
 
-    </app-filters-sidebar>
-  </aside>
-  <main class="ads-grid-section">
-      <h1>Svi oglasi</h1>
+  <div class="search-info" *ngIf="isSearchMode">
+    <div class="breadcrumb-nav">
+      <a routerLink="/">Početna</a>
+      <span class="separator">></span>
+      <span class="current-path">Pretraga</span>
+    </div>
+    <div class="results-count">
+      <strong>{{ totalResults }}</strong> oglasa za
+      <span class="search-term">"{{ currentKeyword || activeCategory }}"</span>
+    </div>
+  </div>
+
+  <!-- 2. GLAVNI DEO (Sidebar + Sadržaj) -->
+  <div class="main-content-wrapper">
+
+    <aside class="sidebar-area">
+      <!-- Menjamo sidebare zavisno od moda -->
+      <app-categories-sidebar
+        *ngIf="!isSearchMode"
+        (categorySelected)="onCategoryFiltered($event)">
+      </app-categories-sidebar>
+
+      <app-filters-sidebar
+        *ngIf="isSearchMode"
+        [categories]="categories"
+        (applyFilters)="onApplyFilters($event)">
+      </app-filters-sidebar>
+    </aside>
+
+    <main class="ads-display-area">
+      <!-- Opciono: Sortiranje u Search Modu -->
+      <div class="list-controls" *ngIf="isSearchMode">
+        <div class="sort-select">
+          <label>Sortiraj:</label>
+          <select (change)="onSortChange($event)">
+            <option value="id,desc">Najnovije</option>
+            <option value="price,asc">Najjeftinije</option>
+            <option value="price,desc">Najskuplje</option>
+          </select>
+        </div>
+      </div>
+
+      <h1 class="page-title" *ngIf="!isSearchMode">{{ activeCategory }}</h1>
+
       <ng-container *ngIf="adsPage$ | async as adsPage">
-        <div class="grid">
-          <app-ad-card *ngFor="let ad of adsPage.content" [ad]="ad">
+        <!-- Ovde se menja Grid ili Lista -->
+        <div [ngClass]="isSearchMode ? 'list-layout' : 'grid-layout'">
+          <app-ad-card
+            *ngFor="let ad of adsPage.content"
+            [ad]="ad"
+            [viewMode]="isSearchMode ? 'list' : 'grid'">
           </app-ad-card>
         </div>
       </ng-container>
-  </main>
+    </main>
 
+  </div>
 </div>
-

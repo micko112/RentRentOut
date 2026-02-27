@@ -1,9 +1,54 @@
-<div class="filters-container">
-  <h4>Kategorije</h4>
-  <span></span>
-  <div class="category-list">
-    <a *ngFor="let c of categories"
-    (click)="onCategoryClick(c.id)"> {{c.name}}</a>
+<div class="sidebar-wrapper">
+  <div class="sidebar-header">
+    <h2 class="sidebar-title">Filteri</h2>
   </div>
 
+  <div class="sidebar-content">
+    <!-- 1. KATEGORIJE I MESTO -->
+    <section class="filter-group">
+      <label class="group-label">Kategorija</label>
+      <select class="custom-select" [(ngModel)]="filters.categoryId" name="categoryId">
+        <option [ngValue]="undefined">Sve kategorije</option>
+        <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+      </select>
+
+      <label class="group-label">Mesto</label>
+      <select class="custom-select" [(ngModel)]="filters.locationId" name="locationId">
+        <option [ngValue]="undefined">Sve lokacije</option>
+        <option *ngFor="let l of locations" [ngValue]="l.id">{{ l.name }}</option>
+      </select>
+    </section>
+
+    <!-- 2. CENA -->
+    <section class="filter-group">
+      <label class="group-label">Cena</label>
+      <div class="price-row">
+        <input type="number" class="price-input" placeholder="od" [(ngModel)]="filters.minPrice" name="minPrice" />
+        <input type="number" class="price-input" placeholder="do" [(ngModel)]="filters.maxPrice" name="maxPrice" />
+      </div>
+
+      <div class="currency-selector">
+        <label class="radio-pill">
+          <input type="radio" name="currency" value="rsd" [(ngModel)]="currency" />
+          <span>din</span>
+        </label>
+        <label class="radio-pill">
+          <input type="radio" name="currency" value="eur" [(ngModel)]="currency" />
+          <span>eur</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- 3. PRETRAGA -->
+    <section class="filter-group">
+      <label class="group-label">Pretraži u naslovu</label>
+      <input type="text" class="text-input" placeholder="npr. Hilti, stan..." [(ngModel)]="filters.keyword" name="keyword" />
+    </section>
+
+    <!-- 4. AKCIJE -->
+    <div class="sidebar-actions">
+      <button class="btn-apply" (click)="onSubmit()">Filtriraj oglase</button>
+      <button class="btn-clear" (click)="clearAll()">Poništi sve</button>
+    </div>
+  </div>
 </div>

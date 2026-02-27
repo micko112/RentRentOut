@@ -1,26 +1,29 @@
 <header class="site-header">
   <div class="container header-content">
     <div class="logo">
-      <a routerLink="/">Izdajem Iznajmljujem</a>
+      <a routerLink="/">
+        <img src="assets/images/logo.png" class="logo-img" alt="logo"/>
+      </a>
     </div>
     <div class="search-bar">
+      <img src="assets/images/icons8-search-50.png" class="search-icon" alt="search"/>
       <input type="text" placeholder="Sve što zamislite.. "
       [(ngModel)]="searchTerm"
       (keyup.enter)="onSearch()">
       <button class="search-btn" (click)="onSearch()">Traži</button>
     </div>
     <div class="user-actions" *ngIf="currentUser$ | async as user; else notLoggedIn">
-      <span class="welcome-message">Zdravo, {{ user.firstname }}</span>
-      <button class="btn-profile" (click)="myProfile()">Moj Profil</button>
-      <button class="btn-logout" (click)="logout()">Odjavi se</button>
       <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
+      <button class="btn-profile" (click)="myProfile()">Moj Profil</button>
+      <button class="auth-button" (click)="logout()">Odjavi se</button>
     </div>
 
     <ng-template #notLoggedIn>
       <div class="user-actions">
-        <button class="log-in-btn" (click)="login()">Uloguj se</button>
-        <button class="btn-register" (click)="register()">Registruj se</button>
         <button class="btn-post-ad">+ Postavi oglas</button>
+        <button class="auth-button" (click)="login()">Uloguj se</button>
+        <button class="auth-button" (click)="register()">Registruj se</button>
+
       </div>
     </ng-template>
   </div>

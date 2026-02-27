@@ -85,7 +85,6 @@ input, select, textarea {
   border-radius: 4px;
   font-size: 15px;
   background-color: #fff;
-  font-family: inherit;
 
   &:focus {
     border-color: #333;
