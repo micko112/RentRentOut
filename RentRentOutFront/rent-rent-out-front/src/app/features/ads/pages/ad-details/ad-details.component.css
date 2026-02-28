@@ -1,41 +1,50 @@
-.container{
+.container {
   max-width: 1200px;
   margin: 30px auto;
 }
-.main-layout{
+
+.main-layout {
   display: flex;
   flex-wrap: wrap;
   gap: 40px
 }
+
 .left-column {
   flex: 2;
   flex-wrap: wrap;
   min-width: 624px;
 }
+
 .gallery {
   display: flex;
   flex-direction: row;
 
 }
+
 .thumbnail {
   width: 95px;
   height: 95px;
-  cursor:  pointer;
+  cursor: pointer;
   border: 2px solid transparent;
   border-radius: 4px;
   transition: border-color 0.2s;
+
   &:hover {
     border-color: #787878;
   }
+
   &.active {
     border-color: #333;
   }
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 
-  }}
+  }
+}
+
 .thumbnail-list {
   display: flex;
   flex-direction: column;
@@ -43,21 +52,23 @@
   flex-wrap: wrap;
   overflow: hidden;
 }
+
 .main-image-wrapper {
   aspect-ratio: 16 / 10;
   padding: 0px 16px 16px;
   border-radius: 8px;
   overflow: hidden;
-  img{
+
+  img {
     width: 100%;
     height: 100%;
     max-width: 100%;
     max-height: 100%;
-    object-fit:  cover;
+    object-fit: cover;
   }
 }
 
-.right-column{
+.right-column {
   flex: 1;
   position: sticky;
   border: 0 solid #e0e0e0;
@@ -65,88 +76,160 @@
   border-radius: 16px;
   min-width: 380px;
 }
-.calendar-widget{
+
+.calendar-widget {
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
 
 }
+
 .month {
   display: flex;
   flex-direction: column;
 }
+
 .nav {
   display: flex;
   justify-content: space-evenly;
   padding: 13px;
   align-items: center;
+
   .nav-arrow {
     font-size: 20px;
     cursor: pointer;
     padding: 5px;
     border-radius: 50%;
-    &:hover { background-color: #f0f0f0; }
-  }
-  .month-name { font-weight: 600; }
-}
-  .weekdays, .dates {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    padding: 0 16px;
 
-  ul {
-    list-style-type: none;
-  }
-}
-  .weekday {
-    font-size: 12px;
-    text-align: center;
-    padding-bottom: 8px;
-  }
-  .day-cell{
-    aspect-ratio: 1 / 1;
-    display:  flex;
-    padding: 4px;
-    align-items: center;
-    justify-content:  center;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-    border: 1px solid transparent;
-    &:hover:not(.past):not(.blocked) {
-      border-color: #e0e0e0;
-    }
-    &.past, &.blocked {
-      color: #ccc;
-      text-decoration: line-through;
-      cursor: not-allowed;
-    }
-
-    &.selected {
+    &:hover {
       background-color: #f0f0f0;
-      border-radius: 0;
     }
+  }
 
-    &.start-date, &.end-date {
-      background-color: #333;
+  .month-name {
+    font-weight: 600;
+  }
+}
+
+.weekdays, .dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+    list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+.weekday {
+  font-size: 14px;
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+.day-cell {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+
+  .day-number {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 14px;
+    z-index: 2;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  &:hover:not(.past):not(.blocked):not(.start-date):not(.end-date):not(.in-range) {
+    background-color: rgba(110, 207, 126, 0.21);
+    border: 1px solid rgba(239, 239, 239, 0.84);
+    border-radius: 36px;
+  }
+
+  &.past, &.blocked {
+    color: #ccc;
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+  &.in-range,
+  &.start-date,
+  &.end-date {
+    .day-number {
       color: white;
+      font-weight: 600;
     }
+  }
+  &.in-range::before,
+  &.start-date::before,
+  &.end-date::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /* Centrira liniju po visini */
+    height: 34px;
+    background-color: #6ecf7e;
+    z-index: 1;
 
   }
+
+  &.in-range::before {
+    left: 0;
+    right: 0;
+  }
+  &.start-date::before {
+    left: 0;
+    right: 0;
+    border-radius: 36px 0 0 36px;
+  }
+  &.end-date::before {
+    left: 0;
+    right: 0;
+    border-radius: 0 36px 36px 0;
+  }
+  &.start-date.end-date::before {
+    border-radius: 100px;
+  }
+
+}
+.pickup-clear-dates {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .clear-dates {
+    text-align: center;
+    font-size: 12px;
+
+    margin: 12px;
+    cursor: pointer;
+    color: #813181;
+  }
+}
 .pickup-dropoff-wrapper {
   display: flex;
   justify-content: space-evenly;
-padding: 16px;
-  border-top: 1px solid #e0e0e0;
+  margin: 0 48px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 36px;
+
   .date-info {
-    text-align: left; // Lepše izgleda
-  .label {
+    text-align: center;
+    .label {
     display: block;
     font-size: 12px;
     color: #777;
     margin-bottom: 4px;
   }
+
     .date-value {
       font-weight: 600;
     }
@@ -154,49 +237,59 @@ padding: 16px;
 }
 
 .payment-section {
-  padding: 16px;
+
   border-top: 1px solid #e0e0e0;
   background-color: #fafafa;
+  position: relative;
+
+  .payment-dates {
+
+    padding: 12px;
+    align-content: center;
+  }
+
+  .choose-dates {
+    display: flex;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: #1e1e1e;
+  }
 
   .price-calculation {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     margin-bottom: 12px;
     font-size: 14px;
-    .total-price { font-weight: bold; }
+
+    .total-price {
+      font-weight: bold;
+    }
   }
 
   .request-btn {
     width: 100%;
-    padding: 14px; // Malo veće dugme
-  background: #d32f2f; // Crvena boja
-  color: white;
+    padding: 14px;
+    color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.2s;
+    background-color: #813181;
 
     &:hover:not(:disabled) {
-      background-color: #d32f2f;
+
     }
 
     &:disabled {
-      background: #ccc;
       cursor: not-allowed;
+      opacity: 0.3;
     }
   }
-
-  .clear-dates {
-    text-align: center;
-    font-size: 12px;
-    text-decoration: underline;
-    margin-top: 12px;
-    cursor: pointer;
-    color: #777;
-  }
 }
+
 .info {
   background: white;
   padding: 24px;
@@ -218,7 +311,8 @@ padding: 16px;
 
   .description {
     line-height: 1.7;
-    white-space: pre-wrap; // Poštuje prelome redova iz opisa
+    white-space: pre-wrap;
+  / / Poštuje prelome redova iz opisa
   }
 
   .details-grid {
@@ -228,6 +322,7 @@ padding: 16px;
 
     .detail-item {
       font-size: 14px;
+
       strong {
         color: #777;
         margin-right: 8px;

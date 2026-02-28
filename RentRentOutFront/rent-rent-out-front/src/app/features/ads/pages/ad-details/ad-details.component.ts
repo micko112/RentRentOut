@@ -11,7 +11,7 @@ import {CreateRentalContractRequest} from '../../../../shared/models/create-rent
 @Component({
   selector: 'app-ad-details',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './ad-details.component.html',
   styleUrl: './ad-details.component.css'
 })
@@ -25,6 +25,7 @@ export class AdDetailsComponent implements OnInit {
     "July", "August", "September", "October", "November", "December"];
   weekdays: string[] = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
 
+
   startDate: Date | null = null;
   endDate: Date | null = null;
   numberOfDays: number = 0;
@@ -33,6 +34,7 @@ export class AdDetailsComponent implements OnInit {
 
 
   private blockedIntervals: { start: Date, end: Date }[] = [];
+
 
   constructor(private adService: AdService,
               private route: ActivatedRoute,
@@ -99,6 +101,7 @@ export class AdDetailsComponent implements OnInit {
       isSelected: this.isDateSelected(date),
       isStartDate: this.isSameDay(date, this.startDate),
       isEndDate: this.isSameDay(date, this.endDate),
+      isInRange: this.isInRange(date)
     }
   }
 
@@ -130,7 +133,11 @@ export class AdDetailsComponent implements OnInit {
   }
 
   changeMonth(amount: number): void {
-    this.displayDate.setMonth(this.displayDate.getMonth() + amount);
+    const currentMonth = this.displayDate.getMonth();
+    const currentYear = this.displayDate.getFullYear();
+
+    this.displayDate = new Date(currentYear, currentMonth + amount, 1);
+
     this.generateCalendar();
   }
 
@@ -169,6 +176,19 @@ export class AdDetailsComponent implements OnInit {
       date1.getDate() === date2.getDate();
   }
 
+  isInRange(date: Date): boolean {
+    if (!this.startDate || !this.endDate) return false;
+
+    const day = new Date(date);
+    const start = this.startDate;
+    const end = this.endDate;
+
+    day.setHours(0, 0, 0, 0);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    return day > start && day < end;
+  }
+
   selectImage(imageUrl: string) {
     this.selectedImageUrl = imageUrl;
   }
@@ -177,8 +197,8 @@ export class AdDetailsComponent implements OnInit {
     event.target.src = 'assets/images/placeholder.png';
   }
 
-  sendRequest(){
-    if(!this.startDate || !this.endDate || !this.ad$) {
+  sendRequest() {
+    if (!this.startDate || !this.endDate || !this.ad$) {
       return;
     }
     if (!this.currentAd) return;
@@ -191,14 +211,14 @@ export class AdDetailsComponent implements OnInit {
       amount: 1
     };
     this.contractService.createRentalContract(request).subscribe({
-      next: (response) => {
-        alert('Zahtev uspesno poslat');
+        next: (response) => {
+          alert('Zahtev uspesno poslat');
 
-    },
-      error: (err) => {
-        console.error(err);
-        alert('Došlo je do greške prilikom slanja zahteva.');
-      }
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Došlo je do greške prilikom slanja zahteva.');
+        }
       }
     )
   }

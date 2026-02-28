@@ -7,4 +7,5 @@ export interface CalendarDay {
   isSelected: boolean;
   isStartDate: boolean;
   isEndDate: boolean;
+  isInRange: boolean;
 }
