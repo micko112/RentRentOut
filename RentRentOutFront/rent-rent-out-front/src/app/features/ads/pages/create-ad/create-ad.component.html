@@ -6,8 +6,10 @@
       <p>Popunite informacije o predmetu koji iznajmljujete.</p>
     </div>
 
+    <!-- Povezivanje Angular reaktivne forme -->
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
+      <!-- 1. KATEGORIJA -->
       <div class="step">
         <div class="numeration">1</div>
         <div class="content">
@@ -16,7 +18,7 @@
 
           <select formControlName="categoryId" [class.invalid]="form.get('categoryId')?.touched && form.get('categoryId')?.invalid">
             <option [ngValue]="null" disabled selected>Izaberi kategoriju</option>
-            <option *ngFor="let cat of categories" [ngValue]="cat.id">
+            <option *ngFor="let cat of categories"[ngValue]="cat.id">
               {{ cat.name }}
             </option>
           </select>
@@ -26,6 +28,7 @@
         </div>
       </div>
 
+      <!-- 2. OPIS -->
       <div class="step">
         <div class="numeration">2</div>
         <div class="content">
@@ -33,7 +36,8 @@
 
           <div class="form-group">
             <label>Naslov</label>
-            <input type="text" formControlName="title" placeholder="npr. Hilti Bušilica TE-70">
+            <input type="text" formControlName="title" placeholder="npr. Hilti Bušilica TE-70"
+                   [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
             <small class="error" *ngIf="form.get('title')?.touched && form.get('title')?.invalid">
               Naziv mora imati minimum 5 karaktera.
             </small>
@@ -41,7 +45,8 @@
 
           <div class="form-group">
             <label>Detaljan opis</label>
-            <textarea formControlName="description" rows="5" placeholder="Opišite stanje, šta ide uz predmet, uslove..."></textarea>
+            <textarea formControlName="description" rows="5" placeholder="Opišite stanje, šta ide uz predmet, uslove..."
+                      [class.invalid]="form.get('description')?.touched && form.get('description')?.invalid"></textarea>
             <small class="error" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
               Opis mora imati minimum 20 karaktera.
             </small>
@@ -49,17 +54,19 @@
         </div>
       </div>
 
+      <!-- 3. SLIKE -->
       <div class="step">
         <div class="numeration">3</div>
         <div class="content">
           <h3>Slike</h3>
-          <p class="hint">Dodavanje slika će biti omogućeno uskoro. Trenutno koristimo podrazumevanu sliku.</p>
+          <p class="hint">Dodavanje slika sa računara će biti omogućeno uskoro. Trenutno koristimo podrazumevanu sliku.</p>
           <div class="file-upload-disabled">
             <span>+ Dodaj slike (Uskoro)</span>
           </div>
         </div>
       </div>
 
+      <!-- 4. CENA -->
       <div class="step">
         <div class="numeration">4</div>
         <div class="content">
@@ -67,7 +74,8 @@
           <div class="row">
             <div class="form-group half">
               <label>Iznos (RSD)</label>
-              <input type="number" formControlName="price" placeholder="0">
+              <input type="number" formControlName="price" placeholder="0"
+                     [class.invalid]="form.get('price')?.touched && form.get('price')?.invalid">
             </div>
             <div class="form-group half">
               <label>Način naplate</label>
@@ -81,12 +89,13 @@
         </div>
       </div>
 
+      <!-- 5. LOKACIJA -->
       <div class="step">
         <div class="numeration">5</div>
         <div class="content">
           <h3>Lokacija</h3>
           <p class="hint">Gde se predmet preuzima?</p>
-          <select formControlName="locationId">
+          <select formControlName="locationId" [class.invalid]="form.get('locationId')?.touched && form.get('locationId')?.invalid">
             <option [ngValue]="null" disabled selected>Izaberi grad</option>
             <option *ngFor="let loc of locations" [ngValue]="loc.id">
               {{ loc.name }}
@@ -95,18 +104,21 @@
         </div>
       </div>
 
+      <!-- 6. KOLIČINA -->
       <div class="step">
         <div class="numeration">6</div>
         <div class="content">
           <h3>Količina</h3>
-          <p class="hint">Koliko komada imate na stanju?</p>
+          <p class="hint">Koliko komada imate na stanju za izdavanje?</p>
           <input type="number" formControlName="totalQuantity" min="1" class="short-input">
         </div>
       </div>
 
+      <!-- SUBMIT -->
       <div class="actions">
-        <button type="button" class="btn-cancel" routerLink="/">Odustani</button>
-        <button type="submit" class="btn-submit" [disabled]="form.invalid"  >Postavi oglas</button>
+        <!-- routerLink=".." te vraća jednu putanju unazad (nazad na oglase) -->
+        <button type="button" class="btn-cancel" routerLink="..">Odustani</button>
+        <button type="submit" class="btn-submit" [disabled]="form.invalid">Objavi Oglas</button>
       </div>
 
     </form>
