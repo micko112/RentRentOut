@@ -66,6 +66,8 @@ export class AdDetailsComponent implements OnInit {
     )
   }
 
+  calendarHeight: number = 0;
+
   generateCalendar(): void {
     const year = this.displayDate.getFullYear();
     const month = this.displayDate.getMonth();
@@ -86,7 +88,13 @@ export class AdDetailsComponent implements OnInit {
       const date = new Date(year, month, day);
       days.push(this.createCalendarDay(date));
     }
+
+    while (days.length % 7 !== 0) {
+      days.push({} as CalendarDay);
+    }
+
     this.daysInMonth = days;
+    this.calendarHeight = (days.length / 7) * 44;
   }
 
   createCalendarDay(date: Date): CalendarDay {
@@ -137,7 +145,9 @@ export class AdDetailsComponent implements OnInit {
     const currentYear = this.displayDate.getFullYear();
 
     this.displayDate = new Date(currentYear, currentMonth + amount, 1);
-
+    console.log('numberOfDays pre:', this.numberOfDays);
+// ... generateCalendar()
+    console.log('numberOfDays posle:', this.numberOfDays);
     this.generateCalendar();
   }
 

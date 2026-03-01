@@ -45,9 +45,12 @@
       <div class="calendar-widget">
         <div class="month">
           <div class="nav">
-            <div class="nav-arrow" (click)="changeMonth(-1)">&lt;</div>
+            <div class="nav-arrow" (click)="changeMonth(-1)">
+            <img src="assets/icons/previous-calendar.png"/></div>
             <div class="month-name">{{ displayDate | date:'MMMM yyyy' | titlecase }}</div>
-            <div class="nav-arrow" (click)="changeMonth(1)">&gt;</div>
+            <div class="nav-arrow" (click)="changeMonth(1)">
+              <img src="assets/icons/next-calendar.png"/>
+            </div>
           </div>
           <div class="weekdays">
             <div *ngFor="let day of weekdays" class="weekday">{{ day }}</div>
@@ -81,14 +84,15 @@
             <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
 
           </div>
+<!--          <div class="separator"></div>-->
           <div class="payment-section">
             <div class="payment-dates">
               <div class="choose-dates" *ngIf="numberOfDays ==0 ">
                 Izaberite datume
               </div>
               <div class="price-calculation" *ngIf="numberOfDays > 0">
-                <span class="total-price">{{ (ad.price * numberOfDays) | number }} din</span>
-                <span class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</span>
+                <div class="total-price">{{ (ad.price * numberOfDays) | number }} din</div>
+                <div class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</div>
               </div>
             </div>
             <button class="request-btn" [disabled]="!startDate || !endDate" (click)="sendRequest()">Pošalji zahtev</button>

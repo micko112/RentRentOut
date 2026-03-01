@@ -97,18 +97,18 @@
   align-items: center;
 
   .nav-arrow {
-    font-size: 20px;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
 
-    &:hover {
-      background-color: #f0f0f0;
+    img{
+      height: 16px;
+      width: 16px;
     }
+    cursor: pointer;
   }
 
   .month-name {
     font-weight: 600;
+    width: 120px;
+    text-align: center;
   }
 }
 
@@ -119,6 +119,7 @@
   margin: 0;
   padding: 0;
 }
+
 
 
 .weekday {
@@ -216,10 +217,12 @@
 .pickup-dropoff-wrapper {
   display: flex;
   justify-content: space-evenly;
-  margin: 0 48px;
-  padding: 16px;
+
+  margin: 0 48px 4px 48px;
+  height: 70px;
   border: 1px solid #e0e0e0;
   border-radius: 36px;
+  align-items:  center;
 
   .date-info {
     text-align: center;
@@ -237,15 +240,13 @@
 }
 
 .payment-section {
-
-  border-top: 1px solid #e0e0e0;
-  background-color: #fafafa;
   position: relative;
-
+  display:  flex;
+  flex-direction: column;
   .payment-dates {
-
     padding: 12px;
     align-content: center;
+    justify-content: center;
   }
 
   .choose-dates {
@@ -255,24 +256,28 @@
     font-weight: bold;
     color: #1e1e1e;
   }
-
   .price-calculation {
     display: flex;
     flex-direction: column;
+    align-items:  center;
     margin-bottom: 12px;
-    font-size: 14px;
 
     .total-price {
+      font-size: 32px;
       font-weight: bold;
+
+    }
+    .price-per-day{
+      font-size: 14px;
+      color: rgba(30, 30, 30, 0.88);
     }
   }
-
   .request-btn {
-    width: 100%;
-    padding: 14px;
+    align-self:  center;
+    padding: 18px 44px;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 16px;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
@@ -280,9 +285,8 @@
     background-color: #813181;
 
     &:hover:not(:disabled) {
-
+      background-color: #602160;
     }
-
     &:disabled {
       cursor: not-allowed;
       opacity: 0.3;

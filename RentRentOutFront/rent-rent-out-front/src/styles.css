@@ -37,4 +37,7 @@ body {
   padding: 0 15px;
 
 }
-
+.separator {
+  margin: 8px 26px;
+  border-bottom:  1px solid #dfdede;
+}
