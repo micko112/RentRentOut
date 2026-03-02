@@ -10,64 +10,111 @@
 }
 
 .left-column {
-  flex: 2;
-  flex-wrap: wrap;
-  min-width: 624px;
+  /* Fiksiramo širinu leve kolone na 750px */
+  width: 750px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .gallery {
   display: flex;
-  flex-direction: row;
-
+  flex-direction: row; /* Thumbnails levo, velika slika desno */
+  gap: 15px;
+  height: 450px; /* FIKSNA VISINA GALERIJE - ovo sprečava lomljenje i "skakanje" stranice */
+  margin-bottom: 30px;
 }
 
-.thumbnail {
-  width: 95px;
-  height: 95px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  border-radius: 4px;
-  transition: border-color 0.2s;
-
-  &:hover {
-    border-color: #787878;
-  }
-
-  &.active {
-    border-color: #333;
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-
-  }
-}
-
-.thumbnail-list {
+/* Lista malih slika (Leva strana galerije) */
+.thumbnail-column {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex-wrap: wrap;
-  overflow: hidden;
+  align-items: center;
+  gap: 5px;
+  height: 100%; /* Prati visinu galerije od 450px */
+  flex-shrink: 0;
 }
 
+/* Lista malih slika */
+.thumbnail-list {
+  display: flex;
+  flex-direction: column; /* UVEK JEDNA ISPOD DRUGE */
+  flex-wrap: nowrap; /* ZABRANJENO PRELAMANJE! Nema gužvanja! */
+  gap: 12px;
+  width: 90px;
+  flex-grow: 1; /* Popunjava prostor između strelica */
+
+  /* Logika za skrolovanje */
+  overflow-y: auto;
+  scrollbar-width: none; /* Sakriva scrollbar (Firefox) */
+  &::-webkit-scrollbar { display: none; } /* Sakriva scrollbar (Chrome/Safari) */
+
+  .thumbnail {
+    width: 90px; /* Fiksna širina da se ne skupljaju */
+    height: 90px;
+    flex-shrink: 0; /* Da se ne spljošte kad ih ima puno */
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+
+    &:hover { border-color: rgba(129, 49, 129, 0.87); }
+    &.active { border-color: #813181; }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+}
+
+/* Stilizacija strelica */
+.scroll-btn {
+  background-color: #ffffff;
+  color: #333;
+  border: 1px solid #ccc;
+  width: 100%;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    border-color: rgba(129, 49, 129, 0.87);
+    background-color: rgba(129, 49, 129, 0.22);
+  }
+}
+
+/* Glavna velika slika (Desna strana galerije) */
 .main-image-wrapper {
-  aspect-ratio: 16 / 10;
-  padding: 0px 16px 16px;
+  flex-grow: 1; /* Popunjava sav preostali prostor pored thumbnails-a */
+  height: 100%; /* Prati visinu galerije (450px) */
+  background-color: #f5f5f5;
   border-radius: 8px;
   overflow: hidden;
+  border: 1px solid #eee;
 
   img {
     width: 100%;
     height: 100%;
-    max-width: 100%;
-    max-height: 100%;
+    /*
+     * 'contain' osigurava da se cela slika vidi bez sečenja.
+     * Ako želiš da slika uvek popuni ceo prostor (iako to znači da će malo biti isečena),
+     * promeni ovo u 'object-fit: cover;'
+     */
     object-fit: cover;
+    display: block;
   }
 }
 
+/*--------------------------------DESNA KOLONA ----------------------------------------------------*/
 .right-column {
   flex: 1;
   position: sticky;
@@ -119,8 +166,6 @@
   margin: 0;
   padding: 0;
 }
-
-
 
 .weekday {
   font-size: 14px;
@@ -342,4 +387,75 @@
   border: 1px solid #e0e0e0;
   border-radius: 8px;
 }
+/* image overlay ------------------------------------------------------------------*/
+.image-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+z-index: 9999;
+display: flex;
+  align-items: center;
+  justify-content: center;
 
+/* Sama slika unutar overlaya*/
+img {
+  max-width: 90vw;
+max-height: 90vh;
+object-fit: contain;
+border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  user-select: none;
+}
+
+/* Iks za zatvaranje*/
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 40px;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover { color: #d32f2f; }
+}
+
+ /*Strelice za navigaciju*/
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  font-size: 30px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  &:hover { background: rgba(255, 255, 255, 0.3); }
+
+  &.prev-btn { left: 20px; }
+  &.next-btn { right: 20px; }
+}
+
+/* Brojač dole u sredini*/
+.image-counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 16px;
+  background: rgba(0,0,0,0.5);
+  padding: 5px 15px;
+  border-radius: 20px;
+  letter-spacing: 2px;
+}
+}

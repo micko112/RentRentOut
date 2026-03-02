@@ -59,10 +59,33 @@
         <div class="numeration">3</div>
         <div class="content">
           <h3>Slike</h3>
-          <p class="hint">Dodavanje slika sa računara će biti omogućeno uskoro. Trenutno koristimo podrazumevanu sliku.</p>
-          <div class="file-upload-disabled">
-            <span>+ Dodaj slike (Uskoro)</span>
+          <p class="hint">Dodajte jasne slike predmeta. Prva slika će biti naslovna.</p>
+
+          <!-- Polje za upload -->
+          <div class="image-upload-container">
+            <!-- Stvarni input je sakriven, aktivira se klikom na label-u ispod -->
+            <input type="file" id="fileInput" multiple accept="image/*" (change)="onFileSelected($event)" hidden>
+
+            <label for="fileInput" class="upload-dropzone">
+              <div class="upload-icon">📸</div>
+              <div class="upload-text">Klikni ovde da izabereš slike</div>
+            </label>
+
+            <!-- Mreža za pregled (Preview) odabranih slika -->
+            <div class="image-previews" *ngIf="selectedFiles.length > 0">
+              <div class="preview-box" *ngFor="let url of previewUrl; let i = index">
+                <img [src]="url" alt="Preview">
+
+                <button type="button" class="btn-remove" (click)="removeImage(i)">&times;</button>
+              </div>
+            </div>
+
+            <!-- Poruka o grešci ako nije izabrana nijedna slika a forma je dotaknuta -->
+            <small class="error" *ngIf="form.get('images')?.touched && form.get('images')?.invalid">
+              Morate dodati barem jednu sliku.
+            </small>
           </div>
+
         </div>
       </div>
 

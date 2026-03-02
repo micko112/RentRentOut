@@ -4,6 +4,10 @@
     <!-- LEVA KOLONA: Slike i Informacije -->
     <div class="left-column">
         <div class="gallery">
+          <div class="thumbnail-column" *ngIf="ad.images && ad.images.length >0">
+            <button class="scroll-btn up" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(-100)">
+              &#9650;
+            </button>
           <div class="thumbnail-list" *ngIf="ad.images && ad.images.length > 1">
             <div class="thumbnail"
                  *ngFor="let imageUrl of ad.images"
@@ -14,7 +18,11 @@
                    alt="Mala slika">
             </div>
           </div>
-          <div class="main-image-wrapper">
+            <button class="scroll-btn down" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(100)">
+              &#9660;
+            </button>
+          </div>
+          <div class="main-image-wrapper" (click)="openOverlay()" style="cursor: zoom-in">
             <img [src]="selectedImageUrl"
             (error)="handleImageError($event)"
                  alt="Glavna slika: {{ ad.title }}">
@@ -103,5 +111,25 @@
         <p>Vlasnik: {{ ad.owner?.firstname }}</p>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="image-overlay" *ngIf="isOverlayOpen" (click)="closeOverlay()">
+  <button class="close-btn" (click)="closeOverlay()">&times;</button>
+
+  <button class="nav-btn prev-btn"
+          *ngIf="currentAd?.images && currentAd.images.length > 1"
+          (click)="previousImage($event)"
+  >&#10094;</button>
+  <img [src]="currentAd.images[currentOverlayIndex]"
+    (click)="$event.stopPropagation()"
+      alt="Uvelicana slika">
+
+  <button class="nav-btn next-btn"
+          *ngIf="currentAd?.images && currentAd.images.length > 1"
+          (click)="nextImage($event)">&#10095;</button>
+
+  <div class="image-counter" *ngIf="currentAd?.images && currentAd.images.length > 1">
+    {{ currentOverlayIndex + 1 }} / {{ currentAd.images.length }}
   </div>
 </div>

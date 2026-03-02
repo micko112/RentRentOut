@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Ad} from '../../../../shared/models/ad.model';
 import {CommonModule, DatePipe} from '@angular/common';
 import {Observable, switchMap, tap} from 'rxjs';
@@ -18,6 +18,10 @@ import {CreateRentalContractRequest} from '../../../../shared/models/create-rent
 export class AdDetailsComponent implements OnInit {
   ad$!: Observable<Ad>;
   selectedImageUrl: string | null = null;
+
+  isOverlayOpen: boolean = false;
+  currentOverlayIndex: number = 0;
+
   currentDate: Date = new Date();
   displayDate: Date = new Date();
   daysInMonth: CalendarDay[] = [];
@@ -32,7 +36,7 @@ export class AdDetailsComponent implements OnInit {
   totalPrice: number = 0;
   currentAd!: Ad;
 
-
+  @ViewChild('thumbnailScroll') thumbnailScrollContainer!: ElementRef;
   private blockedIntervals: { start: Date, end: Date }[] = [];
 
 
@@ -231,6 +235,48 @@ export class AdDetailsComponent implements OnInit {
         }
       }
     )
+  }
+
+  openOverlay() {
+    if (!this.currentAd || !this.currentAd.images || this.currentAd.images.length === 0) {
+      return;
+    }
+
+    this.currentOverlayIndex = this.currentAd.images.indexOf(this.selectedImageUrl!);
+    if (this.currentOverlayIndex === -1) this.currentOverlayIndex = 0;
+
+    this.isOverlayOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  nextImage(event: Event) {
+    event.stopPropagation();
+    if (this.currentAd && this.currentAd.images) {
+      this.currentOverlayIndex = (this.currentOverlayIndex +1) % this.currentAd.images.length;
+    }
+  }
+
+  previousImage(event: Event) {
+    event.stopPropagation();
+    if(this.currentAd && this.currentAd.images) {
+      const length = this.currentAd.images.length;
+      this.currentOverlayIndex = (this.currentOverlayIndex - 1 + length ) % length
+    }
+  }
+  closeOverlay(){
+    this.isOverlayOpen = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  scrollThumbnails(amount: number) {
+    if(this.thumbnailScrollContainer){
+      this.thumbnailScrollContainer.nativeElement.scrollBy({
+        top: amount,
+        behavior: 'smooth'
+      }
+
+      )
+    }
   }
 
 }

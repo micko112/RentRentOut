@@ -6,6 +6,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {PriceInterval, PriceIntervalLabels} from '../../../../shared/models/price-interval.enum';
 import {CategoryService} from '../../services/category.service';
 import {Router, RouterLink} from '@angular/router';
+import {switchMap} from 'rxjs';
 
 @Component({
   selector: 'app-create-ad',
@@ -15,6 +16,10 @@ import {Router, RouterLink} from '@angular/router';
   styleUrl: './create-ad.component.css'
 })
 export class CreateAdComponent implements OnInit {
+  selectedFiles: File[] = [];
+
+  previewUrl: string[] = [];
+
   categories: Category[] = [];
   form!: FormGroup;
   priceIntervals = Object.values(PriceInterval);
@@ -50,13 +55,20 @@ export class CreateAdComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.form.invalid) {
+    if (this.form.invalid || this.selectedFiles.length === 0) {
+      alert("Molimo popunite sva polja i izaberite barem jednu sliku.");
       this.form.markAsTouched();
       return;
     }
-    this.adService.createAd(this.form.value).subscribe({
+    this.adService.uploadImages(this.selectedFiles).pipe(
+      switchMap(uploadedImagesUrls => {
+        this.form.patchValue({images: uploadedImagesUrls});
+        console.log(this.selectedFiles)
+        return this.adService.createAd(this.form.value);
+      })
+    ).subscribe({
       next: (newAd) => {
-        console.log("Oglas kreiran", newAd);
+        console.log("Oglas uspesno kreiran", newAd);
         this.router.navigate(['/ads', newAd.id]);
       },
       error: (error) => {
@@ -65,4 +77,29 @@ export class CreateAdComponent implements OnInit {
       }
     })
   }
+
+  onFileSelected(event: any){
+    const files: FileList = event.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!file.type.match(/image\/*/)) continue;
+
+        this.selectedFiles.push(file);
+
+        this.previewUrl.push(URL.createObjectURL(file));
+
+        this.form.patchValue({ images: this.previewUrl });
+        this.form.get('images')?.updateValueAndValidity();
+      }
+    }
+  }
+
+  removeImage(index: number): void {
+    this.selectedFiles.splice(index, 1);
+    this.previewUrl.splice(index, 1);
+  }
+
+
+
 }

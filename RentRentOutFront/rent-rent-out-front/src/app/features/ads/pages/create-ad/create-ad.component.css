@@ -124,15 +124,85 @@ textarea { resize: vertical; min-height: 120px; }
 }
 
 /* --- PLACEHOLDER ZA SLIKU --- */
-.file-upload-disabled {
-  border: 2px dashed #d0d0d0;
-  padding: 30px;
-  text-align: center;
+/* --- UPLOAD SLIKA --- */
+.image-upload-container {
+  margin-top: 10px;
+}
+
+.upload-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ccc;
   border-radius: 8px;
-  color: #a0a0a0;
+  padding: 40px 20px;
   background-color: #fafafa;
-  cursor: not-allowed;
-  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f0f8f1; /* Blago zeleno na hover */
+    border-color: #6ecf7e;
+  }
+
+  .upload-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  .upload-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: #555;
+  }
+}
+
+.image-previews {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.preview-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .btn-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #d32f2f; /* Pocrveni kad se stane mišem */
+    }
+  }
 }
 
 /* --- DUGMIĆI --- */
