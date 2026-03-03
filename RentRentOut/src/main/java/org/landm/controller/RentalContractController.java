@@ -34,7 +34,7 @@ public class RentalContractController {
 
     }
     
-    @PostMapping("/")
+    @PostMapping
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<RentalContractDto> createRentalContract(@Valid @RequestBody CreateRentalContractRequestDto req,
                                                                   Authentication auth){

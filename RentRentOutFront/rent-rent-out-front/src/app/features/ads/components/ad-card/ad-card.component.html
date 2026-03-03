@@ -12,11 +12,11 @@
 
     <div class="price-tag">
       <div class="listing-price">{{ ad.price | number: '1.0-0' }}</div>
-      <div class="currency">{{ ad.currency }}</div>
-      <div class="currency-interval">
-        <!-- <span class="currency" *ngIf="ad.currency === 'EUR'">€</span> -->
-        <span class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</span>
 
+      <div class="currency-interval">
+         <span class="currency" *ngIf="ad.currency === 'EUR'">€</span>
+        <span class="currency" *ngIf="ad.currency === 'RSD'">din</span>
+        <span class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</span>
       </div>
     </div>
   </div>
