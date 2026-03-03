@@ -15,6 +15,7 @@ public class AdPreviewDto {
     private String municipality;
     private String description;
     private BigDecimal price;
+    private String currency;
     private PriceInterval priceInterval;
     private String thumbnail;
     public long getId() {
@@ -49,6 +50,14 @@ public class AdPreviewDto {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public PriceInterval getPriceInterval() {

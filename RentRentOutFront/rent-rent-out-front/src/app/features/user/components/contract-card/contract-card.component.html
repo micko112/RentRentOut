@@ -1,12 +1,30 @@
-<div class="content">
-  <div class="listing-title">
-  {{ contract?.adDto?.title}}
-    Vlasnik Ad-a: {{contract.adDto.owner.firstname}}
+<!-- contract-card.component.html -->
+<div class="contract-item">
+  <div class="info">
+    <div class="listing-title">{{ contract.adDto.title }}</div>
+    <div class="details">
+      Period: {{ contract.startDate }} - {{ contract.endDate }} |
+      Cena: <strong>{{ contract.agreedPrice | number }} din</strong>
+    </div>
+    <div class="details" *ngIf="isOwnerView">Zakupac: {{ contract.lesseeDto.firstname }}</div>
+    <div class="details" *ngIf="!isOwnerView">Vlasnik: {{ contract.adDto.owner.firstname }}</div>
   </div>
-  <div class="lessee">
-    {{  contract?.lesseeDto?.firstname }}
-  </div>
-  <div class="status">
-      {{ contract?.contractStatus }}
+
+  <div class="status-zone">
+    <span class="status-badge" [ngClass]="contract.contractStatus.toLowerCase()">
+      {{ contract.contractStatus }}
+    </span>
+
+    <!-- AKCIJE: Samo ako je status REQUESTED -->
+    <div class="actions" *ngIf="contract.contractStatus === 'REQUESTED'">
+      <!-- Vlasnik vidi Prihvati/Odbij -->
+      <ng-container *ngIf="isOwnerView">
+        <button class="btn-accept" (click)="updateStatus('ACCEPTED')">Prihvati</button>
+        <button class="btn-reject" (click)="updateStatus('REJECTED')">Odbij</button>
+      </ng-container>
+
+      <!-- Zakupac vidi Otkaži -->
+      <button *ngIf="!isOwnerView" class="btn-reject" (click)="updateStatus('CANCELLED')">Otkaži zahtev</button>
+    </div>
   </div>
 </div>

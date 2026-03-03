@@ -26,6 +26,7 @@ public class RentalContractMapper {
         dto.setStartDate(rc.getStartDate());
         dto.setEndDate(rc.getEndDate());
         dto.setAgreedPrice((rc.getAgreedPrice()));
+        dto.setCurrency(rc.getCurrency().toString());
         dto.setContractStatus(rc.getContractStatus());
         return dto;
     }
@@ -37,7 +38,7 @@ public class RentalContractMapper {
         rc.setStartDate(dto.getStartDate());
         rc.setEndDate(dto.getEndDate());
         rc.setAgreedPrice(dto.getAgreedPrice());
-
+        rc.setCurrency(dto.getCurrency());
         return rc;
     }
 }

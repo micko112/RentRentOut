@@ -3,4 +3,6 @@ export interface User{
   lastname: string;
   email: string;
   money:  number;
+  currency: string;
+
 }

@@ -8,7 +8,7 @@ public class UserDto {
     private String lastname;
     private String email;
     private BigDecimal money;
-
+    private String currency;
     public UserDto() {
     }
 
@@ -43,5 +43,13 @@ public class UserDto {
 
     public void setMoney(BigDecimal money) {
         this.money = money;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

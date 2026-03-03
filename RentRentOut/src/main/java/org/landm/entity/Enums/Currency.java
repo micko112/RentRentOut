@@ -1,5 +1,5 @@
 package org.landm.entity.Enums;
 
-public enum PriceCurrency {
-	RSD;
+public enum Currency {
+	RSD, EUR;
 }

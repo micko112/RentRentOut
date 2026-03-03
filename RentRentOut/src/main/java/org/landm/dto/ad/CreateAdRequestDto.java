@@ -4,9 +4,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.landm.entity.Enums.Currency;
 import org.landm.entity.Enums.PriceInterval;
 
 import java.math.BigDecimal;
+
 import java.util.List;
 
 public class CreateAdRequestDto {
@@ -17,6 +19,8 @@ public class CreateAdRequestDto {
     @NotNull
     @Positive
     private BigDecimal price;
+    @NotNull
+    private Currency currency;
     @NotNull
     private PriceInterval priceInterval;
     @NotNull
@@ -51,6 +55,14 @@ public class CreateAdRequestDto {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public PriceInterval getPriceInterval() {

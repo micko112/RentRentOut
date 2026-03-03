@@ -1,0 +1,53 @@
+.contract-item {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .info {
+    .listing-title { font-weight: 700; font-size: 16px; color: #283859; }
+    .details { font-size: 13px; color: #666; margin-top: 4px; }
+  }
+
+  .status-zone {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Boje za statuse */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  &.requested { background: #fff4e5; color: #b76e00; } // Žuto
+&.accepted { background: #e6f4ea; color: #1e7e34; }  // Zeleno
+&.active { background: #e8f0fe; color: #1967d2; }    // Plavo
+&.rejected, &.cancelled { background: #fce8e6; color: #d93025; } // Crveno
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+
+  button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .btn-accept { background: #6ecf7e; color: white; }
+  .btn-reject { background: #f44336; color: white; }
+}

@@ -7,6 +7,7 @@ import org.landm.entity.Enums.ContractStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+
 public class RentalContractDto {
     private long id;
 
@@ -17,6 +18,7 @@ public class RentalContractDto {
     private LocalDate endDate;
     private BigDecimal agreedPrice;
     private ContractStatus contractStatus;
+    private String currency;
 
     public long getId() {
         return id;
@@ -64,6 +66,13 @@ public class RentalContractDto {
 
     public void setAgreedPrice(BigDecimal agreedPrice) {
         this.agreedPrice = agreedPrice;
+    }
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public ContractStatus getContractStatus() {

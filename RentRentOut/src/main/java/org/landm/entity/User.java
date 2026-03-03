@@ -4,12 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.landm.entity.Enums.PriceCurrency;
+import org.landm.entity.Enums.Currency;
 
 @Entity
 @Table(name = "user")
@@ -35,7 +34,7 @@ public class User {
     
     @Enumerated(EnumType.STRING)
     @Column(name="currency", nullable=false)
-    private PriceCurrency priceCurrency;
+    private Currency currency;
     
     @Version
     @Column(name="version", nullable = false)
@@ -110,12 +109,12 @@ public class User {
         this.money = money;
     }
     
-	public PriceCurrency getPriceCurrency() {
-		return priceCurrency;
+	public Currency getCurrency() {
+		return currency;
 	}
 
-	public void setPriceCurrency(PriceCurrency priceCurrency) {
-		this.priceCurrency = priceCurrency;
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 
 	public Role getRole() {

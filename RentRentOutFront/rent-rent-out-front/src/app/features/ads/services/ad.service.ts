@@ -55,4 +55,8 @@ export class AdService {
 
     return this.http.post<string[]>(`${API_BASE_URL}/images/upload`, formData);
   }
+  deleteAd(id: number) : Observable<string> {
+    return this.http.delete(`${this.adApiUrl}/${id}`, {responseType: 'text'});
+
+  }
 }

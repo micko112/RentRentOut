@@ -5,10 +5,10 @@
     <div class="left-column">
         <div class="gallery">
           <div class="thumbnail-column" *ngIf="ad.images && ad.images.length >0">
-            <button class="scroll-btn up" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(-100)">
+            <button class="scroll-btn up" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(-400)">
               &#9650;
             </button>
-          <div class="thumbnail-list" *ngIf="ad.images && ad.images.length > 1">
+          <div class="thumbnail-list" #thumbnailScroll>
             <div class="thumbnail"
                  *ngFor="let imageUrl of ad.images"
                  (click)="selectImage(imageUrl)"
@@ -18,7 +18,7 @@
                    alt="Mala slika">
             </div>
           </div>
-            <button class="scroll-btn down" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(100)">
+            <button class="scroll-btn down" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(400)">
               &#9660;
             </button>
           </div>
@@ -30,7 +30,9 @@
         </div>
       <div class="info">
         <h1>{{ ad.title }}</h1>
-        <div class="price">{{ ad.price | number }} din</div>
+        <div class="price">{{ ad.price | number }} </div>
+        <div class="currency">{{ ad.currency }} </div>
+
 
         <h3>Detalji</h3>
         <div class="details-grid">

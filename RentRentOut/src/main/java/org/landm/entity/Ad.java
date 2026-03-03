@@ -3,8 +3,7 @@ package org.landm.entity;
 
 import jakarta.persistence.*;
 import org.landm.entity.Enums.AdStatus;
-import org.landm.entity.Enums.DeleteStatus;
-import org.landm.entity.Enums.PriceCurrency;
+import org.landm.entity.Enums.Currency;
 import org.landm.entity.Enums.PriceInterval;
 
 import java.math.BigDecimal;
@@ -30,7 +29,7 @@ public class Ad {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable=false, name="currency")
-    private PriceCurrency priceCurrency = PriceCurrency.RSD;
+    private Currency currency = Currency.RSD;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name="price_interval")
@@ -61,11 +60,12 @@ public class Ad {
     @Column(name="image_url")
     private List<String> images = new ArrayList<>();
 
-    public Ad(String title, String description, BigDecimal price, PriceInterval priceInterval, User owner, Category category,
+    public Ad(String title, String description, BigDecimal price, Currency currency, PriceInterval priceInterval, User owner, Category category,
               Location location, AdStatus adStatus, int totalQuantity,  List<String> images) {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.currency = currency;
         this.priceInterval = priceInterval;
         this.owner = owner;
         this.category = category;
@@ -105,12 +105,13 @@ public class Ad {
         this.price = price;
     }
     
-    public PriceCurrency getPriceCurrency() {
-		return priceCurrency;
+    public Currency getCurrency() {
+		return currency;
 	}
-	public void setPriceCurrency(PriceCurrency priceCurrency) {
-		this.priceCurrency = priceCurrency;
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
+
 	public PriceInterval getPriceInterval() {
         return priceInterval;
     }

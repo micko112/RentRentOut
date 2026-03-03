@@ -1,7 +1,41 @@
-<div class="content" *ngIf="contracts$ | async as contracts">
-  <div class="contracts" >
-    <app-contract-card *ngFor="let contract of contracts" [contract]="contract">
+<div class="contracts-dashboard">
+  <h2>Upravljanje zahtevima</h2>
 
-    </app-contract-card>
-  </div>
+  <section  class="contract-section">
+    <div class="section-header">
+      <h3>Dolazni zahtevi</h3>
+      <span class="badge count">{{ incomingRequests.length }}</span>
+    </div>
+    <div class="contract-list" *ngIf="incomingRequests.length>0; else noIncoming">
+      <app-contract-card
+        *ngFor="let contract of incomingRequests"
+        [contract]="contract"
+        [isOwnerView]="true"
+        (statusUpdated) ="refreshData()">
+      </app-contract-card>
+    </div>
+    <ng-template #noIncoming>
+      <div class="empty">
+        <p>Nema dolaznih zahteva</p>
+        <button class="create-listing"></button>
+      </div>
+    </ng-template>
+  </section>
+
+  <section class="contract-section">
+    <div class="section-header">
+      <h3>Moji zahtevi (Ono što ti iznajmljuješ)</h3>
+      <span class="badge count">{{ outgoingRequests.length }}</span>
+    </div>
+
+    <div class="contracts-list" *ngIf="outgoingRequests.length > 0; else noOutgoing">
+      <app-contract-card
+        *ngFor="let contract of outgoingRequests"
+        [contract]="contract"
+        [isOwnerView]="false"
+        (statusUpdated)="refreshData()">
+      </app-contract-card>
+    </div>
+    <ng-template #noOutgoing><p class="empty">Nisi poslao nijedan zahtev.</p></ng-template>
+  </section>
 </div>

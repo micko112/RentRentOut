@@ -9,5 +9,7 @@ export interface RentalContract {
   startDate: string;
   endDate:  string;
   agreedPrice:  number;
+  currency: string;
   contractStatus: ContractStatus;
+
 }

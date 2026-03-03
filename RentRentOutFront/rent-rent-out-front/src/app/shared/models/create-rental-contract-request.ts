@@ -6,4 +6,6 @@ export interface CreateRentalContractRequest {
   endDate:  string;
   agreedPrice:  number;
   amount: number;
+  currency: string;
+
 }

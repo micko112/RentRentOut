@@ -1,5 +1,6 @@
 package org.landm.dto.ad;
 
+import jakarta.validation.constraints.NotNull;
 import org.landm.dto.CategoryDto;
 import org.landm.dto.LocationDto;
 import org.landm.dto.user.UserDto;
@@ -9,6 +10,7 @@ import org.landm.helper.DateInterval;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 import java.util.List;
 
 public class AdDto {
@@ -16,6 +18,8 @@ public class AdDto {
     private String title;
     private String description;
     private BigDecimal price;
+
+    private String currency;
     private PriceInterval priceInterval;
     private AdStatus adStatus;
     private int totalQuantity;
@@ -26,7 +30,7 @@ public class AdDto {
     private UserDto owner;
     private CategoryDto category;
     private LocationDto location;
-    
+
     private List<DateInterval> blockedIntervals;
 
     public String getTitle() {
@@ -106,6 +110,13 @@ public class AdDto {
 	}
 	public void setBlockedIntervals(List<DateInterval> blockedIntervals) {
 		this.blockedIntervals = blockedIntervals;
-	}    
-    
+	}
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }

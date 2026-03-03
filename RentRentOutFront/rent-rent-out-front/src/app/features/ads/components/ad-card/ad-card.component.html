@@ -11,10 +11,9 @@
     <div class="listing-location">{{ ad.city }}, {{ ad.municipality }}</div>
 
     <div class="price-tag">
-<!--      <p class="price">{{ ad.price | currency: 'RSD':'din':'1.0-0' }}</p>-->
       <div class="listing-price">{{ ad.price | number: '1.0-0' }}</div>
+      <div class="currency">{{ ad.currency }}</div>
       <div class="currency-interval">
-        <span class="currency">din</span>
         <!-- <span class="currency" *ngIf="ad.currency === 'EUR'">€</span> -->
         <span class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</span>
 

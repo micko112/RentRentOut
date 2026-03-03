@@ -30,6 +30,7 @@ public class AdMapper {
         dto.setDescription(ad.getDescription());
         dto.setPrice(ad.getPrice());
         dto.setPriceInterval(PriceInterval.valueOf(ad.getPriceInterval().name()));
+        dto.setCurrency(ad.getCurrency().toString());
         dto.setAdStatus(AdStatus.valueOf(ad.getAdStatus().name()));
         dto.setTotalQuantity(ad.getTotalQuantity());
         dto.setImages(ad.getImages());
@@ -46,6 +47,7 @@ public class AdMapper {
         dto.setTitle(ad.getTitle());
         dto.setDescription(ad.getDescription());
         dto.setPrice(ad.getPrice());
+        dto.setCurrency(ad.getCurrency().toString());
         dto.setPriceInterval(PriceInterval.valueOf(ad.getPriceInterval().name()));
 
         if (ad.getImages() != null && !ad.getImages().isEmpty()) {

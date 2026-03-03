@@ -89,6 +89,7 @@ public class AdServiceImpl implements AdService {
                 req.getTitle(),
                 req.getDescription(),
                 req.getPrice(),
+                req.getCurrency(),
                 req.getPriceInterval(),
                 owner,
                 category,
@@ -225,6 +226,7 @@ public class AdServiceImpl implements AdService {
         adToUpdate.setDescription(req.getDescription());
         adToUpdate.setPrice(req.getPrice());
         adToUpdate.setPriceInterval(req.getPriceInterval());
+        adToUpdate.setCurrency(req.getCurrency());
         adToUpdate.setImages(req.getImages());
         adToUpdate.setCategory(category);
         adToUpdate.setLocation(location);

@@ -7,9 +7,11 @@ import org.landm.dto.CategoryDto;
 import org.landm.dto.LocationDto;
 import org.landm.dto.user.UserDto;
 import org.landm.entity.Enums.AdStatus;
+import org.landm.entity.Enums.Currency;
 import org.landm.entity.Enums.PriceInterval;
 
 import java.math.BigDecimal;
+
 import java.util.List;
 
 public class UpdateAdRequestDto {
@@ -18,6 +20,8 @@ public class UpdateAdRequestDto {
     private String description;
     @NotNull
     private BigDecimal price;
+    @NotNull
+    private Currency currency;
     @NotNull
     private PriceInterval priceInterval;
     // ad status se automatski menja
@@ -53,6 +57,14 @@ public class UpdateAdRequestDto {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public PriceInterval getPriceInterval() {

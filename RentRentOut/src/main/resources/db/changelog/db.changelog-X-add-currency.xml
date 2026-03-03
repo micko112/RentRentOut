@@ -1,0 +1,22 @@
+<changeSet id="add-currency-to-tables" author="luka_micko">
+	<!-- Dodaj u Ad -->
+	<addColumn tableName="ad">
+		<column name="currency" type="VARCHAR(10)" defaultValue="RSD">
+			<constraints nullable="false"/>
+		</column>
+	</addColumn>
+
+	<!-- Dodaj u RentalContract -->
+	<addColumn tableName="rental_contract">
+		<column name="currency" type="VARCHAR(10)" defaultValue="RSD">
+			<constraints nullable="false"/>
+		</column>
+	</addColumn>
+
+	<!-- Dodaj u User (za ono polje 'money') -->
+	<addColumn tableName="user">
+		<column name="currency" type="VARCHAR(10)" defaultValue="RSD">
+			<constraints nullable="false"/>
+		</column>
+	</addColumn>
+</changeSet>

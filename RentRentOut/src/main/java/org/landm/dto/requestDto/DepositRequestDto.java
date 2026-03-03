@@ -2,12 +2,9 @@ package org.landm.dto.requestDto;
 
 import java.math.BigDecimal;
 
-import org.landm.entity.Enums.PriceCurrency;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.landm.entity.Enums.Currency;
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class DepositRequestDto {
@@ -16,7 +13,7 @@ public class DepositRequestDto {
 	@DecimalMin(value = "100", message = "Minimal amount is 100")
 	private BigDecimal amount;
 	
-	private PriceCurrency priceCurrency = PriceCurrency.RSD;
+	private Currency currency = Currency.RSD;
 	
 	public DepositRequestDto() {}
 	
@@ -32,12 +29,12 @@ public class DepositRequestDto {
 		this.amount = amount;
 	}
 
-	public PriceCurrency getPriceCurrency() {
-		return priceCurrency;
+	public Currency getPriceCurrency() {
+		return currency;
 	}
 
-	public void setPriceCurrency(PriceCurrency priceCurrency) {
-		this.priceCurrency = priceCurrency;
+	public void setPriceCurrency(Currency currency) {
+		this.currency = currency;
 	}
 	
 	

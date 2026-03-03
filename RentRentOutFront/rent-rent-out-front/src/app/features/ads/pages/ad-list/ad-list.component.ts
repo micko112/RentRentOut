@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AdCardComponent} from '../../components/ad-card/ad-card.component';
 import {CommonModule} from '@angular/common';
 import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
-import {Observable, switchMap, tap} from 'rxjs';
+import {first, Observable, switchMap, tap} from 'rxjs';
 
 import {AdService} from '../../services/ad.service';
 import {CategoryService} from '../../services/category.service';
@@ -101,7 +101,7 @@ export class AdListComponent implements OnInit {
     const sortValue = event.target.value;
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: {query: sortValue},
+      queryParams: {sort: sortValue},
       queryParamsHandling: 'merge'
     })
   }
@@ -115,4 +115,14 @@ export class AdListComponent implements OnInit {
       queryParamsHandling: 'merge'
     })
   }
+
+  goToPage(pageIndex: number) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {page: pageIndex},
+      queryParamsHandling: 'merge'
+    })
+  }
+
+  protected readonly first = first;
 }

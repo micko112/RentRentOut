@@ -15,7 +15,7 @@ public class UpdateUserDto {
 	@NotBlank
 	@Email
     private String email;
-    
+	private String currency;
     public UpdateUserDto() {
     	
     }
@@ -38,7 +38,12 @@ public class UpdateUserDto {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-    
-    
-	
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
 }

@@ -1,7 +1,35 @@
-<div class="my-ads-grid" *ngIf="ads$ | async as adsPage">
-  <app-ad-card
-    *ngFor="let ad of adsPage.content"
-    [ad]="ad"
-    viewMode="list">
-  </app-ad-card>
+<div class="my-ads-container" *ngIf="ads$ | async as adsPage">
+  <div class="header-row">
+    <h2>Moji oglasi ({{ adsPage.totalElements }})</h2>
+    <button class="btn-add-new" routerLink="/ads/create">+ Novi oglas</button>
+  </div>
+
+  <!-- Lista oglasa -->
+  <div class="ads-list" *ngIf="adsPage.totalElements > 0; else noAds">
+    <div class="ad-item-wrapper" *ngFor="let ad of adsPage.content">
+
+      <!-- Koristimo tvoj AdCard ali dodajemo akcije pored/ispod -->
+      <app-ad-card [ad]="ad" viewMode="list"></app-ad-card>
+
+      <!-- AKCIJE ZA VLASNIKA -->
+      <div class="ad-management-actions">
+        <button class="btn-edit" (click)="onEdit(ad.id)">
+          <span class="icon">✏️</span> Izmeni
+        </button>
+        <button class="btn-delete" (click)="onDelete(ad.id)">
+          <span class="icon">🗑️</span> Obriši
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prazno stanje (Empty State) -->
+  <ng-template #noAds>
+    <div class="empty-state">
+      <div class="empty-icon">📢</div>
+      <h3>Još uvek nemate objavljenih oglasa</h3>
+      <p>Postavite oglas i počnite sa izdavanjem svojih stvari već danas.</p>
+      <button class="btn-primary" routerLink="/ads/create">Postavi prvi oglas</button>
+    </div>
+  </ng-template>
 </div>

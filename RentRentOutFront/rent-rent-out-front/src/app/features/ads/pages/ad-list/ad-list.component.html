@@ -30,7 +30,7 @@
     </aside>
 
     <main class="ads-display-area">
-      <!-- Opciono: Sortiranje u Search Modu -->
+      <!-- Sortiranje u Search Modu -->
       <div class="list-controls" *ngIf="isSearchMode">
         <div class="sort-select">
           <label>Sortiraj:</label>
@@ -53,7 +53,22 @@
             [viewMode]="isSearchMode ? 'list' : 'grid'">
           </app-ad-card>
         </div>
+
+        <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
+          <button class="page-btn"
+                  [disabled]="adsPage.first"
+                  (click)="goToPage(adsPage.number - 1)">
+            &laquo; Prethodna
+          </button>
+          <span class="page-info">Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}</span>
+          <button class="page-btn"
+                  [disabled]="adsPage.last"
+                  (click)="goToPage(adsPage.number + 1)">
+            Sledeća &raquo;
+          </button>
+        </div>
       </ng-container>
+
     </main>
 
   </div>

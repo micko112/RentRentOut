@@ -222,7 +222,8 @@ export class AdDetailsComponent implements OnInit {
       startDate: this.datePipe.transform(this.startDate, 'yyyy-MM-dd')!,
       endDate: this.datePipe.transform(this.endDate, 'yyyy-MM-dd')!,
       agreedPrice: this.totalPrice,
-      amount: 1
+      amount: 1,
+      currency: this.currentAd.currency
     };
     this.contractService.createRentalContract(request).subscribe({
         next: (response) => {

@@ -3,9 +3,11 @@ package org.landm.dto.rentalContract;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.landm.entity.Enums.Currency;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 
 public class CreateRentalContractRequestDto {
     @NotNull
@@ -17,6 +19,8 @@ public class CreateRentalContractRequestDto {
     private LocalDate endDate;
     @Positive
     private BigDecimal agreedPrice;
+    @NotNull
+    private Currency currency;
     @Positive 
     private long amount;
 
@@ -59,6 +63,12 @@ public class CreateRentalContractRequestDto {
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
-    
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
     
 }

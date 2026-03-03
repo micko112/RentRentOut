@@ -6,6 +6,7 @@ export interface AdPreview {
   description:  string;
   price: number;
   priceInterval: string;
+  currency: string;
   thumbnail:  string;
 
 }
@@ -16,4 +17,6 @@ export interface Page<T>{
   totalElements: number;
   size: number;
   number: number;
+  first: boolean;
+  last: boolean;
 }

@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule, NgForOf, NgIf} from '@angular/common';
+import {Component, OnInit, TemplateRef} from '@angular/core';
+import {CommonModule, NgForOf, NgIf, NgIfContext} from '@angular/common';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
 import {Observable} from 'rxjs';
 import {UserService} from '../../services/user.service';
 import {ContractCardComponent} from '../../components/contract-card/contract-card.component';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-contracts',
@@ -17,12 +18,30 @@ import {ContractCardComponent} from '../../components/contract-card/contract-car
   styleUrl: './contracts.component.css'
 })
 export class ContractsComponent implements OnInit {
+  incomingRequests: RentalContract[] = [];
+  outgoingRequests: RentalContract[] = [];
+
   contracts$!: Observable<RentalContract[] | null>;
-  constructor(private userService: UserService,
+  constructor(private userService: UserService,private authService: AuthService
               ) {
   }
   ngOnInit() {
-    this.contracts$ = this.userService.getAllContract();
-    console.log(this.contracts$);
+    this.loadContracts();
+  }
+
+  private loadContracts() {
+    const currentUser = this.authService.currentUserValue;
+    if(!currentUser) return;
+
+    this.userService.getAllContract().subscribe(allContracts => {
+    this.outgoingRequests = allContracts.filter(c=> c.lesseeDto.email === currentUser.email);
+
+    this.incomingRequests = allContracts.filter(c=> c.adDto.owner === currentUser);
+
+    });
+  }
+  refreshData(){
+    this.loadContracts();
   }
 }
+

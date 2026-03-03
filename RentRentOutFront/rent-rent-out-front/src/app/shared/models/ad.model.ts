@@ -19,4 +19,5 @@ category: Category;
 location: Location;
 dateIntervals: string;
 blockedIntervals: DateInterval[];
+currency: string;
 }

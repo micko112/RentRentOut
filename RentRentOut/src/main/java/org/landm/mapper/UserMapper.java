@@ -14,6 +14,7 @@ public class UserMapper {
         userDto.setLastname(user.getLastname());
         userDto.setEmail(user.getEmail());
         userDto.setMoney(user.getMoney());
+        userDto.setCurrency(user.getCurrency().toString());
         return userDto;
     }
     
@@ -22,6 +23,7 @@ public class UserMapper {
     	editUserDto.setFirstname(user.getFirstname());
     	editUserDto.setLastname(user.getLastname());
     	editUserDto.setEmail(user.getEmail());
+        editUserDto.setCurrency(user.getCurrency().toString());
     	return editUserDto;
     }
 }

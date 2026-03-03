@@ -2,7 +2,7 @@ package org.landm.entity;
 
 import jakarta.persistence.*;
 import org.landm.entity.Enums.ContractStatus;
-import org.landm.entity.Enums.PriceCurrency;
+import org.landm.entity.Enums.Currency;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,8 +33,9 @@ public class RentalContract {
     @Column(name = "agreed_price", nullable = false)
     private BigDecimal agreedPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="currency", nullable=false)
-    private PriceCurrency priceCurrency = PriceCurrency.RSD;
+    private Currency currency = Currency.RSD;
     
     @Column(name = "amount", nullable = false)
     private long amount;
@@ -51,12 +52,13 @@ public class RentalContract {
     }
 
     public RentalContract(Ad ad, User lessee, LocalDate startDate, LocalDate endDate, 
-    		BigDecimal agreedPrice, long amount, ContractStatus contractStatus, User offerSender) {
+    		BigDecimal agreedPrice, Currency currency, long amount, ContractStatus contractStatus, User offerSender) {
         this.ad = ad;
         this.lessee = lessee;
         this.startDate = startDate;
         this.endDate = endDate;
         this.agreedPrice = agreedPrice;
+        this.currency = currency;
         this.amount = amount;
         this.contractStatus = contractStatus;
         this.offerSender = offerSender;
@@ -102,12 +104,12 @@ public class RentalContract {
         this.agreedPrice = agreedPrice;
     }
     
-    public PriceCurrency getPriceCurrency() {
-		return priceCurrency;
+    public Currency getCurrency() {
+		return currency;
 	}
 
-	public void setPriceCurrency(PriceCurrency priceCurrency) {
-		this.priceCurrency = priceCurrency;
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 
 	public ContractStatus getContractStatus() {

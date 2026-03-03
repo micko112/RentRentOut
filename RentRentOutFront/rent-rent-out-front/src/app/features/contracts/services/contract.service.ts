@@ -15,4 +15,9 @@ export class ContractService {
   createRentalContract(request: CreateRentalContractRequest): Observable<RentalContract> {
     return this.http.post<RentalContract>(this.url, request);
   }
+
+  updateStatus(id: number, newStatus: string) {
+    const body = { newStatus: newStatus }
+    return this.http.patch(`${this.url}/${id}/status}`, body);
+  }
 }
