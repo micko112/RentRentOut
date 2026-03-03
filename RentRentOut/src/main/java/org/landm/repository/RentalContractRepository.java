@@ -41,7 +41,7 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
     		SELECT count(rc) > 0
     		FROM RentalContract rc
     		WHERE rc.ad.id = :adId 
-    			AND rc.contractStatus IN (ACCEPTED, ACTIVE)
+    			AND rc.contractStatus IN ('ACCEPTED', 'ACTIVE')
     		""")
     public boolean hasActiveOrFutureContracts(long adId);
     
@@ -56,13 +56,15 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 	List<RentalContract> findActiveContractForAd(
 			@Param("adId") long adId,
 			@Param("statuses") List<ContractStatus> statuses);
-	
+
 	@Query("""
-			SELECT rc 
-			FROM RentalContract rc 
-			WHERE rc.ad.id = :adId AND rc.startDate <= :endDate 
-			AND rc.endDate >= :startDate
-			""")
+        SELECT rc 
+        FROM RentalContract rc 
+        WHERE rc.ad.id = :adId 
+          AND rc.contractStatus IN ('ACCEPTED', 'ACTIVE')
+          AND rc.startDate <= :endDate 
+          AND rc.endDate >= :startDate
+        """)
 	List<RentalContract> findContractsInDateInterval(@Param("adId") long adId, 
 			@Param("startDate")LocalDate startDate, 
 			@Param("endDate") LocalDate endDate);

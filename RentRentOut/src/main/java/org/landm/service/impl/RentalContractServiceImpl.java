@@ -120,12 +120,14 @@ public class RentalContractServiceImpl implements RentalContractService {
         ContractStatus oldStatus = contract.getContractStatus();
         ContractStatus newStatus = req.getNewStatus();
 
+		System.out.println("DEBUG: Prelaz sa " + oldStatus + " na " + newStatus);
+
         if (!isValidTransition(oldStatus, newStatus)) {
             throw new RuntimeException("Invalid status transition");
         }
 
         if (newStatus == ContractStatus.ACCEPTED || newStatus == ContractStatus.FINISHED 
-        		|| newStatus == ContractStatus.CANCELLED) {
+        		|| newStatus == ContractStatus.CANCELLED || newStatus == ContractStatus.ACTIVE) {
             changeStatus(contract, req.getNewStatus(), userId);	
         }
 
@@ -133,8 +135,8 @@ public class RentalContractServiceImpl implements RentalContractService {
             handlePriceNegotiation(contract, req, userId);
             contract.setContractStatus(newStatus);
         }
-        
-        return rentalContractMapper.toDto(contract);
+
+		return rentalContractMapper.toDto(rentalContractRepository.save(contract)); //bolje je da se sacuva
     }
 
     private static class Event{
@@ -187,14 +189,18 @@ public class RentalContractServiceImpl implements RentalContractService {
             case REQUESTED ->
                     to == ContractStatus.ACCEPTED ||
                             to == ContractStatus.REJECTED || 
-                            to == ContractStatus.REQUESTED;
+                            to == ContractStatus.REQUESTED ||
+							to == ContractStatus.CANCELLED;
 
             case ACCEPTED ->
-                    to == ContractStatus.ACTIVE;
+                    to == ContractStatus.ACTIVE ||
+					to == ContractStatus.CANCELLED;
 
             case ACTIVE ->
-                    to == ContractStatus.FINISHED ||
-                            to == ContractStatus.CANCELLED;
+					to == ContractStatus.FINISHED ||
+							to == ContractStatus.CANCELLED;
+
+			case REJECTED, FINISHED, CANCELLED, DELETED -> false;
 
             default -> false;
         };
@@ -213,7 +219,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 
         if(oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.ACCEPTED){ // ovde treba logika za prihvatanje - provera i  
 
-			Ad contractAd = adRepository.findByIdForUpdate(ad.getId());
+			Ad contrAd = adRepository.findByIdForUpdate(ad.getId());
 
         	User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())// lessee - zakljucan
         			.orElseThrow(() -> new RuntimeException("No user found!"));
@@ -221,8 +227,6 @@ public class RentalContractServiceImpl implements RentalContractService {
         	User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId()) // owner - zakljucan
         			.orElseThrow(() -> new RuntimeException("No user found!"));
 
-        	
-        	Ad contrAd = adRepository.findByIdForUpdate(ad.getId()); // ad - zakljucan
         	LocalDate startDate = contract.getStartDate();
         	LocalDate endDate = contract.getEndDate();
         	List<ContractStatus> statusses = new ArrayList<>();
@@ -241,10 +245,15 @@ public class RentalContractServiceImpl implements RentalContractService {
         	contract.setContractStatus(ContractStatus.ACCEPTED);
             rentalContractRepository.save(contract);
         }
+		if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.ACTIVE) {
+			contract.setContractStatus(ContractStatus.ACTIVE);
+			rentalContractRepository.save(contract);
+		}
         if (oldStatus == ContractStatus.ACTIVE &&  newStatus == ContractStatus.FINISHED) {
             contract.setContractStatus(newStatus);
             rentalContractRepository.save(contract);
         }
+
 
         if (oldStatus == ContractStatus.ACTIVE && newStatus == ContractStatus.CANCELLED) {
         	// Prvo pogledati ko je raskinuo ugovor
@@ -254,34 +263,32 @@ public class RentalContractServiceImpl implements RentalContractService {
                 contract.setContractStatus(newStatus);
                 rentalContractRepository.save(contract);
         	}
-        	else {
+        	/*else {
             	//Ako je raskinuo vlasnik onda korisniku refund proporcionalan broju dana
-            	
-            	// Prvo izracunati ukupan broj dana ugovora kao i broj preostalih dana 
+
+            	// Prvo izracunati ukupan broj dana ugovora kao i broj preostalih dana
             	LocalDate currDate = LocalDate.now();
             	long totaldays = ChronoUnit.DAYS.between(contract.getStartDate(), contract.getEndDate()) + 1;
             	long usedDays = ChronoUnit.DAYS.between(contract.getEndDate(), currDate);
-            	
-            	//Na osnovu toga odrediti cenu po danu i vratiti kolicinu u skladu sa brojem 
+
+            	//Na osnovu toga odrediti cenu po danu i vratiti kolicinu u skladu sa brojem
             	//preostalih dana
             	BigDecimal pricePerDay = contract.getAgreedPrice().divide(BigDecimal.valueOf(totaldays), 2, RoundingMode.HALF_UP);
             	BigDecimal refund = pricePerDay.multiply(BigDecimal.valueOf(totaldays - usedDays));
-            	
+
             	User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId())
             			.orElseThrow(() -> new RuntimeException("User not found!"));
-            	
+
             	User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())
             			.orElseThrow(() -> new RuntimeException("User not found!"));
-            	
-            	lessee.setMoney(lessee.getMoney().add(refund));
-            	owner.setMoney(owner.getMoney().subtract(refund));
-            	
+
+
             	userRepository.save(lessee);
             	userRepository.save(owner);
-            	
+
                 contract.setContractStatus(newStatus);
-                rentalContractRepository.save(contract);	
-        	}
+                rentalContractRepository.save(contract);
+        	}*/
         }
         
     }
