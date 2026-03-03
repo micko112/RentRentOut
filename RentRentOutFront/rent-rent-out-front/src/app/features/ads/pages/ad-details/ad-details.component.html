@@ -30,9 +30,10 @@
         </div>
       <div class="info">
         <h1>{{ ad.title }}</h1>
-        <div class="price">{{ ad.price | number }} </div>
-        <div class="currency">{{ ad.currency }} </div>
-
+        <div class="price-currency">
+          <div class="price">{{ ad.price | number }} </div>
+          <span class="currency">{{ ad.currency }} </span>
+        </div>
 
         <h3>Detalji</h3>
         <div class="details-grid">

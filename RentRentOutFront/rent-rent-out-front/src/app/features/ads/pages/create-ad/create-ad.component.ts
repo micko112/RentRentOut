@@ -46,6 +46,7 @@ export class CreateAdComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(5)]],
       description: ['', [Validators.required, Validators.minLength(20)]],
       price: [null, [Validators.required, Validators.min(1)]],
+      currency: ['', [Validators.required, Validators.min(3)]],
       priceInterval: [PriceInterval.PER_DAY, Validators.required],
       categoryId: [null, Validators.required],
       locationId: [null, Validators.required],

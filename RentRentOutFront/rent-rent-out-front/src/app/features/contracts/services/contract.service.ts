@@ -18,6 +18,6 @@ export class ContractService {
 
   updateStatus(id: number, newStatus: string) {
     const body = { newStatus: newStatus }
-    return this.http.patch(`${this.url}/${id}/status}`, body);
+    return this.http.patch(`${this.url}/${id}/status`, body);
   }
 }

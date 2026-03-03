@@ -12,7 +12,7 @@
   max-width: 700px; /* Ne previše široko za čitljivost forme */
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   border: 1px solid #e0e0e0;
 }
 
@@ -22,8 +22,17 @@
   border-bottom: 1px solid #eee;
   padding-bottom: 20px;
 
-  h2 { margin: 0 0 5px 0; color: #283859; font-size: 28px;}
-  p { color: #666; font-size: 15px; margin: 0;}
+  h2 {
+    margin: 0 0 5px 0;
+    color: #283859;
+    font-size: 28px;
+  }
+
+  p {
+    color: #666;
+    font-size: 15px;
+    margin: 0;
+  }
 }
 
 /* --- KORACI (STEPS) --- */
@@ -34,6 +43,7 @@
   position: relative;
 
   /* Linija koja spaja krugove */
+
   &:not(:last-child)::after {
     content: '';
     position: absolute;
@@ -66,8 +76,17 @@
   flex-grow: 1;
   padding-top: 6px; /* Ravnanje sa centrom broja */
 
-  h3 { margin: 0 0 5px 0; font-size: 18px; color: #333; }
-  .hint { color: #888; font-size: 13px; margin: 0 0 15px 0; }
+  h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #333;
+  }
+
+  .hint {
+    color: #888;
+    font-size: 13px;
+    margin: 0 0 15px 0;
+  }
 }
 
 /* --- ELEMENTI FORME --- */
@@ -84,6 +103,102 @@
   }
 }
 
+/* --- STILOVI ZA CENU (JASAN TOGGLE) --- */
+
+.price-section-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Polje za upis broja */
+.price-input-box {
+  flex: 1;
+  min-width: 150px;
+
+  input {
+    margin: 0;
+    font-weight: bold;
+    font-size: 16px;
+
+    /* Na fokus ide tvoja zelena */
+
+    &:focus {
+      border-color: #6ecf7e;
+      box-shadow: 0 0 0 3px rgba(110, 207, 126, 0.2);
+    }
+  }
+}
+
+/* --- JASAN RADIO TOGGLE (VALUTA) --- */
+.currency-toggle {
+  display: flex;
+  background-color: #f5f5f5; /* Svetlo siva pozadina celog prekidača */
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 4px;
+
+  &:focus {
+    border-color: #6ecf7e;
+  }
+  .radio-pill {
+    cursor: pointer;
+    margin: 0;
+
+    input[type="radio"] {
+      display: none; /* Sakrivamo ružni kružić */
+    }
+
+    /* Izgled teksta KAD NIJE SELEKTOVAN */
+
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 60px; /* Fiksna širina da oba dugmeta budu ista */
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #303030; /* Sivi tekst */
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    /* Izgled teksta KAD JE SELEKTOVAN (Tvoja Ljubičasta) */
+
+    input[type="radio"]:checked + span {
+      background-color: #813181; /* Brend ljubičasta */
+      color: white; /* Beli tekst za maksimalan kontrast */
+      box-shadow: 0 2px 6px rgba(129, 49, 129, 0.3); /* Blaga ljubičasta senka */
+    }
+
+    input[type="radio"]:not(checked) + span {
+      color: #575757;
+    }
+  }
+}
+
+/* Polje za interval */
+.interval-select-box {
+  width: 160px;
+
+  select {
+    margin: 0;
+    cursor: pointer;
+    font-weight: 600;
+    color: #333;
+
+    /* Na fokus ide zelena */
+
+    &:focus {
+      border-color: #6ecf7e;
+      box-shadow: 0 0 0 3px rgba(110, 207, 126, 0.2);
+    }
+  }
+}
+
 input, select, textarea {
   width: 100%;
   padding: 12px 15px;
@@ -95,7 +210,7 @@ input, select, textarea {
   transition: all 0.2s;
 
   &:focus {
-    border-color: #6ecf7e; /* Tvoja zelena */
+    border-color: #6ecf7e;
     box-shadow: 0 0 0 3px rgba(110, 207, 126, 0.2);
     outline: none;
   }
@@ -106,8 +221,14 @@ input, select, textarea {
   }
 }
 
-textarea { resize: vertical; min-height: 120px; }
-.short-input { width: 120px; }
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.short-input {
+  width: 120px;
+}
 
 .error {
   color: #d32f2f;
@@ -120,7 +241,10 @@ textarea { resize: vertical; min-height: 120px; }
 .row {
   display: flex;
   gap: 15px;
-  .half { flex: 1; }
+
+  .half {
+    flex: 1;
+  }
 }
 
 /* --- PLACEHOLDER ZA SLIKU --- */
@@ -172,7 +296,7 @@ textarea { resize: vertical; min-height: 120px; }
   border-radius: 6px;
   overflow: hidden;
   border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
   img {
     width: 100%;
@@ -227,7 +351,10 @@ textarea { resize: vertical; min-height: 120px; }
     background: transparent;
     border: 1px solid #ccc;
     color: #555;
-    &:hover { background: #f0f0f0; }
+
+    &:hover {
+      background: #f0f0f0;
+    }
   }
 
   .btn-submit {

@@ -94,14 +94,30 @@
         <div class="numeration">4</div>
         <div class="content">
           <h3>Cena</h3>
-          <div class="row">
-            <div class="form-group half">
-              <label>Iznos (RSD)</label>
-              <input type="number" formControlName="price" placeholder="0"
+          <p class="hint">Unesite iznos, izaberite valutu i način naplate.</p>
+
+          <div class="price-section-wrapper">
+
+            <!-- Input za iznos -->
+            <div class="price-input-box">
+              <input type="number" formControlName="price" placeholder="Iznos"
                      [class.invalid]="form.get('price')?.touched && form.get('price')?.invalid">
             </div>
-            <div class="form-group half">
-              <label>Način naplate</label>
+
+            <!-- Radio dugmići (pilule) za Valutu -->
+            <div class="currency-toggle">
+              <label class="radio-pill">
+                <input type="radio" formControlName="currency" value="RSD">
+                <span>din</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" formControlName="currency" value="EUR">
+                <span>eur</span>
+              </label>
+
+            </div>
+            <!-- Dropdown za Interval -->
+            <div class="interval-select-box">
               <select formControlName="priceInterval">
                 <option *ngFor="let interval of priceIntervals" [value]="interval">
                   {{ priceLabels[interval] }}
@@ -109,6 +125,9 @@
               </select>
             </div>
           </div>
+          <small class="error" *ngIf="form.get('price')?.touched && form.get('price')?.invalid">
+            Unesite ispravnu cenu.
+          </small>
         </div>
       </div>
 

@@ -22,9 +22,9 @@ export class ContractsComponent implements OnInit {
   outgoingRequests: RentalContract[] = [];
 
   contracts$!: Observable<RentalContract[] | null>;
-  constructor(private userService: UserService,private authService: AuthService
-              ) {
-  }
+
+  constructor(private userService: UserService,
+              private authService: AuthService) {}
   ngOnInit() {
     this.loadContracts();
   }
@@ -36,7 +36,7 @@ export class ContractsComponent implements OnInit {
     this.userService.getAllContract().subscribe(allContracts => {
     this.outgoingRequests = allContracts.filter(c=> c.lesseeDto.email === currentUser.email);
 
-    this.incomingRequests = allContracts.filter(c=> c.adDto.owner === currentUser);
+    this.incomingRequests = allContracts.filter(c=> c.adDto.owner.email === currentUser.email);
 
     });
   }

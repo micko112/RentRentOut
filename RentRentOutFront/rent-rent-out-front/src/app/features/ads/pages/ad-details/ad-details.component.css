@@ -113,7 +113,18 @@
     display: block;
   }
 }
+.price-currency{
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+  gap: 5px;
+  .price{
 
+  }
+  .currency {
+
+  }
+}
 /*--------------------------------DESNA KOLONA ----------------------------------------------------*/
 .right-column {
   flex: 1;
