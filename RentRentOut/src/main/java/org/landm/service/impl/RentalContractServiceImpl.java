@@ -4,6 +4,7 @@ import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.rentalContract.RentalContractSearchDto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -70,17 +71,8 @@ public class RentalContractServiceImpl implements RentalContractService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
         System.out.println("Found user");
-        
-        if (lessee.getMoney().compareTo(req.getAgreedPrice()) >= 0) { //CHANGE TO < 0 
-        	//Doesn't allow user without enough money to send offer -> 
-        	//Opt_Read because someone can accept earlier users's offers from other ads and spend user's money
-        	System.out.println("No enough money");
-        	throw new RuntimeException("You don't have enough money for this offer!");
-        }
-        
-        
-        
-        Ad ad = adRepository.findById(req.getAdId())
+
+				Ad ad = adRepository.findById(req.getAdId())
                 .orElseThrow(() -> new RuntimeException("Ad not found"));
 
     	// Should check for amount of available items and allow sending offer only if there are some
@@ -218,17 +210,17 @@ public class RentalContractServiceImpl implements RentalContractService {
     private void changeStatus(RentalContract contract, ContractStatus newStatus, long userId){
         Ad ad = contract.getAd();
         ContractStatus oldStatus = contract.getContractStatus();
+
         if(oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.ACCEPTED){ // ovde treba logika za prihvatanje - provera i  
-            
-        	User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId()) // lessee - zakljucan
+
+			Ad contractAd = adRepository.findByIdForUpdate(ad.getId());
+
+        	User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())// lessee - zakljucan
         			.orElseThrow(() -> new RuntimeException("No user found!"));
         	
         	User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId()) // owner - zakljucan
         			.orElseThrow(() -> new RuntimeException("No user found!"));
-        	
-        	if(lessee.getMoney().compareTo(contract.getAgreedPrice()) < 0) {
-        		throw new RuntimeException("No enough funds at lessee's side.");
-        	}
+
         	
         	Ad contrAd = adRepository.findByIdForUpdate(ad.getId()); // ad - zakljucan
         	LocalDate startDate = contract.getStartDate();
@@ -244,16 +236,7 @@ public class RentalContractServiceImpl implements RentalContractService {
                 throw new RuntimeException("Not enough items."); // i povecavanje para korisniku koji je vlasnik
             }
         	
-        	//sve provere su prosle, smanjivanje i povecavanje para, promena statusa i cuvanje ugovora
-        	
-        	lessee.setMoney(
-        			lessee.getMoney().subtract(contract.getAgreedPrice()));
-        	
-        	owner.setMoney(
-        			owner.getMoney().add(contract.getAgreedPrice()));
-        	
-        	userRepository.save(lessee);
-        	userRepository.save(owner);
+        	//sve provere su prosle, promena statusa i cuvanje ugovora
         	
         	contract.setContractStatus(ContractStatus.ACCEPTED);
             rentalContractRepository.save(contract);
@@ -281,7 +264,7 @@ public class RentalContractServiceImpl implements RentalContractService {
             	
             	//Na osnovu toga odrediti cenu po danu i vratiti kolicinu u skladu sa brojem 
             	//preostalih dana
-            	BigDecimal pricePerDay = contract.getAgreedPrice().divide(BigDecimal.valueOf(totaldays));
+            	BigDecimal pricePerDay = contract.getAgreedPrice().divide(BigDecimal.valueOf(totaldays), 2, RoundingMode.HALF_UP);
             	BigDecimal refund = pricePerDay.multiply(BigDecimal.valueOf(totaldays - usedDays));
             	
             	User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId())
