@@ -26,5 +26,18 @@
       <!-- Zakupac vidi Otkaži -->
       <button *ngIf="!isOwnerView" class="btn-reject" (click)="updateStatus('CANCELLED')">Otkaži zahtev</button>
     </div>
+    <div class="actions"
+         *ngIf="contract.contractStatus === 'ACCEPTED' && isOwnerView">
+      <button class="btn-finish" (click)="updateStatus('ACTIVE')">
+        Aktiviraj iznajmljivanje
+      </button>
+    </div>
+    <div class="actions"
+         *ngIf="contract.contractStatus === 'ACTIVE' && isOwnerView">
+      <button class="btn-finish" (click)="updateStatus('FINISHED')">
+        Potvrdi vraćanje predmeta
+      </button>
+    </div>
+
   </div>
 </div>

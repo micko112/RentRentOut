@@ -9,8 +9,17 @@
   align-items: center;
 
   .info {
-    .listing-title { font-weight: 700; font-size: 16px; color: #283859; }
-    .details { font-size: 13px; color: #666; margin-top: 4px; }
+    .listing-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: #283859;
+    }
+
+    .details {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
   }
 
   .status-zone {
@@ -29,10 +38,44 @@
   font-weight: 700;
   text-transform: uppercase;
 
-  &.requested { background: #fff4e5; color: #b76e00; } // Žuto
-&.accepted { background: #e6f4ea; color: #1e7e34; }  // Zeleno
-&.active { background: #e8f0fe; color: #1967d2; }    // Plavo
-&.rejected, &.cancelled { background: #fce8e6; color: #d93025; } // Crveno
+  &.requested {
+    background: #fff4e5;
+    color: #b76e00;
+  }
+
+  &.accepted {
+    background: #e6f4ea;
+    color: #1e7e34;
+  }
+
+  &.active {
+    background: #e8f0fe;
+    color: #1967d2;
+  }
+
+  &.rejected, &.cancelled {
+    background: #fce8e6;
+    color: #d93025;
+  }
+
+  &.finished {
+    background: #f1f3f4;
+    color: #5f6368;
+  }
+}
+
+.btn-finish {
+  background-color: #283859;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1a253d;
+  }
 }
 
 .actions {
@@ -48,6 +91,13 @@
     font-size: 13px;
   }
 
-  .btn-accept { background: #6ecf7e; color: white; }
-  .btn-reject { background: #f44336; color: white; }
+  .btn-accept {
+    background: #6ecf7e;
+    color: white;
+  }
+
+  .btn-reject {
+    background: #f44336;
+    color: white;
+  }
 }
