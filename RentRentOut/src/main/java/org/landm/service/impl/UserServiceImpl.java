@@ -77,7 +77,10 @@ public class UserServiceImpl implements UserService {
                         passwordEncoder.encode(req.getPassword()),
                         req.getFirstname(),
                         req.getLastname(),
-						role
+						role,
+						0,
+						0
+
                         );
                 User savedUser = userRepository.save(userToSave);
                 

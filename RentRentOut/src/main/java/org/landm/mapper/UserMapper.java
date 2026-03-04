@@ -15,6 +15,8 @@ public class UserMapper {
         userDto.setEmail(user.getEmail());
         userDto.setMoney(user.getMoney());
         userDto.setCurrency(user.getCurrency().toString());
+        userDto.setPositiveReviews(user.getPositiveReviews());
+        userDto.setNegativeReviews(user.getNegativeReviews());
         return userDto;
     }
     

@@ -64,6 +64,12 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/api/images/upload").authenticated()
 
 						.requestMatchers(HttpMethod.GET, "/api/auth/validate-email").permitAll()
+
+						.requestMatchers(HttpMethod.POST, "/api/review").authenticated()
+
+						.requestMatchers(HttpMethod.GET, "/api/review").permitAll()
+
+
 						.anyRequest().authenticated()
 	            ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	

@@ -8,15 +8,17 @@
 
 	<changeSet id="7.1-add-rating-stats-to-user" author="micko112">
 			<addColumn tableName="user">
-				<!-- DECIMAL(3,2) znači ukupno 3 cifre, od toga 2 iza zareza (npr. 4.85) -->
-				<column name="average_rating" type="DECIMAL(3, 2)" defaultValueNumeric="0.00">
+<!--				BROJ POZITIVNIH OCENA   -->
+				<column name="positive_reviews" type="INT" defaultValueNumeric="0">
 					<constraints nullable="false"/>
 				</column>
-				<column name="total_reviews" type="INT" defaultValueNumeric="0">
+				<!--				BROJ NEGATIVNIH OCENA   -->
+				<column name="negative_reviews" type="INT" defaultValueNumeric="0">
 					<constraints nullable="false"/>
 				</column>
 			</addColumn>
 	</changeSet>
+
 	<changeSet id="7.2-create-review-table" author="micko112">
 		<createTable tableName="review">
 			<column name="id" type="BIGINT" autoIncrement="true">
@@ -38,10 +40,13 @@
 				<constraints nullable="false" foreignKeyName="fk_review_reviewee" referencedTableName="user" referencedColumnNames="id"/>
 			</column>
 
-			<!-- Broj zvezdica (1 do 5) -->
-			<column name="rating" type="INT">
-				<constraints nullable="false"/>
-			</column>
+			<!-- TRI KLJUČNA PITANJA (Čuvamo kao String/Enum) -->
+			<column name="payment_ok" type="VARCHAR(20)"><constraints nullable="false"/></column>
+			<column name="communication_ok" type="VARCHAR(20)"><constraints nullable="false"/></column>
+			<column name="agreement_ok" type="VARCHAR(20)"><constraints nullable="false"/></column>
+
+			<!-- FINALNI IZRAČUNATI TIP (POSITIVE / NEGATIVE) -->
+			<column name="review_type" type="VARCHAR(20)"><constraints nullable="false"/></column>
 
 			<!-- Tekstualni komentar (opciono) -->
 			<column name="comment" type="TEXT"/>

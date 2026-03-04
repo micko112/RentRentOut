@@ -49,15 +49,26 @@ public class User {
     @NotNull
     private boolean enabled = false;
 
+    @Column(name = "positive_reviews")
+    @NotNull
+    private int positiveReviews =0;
+
+    @Column(name = "negative_reviews")
+    @NotNull
+    private int negativeReviews =0;
+
     public User(){
     }
 
-    public User(String email, String password, String firstname, String lastname, Role role) {
+    public User(String email, String password, String firstname, String lastname, Role role, int positiveReviews, int negativeReviews) {
         this.email = email;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
         this.role = role;
+        this.positiveReviews = positiveReviews;
+        this.negativeReviews = negativeReviews;
+
     }
 
 
@@ -139,7 +150,28 @@ public class User {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-    
-	
-    
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    public int getPositiveReviews() {
+        return positiveReviews;
+    }
+
+    public void setPositiveReviews(int positiveReviews) {
+        this.positiveReviews = positiveReviews;
+    }
+
+    public int getNegativeReviews() {
+        return negativeReviews;
+    }
+
+    public void setNegativeReviews(int negativeReviews) {
+        this.negativeReviews = negativeReviews;
+    }
 }

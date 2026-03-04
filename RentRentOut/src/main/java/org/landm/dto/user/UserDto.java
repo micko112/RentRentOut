@@ -9,6 +9,8 @@ public class UserDto {
     private String email;
     private BigDecimal money;
     private String currency;
+    private int positiveReviews;
+    private int negativeReviews;
     public UserDto() {
     }
 
@@ -51,5 +53,21 @@ public class UserDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public int getPositiveReviews() {
+        return positiveReviews;
+    }
+
+    public void setPositiveReviews(int positiveReviews) {
+        this.positiveReviews = positiveReviews;
+    }
+
+    public int getNegativeReviews() {
+        return negativeReviews;
+    }
+
+    public void setNegativeReviews(int negativeReviews) {
+        this.negativeReviews = negativeReviews;
     }
 }
