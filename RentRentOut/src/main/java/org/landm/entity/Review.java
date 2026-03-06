@@ -46,9 +46,9 @@ public class Review {
     private String comment;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAT;
+    private LocalDateTime createdAt;
 
-    public Review(RentalContract contract, User reviewer, User reviewee, ReviewOption paymentOk, ReviewOption communicationOk, ReviewOption agreementOk, ReviewType reviewType, String comment, LocalDateTime createdAT) {
+    public Review(RentalContract contract, User reviewer, User reviewee, ReviewOption paymentOk, ReviewOption communicationOk, ReviewOption agreementOk, ReviewType reviewType, String comment, LocalDateTime createdAt) {
 
         this.contract = contract;
         this.reviewer = reviewer;
@@ -58,7 +58,7 @@ public class Review {
         this.agreementOk = agreementOk;
         this.reviewType = reviewType;
         this.comment = comment;
-        this.createdAT = createdAT;
+        this.createdAt = createdAt;
     }
 
     public Review() {
@@ -138,11 +138,11 @@ public class Review {
         this.comment = comment;
     }
 
-    public LocalDateTime getCreatedAT() {
-        return createdAT;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedAT(LocalDateTime createdAT) {
-        this.createdAT = createdAT;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
