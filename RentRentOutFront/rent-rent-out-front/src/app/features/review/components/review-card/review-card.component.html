@@ -1,0 +1,43 @@
+
+
+<div class="review-card" [ngClass]="review.reviewType === 'POSITIVE' ? 'positive-card' : 'negative-card'">
+  <!-- 1. RED: Ime i Datum -->
+  <div class="card-top-row">
+    <span class="reviewer-name">{{ review.reviewerUsername || 'Korisnik' }}</span> <!-- ZAMENI OVO SA PRAVIM IMENOM KAD GA UBACIS U DTO -->
+    <span class="date">{{ (review.createdAt | date:'dd.MM.yyyy.') || "Niger"}}</span>
+  </div>
+
+  <!-- 2. RED: Ikonica i Naslov Oglasa -->
+  <div class="card-title-section">
+    <div class="icon" [ngClass]="review.reviewType === 'POSITIVE' ? 'icon-green' : 'icon-red'">
+      <span *ngIf="review.reviewType === 'POSITIVE'">👍</span>
+      <span *ngIf="review.reviewType === 'NEGATIVE'">👎</span>
+    </div>
+    <h4 class="ad-title">{{ review.adTitle || 'Nepoznat oglas' }}</h4>
+  </div>
+
+  <!-- 3. RED: Tri pitanja (Grid) -->
+  <div class="qa-grid">
+    <div class="qa-item">
+      <span class="question">Opis iz oglasa tačan:</span>
+      <span class="answer">{{ optionMap[review.agreementOk] }}</span>
+    </div>
+    <div class="qa-item">
+      <span class="question">Komunikacija protekla dobro:</span>
+      <span class="answer">{{ optionMap[review.communicationOk] }}</span>
+    </div>
+    <div class="qa-item">
+      <span class="question">Ispoštovan dogovor:</span>
+      <span class="answer">{{ optionMap[review.paymentOk] }}</span>
+    </div>
+  </div>
+
+  <!-- 4. RED: Komentar  -->
+  <div class="comment-box" *ngIf="review.comment">
+    {{ review.comment }}
+  </div>
+  <div class="comment-box empty" *ngIf="!review.comment">
+    Korisnik nije ostavio komentar.
+  </div>
+
+</div>

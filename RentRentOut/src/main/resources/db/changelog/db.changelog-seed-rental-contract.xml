@@ -44,6 +44,18 @@
             <column name="amount" valueNumeric="1"/>
             <column name="currency" value="RSD"/>
         </insert>
+
+        <insert tableName="rental_contract">
+            <column name="ad_id" valueNumeric="4"/>
+            <column name="lessee_id" valueNumeric="2"/>
+            <column name="start_date" valueDate="2026-03-15"/>
+            <column name="end_date" valueDate="2026-04-20"/>
+            <column name="agreed_price" valueNumeric="70000"/>
+            <column name="contract_status" value="FINISHED"/>
+            <column name="offer_sender_id" valueNumeric="2"/>
+            <column name="amount" valueNumeric="1"/>
+            <column name="currency" value="RSD"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

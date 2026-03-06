@@ -147,6 +147,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Page<ReviewDto> getAllForUser(Pageable pageable, long revieweeId) {
         Page<Review> page = reviewRepository.findAllByRevieweeId(revieweeId, pageable);
+        System.out.println(page);
         return page.map(reviewMapper::toDto);
 
     }

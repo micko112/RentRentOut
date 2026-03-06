@@ -68,7 +68,6 @@
 			<column name="comment" value="Oprema nije bila u obećanom stanju, kašnjenje sa isporukom."/>
 			<column name="created_at" valueDate="2026-03-09 16:20:00"/>
 		</insert>
-
 		<!-- Nakon dodavanja recenzija, ažuriraj brojače u user tabeli -->
 		<update tableName="user">
 			<column name="positive_reviews" valueNumeric="3"/>  <!-- 2 pozitivne recenzije -->

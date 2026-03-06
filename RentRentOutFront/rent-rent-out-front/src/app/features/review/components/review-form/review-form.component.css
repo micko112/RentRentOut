@@ -1,0 +1,70 @@
+.review-wrapper {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 15px;
+}
+
+.error-box {
+  color: #d32f2f;
+  background: #ffebee;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.success-box {
+  color: #2e7d32;
+  background: #e8f5e9;
+  padding: 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.review-form {
+  h3 { margin-top: 0; font-size: 18px; color: #283859; border-bottom: 1px solid #ddd; padding-bottom: 10px;}
+
+  .question {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 15px;
+
+      label {
+        font-weight: normal;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+  }
+
+  .btn-submit {
+    background-color: #6ecf7e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    &:hover { background-color: #5bbd6a; }
+  }
+}

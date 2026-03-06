@@ -13,13 +13,21 @@ public class ReviewMapper {
         r.setContractId(review.getContract().getId());
         r.setReviewerId(review.getReviewer().getId());
         r.setRevieweeId(review.getReviewee().getId());
+        r.setReviewerUsername(review.getReviewer().getFirstname());
         r.setPaymentOk(review.getPaymentOk());
         r.setCommunicationOk(review.getCommunicationOk());
         r.setAgreementOk(review.getAgreementOk());
         r.setReviewType(review.getReviewType());
         r.setComment(review.getComment());
         r.setAdTitle(review.getContract().getAd().getTitle());
-        r.setCreatedAT(review.getCreatedAT());
+        r.setCreatedAt(review.getCreatedAt());
+
+        if (review.getReviewee().getId() == (review.getContract().getAd().getOwner().getId())) {
+            r.setRevieweeRole("LESSOR");
+        } else {
+            r.setRevieweeRole("LESSEE");
+        }
+
         return r;
     }
 }

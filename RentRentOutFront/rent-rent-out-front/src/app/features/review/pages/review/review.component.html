@@ -1,0 +1,68 @@
+<div class="reviews-page-container">
+
+  <!-- ZAGLAVLJE PROFILA -->
+  <div class="profile-header-card">
+
+    <!-- Informacije o korisniku (Levo) -->
+    <div class="user-info-section">
+      <div class="avatar-large">
+        <!-- Inicijali korisnika -->
+        {{ user?.firstname?.charAt(0) }}{{ user?.lastname?.charAt(0) }}
+      </div>
+      <div class="details">
+        <h1>{{ user?.firstname }} {{ user?.lastname }}</h1>
+        <p class="meta-info">
+<!--          <span class="location">📍 {{ user?.city || 'Nepoznata lokacija' }}</span>-->
+          <span class="location">📍 {{ 'Nepoznata lokacija' }}</span>
+<!--          <span class="member-since">📅 Član od: {{ user?.createdAt | date:'yyyy' }}.</span>-->
+          <span class="member-since">📅 Član od: Neki datum.</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Ocene i akcije (Desno) -->
+    <div class="review-action-panel">
+      <div class="rating-score">
+        <div class="score positive"><span class="icon">👍</span> {{ user?.positiveReviews || 0 }}</div>
+        <div class="score negative"><span class="icon">👎</span> {{ user?.negativeReviews || 0 }}</div>
+      </div>
+
+      <!-- Prikazujemo dugme Ocenite SAMO ako NEMA contractId u URL-u -->
+      <button class="btn-review" *ngIf="!contractIdToReview">Ocenite</button>
+    </div>
+
+  </div>
+
+  <!-- FORMA ZA OCENJIVANJE (Prikazuje se samo ako je prosleđen contractId) -->
+  <div class="review-form-section" *ngIf="contractIdToReview">
+    <!-- <app-review-form[contractId]="contractIdToReview" (reviewSuccess)="onReviewSubmitted()"></app-review-form> -->
+    <div style="padding: 20px; background: #eef2ff; border: 1px dashed #2563eb; text-align: center;">
+      Ovde će ići tvoja forma za ocenjivanje
+    </div>
+  </div>
+
+  <!-- TABOVI ZA FILTER OCENA -->
+  <div class="review-tabs">
+    <button [class.active]="activeTab === 'ALL'" (click)="setTab('ALL')">
+      Sve ocene
+    </button>
+    <button [class.active]="activeTab === 'LESSOR'" (click)="setTab('LESSOR')">
+      Kao izdavač
+    </button>
+    <button [class.active]="activeTab === 'LESSEE'" (click)="setTab('LESSEE')">
+    Kao iznajmljivač
+    </button>
+  </div>
+
+  <!-- Ovde ispod će ići ngFor petlja za prikaz samih kartica sa ocenama -->
+  <div class="reviews">
+    <app-review-card
+      *ngFor="let review of filteredReviews"
+      [review]="review"
+      ></app-review-card>
+    <p *ngIf="filteredReviews.length === 0" style="text-align: center; color: #666; margin-top: 20px;">
+      Nema ocena u ovoj kategoriji.
+    </p>
+  </div>
+</div>
+

@@ -16,6 +16,8 @@ public class ReviewDto {
 
     private long revieweeId;
 
+    private String reviewerUsername;
+
     private String adTitle;
 
     private ReviewOption paymentOk;
@@ -28,7 +30,9 @@ public class ReviewDto {
 
     private String comment;
 
-    private LocalDateTime createdAT;
+    private LocalDateTime createdAt;
+
+    private String revieweeRole;
 
     public long getId() {
         return id;
@@ -79,12 +83,12 @@ public class ReviewDto {
         this.comment = comment;
     }
 
-    public LocalDateTime getCreatedAT() {
-        return createdAT;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedAT(LocalDateTime createdAT) {
-        this.createdAT = createdAT;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getAdTitle() {
@@ -117,5 +121,21 @@ public class ReviewDto {
 
     public void setAgreementOk(ReviewOption agreementOk) {
         this.agreementOk = agreementOk;
+    }
+
+    public String getReviewerUsername() {
+        return reviewerUsername;
+    }
+
+    public void setReviewerUsername(String reviewerUsername) {
+        this.reviewerUsername = reviewerUsername;
+    }
+
+    public String getRevieweeRole() {
+        return revieweeRole;
+    }
+
+    public void setRevieweeRole(String revieweeRole) {
+        this.revieweeRole = revieweeRole;
     }
 }

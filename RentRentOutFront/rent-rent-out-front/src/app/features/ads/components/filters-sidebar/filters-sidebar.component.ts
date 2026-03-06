@@ -41,7 +41,7 @@ export class FiltersSidebarComponent {
       locationId: this.filters.locationId,
       minPrice: this.filters.minPrice,
       maxPrice: this.filters.maxPrice
-      // page / size / sort ćeš rešiti u parentu preko router query parametara
+      // page / size / sort će rešiti u parentu preko router query parametara
     };
 
     this.applyFilters.emit(criteria);
