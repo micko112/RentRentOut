@@ -19,7 +19,7 @@
 			<column name="currency" value="RSD"/>
 		</insert>
 
-		<!-- 2. Korisnik Micko (Admin/User zavisno od tvoje postavke, stavio sam admin kao ranije) -->
+		<!-- 2. Admin Micko -->
 		<insert tableName="user">
 			<column name="email" value="micko@gmail.com"/>
 			<column name="password" value="$2a$10$wO0fssmD3wFtjPFwVSdiI.gseVbZim3Y1uM92idcSoxCpiG033yH2"/>

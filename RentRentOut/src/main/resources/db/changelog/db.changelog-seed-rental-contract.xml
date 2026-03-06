@@ -10,8 +10,8 @@
         <insert tableName="rental_contract">
             <column name="ad_id" valueNumeric="2"/>
             <column name="lessee_id" valueNumeric="1"/>
-            <column name="start_date" valueDate="2025-03-20"/>
-            <column name="end_date" valueDate="2025-04-20"/>
+            <column name="start_date" valueDate="2026-03-10"/>
+            <column name="end_date" valueDate="2026-03-20"/>
             <column name="agreed_price" valueNumeric="7000"/>
             <column name="contract_status" value="REQUESTED"/>
             <column name="offer_sender_id" valueNumeric="1"/>
@@ -23,8 +23,8 @@
         <insert tableName="rental_contract">
             <column name="ad_id" valueNumeric="1"/>
             <column name="lessee_id" valueNumeric="2"/>
-            <column name="start_date" valueDate="2025-03-20"/>
-            <column name="end_date" valueDate="2025-04-20"/>
+            <column name="start_date" valueDate="2026-03-20"/>
+            <column name="end_date" valueDate="2026-04-20"/>
             <column name="agreed_price" valueNumeric="78000"/>
             <column name="contract_status" value="REQUESTED"/>
             <column name="offer_sender_id" valueNumeric="2"/>
@@ -36,8 +36,8 @@
         <insert tableName="rental_contract">
             <column name="ad_id" valueNumeric="2"/>
             <column name="lessee_id" valueNumeric="3"/>
-            <column name="start_date" valueDate="2025-03-20"/>
-            <column name="end_date" valueDate="2025-04-20"/>
+            <column name="start_date" valueDate="2026-03-15"/>
+            <column name="end_date" valueDate="2026-04-00"/>
             <column name="agreed_price" valueNumeric="9000"/>
             <column name="contract_status" value="REQUESTED"/>
             <column name="offer_sender_id" valueNumeric="3"/>

@@ -4,10 +4,16 @@ import {AdDetailsComponent} from './features/ads/pages/ad-details/ad-details.com
 import {LoginComponent} from './features/auth/pages/login/login.component';
 import {RegisterComponent} from './features/auth/pages/register/register.component';
 import {MyProfileComponent} from './features/user/pages/my-profile/my-profile.component';
+import {ReviewFormComponent} from './features/review/components/review-form/review-form.component';
+import {ReviewComponent} from './features/review/pages/review/review.component';
 
 export const routes: Routes = [
-  {path:'ads', loadChildren: () => import('./features/ads/ads.routes').then(m=>m.ADS_ROUTES) },
-  {path:'user', loadChildren: () => import('./features/user/user.routes').then(m=>m.USER_ROUTES)},
+  {path:'ads',
+    loadChildren: () => import('./features/ads/ads.routes').then(m=>m.ADS_ROUTES) },
+  {path:'user',
+    loadChildren: () => import('./features/user/user.routes').then(m=>m.USER_ROUTES)},
+  {path:'user/:id/reviews',
+  loadComponent: () => import('./features/review/pages/review/review.component').then(m=>m.ReviewComponent)},
   {path: '',
     redirectTo: '/ads',
     pathMatch: 'full'
@@ -17,8 +23,10 @@ export const routes: Routes = [
 
 
   {path: 'register',  component: RegisterComponent},
+
   {
     path: '**',
     redirectTo: '/ads'
   },
+
 ];

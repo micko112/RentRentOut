@@ -11,6 +11,7 @@
   </div>
 
   <div class="status-zone">
+
     <span class="status-badge" [ngClass]="contract.contractStatus.toLowerCase()">
       {{ contract.contractStatus }}
     </span>
@@ -38,6 +39,36 @@
         Potvrdi vraćanje predmeta
       </button>
     </div>
+    <div class="actions"
+         *ngIf="contract.contractStatus === 'FINISHED' && isOwnerView">
+      <button class="btn-review" [routerLink]="['/user', contract.adDto.owner.id, 'reviews']">
+        Oceni Zakupca
+      </button>
+    </div>
+
+
+    <div class="actions"
+         *ngIf="contract.contractStatus === 'ACCEPTED' && !isOwnerView">
+      <button class="btn-finish" (click)="updateStatus('ACTIVE')">
+        Aktiviraj iznajmljivanje
+      </button>
+    </div>
+    <div class="actions"
+         *ngIf="contract.contractStatus === 'ACTIVE' && !isOwnerView">
+      <button class="btn-finish" (click)="updateStatus('FINISHED')">
+        Potvrdi vraćanje predmeta
+      </button>
+    </div>
+    <div class="actions"
+         *ngIf="contract.contractStatus === 'FINISHED' && !isOwnerView">
+      <button class="btn-review"
+              [routerLink]="['/user', contract.lesseeDto.id, 'reviews']"
+              [queryParams]="{ contractId: contract.id}">
+        Oceni Vlasnika
+      </button>
+    </div>
 
   </div>
 </div>
+
+

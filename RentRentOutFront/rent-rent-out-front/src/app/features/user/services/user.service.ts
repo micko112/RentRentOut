@@ -20,5 +20,8 @@ export class UserService {
   getAllContract(): Observable<RentalContract[]> {
     return this.http.get<RentalContract[]>(`${this.url}/rental-contract/my-contracts`);
   }
+  get(id: number): Observable<User> {
+    return this.http.get<User>(`${this.url}/user/${id}`);
+  }
 
 }

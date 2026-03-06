@@ -1,7 +1,6 @@
 package org.landm.dto.review;
 
 
-import jakarta.validation.constraints.NotNull;
 import org.landm.entity.Enums.ReviewOption;
 import org.landm.entity.Enums.ReviewType;
 
@@ -18,6 +17,12 @@ public class ReviewDto {
     private long revieweeId;
 
     private String adTitle;
+
+    private ReviewOption paymentOk;
+
+    private ReviewOption communicationOk;
+
+    private ReviewOption agreementOk;
 
     private ReviewType reviewType;
 
@@ -88,5 +93,29 @@ public class ReviewDto {
 
     public void setAdTitle(String adTitle) {
         this.adTitle = adTitle;
+    }
+
+    public ReviewOption getPaymentOk() {
+        return paymentOk;
+    }
+
+    public void setPaymentOk(ReviewOption paymentOk) {
+        this.paymentOk = paymentOk;
+    }
+
+    public ReviewOption getCommunicationOk() {
+        return communicationOk;
+    }
+
+    public void setCommunicationOk(ReviewOption communicationOk) {
+        this.communicationOk = communicationOk;
+    }
+
+    public ReviewOption getAgreementOk() {
+        return agreementOk;
+    }
+
+    public void setAgreementOk(ReviewOption agreementOk) {
+        this.agreementOk = agreementOk;
     }
 }

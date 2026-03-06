@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+	<changeSet id="seed-reviews-for-dimitrije" author="micko112">
+		<comment>Dodavanje primera recenzija za korisnika Dimitrije (micko@gmail.com)</comment>
+
+		<!--
+            PRVO: Proveri ID-eve u tvojoj bazi!
+            Ovo su ID-evi prema tvojim podacima:
+            - Dimitrije (micko@gmail.com) → ID = 2 (pretpostavka)
+            - Luka (luka@gmail.com) → ID = 1 (pretpostavka)
+            - Contract ID-evi: 1, 2, 3 iz seed-rental-contracts
+        -->
+
+		<!-- REVIEW 1: Luka ocenjuje Dimitrija (POSITIVAN) -->
+		<insert tableName="review">
+			<column name="contract_id" valueNumeric="1"/>  <!-- Ugovor 1 (Luka kao lessee) -->
+			<column name="reviewer_id" valueNumeric="1"/>   <!-- Luka ostavlja ocenu -->
+			<column name="reviewee_id" valueNumeric="2"/>   <!-- Dimitrije dobija ocenu -->
+			<column name="payment_ok" value="YES"/>
+			<column name="communication_ok" value="YES"/>
+			<column name="agreement_ok" value="YES"/>
+			<column name="review_type" value="POSITIVE"/>
+			<column name="comment" value="Odličan iznajmljivač, sve dogovoreno je ispoštovano. Alati su bili u savršenom stanju."/>
+			<column name="created_at" valueDate="2026-03-06 14:30:00"/>
+		</insert>
+
+		<!-- REVIEW 2: Neki drugi korisnik ocenjuje Dimitrija (POZITIVAN)
+             (koristimo user ID 3 - ako postoji) -->
+		<insert tableName="review">
+			<column name="contract_id" valueNumeric="3"/>  <!-- Ugovor 3 -->
+			<column name="reviewer_id" valueNumeric="3"/>   <!-- Neki korisnik ID 3 -->
+			<column name="reviewee_id" valueNumeric="2"/>   <!-- Dimitrije dobija ocenu -->
+			<column name="payment_ok" value="YES"/>
+			<column name="communication_ok" value="YES"/>
+			<column name="agreement_ok" value="NO"/>
+			<column name="review_type" value="POSITIVE"/>
+			<column name="comment" value="Alat je vraćen nešto kasnije, ali je komunikacija bila dobra."/>
+			<column name="created_at" valueDate="2026-03-07 10:15:00"/>
+		</insert>
+
+		<!-- REVIEW 3: Još jedan pozitivan review -->
+		<insert tableName="review">
+			<column name="contract_id" valueNumeric="2"/>  <!-- Ugovor 2 -->
+			<column name="reviewer_id" valueNumeric="1"/>   <!-- Luka ponovo -->
+			<column name="reviewee_id" valueNumeric="2"/>   <!-- Dimitrije -->
+			<column name="payment_ok" value="YES"/>
+			<column name="communication_ok" value="YES"/>
+			<column name="agreement_ok" value="YES"/>
+			<column name="review_type" value="POSITIVE"/>
+			<column name="comment" value="Sve preporuke! Profesionalan i korektan."/>
+			<column name="created_at" valueDate="2026-03-08 09:45:00"/>
+		</insert>
+
+		<!-- REVIEW 4: Negativan review za Dimitrija -->
+		<insert tableName="review">
+			<column name="contract_id" valueNumeric="1"/>  <!-- Ugovor 1 (drugi korisnik) -->
+			<column name="reviewer_id" valueNumeric="4"/>   <!-- Neki drugi korisnik ID 4 -->
+			<column name="reviewee_id" valueNumeric="2"/>   <!-- Dimitrije -->
+			<column name="payment_ok" value="NO"/>
+			<column name="communication_ok" value="NO"/>
+			<column name="agreement_ok" value="NO"/>
+			<column name="review_type" value="NEGATIVE"/>
+			<column name="comment" value="Oprema nije bila u obećanom stanju, kašnjenje sa isporukom."/>
+			<column name="created_at" valueDate="2026-03-09 16:20:00"/>
+		</insert>
+
+		<!-- Nakon dodavanja recenzija, ažuriraj brojače u user tabeli -->
+		<update tableName="user">
+			<column name="positive_reviews" valueNumeric="3"/>  <!-- 2 pozitivne recenzije -->
+			<column name="negative_reviews" valueNumeric="1"/>  <!-- 2 negativne recenzije -->
+			<where>email = 'micko@gmail.com'</where>
+		</update>
+	</changeSet>
+</databaseChangeLog>

@@ -27,5 +27,7 @@
     <include file="/db/changelog/db.changelog-seed-image-url.xml"/>
 
     <include file="/db/changelog/db.changelog-7-create-review.xml"/>
+    <include file="/db/changelog/db.changelog-seed-reviews.xml"/>
+
     
 </databaseChangeLog>

@@ -57,7 +57,10 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.DELETE, "api/admin/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+
+						.requestMatchers(HttpMethod.GET, "/api/user/*/reviews").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/user/**").authenticated()
+
 
 						.requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
 
@@ -65,9 +68,9 @@ public class SecurityConfig {
 
 						.requestMatchers(HttpMethod.GET, "/api/auth/validate-email").permitAll()
 
-						.requestMatchers(HttpMethod.POST, "/api/review").authenticated()
+						.requestMatchers(HttpMethod.POST, "/api/reviews").authenticated()
 
-						.requestMatchers(HttpMethod.GET, "/api/review").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
 
 
 						.anyRequest().authenticated()

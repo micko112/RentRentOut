@@ -21,8 +21,6 @@ export class ContractsComponent implements OnInit {
   incomingRequests: RentalContract[] = [];
   outgoingRequests: RentalContract[] = [];
 
-  contracts$!: Observable<RentalContract[] | null>;
-
   constructor(private userService: UserService,
               private authService: AuthService) {}
   ngOnInit() {

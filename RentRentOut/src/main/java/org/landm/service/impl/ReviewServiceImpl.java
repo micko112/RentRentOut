@@ -2,6 +2,7 @@ package org.landm.service.impl;
 
 import org.landm.dto.review.CreateReviewRequestDto;
 import org.landm.dto.review.ReviewDto;
+import org.landm.dto.review.ReviewEligibilityDto;
 import org.landm.entity.Enums.ContractStatus;
 import org.landm.entity.Enums.ReviewOption;
 import org.landm.entity.Enums.ReviewType;
@@ -13,9 +14,12 @@ import org.landm.repository.RentalContractRepository;
 import org.landm.repository.ReviewRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.ReviewService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -57,7 +61,13 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDto createReview(CreateReviewRequestDto dto, long reviewerId) {
 
         // validacije sve
-
+//        Korisnika ne možete oceniti:
+//
+//        1     ako ste se nedavno registrovali,
+//        2     ako se iz Vaše konverzacije KP Porukama ne može utvrditi da je do kupoprodaje došlo,
+//        3     ako ste ga već ocenili pre manje od 7 dana,
+//        4     ako je konverzacija starija od 30 dana,
+//        5     ako ste korisnika već ocenili iz iste konverzacije.
 
 
         ReviewType type = calculateReviewType(dto.getPaymentOk(), dto.getCommunicationOk(), dto.getAgreementOk());
@@ -98,7 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw new RuntimeException("Ne mozete sami sebi da ostavite ocenu");
         }
         if(type == ReviewType.POSITIVE){
-            reviewee.setPositiveReviews(reviewer.getPositiveReviews() + 1);
+            reviewee.setPositiveReviews(reviewee.getPositiveReviews() + 1);
         }else {
             reviewee.setNegativeReviews(reviewee.getNegativeReviews() + 1);
         }
@@ -107,5 +117,46 @@ public class ReviewServiceImpl implements ReviewService {
 
         return reviewMapper.toDto(review);
     }
+
+    @Override
+    public ReviewEligibilityDto checkEligibility(long contractId, long reviewerId) {
+        RentalContract rc = rentalContractRepository.findById(contractId).orElseThrow(() -> new RuntimeException("Ne posotji ugovor!"));
+
+        if( rc ==null){
+            return new ReviewEligibilityDto(false, "Ugovor ne postoji.");
+        }
+        User reviewer = userRepository.findById(reviewerId).orElseThrow();
+
+        /*
+        if (reviewer.getCreatedAt().isAfter(LocalDateTime.now().minusDays(3))) {
+           return new ReviewEligibilityDto(false, "Ne možete ocenjivati jer ste se nedavno registrovali.");
+                }
+        */
+        if (rc.getContractStatus() != ContractStatus.FINISHED) {
+            return new ReviewEligibilityDto(false, "Ne može se utvrditi da je do kupoprodaje (iznajmljivanja) došlo.");
+        }
+        if (rc.getEndDate().isBefore(LocalDate.now().minusDays(30))) {
+            return new ReviewEligibilityDto(false, "Ovaj dogovor je završen pre više od 30 dana.");
+        }
+        if (reviewRepository.existsByContractIdAndReviewerId(contractId, reviewerId)) {
+            return new ReviewEligibilityDto(false, "Već ste ocenili korisnika za ovu saradnju.");
+        }
+        return new ReviewEligibilityDto(true, "");
+    }
+
+    @Override
+    public Page<ReviewDto> getAllForUser(Pageable pageable, long revieweeId) {
+        Page<Review> page = reviewRepository.findAllByRevieweeId(revieweeId, pageable);
+        return page.map(reviewMapper::toDto);
+
+    }
+//        Korisnika ne možete oceniti:
+//
+//        1     ako ste se nedavno registrovali,
+//        2     ako se iz Vaše konverzacije KP Porukama ne može utvrditi da je do kupoprodaje došlo,
+//        3     ako ste ga već ocenili pre manje od 7 dana,
+//        4     ako je konverzacija starija od 30 dana,
+//        5     ako ste korisnika već ocenili iz iste konverzacije.
+
 
 }
