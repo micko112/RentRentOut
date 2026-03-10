@@ -4,7 +4,7 @@ import {ReviewFormComponent} from '../../components/review-form/review-form.comp
 import {User} from '../../../../shared/models/user.model';
 import {ReviewService} from '../../services/review.service';
 import {UserService} from '../../../user/services/user.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ReviewCardComponent} from '../../components/review-card/review-card.component';
 import {map, Observable} from 'rxjs';
 import {Review} from '../../../../shared/models/review';
@@ -31,6 +31,9 @@ export class ReviewComponent implements OnInit {
     console.log(this.activeTab);
     console.log(this.filteredReviews);
   }
+
+  showForm: boolean = false;
+
   user: User | null = null;
 
   filteredReviews: Review[] = [];
@@ -42,7 +45,8 @@ export class ReviewComponent implements OnInit {
 
   constructor(private userService: UserService,
               private reviewService: ReviewService,
-              private route: ActivatedRoute,) {}
+              private route: ActivatedRoute,
+              private router: Router) {}
 
   ngOnInit() {
     // ISPRAVKA 1: ID korisnika je u samoj putanji (/user/5/reviews),
@@ -74,8 +78,18 @@ export class ReviewComponent implements OnInit {
   }
 
   onReviewSubmitted() {
-    this.contractIdToReview = null; // Sakrij formu
+    this.toggleForm() // Sakrij formu
+    this.contractIdToReview = null;
     this.loadReviews(); // Osveži listu da se pojavi nova ocena
+    this.userService.get(this.targetUserId).subscribe(userData => {
+      this.user = userData;
+    });
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {contractId: null},
+      queryParamsHandling: 'merge'
+    })
   }
   applyFilter():  void {
     console.log("Filtriram sa tabom:", this.activeTab);
@@ -92,4 +106,7 @@ export class ReviewComponent implements OnInit {
     console.log("Rezultat filtriranja:", this.filteredReviews);
   }
 
+  toggleForm(): void {
+    this.showForm = !this.showForm;
+  }
 }

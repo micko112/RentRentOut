@@ -20,7 +20,7 @@
 
     <ng-template #notLoggedIn>
       <div class="user-actions">
-        <button class="btn-post-ad">+ Postavi oglas</button>
+        <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
         <button class="auth-button" (click)="login()">Uloguj se</button>
         <button class="auth-button" (click)="register()">Registruj se</button>
 

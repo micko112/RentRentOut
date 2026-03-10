@@ -6,11 +6,12 @@ import {FooterComponent} from './core/layout/footer/footer.component';
 import {HeaderComponent} from './core/layout/header/header.component';
 import {AdCardComponent} from './features/ads/components/ad-card/ad-card.component';
 import {AdListComponent} from './features/ads/pages/ad-list/ad-list.component';
+import {ToastComponent} from './shared/components/toast/toast.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, HeaderComponent, AdCardComponent, AdListComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, HeaderComponent, AdCardComponent, AdListComponent, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

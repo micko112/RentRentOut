@@ -1,47 +1,38 @@
 <div class="review-wrapper">
 
-  <!-- Faza 1: Učitavanje -->
-  <div *ngIf="isChecking" class="loading">Proveravam status...</div>
-
-  <!-- Faza 2: Nije dozvoljeno ocenjivanje -->
-  <div *ngIf="!isChecking && !isEligible" class="error-box">
-    <strong>Nije moguće oceniti:</strong><br>
-    {{ errorMessage }}
-  </div>
-
-  <!-- Faza 3: Uspešno ocenjeno -->
-  <div *ngIf="isSubmitted" class="success-box">
-    Hvala! Vaša ocena je uspešno zabeležena.
-  </div>
-
   <!-- Faza 4: FORMA ZA OCENJIVANJE -->
-  <div *ngIf="!isChecking && isEligible && !isSubmitted" class="review-form">
+  <div class="review-form">
     <h3>Ocenite saradnju</h3>
 
     <div class="question">
-      <label>1. Da li je plaćanje / dogovor ispoštovan?</label>
+      <label class="question-text">1. Da li je plaćanje / dogovor ispoštovan?</label>
       <div class="radio-group">
-        <label><input type="radio" [(ngModel)]="reviewData.paymentOk" value="YES"> Da</label>
-        <label><input type="radio" [(ngModel)]="reviewData.paymentOk" value="COULD_BE_BETTER"> Može bolje</label>
-        <label><input type="radio"[(ngModel)]="reviewData.paymentOk" value="NO"> Ne</label>
+        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="YES"> Da</label>
+        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="COULD_BE_BETTER"> Može
+          bolje</label>
+        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="NO"> Ne</label>
       </div>
     </div>
 
     <div class="question">
-      <label>2. Da li je komunikacija protekla dobro?</label>
+      <label class="question-text">2. Da li je komunikacija protekla dobro?</label>
       <div class="radio-group">
-        <label><input type="radio" [(ngModel)]="reviewData.communicationOk" value="YES"> Da</label>
-        <label><input type="radio" [(ngModel)]="reviewData.communicationOk" value="COULD_BE_BETTER"> Može bolje</label>
-        <label><input type="radio" [(ngModel)]="reviewData.communicationOk" value="NO"> Ne</label>
+        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk" value="YES">
+          Da</label>
+        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk"
+                      value="COULD_BE_BETTER"> Može bolje</label>
+        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk" value="NO">
+          Ne</label>
       </div>
     </div>
 
     <div class="question">
-      <label>3. Da li je predmet bio kao iz opisa?</label>
+      <label class="question-text">3. Da li je predmet bio kao iz opisa?</label>
       <div class="radio-group">
-        <label><input type="radio" [(ngModel)]="reviewData.agreementOk" value="YES"> Da</label>
-        <label><input type="radio" [(ngModel)]="reviewData.agreementOk" value="COULD_BE_BETTER"> Može bolje</label>
-        <label><input type="radio" [(ngModel)]="reviewData.agreementOk" value="NO"> Ne</label>
+        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="YES"> Da</label>
+        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="COULD_BE_BETTER">
+          Može bolje</label>
+        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="NO"> Ne</label>
       </div>
     </div>
 
@@ -50,8 +41,9 @@
       <textarea [(ngModel)]="reviewData.comment" rows="3" placeholder="Sve preporuke za člana..."></textarea>
     </div>
 
-    <button class="btn-submit" (click)="submitReview()">Pošalji ocenu</button>
   </div>
 
-
+</div>
+<div class="btn-submit-div">
+  <button class="btn-submit" (click)="submitReview()">Pošalji ocenu</button>
 </div>

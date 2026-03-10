@@ -28,18 +28,24 @@
       </div>
 
       <!-- Prikazujemo dugme Ocenite SAMO ako NEMA contractId u URL-u -->
-      <button class="btn-review" *ngIf="!contractIdToReview">Ocenite</button>
+<!--      <button class="btn-review" *ngIf="!contractIdToReview">Ocenite</button>-->
+      <button class="btn-review"
+              *ngIf="!showForm"
+              (click)="toggleForm()">Ocenite</button>
+<!--      <button class="btn-review"-->
+<!--              (click)="createReview()">Ocenite</button>-->
     </div>
-
+    <!-- FORMA ZA OCENJIVANJE  -->
+    <div class="review-form-section" >
+      <app-review-form
+        *ngIf="showForm"
+        [contractId]="contractIdToReview"
+        (reviewSaved)="onReviewSubmitted()">
+      </app-review-form>
+    </div>
   </div>
 
-  <!-- FORMA ZA OCENJIVANJE (Prikazuje se samo ako je prosleđen contractId) -->
-  <div class="review-form-section" *ngIf="contractIdToReview">
-    <!-- <app-review-form[contractId]="contractIdToReview" (reviewSuccess)="onReviewSubmitted()"></app-review-form> -->
-    <div style="padding: 20px; background: #eef2ff; border: 1px dashed #2563eb; text-align: center;">
-      Ovde će ići tvoja forma za ocenjivanje
-    </div>
-  </div>
+
 
   <!-- TABOVI ZA FILTER OCENA -->
   <div class="review-tabs">

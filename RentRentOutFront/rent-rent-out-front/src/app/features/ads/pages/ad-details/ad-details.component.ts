@@ -11,7 +11,7 @@ import {CreateRentalContractRequest} from '../../../../shared/models/create-rent
 @Component({
   selector: 'app-ad-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './ad-details.component.html',
   styleUrl: './ad-details.component.css'
 })
@@ -35,6 +35,8 @@ export class AdDetailsComponent implements OnInit {
   numberOfDays: number = 0;
   totalPrice: number = 0;
   currentAd!: Ad;
+
+  token  = localStorage.getItem('authToken');
 
   @ViewChild('thumbnailScroll') thumbnailScrollContainer!: ElementRef;
   private blockedIntervals: { start: Date, end: Date }[] = [];
@@ -67,7 +69,8 @@ export class AdDetailsComponent implements OnInit {
         this.generateCalendar();
 
       })
-    )
+    );
+
   }
 
   calendarHeight: number = 0;
@@ -217,6 +220,11 @@ export class AdDetailsComponent implements OnInit {
     }
     if (!this.currentAd) return;
 
+    if( !this.token){
+      this.router.navigate(['/login']);
+      return;
+    }
+
     const request: CreateRentalContractRequest = {
       adId: this.currentAd.id,
       startDate: this.datePipe.transform(this.startDate, 'yyyy-MM-dd')!,
@@ -279,5 +287,7 @@ export class AdDetailsComponent implements OnInit {
       )
     }
   }
+
+
 
 }

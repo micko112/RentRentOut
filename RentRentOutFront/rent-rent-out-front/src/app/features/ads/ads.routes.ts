@@ -2,20 +2,22 @@ import {Routes} from '@angular/router';
 import {AdListComponent} from './pages/ad-list/ad-list.component';
 import {AdDetailsComponent} from './pages/ad-details/ad-details.component';
 import {CreateAdComponent} from './pages/create-ad/create-ad.component';
+import {authGuard} from '../auth/auth.guard';
 
 export const ADS_ROUTES: Routes = [
-  {
-    path: '',
-    component: AdListComponent
-  },
+
   {
     path: 'create',
-    component: CreateAdComponent
+    component: CreateAdComponent,
+    canActivate:[authGuard],
   },
   {
     path: ':id',
     component: AdDetailsComponent
   },
 
-
+  {
+    path: '',
+    component: AdListComponent
+  },
 ]

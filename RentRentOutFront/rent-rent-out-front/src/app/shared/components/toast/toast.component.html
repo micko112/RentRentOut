@@ -1,0 +1,9 @@
+<div class="toast-container">
+    <div class="toast-box"
+         *ngFor="let toast of toastService.toasts$ | async"
+         [ngClass]="toast.type">
+
+      <span>{{ toast.text }}</span>
+      <button class="close-btn" (click)="toastService.removeToast(toast.id)">&times;</button>
+    </div>
+</div>

@@ -41,7 +41,9 @@
     </div>
     <div class="actions"
          *ngIf="contract.contractStatus === 'FINISHED' && isOwnerView">
-      <button class="btn-review" [routerLink]="['/user', contract.lesseeDto.id, 'reviews']">
+      <button class="btn-review"
+              [routerLink]="['/user', contract.lesseeDto.id, 'reviews']"
+              [queryParams]="{ contractId: contract.id}">
         Oceni Zakupca
       </button>
     </div>

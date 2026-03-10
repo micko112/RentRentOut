@@ -3,35 +3,35 @@
 
     <!-- LEVA KOLONA: Slike i Informacije -->
     <div class="left-column">
-        <div class="gallery">
-          <div class="thumbnail-column" *ngIf="ad.images && ad.images.length >0">
-            <button class="scroll-btn up" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(-400)">
-              &#9650;
-            </button>
+      <div class="gallery">
+        <div class="thumbnail-column" *ngIf="ad.images && ad.images.length >0">
+          <button class="scroll-btn up" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(-400)">
+            &#9650;
+          </button>
           <div class="thumbnail-list" #thumbnailScroll>
             <div class="thumbnail"
                  *ngFor="let imageUrl of ad.images"
                  (click)="selectImage(imageUrl)"
-                 [class.active] = "imageUrl === selectedImageUrl">
+                 [class.active]="imageUrl === selectedImageUrl">
               <img [src]="imageUrl"
                    (error)="handleImageError($event)"
                    alt="Mala slika">
             </div>
           </div>
-            <button class="scroll-btn down" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(400)">
-              &#9660;
-            </button>
-          </div>
-          <div class="main-image-wrapper" (click)="openOverlay()" style="cursor: zoom-in">
-            <img [src]="selectedImageUrl"
-            (error)="handleImageError($event)"
-                 alt="Glavna slika: {{ ad.title }}">
-          </div>
+          <button class="scroll-btn down" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(400)">
+            &#9660;
+          </button>
         </div>
+        <div class="main-image-wrapper" (click)="openOverlay()" style="cursor: zoom-in">
+          <img [src]="selectedImageUrl"
+               (error)="handleImageError($event)"
+               alt="Glavna slika: {{ ad.title }}">
+        </div>
+      </div>
       <div class="info">
         <h1>{{ ad.title }}</h1>
         <div class="price-currency">
-          <div class="price">{{ ad.price | number }} </div>
+          <div class="price">{{ ad.price | number }}</div>
           <span class="currency">{{ ad.currency }} </span>
         </div>
 
@@ -48,7 +48,7 @@
         </div>
 
         <h3>Opis</h3>
-        <p class="description" >{{ ad.description }}</p>
+        <p class="description">{{ ad.description }}</p>
       </div>
     </div>
     <!-- DESNA KOLONA: Kalendar i Korisnik -->
@@ -57,7 +57,7 @@
         <div class="month">
           <div class="nav">
             <div class="nav-arrow" (click)="changeMonth(-1)">
-            <img src="assets/icons/previous-calendar.png"/></div>
+              <img src="assets/icons/previous-calendar.png"/></div>
             <div class="month-name">{{ displayDate | date:'MMMM yyyy' | titlecase }}</div>
             <div class="nav-arrow" (click)="changeMonth(1)">
               <img src="assets/icons/next-calendar.png"/>
@@ -68,8 +68,8 @@
           </div>
           <div class="dates">
             <div *ngFor="let day of daysInMonth"
-            class="day-cell"
-            [ngClass]="{
+                 class="day-cell"
+                 [ngClass]="{
             'past': day?.isPast,
             'blocked': day?.isBlocked,
             'in-range': day?.isSelected,
@@ -77,25 +77,25 @@
             'end-date': day?.isEndDate,
 
             }"
-            (click)="selectDate(day)">
-              <span class="day-number" *ngIf="day?.isCurrentMonth">{{ day?.dayOfMonth}}</span>
+                 (click)="selectDate(day)">
+              <span class="day-number" *ngIf="day?.isCurrentMonth">{{ day?.dayOfMonth }}</span>
             </div>
           </div>
           <div class="pickup-clear-dates">
             <div class="pickup-dropoff-wrapper">
-            <div class="date-info">
-              <span class="label">Preuzmi</span>
-              <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
-            </div>
-            <div class="date-info">
-              <span class="label">Vrati</span>
-              <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
-            </div>
+              <div class="date-info">
+                <span class="label">Preuzmi</span>
+                <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
+              </div>
+              <div class="date-info">
+                <span class="label">Vrati</span>
+                <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
+              </div>
             </div>
             <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
 
           </div>
-<!--          <div class="separator"></div>-->
+          <!--          <div class="separator"></div>-->
           <div class="payment-section">
             <div class="payment-dates">
               <div class="choose-dates" *ngIf="numberOfDays ==0 ">
@@ -106,12 +106,19 @@
                 <div class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</div>
               </div>
             </div>
-            <button class="request-btn" [disabled]="!startDate || !endDate" (click)="sendRequest()">Pošalji zahtev</button>
+            <button class="request-btn" [disabled]="!startDate || !endDate" (click)="sendRequest()">Pošalji zahtev
+            </button>
           </div>
         </div>
-    </div>
+      </div>
       <div class="user-info">
         <p>Vlasnik: {{ ad.owner?.firstname }}</p>
+          <div class="review-action-panel">
+            <div class="rating-score" [routerLink]="['/user', ad.owner.id, 'reviews']">
+              <div class="score positive"><span class="icon">👍</span> {{ ad.owner?.positiveReviews || 0 }}</div>
+              <div class="score negative"><span class="icon">👎</span> {{ ad.owner?.negativeReviews || 0 }}</div>
+            </div>
+        </div>
       </div>
     </div>
   </div>
@@ -123,14 +130,16 @@
   <button class="nav-btn prev-btn"
           *ngIf="currentAd?.images && currentAd.images.length > 1"
           (click)="previousImage($event)"
-  >&#10094;</button>
+  >&#10094;
+  </button>
   <img [src]="currentAd.images[currentOverlayIndex]"
-    (click)="$event.stopPropagation()"
-      alt="Uvelicana slika">
+       (click)="$event.stopPropagation()"
+       alt="Uvelicana slika">
 
   <button class="nav-btn next-btn"
           *ngIf="currentAd?.images && currentAd.images.length > 1"
-          (click)="nextImage($event)">&#10095;</button>
+          (click)="nextImage($event)">&#10095;
+  </button>
 
   <div class="image-counter" *ngIf="currentAd?.images && currentAd.images.length > 1">
     {{ currentOverlayIndex + 1 }} / {{ currentAd.images.length }}

@@ -12,16 +12,12 @@ export const routes: Routes = [
     loadChildren: () => import('./features/ads/ads.routes').then(m=>m.ADS_ROUTES) },
   {path:'user',
     loadChildren: () => import('./features/user/user.routes').then(m=>m.USER_ROUTES)},
-  {path:'user/:id/reviews',
-  loadComponent: () => import('./features/review/pages/review/review.component').then(m=>m.ReviewComponent)},
   {path: '',
     redirectTo: '/ads',
     pathMatch: 'full'
   },
   {path: 'login',  component: LoginComponent
   },
-
-
   {path: 'register',  component: RegisterComponent},
 
   {

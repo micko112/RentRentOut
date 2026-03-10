@@ -398,6 +398,38 @@
   border: 1px solid #e0e0e0;
   border-radius: 8px;
 }
+.review-action-panel {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  .rating-score {
+    display: flex;
+    gap: 12px;
+    cursor: pointer;
+    .score {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 15px;
+
+      /* KP STIL OCENA */
+
+      &.positive {
+        border: 1px solid #22c55e;
+        color: #16a34a;
+      }
+
+      &.negative {
+        border: 1px solid #ef4444;
+        color: #dc2626;
+      }
+    }
+  }
+}
 /* image overlay ------------------------------------------------------------------*/
 .image-overlay {
   position: fixed;

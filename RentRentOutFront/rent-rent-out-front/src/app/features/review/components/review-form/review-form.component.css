@@ -1,7 +1,5 @@
 .review-wrapper {
-  background: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+
   padding: 20px;
   margin-top: 15px;
 }
@@ -23,28 +21,44 @@
 }
 
 .review-form {
-  h3 { margin-top: 0; font-size: 18px; color: #283859; border-bottom: 1px solid #ddd; padding-bottom: 10px;}
+  h3 { margin-top: 0;
+    font-size: 18px;
+    color: #283859;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+  }
 
   .question {
     margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
 
     label {
       display: block;
-      font-weight: 600;
-      margin-bottom: 5px;
+      font-weight: 400;
+      margin-bottom: 12px;
       font-size: 14px;
+
+    }
+    .question-text {
+      width: 280px;
     }
 
     .radio-group {
       display: flex;
+      flex-direction: row;
       gap: 15px;
 
-      label {
+      label  {
         font-weight: normal;
         cursor: pointer;
-        display: flex;
-        align-items: center;
         gap: 5px;
+
+       input[type="radio"]:checked {
+         accent-color: #813181;
+         cursor: pointer;
+       }
       }
     }
 
@@ -57,14 +71,19 @@
     }
   }
 
-  .btn-submit {
-    background-color: #6ecf7e;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    &:hover { background-color: #5bbd6a; }
-  }
+}
+.btn-submit-div {
+  display: flex;
+  justify-content:  end;
+}
+.btn-submit {
+  background-color: #0071bd;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover { background-color: #0071bd; }
 }

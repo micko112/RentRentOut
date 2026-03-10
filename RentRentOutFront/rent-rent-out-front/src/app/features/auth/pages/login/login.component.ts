@@ -3,6 +3,8 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {CommonModule} from '@angular/common';
+import {ToastService} from '../../../../shared/services/toast.service';
+
 
 @Component({
   selector: 'app-login',
@@ -21,7 +23,9 @@ export class LoginComponent {
   submitted = false;
   constructor(private fb: FormBuilder,
               private router: Router,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private toastService: ToastService,
+    ) {
   }
 
   ngOnInit() {
@@ -41,12 +45,12 @@ export class LoginComponent {
       .subscribe(
          {
            next: (response) => {
-             console.log('Login Successful');
+             this.toastService.showSucces("Uspesno ste se ulogovali!");
              localStorage.setItem('authToken', response.token);
              this.router.navigateByUrl('/');
            },
            error: (error) =>  {
-             console.log('Login Failed', error);
+             this.toastService.showError("Nije uspela prijava!")
            }
 
         }
