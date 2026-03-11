@@ -8,6 +8,7 @@ import {AdService} from '../../../ads/services/ad.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
 import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component';
+import {ToastService} from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-my-ads',
@@ -25,7 +26,8 @@ export class MyAdsComponent implements  OnInit {
   constructor(private userService: UserService,
               private adService: AdService,
               private route: ActivatedRoute,
-              private router: Router,) {}
+              private router: Router,
+              private toastService: ToastService) {}
 
   ngOnInit() {
 
@@ -39,9 +41,9 @@ export class MyAdsComponent implements  OnInit {
         next: () => {
           // Osveži listu nakon brisanja
           this.ads$ = this.adService.getMyAds();
-          // TODO: Dodaj neki Toast/Snack poruku za uspeh
+          this.toastService.showSuccess("Uspesno ste obrisali oglas!")
         },
-        error: (err) => alert('Greška pri brisanju oglasa.')
+        error: (err) => this.toastService.showError('Greška pri brisanju oglasa.')
       });
     }
   }

@@ -45,7 +45,7 @@ export class LoginComponent {
       .subscribe(
          {
            next: (response) => {
-             this.toastService.showSucces("Uspesno ste se ulogovali!");
+             this.toastService.showSuccess("Uspesno ste se ulogovali!");
              localStorage.setItem('authToken', response.token);
              this.router.navigateByUrl('/');
            },

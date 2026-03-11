@@ -7,7 +7,7 @@ import {PriceInterval, PriceIntervalLabels} from '../../../../shared/models/pric
 import {CategoryService} from '../../services/category.service';
 import {Router, RouterLink} from '@angular/router';
 import {switchMap} from 'rxjs';
-
+import {ToastService} from '../../../../shared/services/toast.service';
 @Component({
   selector: 'app-create-ad',
   imports: [CommonModule, ReactiveFormsModule, RouterLink,],
@@ -33,7 +33,8 @@ export class CreateAdComponent implements OnInit {
   constructor(private adService: AdService,
               private categoryService: CategoryService,
               private fb: FormBuilder,
-              private router: Router,) {
+              private router: Router,
+              private toastService: ToastService,) {
   }
 
   ngOnInit(): void {
@@ -69,12 +70,13 @@ export class CreateAdComponent implements OnInit {
       })
     ).subscribe({
       next: (newAd) => {
-        console.log("Oglas uspesno kreiran", newAd);
+        this.toastService.showSuccess("Oglas uspesno kreiran");
         this.router.navigate(['/ads', newAd.id]);
       },
       error: (error) => {
         console.error("Greska:", error);
-        alert('Došlo je do greške prilikom kreiranja oglasa.');
+        this.toastService.showError('Došlo je do greške prilikom kreiranja oglasa.');
+
       }
     })
   }

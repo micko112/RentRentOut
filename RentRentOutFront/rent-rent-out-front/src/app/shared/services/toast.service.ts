@@ -19,7 +19,7 @@ export class ToastService {
 
   private idCounter = 0;
 
-  showSucces(text: string) {
+  showSuccess(text: string) {
     this.addToast(text, 'success')
   }
   showError(text: string) {

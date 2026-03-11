@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {AuthService} from '../../services/auth.service';
 import {Router, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
-
+import {ToastService} from '../../../../shared/services/toast.service';
 @Component({
   selector: 'app-register',
   imports: [
@@ -20,7 +20,8 @@ export class RegisterComponent {
 
     constructor(private fb: FormBuilder,
                 private authService: AuthService,
-                private router: Router,) {
+                private router: Router,
+                private toastService: ToastService,) {
     }
 
   ngOnInit() {
@@ -47,10 +48,11 @@ export class RegisterComponent {
     this.authService.register(this.registerForm.value).subscribe({
       next: () => {
         this.router.navigate(['/login']);
+        this.toastService.showSuccess("Uspesno ste se registrovali!");
       },
       error: (err) => {
         this.errorMessage = err.error.message || 'Došlo je do greške. Molimo pokušajte ponovo.';
-        console.error('Registration failed', err);
+        this.toastService.showError(err);
       }
     });
   }

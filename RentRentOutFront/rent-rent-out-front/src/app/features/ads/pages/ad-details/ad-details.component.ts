@@ -7,6 +7,7 @@ import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {CalendarDay} from '../../../../shared/models/day.model';
 import {ContractService} from '../../../contracts/services/contract.service';
 import {CreateRentalContractRequest} from '../../../../shared/models/create-rental-contract-request';
+import {ToastService} from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-ad-details',
@@ -46,7 +47,8 @@ export class AdDetailsComponent implements OnInit {
               private route: ActivatedRoute,
               private contractService: ContractService,
               private router: Router,
-              private datePipe: DatePipe,) {
+              private datePipe: DatePipe,
+              private toastService: ToastService,) {
   }
 
   ngOnInit() {
@@ -235,12 +237,12 @@ export class AdDetailsComponent implements OnInit {
     };
     this.contractService.createRentalContract(request).subscribe({
         next: (response) => {
-          alert('Zahtev uspesno poslat');
+          this.toastService.showSuccess("Uspesno ste poslali zahtev!");
 
         },
         error: (err) => {
           console.error(err);
-          alert('Došlo je do greške prilikom slanja zahteva.');
+          this.toastService.showError("Zahtev nije poslat!");
         }
       }
     )
