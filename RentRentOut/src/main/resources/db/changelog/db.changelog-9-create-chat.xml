@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+	<!-- 1. TABELA ZA KONVERZACIJE (Room) -->
+	<changeSet id="11.1-create-conversation-table" author="micko112">
+		<createTable tableName="conversation">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+
+			<!-- Oglas oko koga se vodi razgovor (zato što možeš sa istim čovekom pričati o 2 različite stvari) -->
+			<column name="ad_id" type="BIGINT">
+				<constraints nullable="false" foreignKeyName="fk_conv_ad" referencedTableName="ad" referencedColumnNames="id"/>
+			</column>
+
+			<!-- Korisnik koji je ZAPOČEO razgovor (Kupac/Zakupac) -->
+			<column name="participant_one_id" type="BIGINT">
+				<constraints nullable="false" foreignKeyName="fk_conv_p1" referencedTableName="user" referencedColumnNames="id"/>
+			</column>
+
+			<!-- Vlasnik oglasa (Izdavač) -->
+			<column name="participant_two_id" type="BIGINT">
+				<constraints nullable="false" foreignKeyName="fk_conv_p2" referencedTableName="user" referencedColumnNames="id"/>
+			</column>
+
+			<!-- Kada je započeta konverzacija -->
+			<column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false"/>
+			</column>
+
+			<!-- OVO JE KLJUČNO: Kada je poslata POSLEDNJA poruka.
+                 Služi da se uvek najaktivniji chatovi prikazuju na vrhu liste (Kao Viber/WhatsApp) -->
+			<column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+
+		<!-- ZABRANA DUPLIKATA: Dva ista čoveka ne mogu imati 2 odvojena chata za ISTI oglas -->
+		<addUniqueConstraint tableName="conversation"
+							 columnNames="ad_id, participant_one_id, participant_two_id"
+							 constraintName="uq_conversation_per_ad_and_users"/>
+	</changeSet>
+
+	<!-- 2. TABELA ZA PORUKE -->
+	<changeSet id="11.2-create-message-table" author="micko112">
+		<createTable tableName="message">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+
+			<!-- Kojoj konverzaciji pripada ova poruka -->
+			<column name="conversation_id" type="BIGINT">
+				<constraints nullable="false" foreignKeyName="fk_msg_conv" referencedTableName="conversation" referencedColumnNames="id"/>
+			</column>
+
+			<!-- Ko je od ona dva participant-a poslao ovu konkretnu poruku -->
+			<column name="sender_id" type="BIGINT">
+				<constraints nullable="false" foreignKeyName="fk_msg_sender" referencedTableName="user" referencedColumnNames="id"/>
+			</column>
+
+			<column name="content" type="TEXT">
+				<constraints nullable="false"/>
+			</column>
+
+			<!-- Da li je druga strana pročitala poruku (Seen) -->
+			<column name="is_read" type="BOOLEAN" defaultValueBoolean="false">
+				<constraints nullable="false"/>
+			</column>
+
+			<column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+	</changeSet>
+
+</databaseChangeLog>

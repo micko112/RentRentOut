@@ -26,8 +26,10 @@
     <include file="/db/changelog/db.changelog-7-create-email-verification-token.xml"/>
     <include file="/db/changelog/db.changelog-seed-image-url.xml"/>
 
-    <include file="/db/changelog/db.changelog-7-create-review.xml"/>
+    <include file="/db/changelog/db.changelog-8-create-review.xml"/>
     <include file="/db/changelog/db.changelog-seed-reviews.xml"/>
+
+    <include file="/db/changelog/db.changelog-9-create-chat.xml"/>
 
     
 </databaseChangeLog>
