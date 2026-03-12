@@ -59,7 +59,10 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
 
 						.requestMatchers(HttpMethod.GET, "/api/user/*/reviews").permitAll()
-						.requestMatchers(HttpMethod.GET, "/api/user/**").authenticated()
+
+						.requestMatchers(HttpMethod.GET, "/api/user/*/ads").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/user/**").permitAll()
+
 						.requestMatchers(HttpMethod.POST, "/api/reviews").authenticated()
 
 

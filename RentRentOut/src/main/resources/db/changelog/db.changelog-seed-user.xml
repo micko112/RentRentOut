@@ -12,98 +12,102 @@
 			<column name="password" value="$2a$10$OLBjX4KuSirnkGqNR/1e6eRdN7SmOfQFD4FutfjwdKLHAtTvSO7ui"/>
 			<column name="firstname" value="Luka"/>
 			<column name="lastname" value="Hadzic"/>
-			<column name="money" valueNumeric="0"/>
+			<column name="credit" valueNumeric="1000"/>
 			<column name="role_id" valueComputed="(SELECT id FROM role WHERE name = 'ROLE_ADMIN')"/>
 			<column name="enabled" valueBoolean="true"/>
-			<column name="version" valueNumeric="0"/>
-			<column name="currency" value="RSD"/>
+			<column name="identified" valueBoolean="true"/>
+			<column name="phone_number" value="064/123-4567"/>
+			<column name="description" value="Bavimo se izdavanjem opreme već 5 godina. Svaki dogovor je moguć."/>
+			<column name="location_id" valueNumeric="1"/>
+			<!-- positive_reviews, negative_reviews, version, currency i created_at dobijaju default vrednosti iz šeme -->
 		</insert>
 
-		<!-- 2. Admin Micko -->
+		<!-- 2. Micko (Admin) -->
 		<insert tableName="user">
 			<column name="email" value="micko@gmail.com"/>
 			<column name="password" value="$2a$10$wO0fssmD3wFtjPFwVSdiI.gseVbZim3Y1uM92idcSoxCpiG033yH2"/>
 			<column name="firstname" value="Dimitrije"/>
 			<column name="lastname" value="Mitic"/>
-			<column name="money" valueNumeric="0"/>
+			<column name="credit" valueNumeric="5000"/>
 			<column name="role_id" valueComputed="(SELECT id FROM role WHERE name = 'ROLE_ADMIN')"/>
 			<column name="enabled" valueBoolean="true"/>
-			<column name="version" valueNumeric="0"/>
-			<column name="currency" value="RSD"/>
+			<column name="identified" valueBoolean="true"/>
+			<column name="phone_number" value="060/987-6543"/>
+			<column name="description" value="Iznajmljivanje alata na Beograd i okolina"/>
+			<column name="location_id" valueNumeric="1"/>
 		</insert>
 
-		<!-- 3. Korisnik Željko (Običan User - role_id 2) -->
+		<!-- 3. Željko (User) -->
 		<insert tableName="user">
 			<column name="email" value="zeljko@gmail.com"/>
 			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
 			<column name="firstname" value="Zeljko"/>
 			<column name="lastname" value="Stojkovic"/>
-			<column name="money" valueNumeric="0"/>
-			<!-- Pretpostavka da je role_id 2 zapravo ROLE_USER -->
+			<column name="credit" valueNumeric="0"/>
 			<column name="role_id" valueNumeric="2"/>
 			<column name="enabled" valueBoolean="true"/>
-			<column name="version" valueNumeric="0"/>
-			<column name="currency" value="RSD"/>
+			<column name="identified" valueBoolean="false"/>
+			<!-- Nema location, phone ni description (čisto da vidimo kako front radi kad fale podaci) -->
 		</insert>
+
+		<!-- 4. Nikola Jokić (User) -->
 		<insert tableName="user">
 			<column name="email" value="nikola.jokic@gmail.com"/>
 			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
 			<column name="firstname" value="Nikola"/>
 			<column name="lastname" value="Jokic"/>
-			<column name="money" valueNumeric="0"/>
 			<column name="role_id" valueNumeric="2"/>
 			<column name="enabled" valueBoolean="true"/>
-			<column name="version" valueNumeric="0"/>
-			<column name="currency" value="RSD"/>
+			<column name="identified" valueBoolean="true"/>
+			<column name="location_id" valueNumeric="3"/> <!-- Npr. Sombor/Novi Sad -->
+			<column name="positive_reviews" valueNumeric="45"/>
+			<column name="negative_reviews" valueNumeric="0"/>
+			<column name="description" value="Izbacujem konje u najam."/>
 		</insert>
 
+		<!-- 5. Ivan Milošević (User) -->
 		<insert tableName="user">
 			<column name="email" value="ivan.milosevic@gmail.com"/>
 			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
 			<column name="firstname" value="Ivan"/>
 			<column name="lastname" value="Milosevic"/>
-			<column name="money" valueNumeric="0"/>
 			<column name="role_id" valueNumeric="2"/>
 			<column name="enabled" valueBoolean="true"/>
-			<column name="version" valueNumeric="0"/>
-			<column name="currency" value="RSD"/>
+			<column name="positive_reviews" valueNumeric="2"/>
+			<column name="negative_reviews" valueNumeric="1"/>
 		</insert>
 
+		<!-- 6. Marija Stojanović (User) -->
 		<insert tableName="user">
 			<column name="email" value="marija.stojanovic@gmail.com"/>
 			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
 			<column name="firstname" value="Marija"/>
 			<column name="lastname" value="Stojanovic"/>
-			<column name="money" valueNumeric="0"/>
 			<column name="role_id" valueNumeric="2"/>
 			<column name="enabled" valueBoolean="true"/>
-			<column name="version" valueNumeric="0"/>
-			<column name="currency" value="RSD"/>
 		</insert>
 
+		<!-- 7. Petar Petrović (User) -->
 		<insert tableName="user">
 			<column name="email" value="petar.petrovic@gmail.com"/>
 			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
 			<column name="firstname" value="Petar"/>
 			<column name="lastname" value="Petrovic"/>
-			<column name="money" valueNumeric="0"/>
 			<column name="role_id" valueNumeric="2"/>
 			<column name="enabled" valueBoolean="true"/>
-			<column name="version" valueNumeric="0"/>
-			<column name="currency" value="RSD"/>
+			<column name="identified" valueBoolean="true"/>
 		</insert>
 
+		<!-- 8. Jovana Radović (User) -->
 		<insert tableName="user">
 			<column name="email" value="jovana.radovic@gmail.com"/>
 			<column name="password" value="$2a$10$epbDIv53YAFT.OToIpKS1.XeYOHT91xDPdbOp8fkUnwr9TkjIR2Ca"/>
 			<column name="firstname" value="Jovana"/>
 			<column name="lastname" value="Radovic"/>
-			<column name="money" valueNumeric="0"/>
 			<column name="role_id" valueNumeric="2"/>
 			<column name="enabled" valueBoolean="true"/>
-			<column name="version" valueNumeric="0"/>
-			<column name="currency" value="RSD"/>
 		</insert>
+
 	</changeSet>
 
 </databaseChangeLog>

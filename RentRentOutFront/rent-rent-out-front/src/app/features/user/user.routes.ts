@@ -5,6 +5,7 @@ import {ProfileDetailsComponent} from './pages/profile-details/profile-details.c
 import {ContractsComponent} from './pages/contracts/contracts.component';
 import {authGuard} from '../auth/auth.guard';
 import {ReviewComponent} from '../review/pages/review/review.component';
+import {UserProfileComponent} from './public-user/user-profile/user-profile.component';
 
 export const USER_ROUTES: Routes = [
   {
@@ -27,6 +28,9 @@ export const USER_ROUTES: Routes = [
     ]
   },
   {path:':id/reviews',
-    component: ReviewComponent}
+    component: ReviewComponent},
+  {path: ':id',
+  component: UserProfileComponent},
+
 
 ]

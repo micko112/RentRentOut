@@ -1,6 +1,7 @@
 package org.landm.dto.review;
 
 
+import org.landm.dto.user.UserShortDto;
 import org.landm.entity.Enums.ReviewOption;
 import org.landm.entity.Enums.ReviewType;
 
@@ -8,15 +9,13 @@ import java.time.LocalDateTime;
 
 public class ReviewDto {
 
-    private long id;
+    private Long id;
 
-    private long contractId;
+    private Long contractId;
 
-    private long reviewerId;
+    private UserShortDto reviewer;
 
-    private long revieweeId;
-
-    private String reviewerUsername;
+    private UserShortDto reviewee;
 
     private String adTitle;
 
@@ -34,37 +33,36 @@ public class ReviewDto {
 
     private String revieweeRole;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getContractId() {
+    public Long getContractId() {
         return contractId;
     }
 
-    public void setContractId(long contractId) {
+    public void setContractId(Long contractId) {
         this.contractId = contractId;
     }
 
-
-    public long getReviewerId() {
-        return reviewerId;
+    public UserShortDto getReviewer() {
+        return reviewer;
     }
 
-    public void setReviewerId(long reviewerId) {
-        this.reviewerId = reviewerId;
+    public void setReviewer(UserShortDto reviewer) {
+        this.reviewer = reviewer;
     }
 
-    public long getRevieweeId() {
-        return revieweeId;
+    public UserShortDto getReviewee() {
+        return reviewee;
     }
 
-    public void setRevieweeId(long revieweeId) {
-        this.revieweeId = revieweeId;
+    public void setReviewee(UserShortDto reviewee) {
+        this.reviewee = reviewee;
     }
 
     public ReviewType getReviewType() {
@@ -121,14 +119,6 @@ public class ReviewDto {
 
     public void setAgreementOk(ReviewOption agreementOk) {
         this.agreementOk = agreementOk;
-    }
-
-    public String getReviewerUsername() {
-        return reviewerUsername;
-    }
-
-    public void setReviewerUsername(String reviewerUsername) {
-        this.reviewerUsername = reviewerUsername;
     }
 
     public String getRevieweeRole() {

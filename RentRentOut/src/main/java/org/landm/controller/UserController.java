@@ -1,30 +1,18 @@
 package org.landm.controller;
 
 import jakarta.validation.Valid;
-
+import org.landm.dto.requestDto.DepositRequestDto;
+import org.landm.dto.user.*;
 import org.landm.entity.User;
 import org.landm.mapper.UserMapper;
 import org.landm.security.JwtUtil;
-import org.landm.dto.user.UserDto;
-import org.landm.dto.requestDto.DepositRequestDto;
-import org.landm.dto.user.ChangeUserPasswordDto;
-import org.landm.dto.user.LoginUserRequestDto;
-import org.landm.dto.user.RegisterUserRequestDto;
-import org.landm.dto.user.UpdateUserDto;
 import org.landm.service.UserService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,16 +32,21 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/{id}")
-    public ResponseEntity<Object> get(@PathVariable("id") long userId){
-    	return new ResponseEntity<>(userService.get(userId), HttpStatus.OK);
+    public ResponseEntity<PublicProfileDto> getUser(@PathVariable("id") Long userId, Pageable pageable){
+
+    	return ResponseEntity.ok(userService.getUser(pageable, userId));
+    }
+    @GetMapping("/{id}/profile")
+    public ResponseEntity<UserProfileDto> getUserProfile(@PathVariable("id") Long userId){
+        return ResponseEntity.ok(userService.getUserProfile(userId));
     }
     
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/me")
     public ResponseEntity<UserDto> getMe(Authentication auth){
-    	long myId = Long.parseLong(auth.getName());
+    	Long myId = Long.parseLong(auth.getName());
     	return ResponseEntity.ok(userService.getMe(myId));
     }
     
@@ -78,7 +71,7 @@ public class UserController {
     @PostMapping("/me/deposits")
     public ResponseEntity<UserDto> depositMoney(Authentication auth, @RequestBody @Valid DepositRequestDto req){
     
-    	long userId = Long.parseLong(auth.getName());
+    	Long userId = Long.parseLong(auth.getName());
     	
     	return new ResponseEntity<>(userService.depositMoney(userId, req), HttpStatus.OK);
     }
@@ -86,7 +79,7 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/me")
     public ResponseEntity<Map<String, Object>> updateMe(@Valid @RequestBody UpdateUserDto userInfo, Authentication auth){
-    	long myId = Long.parseLong(auth.getName());
+    	Long myId = Long.parseLong(auth.getName());
     	Map<String, Object> res = new HashMap<>();
     	res.put("user", userService.update(userInfo, myId));
     	return new ResponseEntity<>(res, HttpStatus.OK);
@@ -95,20 +88,20 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PatchMapping("/me/password")
     public ResponseEntity<String> updatePassword(@Valid @RequestBody ChangeUserPasswordDto data, Authentication auth){
-    	long myId = Long.parseLong(auth.getName());
+    	Long myId = Long.parseLong(auth.getName());
 		return new ResponseEntity<>(userService.updatePassword(data, myId), HttpStatus.OK);	
     }
     
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> update(@Valid @RequestBody UpdateUserDto userInfo, @PathVariable("id") long userId){
+    public ResponseEntity<Object> update(@Valid @RequestBody UpdateUserDto userInfo, @PathVariable("id") Long userId){
     	return new ResponseEntity<>(userService.update(userInfo, userId), HttpStatus.OK);
     }
     
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/me")
     public ResponseEntity<String> deleteMe(Authentication auth) {
-        long myId = Long.parseLong(auth.getName());
+        Long myId = Long.parseLong(auth.getName());
         return new ResponseEntity<>(userService.deleteMe(myId), HttpStatus.OK);
     }
 }

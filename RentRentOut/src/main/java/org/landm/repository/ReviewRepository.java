@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     boolean existsByContractIdAndReviewerId(Long contractId, Long reviewerId);
 
-    Page<Review> findAllByRevieweeId(long revieweeId, Pageable pageable);
+    Page<Review> findAllByRevieweeId(Long revieweeId, Pageable pageable);
 
 }

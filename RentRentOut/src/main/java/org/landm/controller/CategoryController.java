@@ -29,7 +29,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable long id) {
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
         CategoryDto category = categoryService.get(id); // Ovu metodu već imaš u servisu
         return ResponseEntity.ok(category);
     }
@@ -38,7 +38,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryDto> post(@Valid @RequestBody CreateCategoryRequestDto req,
                                             Authentication auth) {
-        long userId = Long.parseLong(auth.getName());
+        Long userId = Long.parseLong(auth.getName());
         return new ResponseEntity<>(categoryService.create(req, userId), HttpStatus.CREATED);
 
     }

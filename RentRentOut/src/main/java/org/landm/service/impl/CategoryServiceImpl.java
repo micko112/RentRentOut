@@ -24,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public CategoryDto create(CreateCategoryRequestDto req, long userId) {
+    public CategoryDto create(CreateCategoryRequestDto req, Long userId) {
         Category categoryToCreate = new Category();
         categoryToCreate.setName(req.getName());
 
@@ -45,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService{
                 .collect(Collectors.toList());
     }
     @Override
-    public CategoryDto get(long id) {
+    public CategoryDto get(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
         return categoryMapper.toDto(category);
     }

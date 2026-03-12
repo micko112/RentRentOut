@@ -59,4 +59,7 @@ export class AdService {
     return this.http.delete(`${this.adApiUrl}/${id}`, {responseType: 'text'});
 
   }
+  getAdsByUser(userId: number) : Observable<Page<AdPreview>> {
+    return this.http.get<Page<AdPreview>>(`${this.adApiUrl}/user/${userId}`);
+  }
 }

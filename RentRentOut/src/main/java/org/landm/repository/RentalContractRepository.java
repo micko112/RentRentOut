@@ -18,14 +18,14 @@ public interface RentalContractRepository
 extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalContract> {
 	
 	@Query(" SELECT rc FROM RentalContract rc WHERE rc.lessee.id = :userId OR rc.ad.owner.id = :userId ")
-	public List<RentalContract> findAllByUser(long userId);
+	public List<RentalContract> findAllByUser(Long userId);
 	
 	@Query("""
 			SELECT rc 
 			FROM RentalContract rc
 			WHERE rc.id = :contractId
 			""")
-	public RentalContract findByIdForUpdate(long contractId);
+	public RentalContract findByIdForUpdate(Long contractId);
 	
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("""
@@ -33,9 +33,9 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 			FROM RentalContract rc
 			WHERE rc.id = :contractId
 			""")
-	public RentalContract findByIdPessWriteLock(long contractId);
+	public RentalContract findByIdPessWriteLock(Long contractId);
 	
-	public List<RentalContract> findByAdIdAndContractStatusIn(long adId, List<ContractStatus> statusList);
+	public List<RentalContract> findByAdIdAndContractStatusIn(Long adId, List<ContractStatus> statusList);
 	
     @Query("""
     		SELECT count(rc) > 0
@@ -43,18 +43,18 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
     		WHERE rc.ad.id = :adId 
     			AND rc.contractStatus IN ('ACCEPTED', 'ACTIVE')
     		""")
-    public boolean hasActiveOrFutureContracts(long adId);
+    public boolean hasActiveOrFutureContracts(Long adId);
     
     @Modifying
     @Query("UPDATE RentalContract rc " +
     		"SET rc.contractStatus = 'AD_DELETED' " +
     		"WHERE rc.ad.id = :adId")
-    public void markToAdDeleted(long adId);
+    public void markToAdDeleted(Long adId);
 
 
 	@Query("SELECT rc FROM RentalContract rc WHERE rc.ad.id = :adId AND rc.contractStatus IN :statuses ")
 	List<RentalContract> findActiveContractForAd(
-			@Param("adId") long adId,
+			@Param("adId") Long adId,
 			@Param("statuses") List<ContractStatus> statuses);
 
 	@Query("""
@@ -65,7 +65,7 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
           AND rc.startDate <= :endDate 
           AND rc.endDate >= :startDate
         """)
-	List<RentalContract> findContractsInDateInterval(@Param("adId") long adId, 
+	List<RentalContract> findContractsInDateInterval(@Param("adId") Long adId, 
 			@Param("startDate")LocalDate startDate, 
 			@Param("endDate") LocalDate endDate);
 }

@@ -5,13 +5,13 @@ package org.landm.dto;
 import java.util.List;
 
 public class CategoryDto {
-    private long id;
+    private Long id;
     private String name;
     private Long parentId;
     public CategoryDto() {
     }
 
-    public CategoryDto(long id, String name, long parentId) {
+    public CategoryDto(Long id, String name, Long parentId) {
         this.id = id;
         this.name = name;
 this.parentId = parentId;
@@ -25,11 +25,11 @@ this.parentId = parentId;
         this.parentId = parentId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

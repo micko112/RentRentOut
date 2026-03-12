@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
             	if(jwtUtil.validateToken(token)) {
-                    long userId = jwtUtil.extractUserId(token);
+                    Long userId = jwtUtil.extractUserId(token);
 //                    request.setAttribute("userId", userId);
                     List<GrantedAuthority> authorities = jwtUtil.extractRoles(token);
                     UsernamePasswordAuthenticationToken authInfo =

@@ -20,7 +20,7 @@ public class AdminController {
     }
 
     @PatchMapping("/ads/{adId}/suspend")
-    public ResponseEntity<String> deleteAd(@PathVariable long adId){
+    public ResponseEntity<String> deleteAd(@PathVariable Long adId){
         String response = adminService.suspendAd(adId);
         return ResponseEntity.ok(response);
     }

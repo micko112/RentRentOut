@@ -28,19 +28,19 @@ public class ReviewController {
     public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody CreateReviewRequestDto req,
                                                   Authentication auth){
         // onaj ko kreira ocenu
-        long reviewerId = Long.parseLong(auth.getName());
+        Long reviewerId = Long.parseLong(auth.getName());
 
         return new ResponseEntity<>(reviewService.createReview(req, reviewerId), HttpStatus.CREATED);
     }
     @GetMapping("user/{revieweeId}/reviews")
-    public ResponseEntity<Page<ReviewDto>> getAllReviews(Pageable pageable, @PathVariable long revieweeId){
+    public ResponseEntity<Page<ReviewDto>> getAllReviews(Pageable pageable, @PathVariable Long revieweeId){
 
         Page<ReviewDto> reviewDtoPage = reviewService.getAllForUser(pageable, revieweeId);
         return ResponseEntity.ok(reviewDtoPage);
     }
     @GetMapping("reviews/check/{contractId}")
-    public ResponseEntity<ReviewEligibilityDto> checkReview(@PathVariable long contractId, Authentication auth){
-        long reviewerId = Long.parseLong(auth.getName());
+    public ResponseEntity<ReviewEligibilityDto> checkReview(@PathVariable Long contractId, Authentication auth){
+        Long reviewerId = Long.parseLong(auth.getName());
 
         return ResponseEntity.ok(reviewService.checkEligibility(contractId, reviewerId));
     }

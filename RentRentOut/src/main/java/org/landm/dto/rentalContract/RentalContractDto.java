@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 
 public class RentalContractDto {
-    private long id;
+    private Long id;
 
     private AdDto adDto;
     private UserDto lesseeDto;
@@ -20,11 +20,11 @@ public class RentalContractDto {
     private ContractStatus contractStatus;
     private String currency;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

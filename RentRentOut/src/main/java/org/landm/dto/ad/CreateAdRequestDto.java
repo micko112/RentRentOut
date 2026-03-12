@@ -24,9 +24,9 @@ public class CreateAdRequestDto {
     @NotNull
     private PriceInterval priceInterval;
     @NotNull
-    private long categoryId;
+    private Long categoryId;
     @NotNull
-    private long locationId;
+    private Long locationId;
     @Min(1)
     private int totalQuantity = 1;
 
@@ -73,19 +73,19 @@ public class CreateAdRequestDto {
         this.priceInterval = priceInterval;
     }
 
-    public long getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
-    public long getLocationId() {
+    public Long getLocationId() {
         return locationId;
     }
 
-    public void setLocationId(long locationId) {
+    public void setLocationId(Long locationId) {
         this.locationId = locationId;
     }
 

@@ -3,7 +3,10 @@ export interface User{
   firstname: string;
   lastname: string;
   email: string;
-  money:  number;
+  avatarUrl:  string;
+  identified:  boolean;
+  credit:  number;
+  location: string;
   currency: string;
   positiveReviews: number;
   negativeReviews: number;

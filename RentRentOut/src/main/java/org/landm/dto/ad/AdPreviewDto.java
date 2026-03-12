@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public class AdPreviewDto {
 
-    private long id;
+    private Long id;
     private String title;
     private String city;
     private String municipality;
@@ -18,11 +18,11 @@ public class AdPreviewDto {
     private String currency;
     private PriceInterval priceInterval;
     private String thumbnail;
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

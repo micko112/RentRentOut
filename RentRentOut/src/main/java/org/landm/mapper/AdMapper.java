@@ -35,7 +35,7 @@ public class AdMapper {
         dto.setTotalQuantity(ad.getTotalQuantity());
         dto.setImages(ad.getImages());
 
-        dto.setOwner(userMapper.toDto(ad.getOwner()));
+        dto.setOwner(userMapper.toUserShortDto(ad.getOwner()));
         dto.setCategory(categoryMapper.toDto(ad.getCategory()));
         dto.setLocation((locationMapper.toDto(ad.getLocation())));
 

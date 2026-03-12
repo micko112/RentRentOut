@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     		FROM User u
     		WHERE u.id = :userId
     		""")
-    public Optional<User> findByIdForCheck(long userId);
+    public Optional<User> findByIdForCheck(Long userId);
     
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     		FROM User u
     		WHERE u.id = :userId
     		""")
-    public Optional<User> findByIdForUpdate(long userId);
+    public Optional<User> findByIdForUpdate(Long userId);
     
 }
 

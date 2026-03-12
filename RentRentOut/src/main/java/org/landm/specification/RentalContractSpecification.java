@@ -20,7 +20,7 @@ import jakarta.persistence.criteria.Predicate;
 
 public class RentalContractSpecification {
 
-	public static Specification<RentalContract> search(long userId, boolean isAdmin, RentalContractSearchDto searchDto){
+	public static Specification<RentalContract> search(Long userId, boolean isAdmin, RentalContractSearchDto searchDto){
 		return(root, query, cb) -> {
 			
 			String term = searchDto.getTerm();

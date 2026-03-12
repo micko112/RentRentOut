@@ -14,7 +14,7 @@ public class RentalContract {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "ad_id")
@@ -38,7 +38,7 @@ public class RentalContract {
     private Currency currency = Currency.RSD;
     
     @Column(name = "amount", nullable = false)
-    private long amount;
+    private Long amount;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "contract_status")
@@ -52,7 +52,7 @@ public class RentalContract {
     }
 
     public RentalContract(Ad ad, User lessee, LocalDate startDate, LocalDate endDate, 
-    		BigDecimal agreedPrice, Currency currency, long amount, ContractStatus contractStatus, User offerSender) {
+    		BigDecimal agreedPrice, Currency currency, Long amount, ContractStatus contractStatus, User offerSender) {
         this.ad = ad;
         this.lessee = lessee;
         this.startDate = startDate;
@@ -120,11 +120,11 @@ public class RentalContract {
         this.contractStatus = contractStatus;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -136,11 +136,11 @@ public class RentalContract {
 		this.offerSender = offerSender;
 	}
 
-	public long getAmount() {
+	public Long getAmount() {
 		return amount;
 	}
 
-	public void setAmount(long amount) {
+	public void setAmount(Long amount) {
 		this.amount = amount;
 	}
 

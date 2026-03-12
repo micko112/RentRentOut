@@ -7,13 +7,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReviewMapper {
 
+    private final UserMapper userMapper;
+
+    public ReviewMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
     public ReviewDto toDto(Review review){
         ReviewDto r = new ReviewDto();
         r.setId(review.getId());
         r.setContractId(review.getContract().getId());
-        r.setReviewerId(review.getReviewer().getId());
-        r.setRevieweeId(review.getReviewee().getId());
-        r.setReviewerUsername(review.getReviewer().getFirstname());
+        r.setReviewer(userMapper.toUserShortDto(review.getReviewer()));
+        r.setReviewee(userMapper.toUserShortDto(review.getReviewee()));
         r.setPaymentOk(review.getPaymentOk());
         r.setCommunicationOk(review.getCommunicationOk());
         r.setAgreementOk(review.getAgreementOk());
@@ -22,7 +27,7 @@ public class ReviewMapper {
         r.setAdTitle(review.getContract().getAd().getTitle());
         r.setCreatedAt(review.getCreatedAt());
 
-        if (review.getReviewee().getId() == (review.getContract().getAd().getOwner().getId())) {
+        if (review.getReviewee().getId() == review.getContract().getAd().getOwner().getId()) {
             r.setRevieweeRole("LESSOR");
         } else {
             r.setRevieweeRole("LESSEE");

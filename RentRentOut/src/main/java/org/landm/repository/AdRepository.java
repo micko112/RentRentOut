@@ -23,7 +23,7 @@ public interface AdRepository extends JpaRepository<Ad, Long> , JpaSpecification
     		FROM Ad a
     		WHERE a.id = :adId
     		""")
-    public Ad findByIdForUpdate(long adId);
+    public Ad findByIdForUpdate(Long adId);
 
-    Page<Ad> findAllByOwnerId(long userId, Pageable pageable);
+    Page<Ad> findAllByOwnerId(Long userId, Pageable pageable);
 }

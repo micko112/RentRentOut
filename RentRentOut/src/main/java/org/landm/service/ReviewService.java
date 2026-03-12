@@ -11,9 +11,9 @@ import org.springframework.data.domain.Pageable;
 public interface ReviewService  {
     public ReviewType calculateReviewType(ReviewOption payment, ReviewOption communication, ReviewOption agreement);
 
-    public ReviewDto createReview(CreateReviewRequestDto dto, long reviewerId);
+    public ReviewDto createReview(CreateReviewRequestDto dto, Long reviewerId);
 
-    public ReviewEligibilityDto checkEligibility(long contractId, long reviewerId);
+    public ReviewEligibilityDto checkEligibility(Long contractId, Long reviewerId);
 
-   public Page<ReviewDto> getAllForUser(Pageable pageable, long revieweeId);
+   public Page<ReviewDto> getAllForUser(Pageable pageable, Long revieweeId);
 }

@@ -24,7 +24,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public String suspendAd(long adId) {
+    public String suspendAd(Long adId) {
         Ad adToSuspend = adRepository.findById(adId).orElseThrow(()-> new RuntimeException("Ad not found by id"));
 
         if(adToSuspend.getAdStatus() == AdStatus.SUSPENDED_BY_ADMIN){

@@ -1,37 +1,34 @@
 package org.landm.service.impl;
 
-import org.landm.dto.user.UserDto;
-
-import java.math.BigDecimal;
-
+import jakarta.persistence.OptimisticLockException;
+import jakarta.transaction.Transactional;
+import org.landm.dto.ad.AdPreviewDto;
 import org.landm.dto.requestDto.DepositRequestDto;
-import org.landm.dto.user.ChangeUserPasswordDto;
-import org.landm.dto.user.LoginUserRequestDto;
-import org.landm.dto.user.RegisterUserRequestDto;
-import org.landm.dto.user.UpdateUserDto;
-import org.landm.entity.Category;
+import org.landm.dto.review.ReviewDto;
+import org.landm.dto.user.*;
 import org.landm.entity.EmailVerificationToken;
+import org.landm.entity.Enums.Currency;
 import org.landm.entity.Role;
 import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
 import org.landm.exception.WrongCredentialsException;
-//import org.landm.exception.UserNotFoundException;
-//import org.landm.exception.WrongCredentialsException;
 import org.landm.mapper.UserMapper;
 import org.landm.repository.RoleRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
+import org.landm.service.AdService;
 import org.landm.service.EmailVerificationService;
+import org.landm.service.ReviewService;
 import org.landm.service.UserService;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.OptimisticLockException;
-import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -42,11 +39,13 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
     private final RoleRepository roleRepository;
     private final EmailVerificationService emailVerificationService;
+	private final AdService adService;
+	private final ReviewService reviewService;
 
-    public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder, UserMapper userMapper,
-                           JwtUtil jwtUtil, RoleRepository roleRepository, 
-                           EmailVerificationService emailVerificationService) {
+	public UserServiceImpl(UserRepository userRepository,
+						   PasswordEncoder passwordEncoder, UserMapper userMapper,
+						   JwtUtil jwtUtil, RoleRepository roleRepository,
+						   EmailVerificationService emailVerificationService, AdService adService, ReviewService reviewService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -54,7 +53,9 @@ public class UserServiceImpl implements UserService {
         this.jwtUtil = jwtUtil;
 		this.roleRepository = roleRepository;
 		this.emailVerificationService = emailVerificationService;
-    }
+		this.adService = adService;
+		this.reviewService = reviewService;
+	}
 
     @Transactional
     @Override
@@ -77,11 +78,12 @@ public class UserServiceImpl implements UserService {
                         passwordEncoder.encode(req.getPassword()),
                         req.getFirstname(),
                         req.getLastname(),
-						role,
-						0,
-						0
-
+						role
                         );
+				userToSave.setIdentified(false);
+				userToSave.setPositiveReviews(0);
+				userToSave.setNegativeReviews(0);
+				userToSave.setCurrency(Currency.RSD);
                 User savedUser = userRepository.save(userToSave);
                 
                 EmailVerificationToken verificationToken = 
@@ -121,7 +123,7 @@ public class UserServiceImpl implements UserService {
     }
     
 //    public UserDto update(UserDto newInfo, String authHeader){
-//    	long userId = jwtUtil.extractUserId(authHeader.substring(7));
+//    	Long userId = jwtUtil.extractUserId(authHeader.substring(7));
 //    	Optional<User> userToUpdateOpt = userRepository.findById(userId);
 //    	if(userToUpdateOpt.isPresent()) {
 //    		User userToUpdate = userToUpdateOpt.get();
@@ -136,19 +138,30 @@ public class UserServiceImpl implements UserService {
 //    }
     
 	@Override
-	public UserDto get(long userId) {
+	public UserProfileDto getUserProfile(Long userId) {
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("User not found!"));
-		return userMapper.toDto(user);
+		return userMapper.toUserProfileDto(user);
 	}
-    
+
     @Override
-    public UserDto getMe(long userId) {
+    public UserDto getMe(Long userId) {
     	User userToReturn = userRepository.findById(userId)
     			.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
     	return userMapper.toDto(userToReturn);
     }
-    
+
+	@Override
+	public PublicProfileDto getUser(Pageable pageable, Long userId){
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
+		UserProfileDto userProfile = userMapper.toUserProfileDto(user);
+		Page<AdPreviewDto> adsPage = adService.findAllByUser(pageable, userId);
+		Page<ReviewDto> reviewsPage = reviewService.getAllForUser(pageable, userId);
+
+		return new PublicProfileDto(userProfile, adsPage, reviewsPage);
+	}
+
     @Override
     @Retryable(
     		retryFor = OptimisticLockException.class,
@@ -156,7 +169,7 @@ public class UserServiceImpl implements UserService {
     		backoff = @Backoff(delay = 100)
     		)
     @Transactional
-	public UserDto depositMoney(long userId, DepositRequestDto req) {
+	public UserDto depositMoney(Long userId, DepositRequestDto req) {
 		
     	BigDecimal amount = req.getAmount();
     	
@@ -164,8 +177,8 @@ public class UserServiceImpl implements UserService {
     			.orElseThrow(() -> new RuntimeException("User not found!"));
     	
     	if(true) {
-    		BigDecimal userMoney = user.getMoney();
-    		user.setMoney(userMoney.add(amount));
+    		BigDecimal userMoney = user.getCredit();
+    		user.setCredit(userMoney.add(amount));
     	}
     	
 		return userMapper.toDto(
@@ -174,19 +187,30 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public UpdateUserDto update(UpdateUserDto editUserDto, long userId) {
+	public UpdateUserDto update(UpdateUserDto editUserDto, Long userId) {
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
     	if(editUserDto.getFirstname() != null) user.setFirstname(editUserDto.getFirstname());
     	if(editUserDto.getLastname() != null) user.setLastname(editUserDto.getLastname());
-    	if(editUserDto.getEmail() != null) user.setEmail(editUserDto.getEmail());
+    	if(editUserDto.getEmail() != null && !editUserDto.getEmail().equals(user.getEmail())){
+			if (userRepository.existsByEmail(editUserDto.getEmail())) {
+				throw new RuntimeException("Taj email je već zauzet!"); // Ili neki tvoj Custom exception
+			}
+			user.setEmail(editUserDto.getEmail());
+			// 2. OBAVEZNO MU UKINI PRISTUP DOK NE POTVRDI NOVI EMAIL!
+			user.setEnabled(false);
+
+			// 3. Pošalji novi token na novi mejl
+			EmailVerificationToken verificationToken = emailVerificationService.createAndSaveToken(user);
+			emailVerificationService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
+		}
     	user = userRepository.save(user);
     	return userMapper.toEditDto(user);
 	}
 
     @Transactional
 	@Override
-	public String updatePassword(ChangeUserPasswordDto data, long userId) {
+	public String updatePassword(ChangeUserPasswordDto data, Long userId) {
     	User user = userRepository.findById(userId)
     			.orElseThrow(() -> new UserNotFoundException("Error while changing password!"));
     	if(passwordEncoder.matches(data.getOldPassword(), user.getPassword())) {
@@ -199,13 +223,16 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
 	@Override
-	public String deleteMe(long myId) {
-    	try {
-    		userRepository.deleteById(myId);
-    		return "Successfully deleted Your account!";
-    	} catch(EmptyResultDataAccessException ex) {
-    		throw new UserNotFoundException("User not found!");
-    	}
+	public String deleteMe(Long myId) {
+		User user = userRepository.findById(myId).orElseThrow(() -> new UserNotFoundException("User not found!"));
+		user.setEnabled(false);
+		user.setEmail("deleted_" + myId + "@landm.org");
+		user.setFirstname("Obrisani");
+		user.setLastname("Korisnik");
+		user.setPhoneNumber(null);
+		userRepository.save(user);
+
+		return "Successfully deleted Your account!";
 	}  
     
     @Recover

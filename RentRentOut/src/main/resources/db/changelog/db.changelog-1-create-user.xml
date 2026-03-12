@@ -7,48 +7,67 @@
 
 	<changeSet id="1-create-user-table-final" author="luka">
 		<createTable tableName="user">
-			<column name="id" type="BIGINT" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false"/>
-			</column>
-			<column name="email" type="VARCHAR(100)">
-				<constraints nullable="false" unique="true"/>
-			</column>
-			<column name="password" type="VARCHAR(255)">
-				<constraints nullable="false"/>
-			</column>
-			<column name="firstname" type="VARCHAR(50)">
-				<constraints nullable="false"/>
-			</column>
-			<column name="lastname" type="VARCHAR(50)">
-				<constraints nullable="false"/>
-			</column>
-			<column name="money" type="DECIMAL(19, 2)" defaultValueNumeric="0">
-				<constraints nullable="false"/>
-			</column>
+		<!-- Osnovni podaci -->
+		<column name="id" type="BIGINT" autoIncrement="true">
+			<constraints primaryKey="true" nullable="false"/>
+		</column>
+		<column name="email" type="VARCHAR(100)">
+			<constraints nullable="false" unique="true"/>
+		</column>
+		<column name="password" type="VARCHAR(255)">
+			<constraints nullable="false"/>
+		</column>
+		<column name="firstname" type="VARCHAR(50)">
+			<constraints nullable="false"/>
+		</column>
+		<column name="lastname" type="VARCHAR(50)">
+			<constraints nullable="false"/>
+		</column>
 
-			<!-- Nove kolone koje su dodavane naknadno -->
-			<column name="enabled" type="BOOLEAN" defaultValueBoolean="false">
-				<constraints nullable="false"/>
-			</column>
-			<column name="version" type="BIGINT" defaultValueNumeric="0">
-				<constraints nullable="false"/>
-			</column>
-			<column name="currency" type="VARCHAR(16)" defaultValue="RSD">
-				<constraints nullable="false"/>
-			</column>
+		<!-- Profil (KP dodaci) -->
+		<column name="description" type="TEXT"/>
+		<column name="identified" type="BOOLEAN" defaultValueBoolean="false">
+			<constraints nullable="false"/>
+		</column>
+		<column name="phone_number" type="VARCHAR(30)"/>
+		<column name="avatar_url" type="VARCHAR(255)"/>
 
-			<!-- Strani ključ ka tabeli Role -->
-			<column name="role_id" type="INT">
-				<constraints nullable="false" foreignKeyName="fk_user_role" referencedTableName="role" referencedColumnNames="id"/>
-			</column>
+		<!-- Lokacija korisnika (Opciono, jer je nema odmah pri registraciji) -->
+		<column name="location_id" type="BIGINT">
+			<constraints nullable="true" foreignKeyName="fk_user_location" referencedTableName="location" referencedColumnNames="id"/>
+		</column>
+
+		<!-- Novac / Krediti -->
+		<column name="credit" type="DECIMAL(19, 2)" defaultValueNumeric="0">
+			<constraints nullable="false"/>
+		</column>
+		<column name="currency" type="VARCHAR(16)" defaultValue="RSD">
+			<constraints nullable="false"/>
+		</column>
+
+		<!-- Ocene (Review Statistika) -->
+		<column name="positive_reviews" type="INT" defaultValueNumeric="0">
+			<constraints nullable="false"/>
+		</column>
+		<column name="negative_reviews" type="INT" defaultValueNumeric="0">
+			<constraints nullable="false"/>
+		</column>
+
+		<!-- Sistemska polja (Spring Security & JPA) -->
+		<column name="enabled" type="BOOLEAN" defaultValueBoolean="false">
+			<constraints nullable="false"/>
+		</column>
+		<column name="version" type="BIGINT" defaultValueNumeric="0">
+			<constraints nullable="false"/>
+		</column>
+		<column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+			<constraints nullable="false"/>
+		</column>
+
+		<!-- Uloga -->
+		<column name="role_id" type="INT">
+			<constraints nullable="false" foreignKeyName="fk_user_role" referencedTableName="role" referencedColumnNames="id"/>
+		</column>
 		</createTable>
 	</changeSet>
-	<changeSet id="add-created-at-to-user" author="micko112">
-		<addColumn tableName="user">
-			<column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
-				<constraints nullable="false"/>
-			</column>
-		</addColumn>
-	</changeSet>
-
 </databaseChangeLog>

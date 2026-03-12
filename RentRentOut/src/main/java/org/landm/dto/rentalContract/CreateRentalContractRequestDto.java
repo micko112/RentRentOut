@@ -22,7 +22,7 @@ public class CreateRentalContractRequestDto {
     @NotNull
     private Currency currency;
     @Positive 
-    private long amount;
+    private Long amount;
 
     public Long getAdId() {
         return adId;
@@ -56,11 +56,11 @@ public class CreateRentalContractRequestDto {
         this.agreedPrice = agreedPrice;
     }
 
-	public long getAmount() {
+	public Long getAmount() {
 		return amount;
 	}
 
-	public void setAmount(long amount) {
+	public void setAmount(Long amount) {
 		this.amount = amount;
 	}
     public Currency getCurrency() {

@@ -1,0 +1,93 @@
+<div class="profile-container" *ngIf="profile$ | async as data">
+
+  <!-- 1. HEADER (Tvoj onaj lepi CSS) -->
+
+  <div class="profile-header-card">
+
+    <!-- Informacije o korisniku (Levo) -->
+    <div class="user-info-section">
+      <div class="avatar-large">
+        <!-- Inicijali korisnika -->
+        {{ data.userInfo?.displayName | initials }}
+      </div>
+      <div class="details">
+        <h1>{{ data.userInfo?.displayName }}</h1>
+        <p class="meta-info">
+          <!--          <span class="location">📍 {{ user?.city || 'Nepoznata lokacija' }}</span>-->
+          <span class="location">📍 {{ 'Nepoznata lokacija' }}</span>
+          <!--          <span class="member-since">📅 Član od: {{ user?.createdAt | date:'yyyy' }}.</span>-->
+          <span class="member-since">📅 Član od: Neki datum.</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Ocene i akcije (Desno) -->
+    <div class="review-action-panel">
+      <div class="rating-score">
+        <div class="score positive"><span class="icon">👍</span> {{ data.userInfo?.positiveReviews || 0 }}</div>
+        <div class="score negative"><span class="icon">👎</span> {{ data.userInfo?.negativeReviews || 0 }}</div>
+      </div>
+
+      <!-- Prikazujemo dugme Ocenite SAMO ako NEMA contractId u URL-u -->
+      <!--      <button class="btn-review" *ngIf="!contractIdToReview">Ocenite</button>-->
+      <button class="btn-review"
+              *ngIf="!showForm"
+              (click)="toggleForm()">Ocenite
+      </button>
+      <!--      <button class="btn-review"-->
+      <!--              (click)="createReview()">Ocenite</button>-->
+    </div>
+    <!-- FORMA ZA OCENJIVANJE  Treba URADITI DA AKO JE CONTRACTID NULL DA
+     PRIKAZE ONAJ TEKST KOJI SE NALAZI NA BACKU U SERVISU-->
+      <div class="review-form-section" >
+        <app-review-form
+          *ngIf="showForm"
+          [contractId]="null">
+        </app-review-form>
+      </div>
+  </div>
+
+
+  <!-- 2. TABOVI -->
+  <nav class="review-tabs">
+    <button [class.active]="activeTab === 'ads'" (click)="setTab('ads')">
+      Oglasi ({{ data.ads.totalElements }})
+    </button>
+    <button [class.active]="activeTab === 'reviews'" (click)="setTab('reviews')">
+      Ocene ({{ data.reviews.totalElements }})
+    </button>
+  </nav>
+
+  <!-- 3. SADRŽAJ (Dynamic Switch) -->
+  <div class="content">
+
+    <!-- OGLASI (List layout) -->
+    <div *ngIf="activeTab === 'ads'" class="list-layout">
+      <app-ad-card *ngFor="let ad of data.ads.content"
+                   [ad]="ad"
+                   [viewMode]="'list'"></app-ad-card>
+    </div>
+
+    <!-- OCENE (Lista layout - isti kao review stranica) -->
+    <div *ngIf="activeTab === 'reviews'" class="reviews">
+      <div class="review-tabs">
+        <button [class.active]="activeReviewTab === 'ALL'" (click)="setReviewTab('ALL')">
+          Sve ocene
+        </button>
+        <button [class.active]="activeReviewTab === 'LESSOR'" (click)="setReviewTab('LESSOR')">
+          Kao izdavač
+        </button>
+        <button [class.active]="activeReviewTab === 'LESSEE'" (click)="setReviewTab('LESSEE')">
+          Kao iznajmljivač
+        </button>
+      </div>
+      <app-review-card
+        *ngFor="let rev of filteredReviews"
+        [review]="rev"></app-review-card>
+      <p *ngIf="filteredReviews.length === 0" style="text-align: center; color: #666; margin-top: 20px;">
+        Nema ocena u ovoj kategoriji.
+      </p>
+    </div>
+
+  </div>
+</div>

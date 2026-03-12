@@ -5,6 +5,8 @@ import {Observable} from 'rxjs';
 import {User} from '../../../shared/models/user.model';
 import {Ad} from '../../../shared/models/ad.model';
 import {RentalContract} from '../../../shared/models/rental-contract.model';
+import {UserProfile} from '../../../shared/models/userProfile';
+import {PublicProfile} from '../../../shared/models/public-profile';
 
 
 @Injectable({
@@ -20,8 +22,12 @@ export class UserService {
   getAllContract(): Observable<RentalContract[]> {
     return this.http.get<RentalContract[]>(`${this.url}/rental-contract/my-contracts`);
   }
-  get(id: number): Observable<User> {
-    return this.http.get<User>(`${this.url}/user/${id}`);
+  getUserProfile(id: number): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.url}/user/${id}/profile`);
+  }
+
+  getPublicProfile(id: number): Observable<PublicProfile> {
+    return this.http.get<PublicProfile>(`${this.url}/user/${id}`);
   }
 
 }

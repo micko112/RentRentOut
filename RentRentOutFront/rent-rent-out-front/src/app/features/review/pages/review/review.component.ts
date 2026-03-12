@@ -1,13 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CommonModule, NgForOf} from "@angular/common";
 import {ReviewFormComponent} from '../../components/review-form/review-form.component';
-import {User} from '../../../../shared/models/user.model';
 import {ReviewService} from '../../services/review.service';
 import {UserService} from '../../../user/services/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ReviewCardComponent} from '../../components/review-card/review-card.component';
-import {map, Observable} from 'rxjs';
+
 import {Review} from '../../../../shared/models/review';
+import {UserShort} from '../../../../shared/models/userShort';
+import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
 
 @Component({
   selector: 'app-review',
@@ -15,7 +16,8 @@ import {Review} from '../../../../shared/models/review';
     CommonModule,
     NgForOf,
     ReviewFormComponent,
-    ReviewCardComponent
+    ReviewCardComponent,
+    InitialsPipe
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.css'
@@ -34,7 +36,7 @@ export class ReviewComponent implements OnInit {
 
   showForm: boolean = false;
 
-  user: User | null = null;
+  user: UserShort | null = null;
 
   filteredReviews: Review[] = [];
 
@@ -62,9 +64,8 @@ export class ReviewComponent implements OnInit {
     }
     this.loadReviews();
 
-    this.userService.get(this.targetUserId).subscribe(userData => {
+    this.userService.getUserProfile(this.targetUserId).subscribe(userData => {
       this.user = userData;
-
     })
 
   }
@@ -81,7 +82,7 @@ export class ReviewComponent implements OnInit {
     this.toggleForm() // Sakrij formu
     this.contractIdToReview = null;
     this.loadReviews(); // Osveži listu da se pojavi nova ocena
-    this.userService.get(this.targetUserId).subscribe(userData => {
+    this.userService.getUserProfile(this.targetUserId).subscribe(userData => {
       this.user = userData;
     });
 
@@ -109,4 +110,6 @@ export class ReviewComponent implements OnInit {
   toggleForm(): void {
     this.showForm = !this.showForm;
   }
+
+
 }

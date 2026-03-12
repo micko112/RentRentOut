@@ -65,7 +65,7 @@ public class RentalContractServiceImpl implements RentalContractService {
     		backoff = @Backoff(delay = 100)
     		)
     @Transactional
-    public RentalContractDto create(CreateRentalContractRequestDto req, long userId) {
+    public RentalContractDto create(CreateRentalContractRequestDto req, Long userId) {
     	
         User lessee = userRepository.findByIdForCheck(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -99,14 +99,14 @@ public class RentalContractServiceImpl implements RentalContractService {
     }
 
     @Override
-    public List<RentalContract> findByAdIdAndContractStatusIn(long adId, List<ContractStatus> statusList){
+    public List<RentalContract> findByAdIdAndContractStatusIn(Long adId, List<ContractStatus> statusList){
     	return rentalContractRepository.findByAdIdAndContractStatusIn(adId, statusList);
     }
     
     @Transactional
     @Override
-    public RentalContractDto updateStatus(long contractId, UpdateRentalContractStatusRequestDto req, 
-    		long userId) {
+    public RentalContractDto updateStatus(Long contractId, UpdateRentalContractStatusRequestDto req, 
+    		Long userId) {
 
 		// Ugovor mora da se zakljuca - moze optimistic_force_increment? ili pessimistic_write
     	
@@ -141,9 +141,9 @@ public class RentalContractServiceImpl implements RentalContractService {
 
     private static class Event{
     	LocalDate date;
-    	long itemCount;
+    	Long itemCount;
     	
-    	Event(LocalDate date, long amount){
+    	Event(LocalDate date, Long amount){
     		this.date = date;
     		this.itemCount = amount;
     	}
@@ -205,7 +205,7 @@ public class RentalContractServiceImpl implements RentalContractService {
             default -> false;
         };
     }
-    private void checkPermissions(long userId, RentalContract contract){
+    private void checkPermissions(Long userId, RentalContract contract){
         boolean isOwner = contract.getAd().getOwner().getId() == userId;
         boolean isLessee = contract.getLessee().getId() == userId;
         if(!isOwner && !isLessee){
@@ -213,7 +213,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         }
     }
     
-    private void changeStatus(RentalContract contract, ContractStatus newStatus, long userId){
+    private void changeStatus(RentalContract contract, ContractStatus newStatus, Long userId){
         Ad ad = contract.getAd();
         ContractStatus oldStatus = contract.getContractStatus();
 
@@ -268,8 +268,8 @@ public class RentalContractServiceImpl implements RentalContractService {
 
             	// Prvo izracunati ukupan broj dana ugovora kao i broj preostalih dana
             	LocalDate currDate = LocalDate.now();
-            	long totaldays = ChronoUnit.DAYS.between(contract.getStartDate(), contract.getEndDate()) + 1;
-            	long usedDays = ChronoUnit.DAYS.between(contract.getEndDate(), currDate);
+            	Long totaldays = ChronoUnit.DAYS.between(contract.getStartDate(), contract.getEndDate()) + 1;
+            	Long usedDays = ChronoUnit.DAYS.between(contract.getEndDate(), currDate);
 
             	//Na osnovu toga odrediti cenu po danu i vratiti kolicinu u skladu sa brojem
             	//preostalih dana
@@ -293,7 +293,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         
     }
 
-    private void handlePriceNegotiation(RentalContract contract, UpdateRentalContractStatusRequestDto req, long userId){
+    private void handlePriceNegotiation(RentalContract contract, UpdateRentalContractStatusRequestDto req, Long userId){
         ContractStatus oldStatus = contract.getContractStatus();
         ContractStatus newStatus = req.getNewStatus();
         if(newStatus == ContractStatus.REQUESTED && contract.getContractStatus() == ContractStatus.REQUESTED) {
@@ -309,14 +309,14 @@ public class RentalContractServiceImpl implements RentalContractService {
     }
 
 	@Override
-	public RentalContractDto getRentalContractById(long rentalId) {
+	public RentalContractDto getRentalContractById(Long rentalId) {
 		RentalContract contract = rentalContractRepository.findById(rentalId)
 				.orElseThrow(() -> new RuntimeException("No rental contract found!"));
 		return rentalContractMapper.toDto(contract);
 	}
 
 	@Override
-	public List<RentalContractDto> getAll(long userId) {
+	public List<RentalContractDto> getAll(Long userId) {
 		return rentalContractRepository.findAllByUser(userId)
 				.stream()
 				.map(rentalContractMapper::toDto)
@@ -324,7 +324,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 	}
 	
 	@Override
-	public Page<RentalContractDto> search(long userId, boolean isAdmin, RentalContractSearchDto searchDto) {
+	public Page<RentalContractDto> search(Long userId, boolean isAdmin, RentalContractSearchDto searchDto) {
 		
 		String sortBy = mapSortField(searchDto.getSortBy());
 		
@@ -354,7 +354,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 	
 	@Transactional
 	@Override
-	public String delete(long userId, long rentalId) {
+	public String delete(Long userId, Long rentalId) {
 		
 		RentalContract currContr = rentalContractRepository.findById(rentalId)
 				.orElseThrow(() -> new RuntimeException("Error deleting contract - contract not found"));
@@ -378,7 +378,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 	}
 	
 	@Override
-	public void markToAdDeleted(long adId) {
+	public void markToAdDeleted(Long adId) {
 		rentalContractRepository.markToAdDeleted(adId);
 		
 	}

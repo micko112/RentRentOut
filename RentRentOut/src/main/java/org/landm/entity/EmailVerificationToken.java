@@ -18,7 +18,7 @@ public class EmailVerificationToken {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	@Column(name = "token", nullable = false, unique = true)
 	private String token;
@@ -35,7 +35,7 @@ public class EmailVerificationToken {
 
 	public EmailVerificationToken() {}
 	
-//	public EmailVerificationToken(long id, String token, LocalDate expiresAt, User user, boolean used) {
+//	public EmailVerificationToken(Long id, String token, LocalDate expiresAt, User user, boolean used) {
 //		super();
 //		this.id = id;
 //		this.token = token;
@@ -44,11 +44,11 @@ public class EmailVerificationToken {
 //		this.used = used;
 //	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

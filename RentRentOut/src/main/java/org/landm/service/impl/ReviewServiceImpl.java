@@ -58,16 +58,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewDto createReview(CreateReviewRequestDto dto, long reviewerId) {
+    public ReviewDto createReview(CreateReviewRequestDto dto, Long reviewerId) {
 
         // validacije sve
 //        Korisnika ne možete oceniti:
 //
-//        1     ako ste se nedavno registrovali,
-//        2     ako se iz Vaše konverzacije KP Porukama ne može utvrditi da je do kupoprodaje došlo,
-//        3     ako ste ga već ocenili pre manje od 7 dana,
-//        4     ako je konverzacija starija od 30 dana,
-//        5     ako ste korisnika već ocenili iz iste konverzacije.
 
 
         ReviewType type = calculateReviewType(dto.getPaymentOk(), dto.getCommunicationOk(), dto.getAgreementOk());
@@ -84,10 +79,10 @@ public class ReviewServiceImpl implements ReviewService {
             throw new RuntimeException("Ugovor nije zavrsen");
         }
 
-        User reviewee = null;
-        if(rc.getLessee().getId() == reviewerId){
+        User reviewee;
+        if(rc.getLessee().getId().equals(reviewerId)){
             reviewee = rc.getAd().getOwner();
-        }else if(rc.getAd().getOwner().getId() == reviewerId){
+        }else if(rc.getAd().getOwner().getId().equals(reviewerId)){
             reviewee = rc.getLessee();
         }else throw new RuntimeException("Niste ucestvovali u ovom ugovoru, ne mozete da ocenite");
 
@@ -119,7 +114,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewEligibilityDto checkEligibility(long contractId, long reviewerId) {
+    public ReviewEligibilityDto checkEligibility(Long contractId, Long reviewerId) {
         RentalContract rc = rentalContractRepository.findById(contractId).orElseThrow(() -> new RuntimeException("Ne posotji ugovor!"));
 
         if( rc ==null){
@@ -145,7 +140,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReviewDto> getAllForUser(Pageable pageable, long revieweeId) {
+    public Page<ReviewDto> getAllForUser(Pageable pageable, Long revieweeId) {
         Page<Review> page = reviewRepository.findAllByRevieweeId(revieweeId, pageable);
         System.out.println(page);
         return page.map(reviewMapper::toDto);

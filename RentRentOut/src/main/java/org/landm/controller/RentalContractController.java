@@ -38,7 +38,7 @@ public class RentalContractController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<RentalContractDto> createRentalContract(@Valid @RequestBody CreateRentalContractRequestDto req,
                                                                   Authentication auth){
-		long userId = Long.parseLong(auth.getName());
+		Long userId = Long.parseLong(auth.getName());
 		System.out.println("Calling service");
 	    RentalContractDto newRental = service.create(req, userId);
 	    return new ResponseEntity<>(newRental, HttpStatus.CREATED);
@@ -46,14 +46,14 @@ public class RentalContractController {
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/{id}")
-	public ResponseEntity<RentalContractDto> getRentalContractById(@PathVariable long rentalId){
+	public ResponseEntity<RentalContractDto> getRentalContractById(@PathVariable Long rentalId){
 		return new ResponseEntity<>(service.getRentalContractById(rentalId), HttpStatus.OK);
 	}
 	
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/my-contracts")
 	public ResponseEntity<List<RentalContractDto>> getAllRentalContracts(Authentication auth){
-		long userId = Long.parseLong(auth.getName());
+		Long userId = Long.parseLong(auth.getName());
 		return new ResponseEntity<>(service.getAll(userId), HttpStatus.OK);
 	}
 
@@ -61,7 +61,7 @@ public class RentalContractController {
 	@GetMapping("/search")
 	public ResponseEntity<Map<String, Page<RentalContractDto>>> searchContracts(Authentication auth, 
 			@ModelAttribute RentalContractSearchDto searchDto){
-		long userId = Long.parseLong(auth.getName());
+		Long userId = Long.parseLong(auth.getName());
 		boolean isAdmin = auth.getAuthorities()
 				.stream()
 				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
@@ -73,17 +73,17 @@ public class RentalContractController {
 	
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@PatchMapping("/{id}/status")
-	public ResponseEntity<RentalContractDto> updateStatus(@PathVariable long id,
+	public ResponseEntity<RentalContractDto> updateStatus(@PathVariable Long id,
 	                                                      @Valid @RequestBody UpdateRentalContractStatusRequestDto req, 
 	                                                      Authentication auth){
-        long userId = Long.parseLong(auth.getName());
+        Long userId = Long.parseLong(auth.getName());
         return ResponseEntity.ok(service.updateStatus(id, req, userId));
 	}
 	
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteRentalContract(@PathVariable long id, Authentication auth){
-		long userId = Long.parseLong(auth.getName());
+	public ResponseEntity<String> deleteRentalContract(@PathVariable Long id, Authentication auth){
+		Long userId = Long.parseLong(auth.getName());
 		return new ResponseEntity<>(service.delete(userId, id), HttpStatus.OK);
 	}
 }

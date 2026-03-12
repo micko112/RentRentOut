@@ -13,24 +13,24 @@ import org.springframework.data.domain.Page;
 
 public interface RentalContractService {
 	
-    public RentalContractDto create(CreateRentalContractRequestDto req, long userId);
+    public RentalContractDto create(CreateRentalContractRequestDto req, Long userId);
     
-    public List<RentalContract> findByAdIdAndContractStatusIn(long adId, List<ContractStatus> statusList);
+    public List<RentalContract> findByAdIdAndContractStatusIn(Long adId, List<ContractStatus> statusList);
     
-    public RentalContractDto updateStatus(long contractId,
-                        UpdateRentalContractStatusRequestDto req, long userId);
+    public RentalContractDto updateStatus(Long contractId,
+                        UpdateRentalContractStatusRequestDto req, Long userId);
     
-    public RentalContractDto getRentalContractById(long rentalId);
+    public RentalContractDto getRentalContractById(Long rentalId);
     
-    public Page<RentalContractDto> search(long userId, boolean isAdmin, RentalContractSearchDto searchDto);
+    public Page<RentalContractDto> search(Long userId, boolean isAdmin, RentalContractSearchDto searchDto);
     
-    public List<RentalContractDto> getAll(long userId);
+    public List<RentalContractDto> getAll(Long userId);
     
     public boolean isActiveOrAccepted(ContractStatus status);
     
-    public String delete(long userId, long rentalId);
+    public String delete(Long userId, Long rentalId);
     
-    public void markToAdDeleted(long adId);
+    public void markToAdDeleted(Long adId);
 
 
 }

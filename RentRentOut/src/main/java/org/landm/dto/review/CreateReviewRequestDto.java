@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class CreateReviewRequestDto {
 
     @NotNull
-    private long contractId;
+    private Long contractId;
 
     @NotNull
     private ReviewOption paymentOk;
@@ -25,10 +25,10 @@ public class CreateReviewRequestDto {
 
     private String comment;
 
-    public long getContractId() {
+    public Long getContractId() {
         return contractId;
     }
-    public void setContractId(long contractId) {
+    public void setContractId(Long contractId) {
         this.contractId = contractId;
     }
     public ReviewOption getPaymentOk() {

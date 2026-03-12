@@ -31,7 +31,7 @@ public class UpdateAdRequestDto {
     private List<String> images;
     // email znaci username
     @NotNull
-    private long categoryId;
+    private Long categoryId;
     @NotNull
     private Long locationId;
 
@@ -91,11 +91,11 @@ public class UpdateAdRequestDto {
         this.images = images;
     }
 
-    public long getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 

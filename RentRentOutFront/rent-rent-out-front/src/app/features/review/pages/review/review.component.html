@@ -7,15 +7,13 @@
     <div class="user-info-section">
       <div class="avatar-large">
         <!-- Inicijali korisnika -->
-        {{ user?.firstname?.charAt(0) }}{{ user?.lastname?.charAt(0) }}
+        {{ user?.displayName | initials }}
       </div>
       <div class="details">
-        <h1>{{ user?.firstname }} {{ user?.lastname }}</h1>
+        <h1>{{ user?.displayName }}</h1>
         <p class="meta-info">
-<!--          <span class="location">📍 {{ user?.city || 'Nepoznata lokacija' }}</span>-->
-          <span class="location">📍 {{ 'Nepoznata lokacija' }}</span>
-<!--          <span class="member-since">📅 Član od: {{ user?.createdAt | date:'yyyy' }}.</span>-->
-          <span class="member-since">📅 Član od: Neki datum.</span>
+                    <span class="location">📍 {{ user?.locationDisplay || 'Nepoznata lokacija' }}</span>
+                    <span class="member-since">📅 Član od: {{ user?.createdAt | date:'dd.mm.yyyy' }}.</span>
         </p>
       </div>
     </div>
@@ -28,15 +26,16 @@
       </div>
 
       <!-- Prikazujemo dugme Ocenite SAMO ako NEMA contractId u URL-u -->
-<!--      <button class="btn-review" *ngIf="!contractIdToReview">Ocenite</button>-->
+      <!--      <button class="btn-review" *ngIf="!contractIdToReview">Ocenite</button>-->
       <button class="btn-review"
               *ngIf="!showForm"
-              (click)="toggleForm()">Ocenite</button>
-<!--      <button class="btn-review"-->
-<!--              (click)="createReview()">Ocenite</button>-->
+              (click)="toggleForm()">Ocenite
+      </button>
+      <!--      <button class="btn-review"-->
+      <!--              (click)="createReview()">Ocenite</button>-->
     </div>
     <!-- FORMA ZA OCENJIVANJE  -->
-    <div class="review-form-section" >
+    <div class="review-form-section">
       <app-review-form
         *ngIf="showForm"
         [contractId]="contractIdToReview"
@@ -44,7 +43,6 @@
       </app-review-form>
     </div>
   </div>
-
 
 
   <!-- TABOVI ZA FILTER OCENA -->
@@ -56,7 +54,7 @@
       Kao izdavač
     </button>
     <button [class.active]="activeTab === 'LESSEE'" (click)="setTab('LESSEE')">
-    Kao iznajmljivač
+      Kao iznajmljivač
     </button>
   </div>
 
@@ -65,7 +63,7 @@
     <app-review-card
       *ngFor="let review of filteredReviews"
       [review]="review"
-      ></app-review-card>
+    ></app-review-card>
     <p *ngIf="filteredReviews.length === 0" style="text-align: center; color: #666; margin-top: 20px;">
       Nema ocena u ovoj kategoriji.
     </p>

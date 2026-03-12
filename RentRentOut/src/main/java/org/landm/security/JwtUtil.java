@@ -1,18 +1,14 @@
 package org.landm.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-
 import org.landm.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +24,7 @@ public class JwtUtil {
     public String generateToken(User user){
     	Map<String, Object> claims = new HashMap<>();
     	claims.put("roles", user.getStringRoles());
-    	long userId = user.getId();
+    	Long userId = user.getId();
     	
         return Jwts.builder()
         		.setClaims(claims)
@@ -40,7 +36,7 @@ public class JwtUtil {
     }
 
     //Extracts userId from generated JWT token
-    public long extractUserId(String token){
+    public Long extractUserId(String token){
         String subj = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
                 .build()

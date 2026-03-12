@@ -2,19 +2,14 @@ package org.landm.controller;
 
 import jakarta.validation.Valid;
 import org.landm.dto.ad.*;
-
-
 import org.landm.service.AdService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/ads")
@@ -27,7 +22,7 @@ public class AdController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<AdDto> getAdById(@PathVariable long id){
+    public ResponseEntity<AdDto> getAdById(@PathVariable Long id){
         AdDto adDto = adService.getAdById(id);
         return  ResponseEntity.ok(adDto);
     }
@@ -42,24 +37,24 @@ public class AdController {
     public ResponseEntity<AdDto> createAd(@Valid @RequestBody CreateAdRequestDto req,
                                             Authentication auth){
 
-        long userId = Long.parseLong(auth.getName());
+        Long userId = Long.parseLong(auth.getName());
         
         return new ResponseEntity<>(adService.create(req, userId), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AdDto> updateAd(@PathVariable long id,
+    public ResponseEntity<AdDto> updateAd(@PathVariable Long id,
                                           @Valid @RequestBody UpdateAdRequestDto req,
                                           Authentication auth){
-        long userId = Long.parseLong(auth.getName());
+        Long userId = Long.parseLong(auth.getName());
         AdDto updatedAd = adService.updateAd(req, id, userId);
         return ResponseEntity.ok(updatedAd);
     }
     
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/{adId}")
-    public ResponseEntity<String> deleteAd(@PathVariable long adId, Authentication auth){
-    	long userId = Long.parseLong(auth.getName());
+    public ResponseEntity<String> deleteAd(@PathVariable Long adId, Authentication auth){
+    	Long userId = Long.parseLong(auth.getName());
     	return new ResponseEntity<>(adService.deleteAd(adId, userId), HttpStatus.OK);
     }
     
@@ -72,7 +67,13 @@ public class AdController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/me")
     public ResponseEntity<Page<AdPreviewDto>> getMyAds(Authentication auth, Pageable pageable){
-        long userId = Long.parseLong(auth.getName());
+        Long userId = Long.parseLong(auth.getName());
+        Page<AdPreviewDto> results = adService.findAllByUser(pageable, userId);
+        return ResponseEntity.ok(results);
+    }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<AdPreviewDto>> getAdsByUser(@PathVariable Long userId, Pageable pageable){
+
         Page<AdPreviewDto> results = adService.findAllByUser(pageable, userId);
         return ResponseEntity.ok(results);
     }

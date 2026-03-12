@@ -6,30 +6,40 @@
        http://www.liquibase.org/xml/ns/dbchangelog
        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
 
-    <!-- Uvezi poslednju migraciju -->
-    <include file="/db/changelog/db.changelog-3-create-role.xml"/>
-    <include file="db/changelog/db.changelog-1-create-user.xml"/>
-    <include file="/db/changelog/db.changelog-seed-user.xml"/>
 
+    <!-- 1. Nezavisne tabele -->
+    <include file="/db/changelog/db.changelog-3-create-role.xml"/>
+    <include file="/db/changelog/db.changelog-4-create-location.xml"/>
     <include file="/db/changelog/db.changelog-2-create-category.xml"/>
+
+    <!-- 2. Korisnik zavisi od uloge i lokacije -->
+    <include file="db/changelog/db.changelog-1-create-user.xml"/>
+
+    <!-- 3. Oglas zavisi od korisnika, kategorije i lokacije -->
+    <include file="/db/changelog/db.changelog-5-create-ad.xml"/>
+
+    <!-- 4. Ugovor zavisi od oglasa i korisnika -->
+    <include file="/db/changelog/db.changelog-6-create-rental-contract.xml"/>
+
+    <!-- 5. Ocena (Review) zavisi od ugovora i korisnika -->
+    <include file="/db/changelog/db.changelog-8-create-review.xml"/>
+    <!-- 6. Ostalo -->
+    <include file="/db/changelog/db.changelog-7-create-email-verification-token.xml"/>
+    <include file="/db/changelog/db.changelog-9-create-chat.xml"/>
+
+    <include file="/db/changelog/db.changelog-seed-location.xml"/>
     <include file="/db/changelog/db.changelog-seed-categories-full.xml"/>
 
-    <include file="/db/changelog/db.changelog-4-create-location.xml"/>
-    <include file="/db/changelog/db.changelog-seed-location.xml"/>
+    <!-- Onda korisnike (kojima treba lokacija) -->
+    <include file="/db/changelog/db.changelog-seed-user.xml"/>
 
-    <include file="/db/changelog/db.changelog-5-create-ad.xml"/>
+    <!-- Onda oglase (kojima trebaju korisnici i kategorije) -->
     <include file="/db/changelog/db.changelog-seed-ad.xml"/>
-
-    <include file="/db/changelog/db.changelog-6-create-rental-contract.xml"/>
-    <include file="/db/changelog/db.changelog-seed-rental-contract.xml"/>
-
-    <include file="/db/changelog/db.changelog-7-create-email-verification-token.xml"/>
     <include file="/db/changelog/db.changelog-seed-image-url.xml"/>
 
-    <include file="/db/changelog/db.changelog-8-create-review.xml"/>
+    <!-- Na kraju transakcije i ocene -->
+    <include file="/db/changelog/db.changelog-seed-rental-contract.xml"/>
     <include file="/db/changelog/db.changelog-seed-reviews.xml"/>
-
-    <include file="/db/changelog/db.changelog-9-create-chat.xml"/>
 
     
 </databaseChangeLog>

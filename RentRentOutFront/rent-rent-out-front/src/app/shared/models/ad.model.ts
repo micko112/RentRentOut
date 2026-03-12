@@ -2,6 +2,7 @@ import {Category} from './category.model';
 import {Location} from './location.model';
 import {User} from './user.model';
 import {DateInterval} from './date-interval.model';
+import {UserShort} from './userShort';
 
 export interface Ad {
 id: number;
@@ -14,7 +15,7 @@ totalQuantity: number;
 availableQuantity: number;
 images: string[];
 email: string;
-owner: User;
+owner: UserShort;
 category: Category;
 location: Location;
 dateIntervals: string;

@@ -1,25 +1,44 @@
 package org.landm.dto.user;
 
+import org.landm.dto.LocationDto;
+
 import java.math.BigDecimal;
 
 public class UserDto {
 
-    private long id;
+    private Long id;
     private String firstname;
     private String lastname;
     private String email;
-    private BigDecimal money;
+    private String avatarUrl;
+    private boolean identified;
+    private BigDecimal credit;
+    private LocationDto locationDto;
     private String currency;
     private int positiveReviews;
     private int negativeReviews;
-    public UserDto() {
+
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public long getId() {
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public boolean isIdentified() {
+        return identified;
+    }
+
+    public void setIdentified(boolean identified) {
+        this.identified = identified;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -47,12 +66,20 @@ public class UserDto {
         this.email = email;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public BigDecimal getCredit() {
+        return credit;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setCredit(BigDecimal credit) {
+        this.credit = credit;
+    }
+
+    public LocationDto getLocationDto() {
+        return locationDto;
+    }
+
+    public void setLocationDto(LocationDto locationDto) {
+        this.locationDto = locationDto;
     }
 
     public String getCurrency() {

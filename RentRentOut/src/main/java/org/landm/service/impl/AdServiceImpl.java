@@ -70,7 +70,7 @@ public class AdServiceImpl implements AdService {
     }
 
 //    @Override
-//    public ItemDto create(CreateItemRequestDto req, long userId) {
+//    public ItemDto create(CreateItemRequestDto req, Long userId) {
 
 //        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //        String email = auth.getName();
@@ -78,7 +78,7 @@ public class AdServiceImpl implements AdService {
 //    }
 
     @Override
-    public AdDto create(CreateAdRequestDto req, long userId) {
+    public AdDto create(CreateAdRequestDto req, Long userId) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         Category category = categoryRepository.findById(req.getCategoryId())
@@ -102,7 +102,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public AdDto getAdById(long id) {
+    public AdDto getAdById(Long id) {
         Ad ad = adRepository.findById(id).orElseThrow(() -> new RuntimeException("Ad not found with id: " + id));
         
         List<RentalContract> contracts = rentalContractService
@@ -118,9 +118,9 @@ public class AdServiceImpl implements AdService {
     
     private static class Event{
     	LocalDate date;
-    	long itemCount;
+    	Long itemCount;
     	
-    	Event(LocalDate date, long amount){
+    	Event(LocalDate date, Long amount){
     		this.date = date;
     		this.itemCount = amount;
     	}
@@ -204,7 +204,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public AdDto updateAd(UpdateAdRequestDto req, long id, long userId) {
+    public AdDto updateAd(UpdateAdRequestDto req, Long id, Long userId) {
 
         Ad adToUpdate = adRepository.findById(id).orElseThrow(() -> new RuntimeException("There is no ad"));
         if (adToUpdate.getOwner().getId() != (userId)) {
@@ -239,7 +239,7 @@ public class AdServiceImpl implements AdService {
 
     @Transactional
 	@Override
-	public String deleteAd(long adId, long userId) {
+	public String deleteAd(Long adId, Long userId) {
 		
 		Ad currAd = adRepository.findById(adId)
 				.orElseThrow(() -> new RuntimeException("Error deleting ad - ad not found"));
@@ -301,7 +301,7 @@ public class AdServiceImpl implements AdService {
         return adPage.map(adMapper::toPreviewDto);
     }
     @Override
-    public Page<AdPreviewDto> findAllByUser(Pageable pageable, long userId){
+    public Page<AdPreviewDto> findAllByUser(Pageable pageable, Long userId){
         Page<Ad> adPage = adRepository.findAllByOwnerId(userId, pageable);
         return adPage.map(adMapper::toPreviewDto);
     }

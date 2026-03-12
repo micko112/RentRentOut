@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 
 public interface AdminService {
-    public String suspendAd(long adId);
+    public String suspendAd(Long adId);
 }

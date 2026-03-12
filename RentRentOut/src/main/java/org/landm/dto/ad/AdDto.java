@@ -1,20 +1,17 @@
 package org.landm.dto.ad;
 
-import jakarta.validation.constraints.NotNull;
 import org.landm.dto.CategoryDto;
 import org.landm.dto.LocationDto;
-import org.landm.dto.user.UserDto;
+import org.landm.dto.user.UserShortDto;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PriceInterval;
 import org.landm.helper.DateInterval;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import java.util.List;
 
 public class AdDto {
-    private long id;
+    private Long id;
     private String title;
     private String description;
     private BigDecimal price;
@@ -27,7 +24,7 @@ public class AdDto {
     private List<String> images;
     // email znaci username
     private String email;
-    private UserDto owner;
+    private UserShortDto owner;
     private CategoryDto category;
     private LocationDto location;
 
@@ -75,10 +72,10 @@ public class AdDto {
     public void setImages(List<String> images) {
         this.images = images;
     }
-    public UserDto getOwner() {
+    public UserShortDto getOwner() {
         return owner;
     }
-    public void setOwner(UserDto owner) {
+    public void setOwner(UserShortDto owner) {
         this.owner = owner;
     }
     public CategoryDto getCategory() {
@@ -93,10 +90,10 @@ public class AdDto {
     public void setLocation(LocationDto location) {
         this.location = location;
     }
-    public long getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 	public String getEmail() {
