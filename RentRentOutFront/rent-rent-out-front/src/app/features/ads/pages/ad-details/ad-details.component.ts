@@ -1,18 +1,22 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Ad} from '../../../../shared/models/ad.model';
 import {CommonModule, DatePipe} from '@angular/common';
-import {Observable, switchMap, tap} from 'rxjs';
+import {map, Observable, switchMap, tap} from 'rxjs';
 import {AdService} from '../../services/ad.service';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {CalendarDay} from '../../../../shared/models/day.model';
 import {ContractService} from '../../../contracts/services/contract.service';
 import {CreateRentalContractRequest} from '../../../../shared/models/create-rental-contract-request';
 import {ToastService} from '../../../../shared/services/toast.service';
+import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
+import {ReviewCardComponent} from '../../../review/components/review-card/review-card.component';
+import {Review} from '../../../../shared/models/review';
+import {ReviewService} from '../../../review/services/review.service';
 
 @Component({
   selector: 'app-ad-details',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, InitialsPipe, ReviewCardComponent],
   templateUrl: './ad-details.component.html',
   styleUrl: './ad-details.component.css'
 })
@@ -37,6 +41,10 @@ export class AdDetailsComponent implements OnInit {
   totalPrice: number = 0;
   currentAd!: Ad;
 
+
+
+  latestReviews$!: Observable<Review[]>;
+
   token  = localStorage.getItem('authToken');
 
   @ViewChild('thumbnailScroll') thumbnailScrollContainer!: ElementRef;
@@ -48,7 +56,8 @@ export class AdDetailsComponent implements OnInit {
               private contractService: ContractService,
               private router: Router,
               private datePipe: DatePipe,
-              private toastService: ToastService,) {
+              private toastService: ToastService,
+              private reviewService: ReviewService,) {
   }
 
   ngOnInit() {
@@ -63,6 +72,11 @@ export class AdDetailsComponent implements OnInit {
           this.selectedImageUrl = ad.images[0];
         } else {
           this.selectedImageUrl = 'assets/images/placeholder.png';
+        }
+        if (ad.owner && ad.owner.id) {
+          this.latestReviews$ = this.reviewService.getLatestReviewsForUser(ad.owner.id).pipe(
+            map(page => page.content)
+          );
         }
         this.blockedIntervals = (ad.blockedIntervals || []).map(interval => ({
           start: new Date(interval.from),

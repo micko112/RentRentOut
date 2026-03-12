@@ -1,6 +1,6 @@
-<div class="review-wrapper">
+<div class="review-wrapper" *ngIf="contractId">
 
-  <!-- Faza 4: FORMA ZA OCENJIVANJE -->
+  <!-- FORMA ZA OCENJIVANJE -->
   <div class="review-form">
     <h3>Ocenite saradnju</h3>
 
@@ -42,8 +42,20 @@
     </div>
 
   </div>
-
+  <div class="btn-submit-div">
+    <button class="btn-submit" (click)="submitReview()">Pošalji ocenu</button>
+  </div>
 </div>
-<div class="btn-submit-div">
-  <button class="btn-submit" (click)="submitReview()">Pošalji ocenu</button>
+
+<div class="review-wrapper" *ngIf="contractId === null">
+  <div>
+    <p>Korisnika ne možete oceniti:</p>
+    <ul>
+      <li>ako ste se nedavno registrovali, </li>
+      <li>ako se iz Vaše konverzacije KP Porukama ne može utvrditi da je do kupoprodaje došlo,</li>
+      <li>ako ste ga već ocenili pre manje od 7 dana,</li>
+      <li>ako je konverzacija starija od 30 dana,</li>
+      <li>ako ste korisnika već ocenili iz iste konverzacije.</li>
+    </ul>
+  </div>
 </div>

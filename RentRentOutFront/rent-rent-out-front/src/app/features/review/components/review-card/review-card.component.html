@@ -3,7 +3,7 @@
 <div class="review-card" [ngClass]="review.reviewType === 'POSITIVE' ? 'positive-card' : 'negative-card'">
   <!-- 1. RED: Ime i Datum -->
   <div class="card-top-row">
-    <span class="reviewer-name">{{ review.reviewerUsername || 'Korisnik' }}</span> <!-- ZAMENI OVO SA PRAVIM IMENOM KAD GA UBACIS U DTO -->
+    <span class="reviewer-name">{{ review.reviewer.displayName || 'Korisnik' }}</span> <!-- ZAMENI OVO SA PRAVIM IMENOM KAD GA UBACIS U DTO -->
     <span class="date">{{ (review.createdAt | date:'dd.MM.yyyy.') || "Niger"}}</span>
   </div>
 

@@ -1,7 +1,7 @@
 .review-wrapper {
 
-  padding: 20px;
-  margin-top: 15px;
+  padding: 10px;
+
 }
 
 .error-box {
@@ -23,7 +23,7 @@
 .review-form {
   h3 { margin-top: 0;
     font-size: 18px;
-    color: #283859;
+    color: #1c1c1c;
     border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
   }
@@ -86,4 +86,25 @@
   cursor: pointer;
 
   &:hover { background-color: #0071bd; }
+}
+.review-wrapper p {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+.review-wrapper p strong,
+.review-wrapper p b {
+  font-weight: 700;
+}
+
+.review-wrapper ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.review-wrapper ul li {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.8;
 }

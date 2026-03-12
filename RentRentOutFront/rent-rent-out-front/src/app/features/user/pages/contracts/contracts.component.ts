@@ -32,9 +32,9 @@ export class ContractsComponent implements OnInit {
     if(!currentUser) return;
 
     this.userService.getAllContract().subscribe(allContracts => {
-    this.outgoingRequests = allContracts.filter(c=> c.lesseeDto.email === currentUser.email);
+    this.outgoingRequests = allContracts.filter(c=> c.lesseeDto.id === currentUser.id);
 
-    this.incomingRequests = allContracts.filter(c=> c.adDto.owner.email === currentUser.email);
+    this.incomingRequests = allContracts.filter(c=> c.adDto.owner.id === currentUser.id);
 
     });
   }

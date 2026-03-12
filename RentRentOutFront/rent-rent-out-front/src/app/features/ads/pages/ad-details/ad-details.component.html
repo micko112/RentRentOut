@@ -50,26 +50,39 @@
         <h3>Opis</h3>
         <p class="description">{{ ad.description }}</p>
       </div>
+      <div class="latest-reviews-section" *ngIf="latestReviews$ | async as reviews">
+        <h3 *ngIf="reviews.length > 0">Šta drugi kažu o vlasniku:</h3>
+        <div class="reviews-list" *ngIf="latestReviews$ | async as reviews">
+          <app-review-card
+            *ngFor="let rev of reviews"
+            [review]="rev"></app-review-card>
+        </div>
+        <button class="btn-text-only" *ngIf="reviews.length > 0" [routerLink]="['/user', ad.owner.id, 'reviews']">
+          Pročitaj sve ocene
+        </button>
+      </div>
+
     </div>
     <!-- DESNA KOLONA: Kalendar i Korisnik -->
     <div class="right-column">
-      <div class="calendar-widget">
-        <div class="month">
-          <div class="nav">
-            <div class="nav-arrow" (click)="changeMonth(-1)">
-              <img src="assets/icons/previous-calendar.png"/></div>
-            <div class="month-name">{{ displayDate | date:'MMMM yyyy' | titlecase }}</div>
-            <div class="nav-arrow" (click)="changeMonth(1)">
-              <img src="assets/icons/next-calendar.png"/>
+      <div class="right-column-container">
+        <div class="calendar-widget">
+          <div class="month">
+            <div class="nav">
+              <div class="nav-arrow" (click)="changeMonth(-1)">
+                <img src="assets/icons/previous-calendar.png"/></div>
+              <div class="month-name">{{ displayDate | date:'MMMM yyyy' | titlecase }}</div>
+              <div class="nav-arrow" (click)="changeMonth(1)">
+                <img src="assets/icons/next-calendar.png"/>
+              </div>
             </div>
-          </div>
-          <div class="weekdays">
-            <div *ngFor="let day of weekdays" class="weekday">{{ day }}</div>
-          </div>
-          <div class="dates">
-            <div *ngFor="let day of daysInMonth"
-                 class="day-cell"
-                 [ngClass]="{
+            <div class="weekdays">
+              <div *ngFor="let day of weekdays" class="weekday">{{ day }}</div>
+            </div>
+            <div class="dates">
+              <div *ngFor="let day of daysInMonth"
+                   class="day-cell"
+                   [ngClass]="{
             'past': day?.isPast,
             'blocked': day?.isBlocked,
             'in-range': day?.isSelected,
@@ -77,47 +90,90 @@
             'end-date': day?.isEndDate,
 
             }"
-                 (click)="selectDate(day)">
-              <span class="day-number" *ngIf="day?.isCurrentMonth">{{ day?.dayOfMonth }}</span>
-            </div>
-          </div>
-          <div class="pickup-clear-dates">
-            <div class="pickup-dropoff-wrapper">
-              <div class="date-info">
-                <span class="label">Preuzmi</span>
-                <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
-              </div>
-              <div class="date-info">
-                <span class="label">Vrati</span>
-                <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
+                   (click)="selectDate(day)">
+                <span class="day-number" *ngIf="day?.isCurrentMonth">{{ day?.dayOfMonth }}</span>
               </div>
             </div>
-            <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
+            <div class="pickup-clear-dates">
+              <div class="pickup-dropoff-wrapper">
+                <div class="date-info">
+                  <span class="label">Preuzmi</span>
+                  <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
+                </div>
+                <div class="date-info">
+                  <span class="label">Vrati</span>
+                  <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
+                </div>
+              </div>
+              <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
 
-          </div>
-          <!--          <div class="separator"></div>-->
-          <div class="payment-section">
-            <div class="payment-dates">
-              <div class="choose-dates" *ngIf="numberOfDays ==0 ">
-                Izaberite datume
-              </div>
-              <div class="price-calculation" *ngIf="numberOfDays > 0">
-                <div class="total-price">{{ (ad.price * numberOfDays) | number }} din</div>
-                <div class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</div>
-              </div>
             </div>
-            <button class="request-btn" [disabled]="!startDate || !endDate" (click)="sendRequest()">Pošalji zahtev
-            </button>
+            <!--          <div class="separator"></div>-->
+            <div class="payment-section">
+              <div class="payment-dates">
+                <div class="choose-dates" *ngIf="numberOfDays ==0 ">
+                  Izaberite datume
+                </div>
+                <div class="price-calculation" *ngIf="numberOfDays > 0">
+                  <div class="total-price">{{ (ad.price * numberOfDays) | number }} din</div>
+                  <div class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</div>
+                </div>
+              </div>
+              <button class="request-btn" [disabled]="!startDate || !endDate" (click)="sendRequest()">Pošalji zahtev
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="user-info">
-        <p>Vlasnik: {{ ad.owner?.firstname }}</p>
-          <div class="review-action-panel">
-            <div class="rating-score" [routerLink]="['/user', ad.owner.id, 'reviews']">
-              <div class="score positive"><span class="icon">👍</span> {{ ad.owner?.positiveReviews || 0 }}</div>
-              <div class="score negative"><span class="icon">👎</span> {{ ad.owner?.negativeReviews || 0 }}</div>
+        <div class="user-info-card" *ngIf="ad.owner">
+
+          <div class="user-header">
+            <!-- AVATAR (Klik na njega vodi na profil) -->
+            <div class="avatar" [routerLink]="['/user', ad.owner.id]">
+              <!-- Ako ima sliku, prikaži sliku -->
+              <img *ngIf="ad.owner.avatarUrl" [src]="ad.owner.avatarUrl" alt="Avatar">
+              <!-- Ako nema sliku, prikaži inicijale (koristi onaj tvoj pipe) -->
+              <span *ngIf="!ad.owner.avatarUrl">{{ ad.owner.displayName | initials }}</span>
             </div>
+
+            <div class="user-details">
+              <!-- IME I ZNAČKA -->
+              <div class="name-row">
+                <a class="user-name" [routerLink]="['/user', ad.owner.id]">{{ ad.owner.displayName }}</a>
+
+                <!-- Zelena kvačica ako je identified = true -->
+                <span class="badge-identified" *ngIf="ad.owner.identified" title="Identifikovan korisnik">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path>
+          </svg>
+          <span class="tooltip">Proveren</span>
+        </span>
+              </div>
+
+              <!-- LOKACIJA I ČLANSTVO -->
+              <div class="meta-row">
+                <span>📍 {{ ad.owner.locationDisplay || 'Nepoznata lokacija' }}</span>
+                <span *ngIf="ad.owner.createdAt">📅 Na sajtu od {{ ad.owner.createdAt | date:'yyyy' }}.</span>
+              </div>
+
+              <!-- OCENE -->
+              <div class="review-action-panel">
+                <!-- Vodi na profil (ili direktno na tab sa ocenama ako si tako namestio) -->
+                <div class="rating-score" [routerLink]="['/user', ad.owner.id]">
+                  <div class="score positive"><span class="icon">👍</span> {{ ad.owner.positiveReviews || 0 }}</div>
+                  <div class="score negative"><span class="icon">👎</span> {{ ad.owner.negativeReviews || 0 }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OPCIONO: Broj telefona ili dugme za poruku (Priprema za Chat) -->
+          <div class="contact-actions">
+            <div class="phone-number" *ngIf="ad.owner.phoneNumber">
+              📞 {{ ad.owner.phoneNumber }}
+            </div>
+            <button class="btn-message">Pošalji poruku</button>
+          </div>
+
         </div>
       </div>
     </div>

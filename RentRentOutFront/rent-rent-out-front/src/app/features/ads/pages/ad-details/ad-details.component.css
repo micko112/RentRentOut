@@ -125,14 +125,41 @@
 
   }
 }
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.btn-text-only {
+  width: 100%;
+  padding: 12px;
+  background-color: rgb(0, 138, 230);
+  border: none;
+  color: #ffffff;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #0071bd;
+    color: white;
+  }
+}
 /*--------------------------------DESNA KOLONA ----------------------------------------------------*/
 .right-column {
   flex: 1;
   position: sticky;
+
+  min-width: 380px;
+}
+.right-column-container {
   border: 0 solid #e0e0e0;
   box-shadow: 0 4px 10px rgba(40, 56, 89, 0.25);
   border-radius: 16px;
-  min-width: 380px;
 }
 
 .calendar-widget {
@@ -391,41 +418,159 @@
   }
 }
 
-.user-info {
-  margin-top: 20px;
-  padding: 16px;
-  background: white;
+.user-info-card {
+  margin-top: 24px;
+  padding: 20px;
+  background: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
-}
-.review-action-panel {
-  display: flex;
-  align-items: center;
-  gap: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  font-family: inherit;
 
-  .rating-score {
+  .user-header {
     display: flex;
-    gap: 12px;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  /* AVATAR */
+  .avatar {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: #0071bd; /* Tvoja teget boja */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
     cursor: pointer;
-    .score {
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  /* DETALJI O KORISNIKU */
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+
+    .name-row {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 15px;
+      gap: 8px;
 
-      /* KP STIL OCENA */
+      .user-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #212121;
+        text-decoration: none;
 
-      &.positive {
-        border: 1px solid #22c55e;
-        color: #16a34a;
+        &:hover {
+          text-decoration: underline;
+          color: #0071bd;
+        }
       }
 
-      &.negative {
-        border: 1px solid #ef4444;
-        color: #dc2626;
+      .badge-identified {
+        color: #16a34a; /* KP Zelena za verifikaciju */
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #e6f4ea;
+        padding: 2px 8px;
+        border-radius: 12px;
+      }
+    }
+
+    .meta-row {
+      font-size: 13px;
+      color: #666;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  }
+
+  /* OCENE (Tvoj postojeći kod) */
+  .review-action-panel {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+
+    .rating-score {
+      display: flex;
+      gap: 10px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &:hover { opacity: 0.8; }
+
+      .score {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+
+        &.positive {
+          border: 1px solid #22c55e;
+          color: #16a34a;
+          background-color: rgba(34, 197, 94, 0.05);
+        }
+
+        &.negative {
+          border: 1px solid #ef4444;
+          color: #dc2626;
+          background-color: rgba(239, 68, 68, 0.05);
+        }
+      }
+    }
+  }
+
+  /* DONJI DEO (Kontakt akcije) */
+  .contact-actions {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .phone-number {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+    }
+
+    .btn-message {
+      width: 100%;
+      padding: 12px;
+      background-color: rgb(0, 138, 230);
+      border: none;
+      color: #ffffff;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #0071bd;
+        color: white;
       }
     }
   }
