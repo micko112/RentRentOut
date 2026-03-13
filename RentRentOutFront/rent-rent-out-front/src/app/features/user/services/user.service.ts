@@ -29,5 +29,7 @@ export class UserService {
   getPublicProfile(id: number): Observable<PublicProfile> {
     return this.http.get<PublicProfile>(`${this.url}/user/${id}`);
   }
-
+  getPhoneNumber(userId: number): Observable<{ phone: string }> {
+    return this.http.get<{ phone: string }>(`${this.url}/user/${userId}/phone`);
+  }
 }

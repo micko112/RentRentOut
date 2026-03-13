@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {CommonModule} from '@angular/common';
 import {ToastService} from '../../../../shared/services/toast.service';
@@ -21,10 +21,12 @@ import {ToastService} from '../../../../shared/services/toast.service';
 export class LoginComponent {
   form!: FormGroup;
   submitted = false;
+  returnUrl: string = '/';
   constructor(private fb: FormBuilder,
               private router: Router,
               private authService: AuthService,
               private toastService: ToastService,
+              private route: ActivatedRoute,
     ) {
   }
 
@@ -33,6 +35,7 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+    this.returnUrl = this.route.snapshot.queryParams['redirect'] || '/';
   }
 
   login() {
@@ -47,7 +50,7 @@ export class LoginComponent {
            next: (response) => {
              this.toastService.showSuccess("Uspesno ste se ulogovali!");
              localStorage.setItem('authToken', response.token);
-             this.router.navigateByUrl('/');
+             this.router.navigateByUrl(this.returnUrl);
            },
            error: (error) =>  {
              this.toastService.showError("Nije uspela prijava!")

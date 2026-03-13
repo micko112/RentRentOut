@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {RouterLink, RouterModule} from '@angular/router';
 import {AdPreview} from '../../../../shared/models/adPreview.model';
 import {AdService} from '../../services/ad.service';
+import {UserService} from '../../../user/services/user.service';
 
 @Component({
   selector: 'app-ad-card',
@@ -31,6 +32,8 @@ export class AdCardComponent {
     'PER_HOUR': '/sat',
     'PER_MONTH': '/mesečno'
   };
+
+
 
 
 }

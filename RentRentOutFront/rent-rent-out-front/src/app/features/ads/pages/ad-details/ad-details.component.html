@@ -163,16 +163,32 @@
                   <div class="score negative"><span class="icon">👎</span> {{ ad.owner.negativeReviews || 0 }}</div>
                 </div>
               </div>
-            </div>
-          </div>
+              <!-- OPCIONO: Broj telefona ili dugme za poruku (Priprema za Chat) -->
+              <div class="contact-actions">
 
-          <!-- OPCIONO: Broj telefona ili dugme za poruku (Priprema za Chat) -->
-          <div class="contact-actions">
-            <div class="phone-number" *ngIf="ad.owner.phoneNumber">
-              📞 {{ ad.owner.phoneNumber }}
+                <!-- Prikazuje se SAMO ako korisnik u bazi ima unet telefon (što smo maskirali u DTO) -->
+                <div class="phone-section" *ngIf="ad.owner.phoneNumber">
+
+                  <!-- STANJE 1: Pre klika (Dugme) -->
+                  <button class="btn-reveal-phone"
+                          *ngIf="!realPhoneNumber"
+                          (click)="revealPhoneNumber(ad.owner.id)">
+                    <span class="icon">📞</span>
+                    <span *ngIf="!isLoadingPhone">Prikaži broj telefona</span>
+                    <span *ngIf="isLoadingPhone">Učitavam...</span>
+                  </button>
+
+                  <!-- STANJE 2: Posle klika (Pravi broj) -->
+                  <div class="revealed-phone" *ngIf="realPhoneNumber">
+                    <span class="icon">📞</span>
+                    <a [href]="'tel:' + realPhoneNumber">{{ realPhoneNumber }}</a>
+                  </div>
+                </div>
+              </div>
             </div>
-            <button class="btn-message">Pošalji poruku</button>
           </div>
+          <button class="btn-message">Pošalji poruku</button>
+
 
         </div>
       </div>

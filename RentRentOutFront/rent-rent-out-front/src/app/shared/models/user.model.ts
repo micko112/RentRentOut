@@ -8,6 +8,7 @@ export interface User{
   credit:  number;
   location: string;
   currency: string;
+  phoneNumber: string;
   positiveReviews: number;
   negativeReviews: number;
 }

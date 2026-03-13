@@ -7,7 +7,7 @@
       Cena: <strong>{{ contract.agreedPrice | number }} din</strong>
     </div>
     <div class="details" *ngIf="isOwnerView">Zakupac: {{ contract.lesseeDto.firstname }}</div>
-    <div class="details" *ngIf="!isOwnerView">Vlasnik: {{ contract.adDto.owner.firstname }}</div>
+    <div class="details" *ngIf="!isOwnerView">Vlasnik: {{ contract.adDto.owner.displayName }}</div>
   </div>
 
   <div class="status-zone">

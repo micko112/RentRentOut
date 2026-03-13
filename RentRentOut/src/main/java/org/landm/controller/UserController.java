@@ -104,4 +104,18 @@ public class UserController {
         Long myId = Long.parseLong(auth.getName());
         return new ResponseEntity<>(userService.deleteMe(myId), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @GetMapping("/{id}/phone")
+    public ResponseEntity<Map<String, String>> getUserPhone(@PathVariable("id") Long userId) {
+        String phone = userService.getRealPhoneNumber(userId);
+        Map<String, String> response = new HashMap<>();
+        if (phone != null && !phone.isBlank()) {
+            response.put("phone", phone);
+        } else {
+            response.put("phone", "Korisnik nema telefon");
+        }
+
+        return ResponseEntity.ok(response);
+    }
 }

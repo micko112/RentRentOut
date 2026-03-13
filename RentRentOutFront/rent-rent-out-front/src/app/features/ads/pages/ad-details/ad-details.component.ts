@@ -12,6 +12,8 @@ import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
 import {ReviewCardComponent} from '../../../review/components/review-card/review-card.component';
 import {Review} from '../../../../shared/models/review';
 import {ReviewService} from '../../../review/services/review.service';
+import {UserService} from '../../../user/services/user.service';
+import {authGuard} from '../../../auth/auth.guard';
 
 @Component({
   selector: 'app-ad-details',
@@ -41,7 +43,8 @@ export class AdDetailsComponent implements OnInit {
   totalPrice: number = 0;
   currentAd!: Ad;
 
-
+  realPhoneNumber: string | null = null;
+  isLoadingPhone: boolean = false;
 
   latestReviews$!: Observable<Review[]>;
 
@@ -57,7 +60,8 @@ export class AdDetailsComponent implements OnInit {
               private router: Router,
               private datePipe: DatePipe,
               private toastService: ToastService,
-              private reviewService: ReviewService,) {
+              private reviewService: ReviewService,
+              private userService: UserService,) {
   }
 
   ngOnInit() {
@@ -303,7 +307,22 @@ export class AdDetailsComponent implements OnInit {
       )
     }
   }
+  revealPhoneNumber(ownerId: number): void {
+    if(this.isLoadingPhone) return;
+    this.isLoadingPhone = true;
+    this.userService.getPhoneNumber(ownerId).subscribe({
+      next:(res) => {
+        this.realPhoneNumber = res.phone;
+        this.isLoadingPhone = false;
+      },
+      error: () => {
+        this.realPhoneNumber = "Greška pri učitavanju";
+        this.isLoadingPhone = false;
+      }
 
+    })
+
+  }
 
 
 }
