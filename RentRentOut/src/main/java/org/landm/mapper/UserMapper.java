@@ -25,7 +25,7 @@ public class UserMapper {
         dto.setCurrency(user.getCurrency() != null ? user.getCurrency().toString() : "RSD");
         dto.setPositiveReviews(user.getPositiveReviews());
         dto.setNegativeReviews(user.getNegativeReviews());
-
+        dto.setPhoneNumber(user.getPhoneNumber());
         return dto;
     }
 
@@ -57,7 +57,11 @@ public class UserMapper {
         }
 
         dto.setCreatedAt(user.getCreatedAt());
-        dto.setPhoneNumber(user.getPhoneNumber());
+        if (user.getPhoneNumber() != null && !user.getPhoneNumber().isBlank()) {
+            dto.setPhoneNumber("06x / xxx-xxxx");
+        } else{
+            dto.setPhoneNumber(null);
+    }
         dto.setPositiveReviews(user.getPositiveReviews());
         dto.setNegativeReviews(user.getNegativeReviews());
 

@@ -15,6 +15,7 @@ public class UserDto {
     private BigDecimal credit;
     private LocationDto locationDto;
     private String currency;
+    private String phoneNumber;
     private int positiveReviews;
     private int negativeReviews;
 
@@ -44,6 +45,14 @@ public class UserDto {
 
     public String getFirstname() {
         return firstname;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public void setFirstname(String firstname) {

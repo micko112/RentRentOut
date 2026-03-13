@@ -24,4 +24,6 @@ public interface UserService {
     public String deleteMe(Long myId);
 
     public PublicProfileDto getUser(Pageable pageable, Long userId);
+
+    String getRealPhoneNumber(Long userId);
 }

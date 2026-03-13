@@ -162,7 +162,13 @@ public class UserServiceImpl implements UserService {
 		return new PublicProfileDto(userProfile, adsPage, reviewsPage);
 	}
 
-    @Override
+	@Override
+	public String getRealPhoneNumber(Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
+        return user.getPhoneNumber();
+	}
+
+	@Override
     @Retryable(
     		retryFor = OptimisticLockException.class,
     		maxAttempts = 3,
