@@ -15,7 +15,7 @@
       <label class="group-label">Mesto</label>
       <select class="custom-select" [(ngModel)]="filters.locationId" name="locationId">
         <option [ngValue]="undefined">Sve lokacije</option>
-        <option *ngFor="let l of locations" [ngValue]="l.id">{{ l.name }}</option>
+        <option *ngFor="let l of locations" [ngValue]="l.id">{{ l.city }}</option>
       </select>
     </section>
 

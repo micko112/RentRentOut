@@ -25,6 +25,10 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  public setCurrentUser(user: User | null): void {
+    this.currentUserSubject.next(user);
+  }
+
   login(credentials: { email: string, password: string }): Observable<{ user: User, token: string }> {
     return this.http.post<{ user: User, token: string }>(`${API_BASE_URL}/user/login`, credentials)
       .pipe(
@@ -43,6 +47,10 @@ export class AuthService {
 
   register(userData: RegisterRequest): Observable<User> {
     return this.http.post<User>(`${API_BASE_URL}/user/register`, userData);
+  }
+
+  verifyEmail(token: string): Observable<User> {
+    return this.http.get<User>(`${API_BASE_URL}/auth/validate-email`, { params: { token } });
   }
 
   private loadInitialUser() {

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {API_BASE_URL} from '../../../core/config/api.config';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, map} from 'rxjs';
 import {User} from '../../../shared/models/user.model';
-import {Ad} from '../../../shared/models/ad.model';
 import {RentalContract} from '../../../shared/models/rental-contract.model';
 import {UserProfile} from '../../../shared/models/userProfile';
 import {PublicProfile} from '../../../shared/models/public-profile';
+import {UpdateUserRequest} from '../../../shared/models/update-user-request';
+import {ChangePasswordRequest} from '../../../shared/models/change-password-request';
 
 
 @Injectable({
@@ -31,5 +32,14 @@ export class UserService {
   }
   getPhoneNumber(userId: number): Observable<{ phone: string }> {
     return this.http.get<{ phone: string }>(`${this.url}/user/${userId}/phone`);
+  }
+
+  updateMe(payload: UpdateUserRequest): Observable<User> {
+    return this.http.patch<{ user: User }>(`${this.url}/user/me`, payload)
+      .pipe(map(res => res.user));
+  }
+
+  changePassword(payload: ChangePasswordRequest): Observable<string> {
+    return this.http.patch(`${this.url}/user/me/password`, payload, { responseType: 'text' });
   }
 }

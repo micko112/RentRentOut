@@ -3,11 +3,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {Category} from '../../../../shared/models/category.model';
 import {AdSearchCriteria} from '../../../../shared/models/adSearchCriteria';
-
-interface LocationOption {
-  id: number;
-  name: string;
-}
+import {Location} from '../../../../shared/models/location.model';
 
 @Component({
   selector: 'app-filters-sidebar',
@@ -19,7 +15,7 @@ interface LocationOption {
 export class FiltersSidebarComponent {
 
   @Input() categories: Category[] = [];
-  @Input() locations: LocationOption[] = [];
+  @Input() locations: Location[] = [];
 
   @Output() applyFilters = new EventEmitter<Partial<AdSearchCriteria>>();
 

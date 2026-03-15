@@ -1,0 +1,11 @@
+﻿<div class="verify-container">
+  <div class="card">
+    <h2>Verifikacija emaila</h2>
+    <p class="status" [ngClass]="status">{{ message }}</p>
+
+    <div class="actions">
+      <a routerLink="/login" class="btn" *ngIf="status === 'success'">Prijavi se</a>
+      <a routerLink="/register" class="btn" *ngIf="status === 'error'">Registruj se</a>
+    </div>
+  </div>
+</div>

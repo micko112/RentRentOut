@@ -1,7 +1,7 @@
-<div class="details" *ngIf="user$ | async as user">
-  <h2>Lični podaci</h2>
+﻿<div class="details" *ngIf="user$ | async as user">
+  <h2>Licni podaci</h2>
 
-  <div class="info-card">
+  <div class="info-card" *ngIf="!isEditing">
     <div class="info-row">
       <label>Ime i Prezime:</label>
       <span>{{ user.firstname }} {{ user.lastname }}</span>
@@ -11,11 +11,58 @@
       <span>{{ user.email }}</span>
     </div>
     <div class="info-row">
-      <label>Stanje na računu:</label>
+      <label>Stanje na racunu:</label>
       <span class="money">{{ user.credit || 0 | number }} din</span>
     </div>
+    <div class="info-row">
+      <label>Valuta:</label>
+      <span>{{ user.currency || 'RSD' }}</span>
+    </div>
+
+    <button class="btn-edit" (click)="startEdit()">Izmeni podatke</button>
   </div>
 
-  <button class="btn-edit">Izmeni podatke</button>
+  <form class="edit-card" *ngIf="isEditing" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+    <div class="form-row">
+      <label>Ime</label>
+      <input type="text" formControlName="firstname" />
+    </div>
+    <div class="form-row">
+      <label>Prezime</label>
+      <input type="text" formControlName="lastname" />
+    </div>
+    <div class="form-row">
+      <label>Email</label>
+      <input type="email" formControlName="email" />
+    </div>
+    <div class="form-row">
+      <label>Valuta</label>
+      <select formControlName="currency">
+        <option value="RSD">RSD</option>
+        <option value="EUR">EUR</option>
+      </select>
+    </div>
 
+    <div class="actions">
+      <button type="button" class="btn-cancel" (click)="cancelEdit()">Odustani</button>
+      <button type="submit" class="btn-save">Sacuvaj</button>
+    </div>
+  </form>
+
+  <div class="password-card">
+    <h3>Promena lozinke</h3>
+    <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+      <div class="form-row">
+        <label>Stara lozinka</label>
+        <input type="password" formControlName="oldPassword" />
+      </div>
+      <div class="form-row">
+        <label>Nova lozinka</label>
+        <input type="password" formControlName="newPassword" />
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn-save">Promeni lozinku</button>
+      </div>
+    </form>
+  </div>
 </div>

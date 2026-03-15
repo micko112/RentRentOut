@@ -25,6 +25,7 @@
       <app-filters-sidebar
         *ngIf="isSearchMode"
         [categories]="categories"
+        [locations]="locations"
         (applyFilters)="onApplyFilters($event)">
       </app-filters-sidebar>
     </aside>

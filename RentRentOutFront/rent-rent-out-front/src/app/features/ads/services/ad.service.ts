@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {API_BASE_URL} from '../../../core/config/api.config';
 import {AdSearchCriteria} from '../../../shared/models/adSearchCriteria';
 import {Ad} from '../../../shared/models/ad.model';
+import {UpdateAdRequest} from '../../../shared/models/update-ad-request';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,10 @@ export class AdService {
   createAd(ad: Ad) :Observable<Ad> {
 
     return this.http.post<Ad>(`${this.adApiUrl}`, ad);
+  }
+
+  updateAd(id: number, payload: UpdateAdRequest): Observable<Ad> {
+    return this.http.put<Ad>(`${this.adApiUrl}/${id}`, payload);
   }
 
   getMyAds(page: number = 0, size: number=10 ): Observable<Page<AdPreview>> {

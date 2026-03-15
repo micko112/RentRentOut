@@ -1,0 +1,158 @@
+﻿<div class="page-container">
+  <div class="form-card">
+
+    <div class="header">
+      <h2>Izmeni oglas</h2>
+      <p>Azurirajte informacije o oglasu.</p>
+    </div>
+
+    <div *ngIf="isLoading">Ucitavanje...</div>
+
+    <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="step">
+        <div class="numeration">1</div>
+        <div class="content">
+          <h3>Kategorija</h3>
+          <p class="hint">U koju grupu spada predmet?</p>
+
+          <select formControlName="categoryId" [class.invalid]="form.get('categoryId')?.touched && form.get('categoryId')?.invalid">
+            <option [ngValue]="null" disabled selected>Izaberi kategoriju</option>
+            <option *ngFor="let cat of categories" [ngValue]="cat.id">
+              {{ cat.name }}
+            </option>
+          </select>
+          <small class="error" *ngIf="form.get('categoryId')?.touched && form.get('categoryId')?.invalid">
+            Kategorija je obavezna.
+          </small>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="numeration">2</div>
+        <div class="content">
+          <h3>Opis oglasa</h3>
+
+          <div class="form-group">
+            <label>Naslov</label>
+            <input type="text" formControlName="title" placeholder="npr. Busilica"
+                   [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
+            <small class="error" *ngIf="form.get('title')?.touched && form.get('title')?.invalid">
+              Naziv mora imati minimum 5 karaktera.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Detaljan opis</label>
+            <textarea formControlName="description" rows="5" placeholder="Opis"
+                      [class.invalid]="form.get('description')?.touched && form.get('description')?.invalid"></textarea>
+            <small class="error" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
+              Opis mora imati minimum 20 karaktera.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="numeration">3</div>
+        <div class="content">
+          <h3>Slike</h3>
+          <p class="hint">Dodajte ili uklonite slike oglasa.</p>
+
+          <div class="image-upload-container">
+            <input type="file" id="fileInput" multiple accept="image/*" (change)="onFileSelected($event)" hidden>
+
+            <label for="fileInput" class="upload-dropzone">
+              <div class="upload-icon">Upload</div>
+              <div class="upload-text">Klikni ovde da dodas nove slike</div>
+            </label>
+
+            <div *ngIf="existingImages.length > 0" class="image-previews">
+              <div class="preview-box" *ngFor="let url of existingImages; let i = index">
+                <img [src]="url" alt="Postojeca slika">
+                <button type="button" class="btn-remove" (click)="removeExistingImage(i)">&times;</button>
+              </div>
+            </div>
+
+            <div *ngIf="previewUrl.length > 0" class="image-previews">
+              <div class="preview-box" *ngFor="let url of previewUrl; let i = index">
+                <img [src]="url" alt="Nova slika">
+                <button type="button" class="btn-remove" (click)="removeNewImage(i)">&times;</button>
+              </div>
+            </div>
+
+            <small class="error" *ngIf="form.get('images')?.touched && form.get('images')?.invalid">
+              Morate dodati barem jednu sliku.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="numeration">4</div>
+        <div class="content">
+          <h3>Cena</h3>
+          <p class="hint">Azurirajte iznos, valutu i nacin naplate.</p>
+
+          <div class="price-section-wrapper">
+            <div class="price-input-box">
+              <input type="number" formControlName="price" placeholder="Iznos"
+                     [class.invalid]="form.get('price')?.touched && form.get('price')?.invalid">
+            </div>
+
+            <div class="currency-toggle">
+              <label class="radio-pill">
+                <input type="radio" formControlName="currency" value="RSD">
+                <span>din</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" formControlName="currency" value="EUR">
+                <span>eur</span>
+              </label>
+            </div>
+
+            <div class="interval-select-box">
+              <select formControlName="priceInterval">
+                <option *ngFor="let interval of priceIntervals" [value]="interval">
+                  {{ priceLabels[interval] }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <small class="error" *ngIf="form.get('price')?.touched && form.get('price')?.invalid">
+            Unesite ispravnu cenu.
+          </small>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="numeration">5</div>
+        <div class="content">
+          <h3>Lokacija</h3>
+          <p class="hint">Gde se predmet preuzima?</p>
+          <select formControlName="locationId" [class.invalid]="form.get('locationId')?.touched && form.get('locationId')?.invalid">
+            <option [ngValue]="null" disabled selected>Izaberi grad</option>
+            <option *ngFor="let loc of locations" [ngValue]="loc.id">
+              {{ loc.city }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="numeration">6</div>
+        <div class="content">
+          <h3>Kolicina</h3>
+          <p class="hint">Koliko komada je dostupno?</p>
+          <input type="number" formControlName="totalQuantity" min="1" class="short-input">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-cancel" routerLink="/user/me/ads">Odustani</button>
+        <button type="submit" class="btn-submit" [disabled]="form.invalid">Sacuvaj izmene</button>
+      </div>
+
+    </form>
+  </div>
+</div>

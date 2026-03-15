@@ -20,8 +20,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class EmailVerificationServiceImpl implements  EmailVerificationService{
 	
-//	@Value("${app.frontend.url}")
-	private String frontendUrl = "http://localhost:8080/api/auth";
+	@Value("${app.frontend.url:http://localhost:4200/verify-email}")
+	private String frontendUrl;
 	private EmailVerificationRepository tokenRepository;
 	private UserRepository userRepository;
 	private final JavaMailSender javaMailSender;
@@ -53,7 +53,7 @@ public class EmailVerificationServiceImpl implements  EmailVerificationService{
 	@Override
 	public void sendVerificationEmail(String email, String token) {
 		
-		String link = frontendUrl + "/validate-email?token=" + token;
+		String link = frontendUrl + "?token=" + token;
 		
 		SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setTo(email);

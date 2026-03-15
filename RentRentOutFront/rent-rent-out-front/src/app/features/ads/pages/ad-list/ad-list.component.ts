@@ -6,6 +6,7 @@ import {first, Observable, switchMap, tap} from 'rxjs';
 
 import {AdService} from '../../services/ad.service';
 import {CategoryService} from '../../services/category.service';
+import {LocationService} from '../../services/location.service';
 import {Category} from '../../../../shared/models/category.model';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {AdSearchCriteria} from '../../../../shared/models/adSearchCriteria';
@@ -13,6 +14,7 @@ import {FiltersSidebarComponent} from '../../components/filters-sidebar/filters-
 import {
   CategoriesSidebarComponent
 } from '../../components/categories-sidebar/categories-sidebar/categories-sidebar.component';
+import {Location} from '../../../../shared/models/location.model';
 
 
 @Component({
@@ -26,6 +28,7 @@ export class AdListComponent implements OnInit {
 
   adsPage$!: Observable<Page<AdPreview>>
   categories: Category[] = [];
+  locations: Location[] = [];
   isSearchMode = false;
   currentKeyword: string = "";
   activeCategory: string = "Svi oglasi";
@@ -33,6 +36,7 @@ export class AdListComponent implements OnInit {
 
   constructor(private adService: AdService,
               private categoryService: CategoryService,
+              private locationService: LocationService,
               private route: ActivatedRoute,
               private router: Router) {
   }
@@ -43,6 +47,12 @@ export class AdListComponent implements OnInit {
       this.categories = res;
       this.updateActiveCategory(this.route.snapshot.queryParams['categoryId']);
     })
+    this.locationService.getAll().subscribe({
+      next: (locs) => this.locations = locs,
+      error: () => {
+        console.error('Greska pri ucitavanju lokacija.');
+      }
+    });
     this.adsPage$ = this.route.queryParams.pipe(
       switchMap(params => {
           const categoryId = params['categoryId'] ? Number(params['categoryId']) : undefined;
