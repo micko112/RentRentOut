@@ -140,7 +140,7 @@
           <select formControlName="locationId" [class.invalid]="form.get('locationId')?.touched && form.get('locationId')?.invalid">
             <option [ngValue]="null" disabled selected>Izaberi grad</option>
             <option *ngFor="let loc of locations" [ngValue]="loc.id">
-              {{ loc.name }}
+              {{ loc.city }}
             </option>
           </select>
         </div>

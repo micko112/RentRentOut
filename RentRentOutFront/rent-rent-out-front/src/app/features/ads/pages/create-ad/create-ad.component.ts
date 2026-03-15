@@ -1,13 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+﻿import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AdService} from '../../services/ad.service';
 import {Category} from '../../../../shared/models/category.model';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {PriceInterval, PriceIntervalLabels} from '../../../../shared/models/price-interval.enum';
 import {CategoryService} from '../../services/category.service';
+import {LocationService} from '../../services/location.service';
 import {Router, RouterLink} from '@angular/router';
 import {switchMap} from 'rxjs';
 import {ToastService} from '../../../../shared/services/toast.service';
+import {Location} from '../../../../shared/models/location.model';
+
 @Component({
   selector: 'app-create-ad',
   imports: [CommonModule, ReactiveFormsModule, RouterLink,],
@@ -24,14 +27,11 @@ export class CreateAdComponent implements OnInit {
   form!: FormGroup;
   priceIntervals = Object.values(PriceInterval);
   priceLabels = PriceIntervalLabels;
-  locations = [
-    {id: 1, name: 'Beograd'},
-    {id: 2, name: 'Niš'},
-    {id: 3, name: 'Novi Sad'}
-  ];
+  locations: Location[] = [];
 
   constructor(private adService: AdService,
               private categoryService: CategoryService,
+              private locationService: LocationService,
               private fb: FormBuilder,
               private router: Router,
               private toastService: ToastService,) {
@@ -39,8 +39,12 @@ export class CreateAdComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryService.getAll().subscribe(category => {
-      this.categories = category
-      console.log("CreateAdComponent je inicijalizovan!");
+      this.categories = category;
+      console.log('CreateAdComponent je inicijalizovan!');
+    });
+    this.locationService.getAll().subscribe({
+      next: (locs) => this.locations = locs,
+      error: () => this.toastService.showError('Greska pri ucitavanju lokacija.')
     });
 
     this.form = this.fb.group({
@@ -58,24 +62,24 @@ export class CreateAdComponent implements OnInit {
 
   onSubmit() {
     if (this.form.invalid || this.selectedFiles.length === 0) {
-      alert("Molimo popunite sva polja i izaberite barem jednu sliku.");
+      alert('Molimo popunite sva polja i izaberite barem jednu sliku.');
       this.form.markAsTouched();
       return;
     }
     this.adService.uploadImages(this.selectedFiles).pipe(
       switchMap(uploadedImagesUrls => {
         this.form.patchValue({images: uploadedImagesUrls});
-        console.log(this.selectedFiles)
+        console.log(this.selectedFiles);
         return this.adService.createAd(this.form.value);
       })
     ).subscribe({
       next: (newAd) => {
-        this.toastService.showSuccess("Oglas uspesno kreiran");
+        this.toastService.showSuccess('Oglas uspesno kreiran');
         this.router.navigate(['/ads', newAd.id]);
       },
       error: (error) => {
-        console.error("Greska:", error);
-        this.toastService.showError('Došlo je do greške prilikom kreiranja oglasa.');
+        console.error('Greska:', error);
+        this.toastService.showError('Doslo je do greske prilikom kreiranja oglasa.');
 
       }
     })
@@ -102,7 +106,4 @@ export class CreateAdComponent implements OnInit {
     this.selectedFiles.splice(index, 1);
     this.previewUrl.splice(index, 1);
   }
-
-
-
 }

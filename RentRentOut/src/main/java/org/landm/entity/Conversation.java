@@ -55,6 +55,7 @@ public class Conversation {
     protected void onUpdate(){
         this.updatedAt = LocalDateTime.now();
     }
+
     public Long getId() {
         return id;
     }

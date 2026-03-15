@@ -1,12 +1,15 @@
 package org.landm.dto.requestDto;
 
-import java.math.BigDecimal;
-
-import org.landm.entity.Enums.Currency;
-
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import org.landm.entity.Enums.Currency;
 
+import java.math.BigDecimal;
+
+@Setter
+@Getter
 public class DepositRequestDto {
 
 	@NotNull(message = "Amount is required!")
@@ -20,23 +23,9 @@ public class DepositRequestDto {
 	public DepositRequestDto(BigDecimal amount) {
 		this.amount = amount;
 	}
-	
-	public BigDecimal getAmount() {
-		return amount;
-	}
 
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
 
-	public Currency getPriceCurrency() {
-		return currency;
-	}
 
-	public void setPriceCurrency(Currency currency) {
-		this.currency = currency;
-	}
-	
-	
+
 	
 }
