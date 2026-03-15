@@ -49,6 +49,8 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.DELETE, "/api/rental-contract").authenticated()
 						.requestMatchers(HttpMethod.PATCH, "/api/rental-contract").authenticated()
 
+						.requestMatchers(HttpMethod.POST, "/api/rental-contract/block").authenticated()
+
 						.requestMatchers(HttpMethod.POST, "/api/rental-contract/**").authenticated()
 						.requestMatchers(HttpMethod.PATCH, "/api/rental-contract/**").authenticated()
 						.requestMatchers(HttpMethod.DELETE, "/api/rental-contract/**").authenticated()

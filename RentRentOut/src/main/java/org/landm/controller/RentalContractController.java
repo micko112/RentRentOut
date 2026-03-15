@@ -1,27 +1,21 @@
 package org.landm.controller;
 
 import jakarta.validation.Valid;
+import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.rentalContract.RentalContractSearchDto;
-
-import java.io.Console;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
-
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.service.RentalContractService;
-import org.landm.service.impl.RentalContractServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rental-contract")
@@ -86,4 +80,14 @@ public class RentalContractController {
 		Long userId = Long.parseLong(auth.getName());
 		return new ResponseEntity<>(service.delete(userId, id), HttpStatus.OK);
 	}
+
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@PostMapping("/block")
+	public ResponseEntity<RentalContractDto> blockDates(@Valid @RequestBody CreateRentalContractRequestDto req,
+														Authentication auth){
+		Long userId = Long.parseLong(auth.getName());
+			return new ResponseEntity<>(service.blockDates(req, userId), HttpStatus.CREATED);
+	}
+
+
 }

@@ -1,41 +1,28 @@
 package org.landm.service.impl;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import org.landm.dto.ad.*;
-
-import org.landm.entity.Ad;
-import org.landm.entity.Category;
+import org.landm.entity.*;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.ContractStatus;
-import org.landm.exception.UserNotFoundException;
 import org.landm.helper.DateInterval;
-import org.landm.entity.Location;
-import org.landm.entity.RentalContract;
-import org.landm.entity.User;
 import org.landm.mapper.AdMapper;
 import org.landm.mapper.LocationMapper;
-import org.landm.repository.CategoryRepository;
-import org.landm.repository.AdRepository;
-import org.landm.repository.LocationRepository;
-import org.landm.repository.RentalContractRepository;
-import org.landm.repository.UserRepository;
+import org.landm.repository.*;
 import org.landm.security.JwtUtil;
 import org.landm.service.AdService;
 import org.landm.service.CategoryService;
 import org.landm.service.RentalContractService;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
-
-import java.io.File;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 
 @Service
@@ -106,8 +93,9 @@ public class AdServiceImpl implements AdService {
         Ad ad = adRepository.findById(id).orElseThrow(() -> new RuntimeException("Ad not found with id: " + id));
         
         List<RentalContract> contracts = rentalContractService
-        		.findByAdIdAndContractStatusIn(ad.getId(), List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE));
+        		.findByAdIdAndContractStatusIn(ad.getId(), List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE, ContractStatus.BLOCKED_BY_OWNER));
         //TREBA TRANSACTIONAL
+        System.out.println("DEBUG: Broj ugovora za oglas " + id + " je: " + contracts.size());
         List<DateInterval> blockedIntervals = getBlockedIntervals(contracts, ad.getTotalQuantity());
         
         AdDto adDto = adMapper.toDto(ad);
@@ -153,7 +141,7 @@ public class AdServiceImpl implements AdService {
     		}
     		
     		if(prevActive >= quantity && active < quantity) {
-    			blockedIntervals.add(new DateInterval(blockedStart, event.date.minusDays(1)));
+    			blockedIntervals.add(new DateInterval(blockedStart, event.date.minusDays(0)));
     			blockedStart = null;
     		}
     	}

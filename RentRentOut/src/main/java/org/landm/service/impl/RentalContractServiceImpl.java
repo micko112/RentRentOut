@@ -1,30 +1,21 @@
 package org.landm.service.impl;
 
+import jakarta.persistence.OptimisticLockException;
+import jakarta.transaction.Transactional;
+import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.rentalContract.RentalContractSearchDto;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.entity.Ad;
-import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.ContractStatus;
-import org.landm.exception.UserNotFoundException;
 import org.landm.entity.RentalContract;
 import org.landm.entity.User;
+import org.landm.exception.UserNotFoundException;
 import org.landm.mapper.RentalContractMapper;
 import org.landm.repository.AdRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
-import org.landm.service.AdService;
 import org.landm.service.RentalContractService;
 import org.landm.specification.RentalContractSpecification;
 import org.springframework.data.domain.Page;
@@ -37,8 +28,11 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.OptimisticLockException;
-import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class RentalContractServiceImpl implements RentalContractService {
@@ -75,6 +69,9 @@ public class RentalContractServiceImpl implements RentalContractService {
 				Ad ad = adRepository.findById(req.getAdId())
                 .orElseThrow(() -> new RuntimeException("Ad not found"));
 
+		if (ad.getOwner().getId().equals(userId)) {
+			throw new RuntimeException("Ne možete iznajmiti predmet od samog sebe!");
+		}
     	// Should check for amount of available items and allow sending offer only if there are some
         List<RentalContract> contractsInInterval = rentalContractRepository.
         		findContractsInDateInterval(req.getAdId(), 
@@ -381,6 +378,25 @@ public class RentalContractServiceImpl implements RentalContractService {
 	public void markToAdDeleted(Long adId) {
 		rentalContractRepository.markToAdDeleted(adId);
 		
+	}
+
+	@Override
+	public RentalContractDto blockDates(CreateRentalContractRequestDto req, Long userId) {
+		User owner = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("Error in getting user"));
+		Ad ad = adRepository.findById(req.getAdId()).orElseThrow(()-> new RuntimeException("Error in getting ad"));
+		if (!ad.getOwner().getId().equals(userId)) {
+			throw new AccessDeniedException("Samo vlasnik može blokirati datume.");
+		}
+		RentalContract blockRecord = rentalContractMapper.toEntity(req);
+		blockRecord.setAd(ad);
+		blockRecord.setLessee(owner);
+		blockRecord.setOfferSender(owner);
+		blockRecord.setAgreedPrice(BigDecimal.ZERO);
+		blockRecord.setAmount(req.getAmount());
+		blockRecord.setCurrency(req.getCurrency());
+		blockRecord.setContractStatus(ContractStatus.BLOCKED_BY_OWNER);
+
+		return rentalContractMapper.toDto(rentalContractRepository.save(blockRecord));
 	}
 
 	@Recover 

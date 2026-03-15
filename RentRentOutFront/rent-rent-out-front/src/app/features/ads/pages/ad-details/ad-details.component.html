@@ -1,8 +1,19 @@
 <div class="container" *ngIf="ad$ | async as ad">
-  <div class="main-layout">
 
+  <div class="main-layout">
     <!-- LEVA KOLONA: Slike i Informacije -->
     <div class="left-column">
+      <div class="my-ad-options" *ngIf="isMyAd">
+        <div class="buttons">
+
+          <button class="park">Parkiraj</button>
+          <button class="park">Izmeni</button>
+          <button class="park">Obriši</button>
+          <button class="park">Obnovite</button>
+          <button class="park">Promocije</button>
+        </div>
+
+      </div>
       <div class="gallery">
         <div class="thumbnail-column" *ngIf="ad.images && ad.images.length >0">
           <button class="scroll-btn up" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(-400)">
@@ -51,7 +62,8 @@
         <p class="description">{{ ad.description }}</p>
       </div>
       <div class="latest-reviews-section" *ngIf="latestReviews$ | async as reviews">
-        <h3 *ngIf="reviews.length > 0">Šta drugi kažu o vlasniku:</h3>
+        <h3 *ngIf="(reviews.length > 0) && !isMyAd">Šta drugi kažu o vlasniku:</h3>
+        <h3 *ngIf="(reviews.length > 0) && isMyAd">Vaše najnovije ocene</h3>
         <div class="reviews-list" *ngIf="latestReviews$ | async as reviews">
           <app-review-card
             *ngFor="let rev of reviews"
@@ -95,7 +107,7 @@
               </div>
             </div>
             <div class="pickup-clear-dates">
-              <div class="pickup-dropoff-wrapper">
+              <div class="pickup-dropoff-wrapper" *ngIf="!isMyAd">
                 <div class="date-info">
                   <span class="label">Preuzmi</span>
                   <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
@@ -105,12 +117,25 @@
                   <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
                 </div>
               </div>
+
+                <span class="item-unavailable-message" *ngIf="isMyAd">Predmet neće biti dostupan od</span>
+                <div class="pickup-dropoff-wrapper" *ngIf="isMyAd">
+                  <div class="date-info">
+                    <span class="label">Od</span>
+                    <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
+                  </div>
+                  <div class="date-info">
+                    <span class="label">Do</span>
+                    <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
+                  </div>
+                </div>
+
               <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
 
             </div>
             <!--          <div class="separator"></div>-->
             <div class="payment-section">
-              <div class="payment-dates">
+              <div class="payment-dates" *ngIf="!isMyAd">
                 <div class="choose-dates" *ngIf="numberOfDays ==0 ">
                   Izaberite datume
                 </div>
@@ -119,8 +144,19 @@
                   <div class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</div>
                 </div>
               </div>
-              <button class="request-btn" [disabled]="!startDate || !endDate" (click)="sendRequest()">Pošalji zahtev
+              <button class="request-btn"
+                      *ngIf="!isMyAd"
+                      [disabled]="!startDate || !endDate"
+                      (click)="sendRequest()">
+                Pošalji zahtev
               </button>
+              <button class="request-btn"
+                      *ngIf="isMyAd"
+                      [disabled]="!startDate || !endDate"
+                      (click)="blockDates()">
+                Postavi zauzeto
+              </button>
+
             </div>
           </div>
         </div>

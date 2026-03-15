@@ -20,4 +20,7 @@ export class ContractService {
     const body = { newStatus: newStatus }
     return this.http.patch(`${this.url}/${id}/status`, body);
   }
+  blockDates(request: CreateRentalContractRequest): Observable<RentalContract> {
+    return this.http.post<RentalContract>(`${this.url}/block`, request);
+  }
 }

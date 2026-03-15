@@ -8,7 +8,33 @@
   flex-wrap: wrap;
   gap: 40px
 }
+.my-ad-options {
+  display: flex;
 
+  width: 100%;
+  height: 40px;
+  margin-bottom: 10px;
+  border: 1px solid #813181;
+  border-radius: 12px;
+  .buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-left: 10px;
+
+    .park{
+      border: none;
+      background-color: white;
+      color: #1c1c1c;
+      cursor: pointer;
+      font-size: 14px;
+
+      &:hover{
+        color: #813181;
+      }
+    }
+  }
+}
 .left-column {
   /* Fiksiramo širinu leve kolone na 750px */
   width: 750px;
@@ -297,7 +323,18 @@
     color: #813181;
   }
 }
-.pickup-dropoff-wrapper {
+.item-unavailable-message {
+  margin-top: 8px;
+  align-self:  center;
+  font-size: 14px;
+  font-weight: 600;
+}
+.my-ad-pickup-dropoff {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pickup-dropoff-wrapper{
   display: flex;
   justify-content: space-evenly;
 

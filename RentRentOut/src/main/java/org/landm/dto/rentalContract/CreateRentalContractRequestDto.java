@@ -3,6 +3,7 @@ package org.landm.dto.rentalContract;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.landm.entity.Enums.Currency;
 
 import java.math.BigDecimal;
@@ -17,7 +18,8 @@ public class CreateRentalContractRequestDto {
     private LocalDate startDate;
     @NotNull
     private LocalDate endDate;
-    @Positive
+    @NotNull(message = "Agreed price is required")
+    @PositiveOrZero(message = "Price must be positive or zero") // <-- ISPRAVKA
     private BigDecimal agreedPrice;
     @NotNull
     private Currency currency;

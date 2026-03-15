@@ -1,15 +1,14 @@
 package org.landm.service;
 
+import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.rentalContract.RentalContractSearchDto;
+import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
+import org.landm.entity.Enums.ContractStatus;
+import org.landm.entity.RentalContract;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
-
-import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
-import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
-import org.landm.entity.RentalContract;
-import org.landm.entity.Enums.ContractStatus;
-import org.springframework.data.domain.Page;
 
 public interface RentalContractService {
 	
@@ -32,5 +31,5 @@ public interface RentalContractService {
     
     public void markToAdDeleted(Long adId);
 
-
+    public RentalContractDto blockDates(CreateRentalContractRequestDto req, Long userId);
 }

@@ -14,6 +14,7 @@ import {Review} from '../../../../shared/models/review';
 import {ReviewService} from '../../../review/services/review.service';
 import {UserService} from '../../../user/services/user.service';
 import {authGuard} from '../../../auth/auth.guard';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-ad-details',
@@ -36,6 +37,7 @@ export class AdDetailsComponent implements OnInit {
     "July", "August", "September", "October", "November", "December"];
   weekdays: string[] = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
 
+  isMyAd: boolean = false;
 
   startDate: Date | null = null;
   endDate: Date | null = null;
@@ -48,9 +50,9 @@ export class AdDetailsComponent implements OnInit {
 
   latestReviews$!: Observable<Review[]>;
 
-  token  = localStorage.getItem('authToken');
 
   @ViewChild('thumbnailScroll') thumbnailScrollContainer!: ElementRef;
+
   private blockedIntervals: { start: Date, end: Date }[] = [];
 
 
@@ -61,7 +63,8 @@ export class AdDetailsComponent implements OnInit {
               private datePipe: DatePipe,
               private toastService: ToastService,
               private reviewService: ReviewService,
-              private userService: UserService,) {
+              private userService: UserService,
+              private authService: AuthService,) {
   }
 
   ngOnInit() {
@@ -82,8 +85,13 @@ export class AdDetailsComponent implements OnInit {
             map(page => page.content)
           );
         }
+        const currentUser = this.authService.currentUserValue;
+        if(currentUser && ad.owner.id === currentUser.id){
+          this.isMyAd = true;
+        }
         this.blockedIntervals = (ad.blockedIntervals || []).map(interval => ({
           start: new Date(interval.from),
+
           end: new Date(interval.to),
         }));
         this.generateCalendar();
@@ -182,7 +190,7 @@ export class AdDetailsComponent implements OnInit {
     if (this.startDate && this.endDate) {
       const diffTime = Math.abs(this.endDate.getTime() - this.startDate.getTime());
       console.log("recalculatePrice", diffTime);
-      this.numberOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 25)) + 1
+      this.numberOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
       this.totalPrice = this.numberOfDays * this.currentAd.price;
     } else {
       this.numberOfDays = 0;
@@ -191,7 +199,7 @@ export class AdDetailsComponent implements OnInit {
   }
 
   isDateBlocked(date: Date): boolean {
-    return this.blockedIntervals.some(interval => date >= interval.start && date <= interval.end);
+    return this.blockedIntervals.some(interval => date.setHours(0, 0, 0, 0) >= interval.start.setHours(0, 0, 0, 0) && date.setHours(0, 0, 0, 0) <= interval.end.setHours(0, 0, 0, 0));
   }
 
   isDateSelected(date: Date): boolean {
@@ -240,7 +248,7 @@ export class AdDetailsComponent implements OnInit {
     }
     if (!this.currentAd) return;
 
-    if( !this.token){
+    if( !localStorage.getItem('authToken')){
       this.router.navigate(['/login']);
       return;
     }
@@ -319,8 +327,48 @@ export class AdDetailsComponent implements OnInit {
         this.realPhoneNumber = "Greška pri učitavanju";
         this.isLoadingPhone = false;
       }
-
     })
+  }
+
+  blockDates(): void {
+    if (!this.startDate || !this.endDate || !this.currentAd) return;
+
+    const request:  CreateRentalContractRequest = {
+      adId: this.currentAd.id,
+      startDate: this.datePipe.transform(this.startDate, 'yyyy-MM-dd')!,
+      endDate: this.datePipe.transform(this.endDate, 'yyyy-MM-dd')!,
+      agreedPrice: 0,
+      amount: this.currentAd.totalQuantity,
+      currency:  this.currentAd.currency
+    };
+
+    this.contractService.blockDates(request).subscribe({
+      next: (res) => {
+        this.toastService.showSuccess("Datumi su uspesno blokirani!");
+        this.clearDates();
+
+        this.adService.getAdById(this.currentAd.id).subscribe({
+          next: (updatedAd) => {
+            this.currentAd = updatedAd;
+            console.log("this.currentAd.blockedIntervals", this.currentAd.blockedIntervals );
+            console.log("updatedAd.blockedIntervals", updatedAd.blockedIntervals );
+            this.blockedIntervals = (this.currentAd.blockedIntervals || []).map(interval => ({
+              start: new Date(interval.from),
+              end: new Date(interval.to),
+              })
+            );
+            console.log("this.blockerIntervals", this.blockedIntervals);
+            this.generateCalendar();
+          },
+          error: (err) => console.error('Greška pri osvežavanju:', err)
+        })
+      },
+      error: (err) => {
+        this.toastService.showError('Greška pri blokiranju datuma.');
+        console.error(err);
+      }
+    })
+
 
   }
 
