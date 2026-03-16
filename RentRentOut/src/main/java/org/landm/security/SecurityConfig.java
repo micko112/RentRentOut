@@ -81,6 +81,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
 
 						.requestMatchers("/api/chat/**").authenticated()
+						.requestMatchers("/ws/**").permitAll()
 
 
 						.anyRequest().authenticated()

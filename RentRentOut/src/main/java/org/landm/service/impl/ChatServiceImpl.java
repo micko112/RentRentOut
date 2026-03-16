@@ -79,7 +79,7 @@ public class ChatServiceImpl implements ChatService {
         Conversation conversation =  conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new RuntimeException("Conversation not found"));
 
-        if(!conversation.getParticipantOne().getId().equals(myUserId) || !conversation.getParticipantTwo().getId().equals(myUserId)){
+        if(!conversation.getParticipantOne().getId().equals(myUserId) && !conversation.getParticipantTwo().getId().equals(myUserId)){
             throw new RuntimeException("Nemate pristup ovoj konverzacviji");
         }
 

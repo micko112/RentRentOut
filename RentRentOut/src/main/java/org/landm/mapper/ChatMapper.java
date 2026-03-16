@@ -49,8 +49,11 @@ public class ChatMapper {
         dto.setUpdatedAt(c.getUpdatedAt());
         List<Message> messages = new ArrayList<>();
         messages= c.getMessages();
-        Message lastMessage = messages.get(messages.size()-1);
-        dto.setLastMessagePreview(lastMessage.getContent());
+        if(!messages.isEmpty()) {
+            Message lastMessage = messages.get(messages.size() - 1);
+            dto.setLastMessagePreview(lastMessage.getContent());
+        }
+
 
         dto.setUnreadCount(0);
         return dto;
