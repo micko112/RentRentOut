@@ -6,6 +6,7 @@ import {ContractsComponent} from './pages/contracts/contracts.component';
 import {authGuard} from '../auth/auth.guard';
 import {ReviewComponent} from '../review/pages/review/review.component';
 import {UserProfileComponent} from './public-user/user-profile/user-profile.component';
+import {InboxComponent} from '../chat/pages/inbox/inbox.component';
 
 export const USER_ROUTES: Routes = [
   {
@@ -21,6 +22,7 @@ export const USER_ROUTES: Routes = [
         path: 'contracts',
         component: ContractsComponent
       },
+      { path: 'chat', component: InboxComponent },
       {
         path: '',
         component: ProfileDetailsComponent

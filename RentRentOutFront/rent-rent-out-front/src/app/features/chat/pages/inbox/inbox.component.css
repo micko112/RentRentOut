@@ -1,0 +1,206 @@
+/* Glavni kontejner - fiksna visina da bi unutrašnji scroll radio */
+.chat-container {
+  display: flex;
+  height: 600px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden; /* Sprečava ispadanje sadržaja iz zaobljenih ivica */
+}
+
+/* --- LEVA STRANA (SIDEBAR) --- */
+.chat-sidebar {
+  width: 300px;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  background-color: #fafafa;
+}
+
+.sidebar-header {
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.conversations-list {
+  flex-grow: 1;
+  overflow-y: auto; /* Omogućava skrol samo za listu */
+}
+
+.conversation-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.conversation-item:hover {
+  background-color: #ebebeb;
+}
+
+.conversation-item .avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #813181;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+.conv-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.conv-info .name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.conv-info .ad-title {
+  font-size: 12px;
+  color: #666;
+}
+
+
+/* --- DESNA STRANA (GLAVNI CHAT) --- */
+.chat-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.no-chat-selected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #888;
+  font-size: 16px;
+}
+
+.active-chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Desno: Header */
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fdfdfd;
+}
+
+.header-ad-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.header-info h4 {
+  margin: 0 0 4px 0;
+  color: #333;
+}
+
+.header-info p {
+  margin: 0;
+  font-size: 13px;
+  color: #777;
+}
+
+/* Desno: Sredina (Poruke) */
+.messages-area {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto; /* Skrol za poruke */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f9f9f9;
+}
+
+.message-row {
+  display: flex;
+  width: 100%;
+}
+
+.message-row.received {
+  justify-content: flex-start;
+}
+
+.message-row.sent {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.received .message-bubble {
+  background-color: #e5e5e5;
+  color: #333;
+  border-bottom-left-radius: 4px; /* Mali rep na oblačiću */
+}
+
+.sent .message-bubble {
+  background-color: #0071bd; /* Plava boja za moje poruke */
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+/* Desno: Dno (Input) */
+.chat-input-area {
+  display: flex;
+  padding: 15px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #fff;
+}
+
+.chat-input-area input {
+  flex-grow: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
+  font-size: 14px;
+}
+
+.chat-input-area input:focus {
+  border-color: #0071bd;
+}
+
+.btn-send {
+  background-color: #6ecf7e;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  margin-left: 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-send:hover {
+  background-color: #5bbd6a;
+}
