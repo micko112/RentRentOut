@@ -62,16 +62,13 @@
       </div>
 
       <!-- 2. Sredina (Istorija poruka) -->
-      <div class="messages-area">
+      <div class="messages-area" #chatScroll>
 
         <!-- Ako nema poruka (nova soba) -->
         <div *ngIf="messages.length === 0" style="text-align: center; color: #999; margin-top: 20px;">
           Nema poruka. Pošaljite prvu poruku!
         </div>
 
-        <!-- Vrtimo petlju kroz sve poruke u ovoj sobi -->
-        <!-- MAGIJA: Ako je moj ID jednak ID-ju pošiljaoca, dodeli klasu 'sent' (desno, plavo).
-             Inače dodeli 'received' (levo, sivo). -->
         <div class="message-row"
              *ngFor="let msg of messages"
              [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
@@ -85,9 +82,14 @@
 
       <!-- 3. Dno (Polje za kucanje) -->
       <div class="chat-input-area">
-        <!-- [(ngModel)] vezuje ovo input polje za našu TypeScript promenljivu -->
-        <input type="text" placeholder="Napišite poruku..." [(ngModel)]="newMessageContent" (keyup.enter)="sendMessage()">
-        <button class="btn-send" (click)="sendMessage()" [disabled]="!newMessageContent.trim()">Pošalji</button>
+        <input type="text"
+               placeholder="Napišite poruku..."
+               [(ngModel)]="newMessageContent"
+               (keyup.enter)="sendMessage()"> <!-- Okida na Enter -->
+
+        <button class="btn-send"
+                (click)="sendMessage()"
+                [disabled]="!newMessageContent.trim()">Pošalji</button> <!-- Okida na klik -->
       </div>
 
     </div>

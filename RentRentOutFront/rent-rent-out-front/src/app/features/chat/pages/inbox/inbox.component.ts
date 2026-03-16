@@ -6,6 +6,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { InitialsPipe } from '../../../../shared/pipes/initials.pipe';
 import {Message} from '../../../../shared/models/message.model';
 import {ConversationPreview} from '../../../../shared/models/conversation-preview.model';
+import {Subscription} from 'rxjs';
+import {WebsocketService} from '../../../../core/services/websocket.service';
 
 @Component({
   selector: 'app-inbox',
@@ -25,13 +27,16 @@ export class InboxComponent implements OnInit, AfterViewChecked {
   newMessageContent: string = '';
   myUserId: number | null = null;
 
+  private messageSub!: Subscription;
+
   // Za auto-skrol na dno chata
   @ViewChild('chatScroll') private chatScrollContainer!: ElementRef;
   private scrollToBottomNeeded = false;
 
   constructor(
     private chatService: ChatService,
-    private authService: AuthService
+    private authService: AuthService,
+    private websocketService: WebsocketService
   ) {}
 
   ngOnInit(): void {
@@ -42,8 +47,28 @@ export class InboxComponent implements OnInit, AfterViewChecked {
     }
 
     this.loadConversations();
-  }
+    this.websocketService.connect();
+    this.messageSub = this.websocketService.watch('/user/queue/messages').subscribe((stompMsg) => {
+      // Poruka stiže kao običan tekst, moramo da je pretvorimo u JSON (naš Message objekt)
+      const incomingMessage: Message = JSON.parse(stompMsg.body);
 
+      this.handleIncomingMessage(incomingMessage);
+    });
+  }
+  handleIncomingMessage(msg: Message) {
+    console.log("Stigla live poruka!", msg);
+
+    // 1. Da li je otvorena soba u kojoj je stigla poruka?
+    if (this.activeConversation && this.activeConversation.id === msg.conversationId) {
+      // Ako jeste, samo je gurnemo u niz i Angular je iste sekunde crta na ekranu!
+      this.messages.push(msg);
+      this.scrollToBottomNeeded = true;
+    }
+
+    // 2. Bez obzira gde smo, osvežavamo levu listu soba
+    // (Ovo će pomeriti sobu na vrh i pokazati 'lastMessagePreview')
+    this.loadConversations();
+  }
   loadConversations() {
     this.chatService.getMyConversations().subscribe(res => {
       this.conversations = res.content;
@@ -67,32 +92,29 @@ export class InboxComponent implements OnInit, AfterViewChecked {
   }
 
   sendMessage() {
+    // Sprečavamo slanje praznih poruka
     if (!this.newMessageContent.trim() || !this.activeConversation) return;
 
+    // Pakujemo podatke u DTO koji Java očekuje
     const request = {
       adId: this.activeConversation.adId,
       receiverId: this.activeConversation.otherParticipant.id,
       content: this.newMessageContent.trim()
     };
 
-    //
-    const textToSend = this.newMessageContent;
+    // 1. Čistimo input polje odmah da bi korisnik imao osećaj brzine
     this.newMessageContent = '';
 
-    this.chatService.sendMessage(request).subscribe({
-      next: (newMsg) => {
-        // Dodajemo novu poruku u niz da se odmah pojavi na ekranu
-        this.messages.push(newMsg);
-        this.scrollToBottomNeeded = true;
-        // Osveži levu listu da bi ovaj chat skočio na vrh
-        this.loadConversations();
-      },
-      error: (err) => {
-        alert('Greška pri slanju poruke');
-        this.newMessageContent = textToSend; // Vraćamo tekst ako pukne
-      }
-    });
+    // 2. ŠALJEMO KROZ CEV (WebSocket)
+    // Gađamo destinaciju koju smo definisali u WebSocketConfig.java (@MessageMapping("/chat.send"))
+    this.websocketService.sendMessage('/app/chat.send', request);
+
+    // NAPOMENA: Ne dodajemo poruku u niz `this.messages` ovde!
+    // Zašto? Zato što je naš Spring Boot backend pametan. Kada primi poruku na /app/chat.send,
+    // on je sačuva u bazu i odmah je vrati nazad obojici (i tebi i sagovorniku) kroz /user/queue/messages.
+    // Tvoja metoda `handleIncomingMessage` će uhvatiti taj povratni odgovor i iscrtati ga na ekranu.
   }
+
 
   ngAfterViewChecked() {
     if (this.scrollToBottomNeeded) {
@@ -105,5 +127,12 @@ export class InboxComponent implements OnInit, AfterViewChecked {
     try {
       this.chatScrollContainer.nativeElement.scrollTop = this.chatScrollContainer.nativeElement.scrollHeight;
     } catch(err) { }
+  }
+  ngOnDestroy(): void {
+    // Važno za performanse: Kad korisnik pređe na neku drugu stranicu (npr. Profil),
+    // prestajemo da slušamo poruke da ne bismo trošili memoriju browsera.
+    if (this.messageSub) {
+      this.messageSub.unsubscribe();
+    }
   }
 }
