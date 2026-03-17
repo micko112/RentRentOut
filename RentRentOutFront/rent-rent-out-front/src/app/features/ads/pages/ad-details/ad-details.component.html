@@ -223,9 +223,9 @@
               </div>
             </div>
           </div>
-          <button class="btn-message">Pošalji poruku</button>
-
-
+          <button class="btn-message"
+                  *ngIf="!isMyAd"
+                  (click)="startChat()">Pošalji poruku</button>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
@@ -8,6 +8,7 @@ import {Message} from '../../../../shared/models/message.model';
 import {ConversationPreview} from '../../../../shared/models/conversation-preview.model';
 import {Subscription} from 'rxjs';
 import {WebsocketService} from '../../../../core/services/websocket.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-inbox',
@@ -16,7 +17,7 @@ import {WebsocketService} from '../../../../core/services/websocket.service';
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.css']
 })
-export class InboxComponent implements OnInit, AfterViewChecked {
+export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   // Leva strana
   conversations: ConversationPreview[] =[];
@@ -36,7 +37,10 @@ export class InboxComponent implements OnInit, AfterViewChecked {
   constructor(
     private chatService: ChatService,
     private authService: AuthService,
-    private websocketService: WebsocketService
+    private websocketService: WebsocketService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -56,19 +60,28 @@ export class InboxComponent implements OnInit, AfterViewChecked {
     });
   }
   handleIncomingMessage(msg: Message) {
-    console.log("Stigla live poruka!", msg);
+      console.log("Stigla live poruka!", msg);
 
-    // 1. Da li je otvorena soba u kojoj je stigla poruka?
-    if (this.activeConversation && this.activeConversation.id === msg.conversationId) {
-      // Ako jeste, samo je gurnemo u niz i Angular je iste sekunde crta na ekranu!
-      this.messages.push(msg);
-      this.scrollToBottomNeeded = true;
+      // SCENARIO A: Mi smo u "lažnoj" sobi (ID: 0) i mi smo upravo poslali prvu poruku!
+      if (this.activeConversation && this.activeConversation.id === 0 && msg.senderId === this.myUserId) {
+        // Backend je napravio pravu sobu. Ažuriramo naš lažni ID na onaj pravi iz baze!
+        this.activeConversation.id = msg.conversationId;
+        this.messages.push(msg);
+        this.scrollToBottomNeeded = true;
+      }
+      // SCENARIO B: Mi smo u normalnoj, postojećoj sobi i poruka je za tu sobu
+      else if (this.activeConversation && this.activeConversation.id === msg.conversationId) {
+        this.messages.push(msg);
+        this.scrollToBottomNeeded = true;
+      }
+
+      // U svakom slučaju, osveži levu listu soba da bi ovaj chat skočio na vrh
+      this.loadConversations();
+
+      // MAGIJA: Drmamo Angular da OBAVEZNO ODMAH nacrta nove oblačiće na ekranu!
+      this.cdr.detectChanges();
     }
 
-    // 2. Bez obzira gde smo, osvežavamo levu listu soba
-    // (Ovo će pomeriti sobu na vrh i pokazati 'lastMessagePreview')
-    this.loadConversations();
-  }
   loadConversations() {
     this.chatService.getMyConversations().subscribe(res => {
       this.conversations = res.content;
@@ -133,6 +146,64 @@ export class InboxComponent implements OnInit, AfterViewChecked {
     // prestajemo da slušamo poruke da ne bismo trošili memoriju browsera.
     if (this.messageSub) {
       this.messageSub.unsubscribe();
+    }
+  }
+  checkForNewChatRequest() {
+    // Čitamo parametre iz URL-a
+    const adId = Number(this.route.snapshot.queryParamMap.get('newChatAdId'));
+    const receiverId = Number(this.route.snapshot.queryParamMap.get('receiverId'));
+    const adTitle = this.route.snapshot.queryParamMap.get('adTitle');
+    const receiverName = this.route.snapshot.queryParamMap.get('receiverName');
+
+    if (adId && receiverId) {
+      // 1. Proveravamo da li već imamo sobu sa ovim čovekom za ovaj oglas
+      const existingConv = this.conversations.find(c => c.adId === adId && c.otherParticipant.id === receiverId);
+
+      if (existingConv) {
+        // Soba postoji! Samo je otvori.
+        this.openConversation(existingConv);
+      } else {
+        // 2. Soba NE POSTOJI. Pravimo "Lažnu" sobu na ekranu da bi korisnik mogao da kuca.
+        const tempConv: ConversationPreview = {
+          id: 0, // 0 znači da još nije u bazi
+          adId: adId,
+          adTitle: adTitle || 'Nepoznat oglas',
+          adThumbnail: 'assets/images/placeholder.png', // Stavljamo placeholder
+          lastMessagePreview: 'Započnite razgovor...',
+          updatedAt: new Date().toISOString(),
+          unreadCount: 0,
+          otherParticipant: {
+            id: receiverId,
+            displayName: receiverName || 'Korisnik',
+            identified: false,
+            avatarUrl: '',
+            locationDisplay: '',
+            phoneNumber: '',
+            positiveReviews: 0,
+            negativeReviews: 0,
+            createdAt: ''
+          }
+        };
+
+        // Gurnemo ovu privremenu sobu na vrh liste (levo) da je korisnik vidi
+        this.conversations.unshift(tempConv);
+
+        // Postavljamo je kao aktivnu i praznimo poruke (desno)
+        this.activeConversation = tempConv;
+        this.messages =[];
+      }
+
+      // 3. ZAVRŠENO: Očisti URL da se ne bi opet otvaralo pri refreshu (F5)
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          newChatAdId: null,
+          receiverId: null,
+          adTitle: null,
+          receiverName: null
+        },
+        queryParamsHandling: 'merge' // Briše ove parametre, ostavlja sve drugo ako ima
+      });
     }
   }
 }

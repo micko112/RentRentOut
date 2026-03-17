@@ -368,9 +368,32 @@ export class AdDetailsComponent implements OnInit {
         console.error(err);
       }
     })
-
-
   }
 
+  startChat(): void{
+    if(!this.currentAd) return;
 
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+      this.toastService.showError('Morate biti ulogovani da biste poslali poruku.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const currentUser = this.authService.currentUserValue;
+    if(currentUser && currentUser.id === this.currentAd.owner.id){
+      this.toastService.showError('Ne možete poslati poruku samom sebi.');
+      return;
+    }
+
+    this.router.navigate(['user/me/inbox']), {
+      queryParams: {
+        newChatId: this.currentAd.id,
+        receiverId: this.currentAd.owner.id,
+        adTitle: this.currentAd.title,
+        receiverName: this.currentAd.owner.displayName
+      }
+    }
+  }
 }

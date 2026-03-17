@@ -22,7 +22,7 @@ export const USER_ROUTES: Routes = [
         path: 'contracts',
         component: ContractsComponent
       },
-      { path: 'chat', component: InboxComponent },
+      { path: 'inbox', component: InboxComponent },
       {
         path: '',
         component: ProfileDetailsComponent
