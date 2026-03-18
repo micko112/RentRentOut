@@ -1,0 +1,15 @@
+﻿.placeholder {
+  padding: 10px 4px;
+}
+
+.placeholder h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  color: #1f2937;
+}
+
+.placeholder p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
