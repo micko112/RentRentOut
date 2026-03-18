@@ -1,0 +1,186 @@
+.footer {
+  background: #813181;
+  color: #fff;
+  margin-top: 60px;
+}
+
+.footer-inner {
+  display: flex;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px 30px;
+}
+
+/* Brand */
+.footer-brand {
+  flex-shrink: 0;
+  min-width: 150px;
+}
+
+.brand-name {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.brand-accent {
+  color: #6ecf7e;
+}
+
+.brand-tagline {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 6px;
+}
+
+/* Columns */
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.footer-heading {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.footer-col a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.15s ease;
+}
+
+.footer-col a:hover {
+  color: #6ecf7e;
+}
+
+/* Company / right side */
+.footer-company {
+  margin-left: auto;
+  align-items: flex-end;
+  text-align: right;
+  gap: 14px;
+}
+
+/* Store badges */
+.footer-store-badges {
+  display: flex;
+  gap: 10px;
+}
+
+.store-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.store-badge:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.store-badge svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Social */
+.footer-social {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transition: background 0.15s ease;
+}
+
+.social-link:hover {
+  background: #6ecf7e;
+}
+
+.social-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Address */
+.footer-address {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.company-name {
+  font-weight: 600;
+  color: #fff;
+}
+
+.footer-email {
+  color: #6ecf7e;
+  text-decoration: none;
+}
+
+.footer-email:hover {
+  text-decoration: underline;
+}
+
+/* Bottom bar */
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .footer-inner {
+    flex-wrap: wrap;
+    gap: 30px 20px;
+  }
+
+  .footer-brand {
+    width: 100%;
+  }
+
+  .footer-col {
+    min-width: 140px;
+  }
+
+  .footer-company {
+    margin-left: 0;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+  }
+
+  .footer-social {
+    justify-content: flex-start;
+  }
+}
