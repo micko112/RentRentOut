@@ -1,34 +1,7 @@
-<div class="container" *ngIf="user$ | async as user">
-
+﻿<div class="container">
   <div class="profile-layout">
-
-    <aside class="sidebar-menu">
-      <div class="user-brief">
-        <div class="names">
-          <h3>{{ user.firstname }} {{ user.lastname }}</h3>
-          <span class="email">{{ user.email }}</span>
-        </div>
-      </div>
-
-      <nav class="menu-links">
-        <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          Lični podaci
-        </a>
-        <a routerLink="/user/me/ads" routerLinkActive="active">
-          Moji oglasi
-        </a>
-        <a routerLink="/user/me/contracts" routerLinkActive="active">
-          Moji Ugovori (Zahtevi)
-        </a>
-        <a class="logout" (click)="logout()">
-          Odjavi se
-        </a>
-      </nav>
-    </aside>
-
     <main class="content">
       <router-outlet></router-outlet>
     </main>
-
   </div>
 </div>

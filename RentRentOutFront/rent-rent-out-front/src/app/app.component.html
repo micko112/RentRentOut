@@ -1,7 +1,10 @@
 <app-header></app-header>
 <app-navbar></app-navbar>
-<main>
-  <router-outlet></router-outlet>
-</main>
+<div class="app-shell">
+  <app-sidebar class="app-sidebar"></app-sidebar>
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
 
 <app-toast></app-toast>

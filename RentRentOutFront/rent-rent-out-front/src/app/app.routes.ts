@@ -9,6 +9,8 @@ import {ReviewFormComponent} from './features/review/components/review-form/revi
 import {ReviewComponent} from './features/review/pages/review/review.component';
 import {ForgotPasswordComponent} from './features/auth/pages/forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './features/auth/pages/reset-password/reset-password.component';
+import {InboxComponent} from './features/chat/pages/inbox/inbox.component';
+import {authGuard} from './features/auth/auth.guard';
 
 export const routes: Routes = [
   {path:'ads',
@@ -17,6 +19,8 @@ export const routes: Routes = [
     loadChildren: () => import('./features/user/user.routes').then(m=>m.USER_ROUTES)},
   {path:'admin',
     loadChildren: () => import('./features/admin/admin.routes').then(m=>m.ADMIN_ROUTES)},
+  {path: 'messages', component: InboxComponent, canActivate: [authGuard]},
+
   {path: '',
     redirectTo: '/ads',
     pathMatch: 'full'
