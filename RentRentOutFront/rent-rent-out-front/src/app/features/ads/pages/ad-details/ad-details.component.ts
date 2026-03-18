@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+﻿import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Ad} from '../../../../shared/models/ad.model';
 import {CommonModule, DatePipe} from '@angular/common';
 import {map, Observable, switchMap, tap} from 'rxjs';
@@ -35,7 +35,7 @@ export class AdDetailsComponent implements OnInit {
   daysInMonth: CalendarDay[] = [];
   months: string[] = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
-  weekdays: string[] = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
+  weekdays: string[] = ['Pon', 'Uto', 'Sre', 'ÄŒet', 'Pet', 'Sub', 'Ned'];
 
   isMyAd: boolean = false;
 
@@ -324,7 +324,7 @@ export class AdDetailsComponent implements OnInit {
         this.isLoadingPhone = false;
       },
       error: () => {
-        this.realPhoneNumber = "Greška pri učitavanju";
+        this.realPhoneNumber = "GreÅ¡ka pri uÄitavanju";
         this.isLoadingPhone = false;
       }
     })
@@ -360,11 +360,11 @@ export class AdDetailsComponent implements OnInit {
             console.log("this.blockerIntervals", this.blockedIntervals);
             this.generateCalendar();
           },
-          error: (err) => console.error('Greška pri osvežavanju:', err)
+          error: (err) => console.error('GreÅ¡ka pri osveÅ¾avanju:', err)
         })
       },
       error: (err) => {
-        this.toastService.showError('Greška pri blokiranju datuma.');
+        this.toastService.showError('GreÅ¡ka pri blokiranju datuma.');
         console.error(err);
       }
     })
@@ -383,11 +383,11 @@ export class AdDetailsComponent implements OnInit {
 
     const currentUser = this.authService.currentUserValue;
     if(currentUser && currentUser.id === this.currentAd.owner.id){
-      this.toastService.showError('Ne možete poslati poruku samom sebi.');
+      this.toastService.showError('Ne moÅ¾ete poslati poruku samom sebi.');
       return;
     }
 
-    this.router.navigate(['/user/me/inbox'], {
+    this.router.navigate(['/messages'], {
       queryParams: {
         newChatAdId: this.currentAd.id,
         receiverId: this.currentAd.owner.id,

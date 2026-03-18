@@ -1,35 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {AsyncPipe, CommonModule, NgIf} from '@angular/common';
-import {Observable, switchMap} from 'rxjs';
-import {User} from '../../../../shared/models/user.model';
-import {UserService} from '../../services/user.service';
-import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
-import {AuthService} from '../../../auth/services/auth.service';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-my-profile',
-  imports: [CommonModule, NgIf, AsyncPipe, RouterLinkActive, RouterLink, RouterOutlet],
+  imports: [CommonModule, RouterOutlet],
   standalone: true,
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.css'
 })
-export class MyProfileComponent implements OnInit {
-  user$!: Observable<User | null>;
-  constructor(private userService: UserService,
-              private http: HttpClient,
-              private authService: AuthService,
-              ) {
-
-
-  }
-  ngOnInit() {
-    this.user$ = this.authService.currentUser$;
-  }
-
-  logout() {
-    this.authService.logout();
-  }
-
-
-}
+export class MyProfileComponent {}

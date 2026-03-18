@@ -6,7 +6,7 @@ import {ContractsComponent} from './pages/contracts/contracts.component';
 import {authGuard} from '../auth/auth.guard';
 import {ReviewComponent} from '../review/pages/review/review.component';
 import {UserProfileComponent} from './public-user/user-profile/user-profile.component';
-import {InboxComponent} from '../chat/pages/inbox/inbox.component';
+import {PlaceholderPageComponent} from './pages/placeholder-page/placeholder-page.component';
 
 export const USER_ROUTES: Routes = [
   {
@@ -22,7 +22,13 @@ export const USER_ROUTES: Routes = [
         path: 'contracts',
         component: ContractsComponent
       },
-      { path: 'inbox', component: InboxComponent },
+      { path: 'notifications', component: PlaceholderPageComponent, data: { title: 'Obaveštenja' } },
+      { path: 'reviews', component: PlaceholderPageComponent, data: { title: 'Moje ocene' } },
+      { path: 'following', component: PlaceholderPageComponent, data: { title: 'Pratim' } },
+      { path: 'saved-searches', component: PlaceholderPageComponent, data: { title: 'Sačuvane pretrage' } },
+      { path: 'address-book', component: PlaceholderPageComponent, data: { title: 'Adresar' } },
+      { path: 'credit', component: PlaceholderPageComponent, data: { title: 'Kredit' } },
+      { path: 'settings', component: PlaceholderPageComponent, data: { title: 'Moj nalog / Podešavanja' } },
       {
         path: '',
         component: ProfileDetailsComponent

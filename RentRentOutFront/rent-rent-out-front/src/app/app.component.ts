@@ -1,18 +1,14 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { NavbarComponent } from './core/layout/navbar/navbar.component';
-import { FooterComponent } from './core/layout/footer/footer.component';
-import { HeaderComponent } from './core/layout/header/header.component';
-import { ToastComponent } from './shared/components/toast/toast.component';
-import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
-import { AuthService } from './features/auth/services/auth.service';
-import { map } from 'rxjs';
+import { Component } from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {NavbarComponent} from './core/layout/navbar/navbar.component';
+import {HeaderComponent} from './core/layout/header/header.component';
+import {ToastComponent} from './shared/components/toast/toast.component';
+import {SidebarComponent} from './shared/components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, NavbarComponent, FooterComponent, HeaderComponent, ToastComponent, SidebarComponent],
+  imports: [RouterOutlet, NavbarComponent, HeaderComponent, SidebarComponent, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

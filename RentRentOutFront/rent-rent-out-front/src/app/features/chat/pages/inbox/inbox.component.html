@@ -64,19 +64,37 @@
       <!-- 2. Sredina (Istorija poruka) -->
       <div class="messages-area" #chatScroll>
 
-        <!-- Ako nema poruka (nova soba) -->
-        <div *ngIf="messages.length === 0" style="text-align: center; color: #999; margin-top: 20px;">
+        <div *ngIf="messages.length === 0" class="no-messages-alert">
           Nema poruka. Pošaljite prvu poruku!
         </div>
 
-        <div class="message-row"
-             *ngFor="let msg of messages"
-             [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
+        <!-- DUPLA PETLJA: 1. Vrtimo grupe (Datume) -->
+        <ng-container *ngFor="let group of groupedMessages">
 
-          <!-- Ispisujemo tekst poruke -->
-          <div class="message-bubble">{{ msg.content }}</div>
+          <!-- Prikazujemo datum za grupu u sredini (npr. "Danas") -->
+          <div class="message-date-divider">
+            <span>{{ group.dateLabel }}</span>
+          </div>
 
-        </div>
+          <!-- 2. Vrtimo poruke unutar te grupe -->
+          <div class="message-row"
+               *ngFor="let msg of group.messages"
+               [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
+
+            <div class="message-content-wrapper">
+              <div class="message-bubble">
+                {{ msg.content }}
+                <!-- Mala oznaka za vreme unutar oblačića (npr. 14:35) -->
+                <span class="message-time">{{ msg.createdAt | date:'HH:mm' }}</span>
+              </div>
+
+              <!-- Opciono: Značka za pročitano (seen) samo za tvoje poruke -->
+              <!-- <span class="message-status" *ngIf="msg.senderId === myUserId && msg.read">✓✓</span> -->
+            </div>
+
+          </div>
+
+        </ng-container>
 
       </div>
 
