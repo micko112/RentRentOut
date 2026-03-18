@@ -80,8 +80,9 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<Map<String, Object>> updateMe(@Valid @RequestBody UpdateUserDto userInfo, Authentication auth){
     	Long myId = Long.parseLong(auth.getName());
+    	userService.update(userInfo, myId);
     	Map<String, Object> res = new HashMap<>();
-    	res.put("user", userService.update(userInfo, myId));
+    	res.put("user", userService.getMe(myId));
     	return new ResponseEntity<>(res, HttpStatus.OK);
     }
     

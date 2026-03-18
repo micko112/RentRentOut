@@ -26,6 +26,11 @@ public class UserMapper {
         dto.setPositiveReviews(user.getPositiveReviews());
         dto.setNegativeReviews(user.getNegativeReviews());
         dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setDescription(user.getDescription());
+        if (user.getRole() != null) {
+            dto.setRole(user.getRole().getName());
+        }
+        dto.setEnabled(user.isEnabled());
         return dto;
     }
 

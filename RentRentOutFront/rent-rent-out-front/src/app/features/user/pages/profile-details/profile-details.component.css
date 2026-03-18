@@ -75,3 +75,49 @@
 .password-card h3 {
   margin-top: 0;
 }
+
+.avatar-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.avatar-upload-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+}
+
+.btn-avatar-upload {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #f0f0f0;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
+.btn-avatar-upload:hover {
+  background: #e0e0e0;
+}
+
+.form-row textarea {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+}

@@ -76,6 +76,8 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/api/images/upload").authenticated()
 
 						.requestMatchers(HttpMethod.GET, "/api/auth/validate-email").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
 
 						.requestMatchers(HttpMethod.POST, "/api/reviews").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()

@@ -1,9 +1,19 @@
 package org.landm.service;
 
+import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.rentalContract.RentalContractDto;
+import org.landm.dto.user.UserDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import org.springframework.stereotype.Service;
-
+import java.util.Map;
 
 public interface AdminService {
-    public String suspendAd(Long adId);
+    String suspendAd(Long adId);
+    Page<UserDto> getAllUsers(Pageable pageable);
+    Page<AdPreviewDto> getAllAds(Pageable pageable);
+    Page<RentalContractDto> getAllContracts(Pageable pageable);
+    String toggleUserEnabled(Long userId);
+    String unsuspendAd(Long adId);
+    Map<String, Long> getStats();
 }

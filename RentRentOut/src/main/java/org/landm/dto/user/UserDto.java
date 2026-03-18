@@ -18,6 +18,25 @@ public class UserDto {
     private String phoneNumber;
     private int positiveReviews;
     private int negativeReviews;
+    private String role;
+    private boolean enabled;
+    private String description;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public String getAvatarUrl() {
         return avatarUrl;
@@ -113,5 +132,13 @@ public class UserDto {
 
     public void setNegativeReviews(int negativeReviews) {
         this.negativeReviews = negativeReviews;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

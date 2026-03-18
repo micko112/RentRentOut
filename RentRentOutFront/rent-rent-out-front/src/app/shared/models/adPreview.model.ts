@@ -8,7 +8,7 @@ export interface AdPreview {
   priceInterval: string;
   currency: string;
   thumbnail:  string;
-
+  adStatus: string;
 }
 
 export interface Page<T>{

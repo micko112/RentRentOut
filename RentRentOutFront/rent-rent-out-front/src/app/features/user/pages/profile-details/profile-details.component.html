@@ -1,7 +1,12 @@
-﻿<div class="details" *ngIf="user$ | async as user">
+<div class="details" *ngIf="user$ | async as user">
   <h2>Licni podaci</h2>
 
   <div class="info-card" *ngIf="!isEditing">
+    <div class="avatar-row">
+      <img class="avatar"
+           [src]="user.avatarUrl || 'assets/default-avatar.png'"
+           alt="Avatar" />
+    </div>
     <div class="info-row">
       <label>Ime i Prezime:</label>
       <span>{{ user.firstname }} {{ user.lastname }}</span>
@@ -9,6 +14,14 @@
     <div class="info-row">
       <label>Email adresa:</label>
       <span>{{ user.email }}</span>
+    </div>
+    <div class="info-row">
+      <label>Telefon:</label>
+      <span>{{ user.phoneNumber || 'Nije unet' }}</span>
+    </div>
+    <div class="info-row">
+      <label>Opis:</label>
+      <span>{{ user.description || 'Nema opisa' }}</span>
     </div>
     <div class="info-row">
       <label>Stanje na racunu:</label>
@@ -23,6 +36,14 @@
   </div>
 
   <form class="edit-card" *ngIf="isEditing" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+    <div class="avatar-upload-row">
+      <img class="avatar"
+           [src]="avatarPreview || user.avatarUrl || 'assets/default-avatar.png'"
+           alt="Avatar" />
+      <label class="btn-avatar-upload" for="avatarInput">Promeni sliku</label>
+      <input id="avatarInput" type="file" accept="image/*" (change)="onAvatarSelected($event)" hidden />
+    </div>
+
     <div class="form-row">
       <label>Ime</label>
       <input type="text" formControlName="firstname" />
@@ -36,6 +57,14 @@
       <input type="email" formControlName="email" />
     </div>
     <div class="form-row">
+      <label>Telefon</label>
+      <input type="text" formControlName="phoneNumber" placeholder="+381 6x xxx-xxxx" />
+    </div>
+    <div class="form-row">
+      <label>Opis</label>
+      <textarea formControlName="description" rows="3" placeholder="Kratko opisite sebe..."></textarea>
+    </div>
+    <div class="form-row">
       <label>Valuta</label>
       <select formControlName="currency">
         <option value="RSD">RSD</option>
@@ -45,7 +74,9 @@
 
     <div class="actions">
       <button type="button" class="btn-cancel" (click)="cancelEdit()">Odustani</button>
-      <button type="submit" class="btn-save">Sacuvaj</button>
+      <button type="submit" class="btn-save" [disabled]="isUploadingAvatar">
+        {{ isUploadingAvatar ? 'Ucitavanje...' : 'Sacuvaj' }}
+      </button>
     </div>
   </form>
 

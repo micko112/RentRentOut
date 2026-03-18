@@ -53,6 +53,14 @@ export class AuthService {
     return this.http.get<User>(`${API_BASE_URL}/auth/validate-email`, { params: { token } });
   }
 
+  forgotPassword(email: string): Observable<string> {
+    return this.http.post(`${API_BASE_URL}/auth/forgot-password`, { email }, { responseType: 'text' });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<string> {
+    return this.http.post(`${API_BASE_URL}/auth/reset-password`, { token, newPassword }, { responseType: 'text' });
+  }
+
   private loadInitialUser() {
     const token = localStorage.getItem('authToken');
 

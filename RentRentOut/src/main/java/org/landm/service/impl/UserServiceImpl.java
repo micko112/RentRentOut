@@ -200,16 +200,16 @@ public class UserServiceImpl implements UserService {
     	if(editUserDto.getLastname() != null) user.setLastname(editUserDto.getLastname());
     	if(editUserDto.getEmail() != null && !editUserDto.getEmail().equals(user.getEmail())){
 			if (userRepository.existsByEmail(editUserDto.getEmail())) {
-				throw new RuntimeException("Taj email je već zauzet!"); // Ili neki tvoj Custom exception
+				throw new RuntimeException("Taj email je već zauzet!");
 			}
 			user.setEmail(editUserDto.getEmail());
-			// 2. OBAVEZNO MU UKINI PRISTUP DOK NE POTVRDI NOVI EMAIL!
 			user.setEnabled(false);
-
-			// 3. Pošalji novi token na novi mejl
 			EmailVerificationToken verificationToken = emailVerificationService.createAndSaveToken(user);
 			emailVerificationService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
 		}
+		if (editUserDto.getDescription() != null) user.setDescription(editUserDto.getDescription());
+		if (editUserDto.getPhoneNumber() != null) user.setPhoneNumber(editUserDto.getPhoneNumber());
+		if (editUserDto.getAvatarUrl() != null) user.setAvatarUrl(editUserDto.getAvatarUrl());
     	user = userRepository.save(user);
     	return userMapper.toEditDto(user);
 	}

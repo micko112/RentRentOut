@@ -1,0 +1,24 @@
+<div class="dashboard">
+  <h2>Dashboard</h2>
+
+  <div *ngIf="loading" class="loading">Učitavanje...</div>
+
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card">
+      <div class="stat-value">{{ stats.totalUsers }}</div>
+      <div class="stat-label">Ukupno korisnika</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ stats.totalAds }}</div>
+      <div class="stat-label">Ukupno oglasa</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ stats.totalContracts }}</div>
+      <div class="stat-label">Ukupno ugovora</div>
+    </div>
+    <div class="stat-card highlight">
+      <div class="stat-value">{{ stats.activeContracts }}</div>
+      <div class="stat-label">Aktivni ugovori</div>
+    </div>
+  </div>
+</div>

@@ -18,6 +18,15 @@ public class AdPreviewDto {
     private String currency;
     private PriceInterval priceInterval;
     private String thumbnail;
+    private AdStatus adStatus;
+
+    public AdStatus getAdStatus() {
+        return adStatus;
+    }
+
+    public void setAdStatus(AdStatus adStatus) {
+        this.adStatus = adStatus;
+    }
     public Long getId() {
         return id;
     }

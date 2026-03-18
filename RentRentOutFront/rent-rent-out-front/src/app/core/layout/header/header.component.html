@@ -14,6 +14,7 @@
     </div>
     <div class="user-actions" *ngIf="currentUser$ | async as user; else notLoggedIn">
       <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
+      <button *ngIf="user.role === 'ROLE_ADMIN'" class="btn-admin" (click)="adminPanel()">Admin Panel</button>
       <button class="btn-profile" (click)="myProfile()">Moj Profil</button>
       <button class="auth-button" (click)="logout()">Odjavi se</button>
     </div>

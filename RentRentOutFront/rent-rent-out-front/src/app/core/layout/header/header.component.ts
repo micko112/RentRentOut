@@ -53,4 +53,7 @@ export class HeaderComponent {
     this.router.navigate(["/user/me"], {})
   }
 
+  adminPanel() {
+    this.router.navigate(["/admin"], {})
+  }
 }

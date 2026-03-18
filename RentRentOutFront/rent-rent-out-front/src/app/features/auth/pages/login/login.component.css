@@ -55,6 +55,17 @@ margin-bottom: 20px;
   }
 }
 
+.forgot-link {
+  color: steelblue;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
 .btn-reg{
   justify-self: center;
   width: 80%;
