@@ -1,28 +1,20 @@
-﻿.app-shell {
+﻿.main-app-wrapper {
+  margin-top: 30px;
+  padding: 0 15px 0;
+}
+
+.main-app-wrapper.has-sidebar {
+  margin-left: 385px;
+}
+
+.page-content {
   width: 100%;
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  padding: 24px 24px 40px 0;
-}
-
-.app-sidebar {
-  margin-left: 0;
-}
-
-.app-main {
-  flex: 1;
   min-width: 0;
-  padding-right: 24px;
 }
 
 @media (max-width: 900px) {
-  .app-shell {
-    flex-direction: column;
-    padding: 16px;
-  }
-
-  .app-main {
-    padding-right: 0;
+  .main-app-wrapper {
+    margin-left: 0;
+    padding: 0 15px 0;
   }
 }

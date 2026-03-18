@@ -1,7 +1,7 @@
 <app-header></app-header>
 <app-navbar></app-navbar>
 
-<div class="main-app-wrapper">
+<div class="main-app-wrapper" [class.has-sidebar]="isLoggedIn$ | async">
   <app-sidebar *ngIf="isLoggedIn$ | async"></app-sidebar>
   <main class="page-content">
     <router-outlet></router-outlet>

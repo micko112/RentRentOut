@@ -8,12 +8,12 @@ import {Message, MessageGroup} from '../../../../shared/models/message.model';
 import {ConversationPreview} from '../../../../shared/models/conversation-preview.model';
 import {Subscription, interval} from 'rxjs';
 import {WebsocketService} from '../../../../core/services/websocket.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-inbox',
   standalone: true,
-  imports: [CommonModule, FormsModule, InitialsPipe],
+  imports: [CommonModule, FormsModule, InitialsPipe, RouterLink],
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.css']
 })

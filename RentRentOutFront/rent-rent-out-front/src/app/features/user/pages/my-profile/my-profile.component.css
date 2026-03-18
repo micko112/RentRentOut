@@ -1,27 +1,4 @@
-﻿.container {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 20px;
-}
-
-.profile-layout {
-  display: flex;
-  gap: 30px;
-  min-height: 600px;
-  align-items: flex-start;
-}
-
-.content {
-  flex-grow: 1;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 30px;
-}
-
-.content h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
+.container {
+  max-width: 1180px;
+  padding: 0;
 }

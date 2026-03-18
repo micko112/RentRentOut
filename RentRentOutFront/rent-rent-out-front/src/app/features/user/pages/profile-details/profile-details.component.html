@@ -1,99 +1,123 @@
-<div class="details" *ngIf="user$ | async as user">
-  <h2>Licni podaci</h2>
+<div class="profile-page" *ngIf="user$ | async as user">
 
-  <div class="info-card" *ngIf="!isEditing">
-    <div class="avatar-row">
-      <img class="avatar"
-           [src]="user.avatarUrl || 'assets/default-avatar.png'"
-           alt="Avatar" />
+  <!-- Banner -->
+  <div class="profile-banner">
+    <img class="banner-avatar" [src]="user.avatarUrl || 'assets/default-avatar.png'" alt="Avatar" />
+    <div class="banner-info">
+      <h2>{{ user.firstname }} {{ user.lastname }}</h2>
+      <span class="banner-email">{{ user.email }}</span>
+      <div class="banner-badges">
+        <span class="badge">{{ user.credit || 0 | number }} din</span>
+        <span class="badge">{{ user.currency || 'RSD' }}</span>
+      </div>
     </div>
-    <div class="info-row">
-      <label>Ime i Prezime:</label>
-      <span>{{ user.firstname }} {{ user.lastname }}</span>
-    </div>
-    <div class="info-row">
-      <label>Email adresa:</label>
-      <span>{{ user.email }}</span>
-    </div>
-    <div class="info-row">
-      <label>Telefon:</label>
-      <span>{{ user.phoneNumber || 'Nije unet' }}</span>
-    </div>
-    <div class="info-row">
-      <label>Opis:</label>
-      <span>{{ user.description || 'Nema opisa' }}</span>
-    </div>
-    <div class="info-row">
-      <label>Stanje na racunu:</label>
-      <span class="money">{{ user.credit || 0 | number }} din</span>
-    </div>
-    <div class="info-row">
-      <label>Valuta:</label>
-      <span>{{ user.currency || 'RSD' }}</span>
-    </div>
-
-    <button class="btn-edit" (click)="startEdit()">Izmeni podatke</button>
   </div>
 
-  <form class="edit-card" *ngIf="isEditing" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
-    <div class="avatar-upload-row">
-      <img class="avatar"
-           [src]="avatarPreview || user.avatarUrl || 'assets/default-avatar.png'"
-           alt="Avatar" />
-      <label class="btn-avatar-upload" for="avatarInput">Promeni sliku</label>
-      <input id="avatarInput" type="file" accept="image/*" (change)="onAvatarSelected($event)" hidden />
+  <!-- Body -->
+  <div class="profile-body">
+
+    <!-- Personal info panel -->
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Lični podaci</h3>
+        <button class="btn-edit" *ngIf="!isEditing" (click)="startEdit()">Izmeni</button>
+      </div>
+
+      <!-- View mode -->
+      <div class="info-list" *ngIf="!isEditing">
+        <div class="info-item">
+          <span class="info-label">Ime i prezime</span>
+          <span class="info-value">{{ user.firstname }} {{ user.lastname }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Email adresa</span>
+          <span class="info-value">{{ user.email }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Telefon</span>
+          <span class="info-value">{{ user.phoneNumber || 'Nije unet' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Opis</span>
+          <span class="info-value">{{ user.description || 'Nema opisa' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Valuta</span>
+          <span class="info-value">{{ user.currency || 'RSD' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Stanje na računu</span>
+          <span class="info-value money">{{ user.credit || 0 | number }} din</span>
+        </div>
+      </div>
+
+      <!-- Edit mode -->
+      <form class="edit-form" *ngIf="isEditing" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+        <div class="avatar-upload-row">
+          <img class="banner-avatar banner-avatar--sm" [src]="avatarPreview || user.avatarUrl || 'assets/default-avatar.png'" alt="Avatar" />
+          <label class="btn-avatar-upload" for="avatarInput">Promeni sliku</label>
+          <input id="avatarInput" type="file" accept="image/*" (change)="onAvatarSelected($event)" hidden />
+        </div>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Ime</label>
+            <input type="text" formControlName="firstname" />
+          </div>
+          <div class="form-row">
+            <label>Prezime</label>
+            <input type="text" formControlName="lastname" />
+          </div>
+          <div class="form-row">
+            <label>Email</label>
+            <input type="email" formControlName="email" />
+          </div>
+          <div class="form-row">
+            <label>Telefon</label>
+            <input type="text" formControlName="phoneNumber" placeholder="+381 6x xxx-xxxx" />
+          </div>
+          <div class="form-row">
+            <label>Valuta</label>
+            <select formControlName="currency">
+              <option value="RSD">RSD</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Opis</label>
+          <textarea formControlName="description" rows="3" placeholder="Kratko opisite sebe..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="cancelEdit()">Odustani</button>
+          <button type="submit" class="btn-save" [disabled]="isUploadingAvatar">
+            {{ isUploadingAvatar ? 'Učitavanje...' : 'Sačuvaj' }}
+          </button>
+        </div>
+      </form>
     </div>
 
-    <div class="form-row">
-      <label>Ime</label>
-      <input type="text" formControlName="firstname" />
-    </div>
-    <div class="form-row">
-      <label>Prezime</label>
-      <input type="text" formControlName="lastname" />
-    </div>
-    <div class="form-row">
-      <label>Email</label>
-      <input type="email" formControlName="email" />
-    </div>
-    <div class="form-row">
-      <label>Telefon</label>
-      <input type="text" formControlName="phoneNumber" placeholder="+381 6x xxx-xxxx" />
-    </div>
-    <div class="form-row">
-      <label>Opis</label>
-      <textarea formControlName="description" rows="3" placeholder="Kratko opisite sebe..."></textarea>
-    </div>
-    <div class="form-row">
-      <label>Valuta</label>
-      <select formControlName="currency">
-        <option value="RSD">RSD</option>
-        <option value="EUR">EUR</option>
-      </select>
+    <!-- Password panel -->
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Promena lozinke</h3>
+      </div>
+      <form class="edit-form" [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+        <div class="form-row">
+          <label>Stara lozinka</label>
+          <input type="password" formControlName="oldPassword" />
+        </div>
+        <div class="form-row">
+          <label>Nova lozinka</label>
+          <input type="password" formControlName="newPassword" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-save">Promeni lozinku</button>
+        </div>
+      </form>
     </div>
 
-    <div class="actions">
-      <button type="button" class="btn-cancel" (click)="cancelEdit()">Odustani</button>
-      <button type="submit" class="btn-save" [disabled]="isUploadingAvatar">
-        {{ isUploadingAvatar ? 'Ucitavanje...' : 'Sacuvaj' }}
-      </button>
-    </div>
-  </form>
-
-  <div class="password-card">
-    <h3>Promena lozinke</h3>
-    <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
-      <div class="form-row">
-        <label>Stara lozinka</label>
-        <input type="password" formControlName="oldPassword" />
-      </div>
-      <div class="form-row">
-        <label>Nova lozinka</label>
-        <input type="password" formControlName="newPassword" />
-      </div>
-      <div class="actions">
-        <button type="submit" class="btn-save">Promeni lozinku</button>
-      </div>
-    </form>
   </div>
 </div>

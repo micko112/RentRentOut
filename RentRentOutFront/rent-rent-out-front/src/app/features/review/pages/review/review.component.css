@@ -1,8 +1,7 @@
 /* Glavni kontejner stranice */
 .reviews-page-container {
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 0 15px;
+  max-width: 1180px;
+  padding: 0;
   font-family: Arial, sans-serif;
 }
 

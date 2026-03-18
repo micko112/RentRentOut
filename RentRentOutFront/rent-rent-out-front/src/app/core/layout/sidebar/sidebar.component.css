@@ -1,9 +1,12 @@
+:host {
+  display: block;
+}
 .sidebar {
-  width: 250px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 90px;
-  height: calc(100vh - 110px);
+  width: 185px;
+  position: fixed;
+  top: 142px;
+  left: 0;
+  height: calc(100vh - 142px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;

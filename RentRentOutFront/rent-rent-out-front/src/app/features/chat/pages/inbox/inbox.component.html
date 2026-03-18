@@ -53,11 +53,10 @@
 
       <!-- 1. Header (Info o oglasu i sagovorniku) -->
       <div class="chat-header">
-        <!-- Prikazujemo sliku oglasa ako postoji, inače placeholder -->
         <img [src]="activeConversation.adThumbnail || 'assets/images/placeholder.png'" alt="Oglas" class="header-ad-img">
         <div class="header-info">
-          <h4>{{ activeConversation.adTitle }}</h4>
-          <p>Razgovor sa: {{ activeConversation.otherParticipant.displayName }}</p>
+          <a class="header-ad-link" [routerLink]="['/ads', activeConversation.adId]">{{ activeConversation.adTitle }}</a>
+          <a class="header-user-link" [routerLink]="['/user', activeConversation.otherParticipant.id]">{{ activeConversation.otherParticipant.displayName }}</a>
         </div>
       </div>
 
@@ -109,6 +108,7 @@
                 (click)="sendMessage()"
                 [disabled]="!newMessageContent.trim()">Pošalji</button> <!-- Okida na klik -->
       </div>
+
 
     </div>
   </main>

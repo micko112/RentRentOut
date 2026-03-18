@@ -1,64 +1,74 @@
+/* =========================================
+   1. GLAVNI KONTEJNER CHATA
+   ========================================= */
+:host {
+  display: block;
+  height: calc(100vh - 182px); /* 142px header + 30px wrapper margin + 10px bottom gap */
+}
+
 .chat-container {
   display: flex;
-  /* Visinu ćemo fiksirati da se oslanja na ekran.
-     Ako ti je header visok npr. 70px, chat uzima ostatak. */
-  height: calc(100vh - 100px);
+  height: 95%;
+  max-width: 1180px;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   background-color: #fff;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Moderna, blaga senka */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Vrlo blaga, moderna senka */
 }
 
 /* =========================================
-   LEVA STRANA (LISTA SOBA)
+   2. LEVA STRANA (LISTA SOBA)
    ========================================= */
 .chat-sidebar {
-  width: 320px; /* Malo širi sidebar za lepši prikaz imena i teksta */
+  width: 280px;
   border-right: 1px solid #eee;
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
+  flex-shrink: 0;
 }
 
 .sidebar-header {
   padding: 20px;
   border-bottom: 1px solid #f5f5f5;
-  background-color: #fafafa;
+  background-color: #ffffff;
+  height: 78px;
 }
 
 .sidebar-header h3 {
   margin: 0;
   font-size: 20px;
   color: #333;
+  font-weight: 700;
 }
 
 .conversations-list {
   flex-grow: 1;
-  overflow-y: auto;
+  overflow-y: auto; /* Skroluje se samo lista, ne cela stranica */
 }
 
-/* Pojedinačna soba u listi */
 .conversation-item {
   display: flex;
   align-items: center;
   padding: 15px 20px;
   border-bottom: 1px solid #f9f9f9;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
+  border-left: 4px solid transparent; /* Priprema za active state */
 }
 
 .conversation-item:hover {
-  background-color: #f5f5f5;
+  background-color: #fcfcfc;
 }
 
-/* Aktivna soba dobija tvoju plavu boju za pozadinu (jako blago) i plavu ivicu */
+/* Aktivni razgovor (Tvoja ljubičasta boja) */
 .conversation-item.active {
-  background-color: #e6f2fa; /* Bleda verzija tvoje 0071bd plave */
-  border-left: 4px solid #0071bd;
+  background-color: rgba(129, 49, 129, 0.04); /* Bleda ljubičasta */
+  border-left: 4px solid #813181; /* Jaka ljubičasta linija levo */
 }
 
-.conversation-item .avatar {
+.avatar {
   width: 48px;
   height: 48px;
   background-color: #813181; /* Tvoja ljubičasta za inicijale */
@@ -68,7 +78,7 @@
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 16px;
   margin-right: 15px;
   flex-shrink: 0;
 }
@@ -76,7 +86,7 @@
 .conv-info {
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Da predugačak tekst ne ispadne */
+  overflow: hidden;
 }
 
 .conv-info .name {
@@ -86,25 +96,27 @@
   margin-bottom: 4px;
 }
 
-/* Skraćivanje predugačkog naslova oglasa (sa ...) */
 .conv-info .ad-title {
   font-size: 13px;
   color: #777;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis; /* Skraćuje dug naslov sa '...' */
 }
 
-
 /* =========================================
-   DESNA STRANA (AKTIVNI CHAT)
+   3. DESNA STRANA (AKTIVNI CHAT)
    ========================================= */
+
 .chat-main {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  background-color: #efeae2; /* Poznata WhatsApp-siva/bež pozadina */
+  background-color: #ffffff; /* WhatsApp bež/siva pozadina za lakše čitanje */
+  min-width: 0;
+
 }
+
 
 .no-chat-selected {
   display: flex;
@@ -122,47 +134,70 @@
   height: 100%;
 }
 
-/* HEADER RAZGOVORA */
+/* Header u chatu */
 .chat-header {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
+  padding: 15px 24px;
   border-bottom: 1px solid #e0e0e0;
   background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   z-index: 10;
+  height: 78px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 .header-ad-img {
   width: 48px;
   height: 48px;
-  border-radius: 6px;
+  border-radius: 8px;
   object-fit: cover;
+  border: 1px solid #eee;
+  flex-shrink: 0;
   margin-right: 15px;
 }
 
-.header-info h4 {
-  margin: 0 0 5px 0;
-  font-size: 16px;
-  color: #222;
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.header-info p {
-  margin: 0;
+.header-ad-link {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  text-decoration: none;
+
+  &:hover {
+    color: #813181;
+    text-decoration: underline;
+  }
+}
+
+.header-user-link {
   font-size: 13px;
   color: #666;
+  text-decoration: none;
+
+  &:hover {
+    color: #813181;
+    text-decoration: underline;
+  }
 }
 
 /* =========================================
-   ZONA ZA PORUKE (SREDINA)
+   4. OBLAČIĆI I PORUKE
    ========================================= */
 .messages-area {
   flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
+  padding: 24px;
+  overflow-y: auto; /* Skrol samo za poruke */
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
+  background-color: #f1f1f1;
+
+
 }
 
 .no-messages-alert {
@@ -170,25 +205,32 @@
   color: #888;
   margin-top: 40px;
   font-size: 14px;
+  background: white;
+  padding: 10px;
+  border-radius: 20px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Prikaz datuma (Ono novo što smo dodali: "Danas", "15. mart"...) */
+/* Datumi (Danas, Juče...) */
 .message-date-divider {
   display: flex;
   justify-content: center;
-  margin: 20px 0 10px 0;
+  margin: 16px 0;
 }
 
 .message-date-divider span {
   background-color: rgba(255, 255, 255, 0.9);
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 12px;
   font-size: 12px;
+  font-weight: 600;
   color: #555;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-/* Same poruke */
+/* Kontejner jednog reda poruke */
 .message-row {
   display: flex;
   width: 100%;
@@ -207,48 +249,48 @@
   position: relative;
 }
 
-/* OBLAČIĆI */
+/* Oblačići */
 .message-bubble {
-  padding: 8px 12px 12px 12px; /* Veći donji padding zbog vremena */
+  padding: 10px 14px 20px 14px; /* Veći padding dole da stane vreme */
   font-size: 15px;
   line-height: 1.4;
   position: relative;
-  word-wrap: break-word; /* Da dugačke reči ne probiju oblačić */
+  word-wrap: break-word;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-/* Oblačić SAGOVORNIKA (Levo, Sivo) */
+/* Poruke od sagovornika (Belo) */
 .received .message-bubble {
   background-color: #ffffff;
-  color: #333;
-  border-radius: 12px 12px 12px 0px; /* Ravno dole-levo, to je onaj "rep" */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  color: #222;
+  border-radius: 12px 12px 12px 0px; /* "Rep" dole levo */
 }
 
-/* MOJ Oblačić (Desno, Tvoja Zelena) */
+/* Tvoje poruke (Zeleno) */
 .sent .message-bubble {
-  background-color: #6ecf7e; /* Tvoja svetlo zelena */
-  color: #111; /* Taman tekst zbog svetlo zelene pozadine */
-  border-radius: 12px 12px 0px 12px; /* Ravno dole-desno */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  background-color: rgba(110, 207, 126, 0.7); /* Tvoja svetlo zelena */
+  color: #111; /* Taman tekst zbog kontrasta */
+  border-radius: 12px 12px 0px 12px; /* "Rep" dole desno */
 }
 
-/* VREME UNUTAR OBLAČIĆA */
+/* Vreme unutar oblačića */
 .message-time {
   font-size: 10px;
   color: rgba(0, 0, 0, 0.4);
   position: absolute;
   bottom: 4px;
-  right: 8px;
+  right: 10px;
+  font-weight: 600;
 }
 
 /* =========================================
-   INPUT ZONA (DNO)
+   5. INPUT POLJE ZA KUCANJE (DNO)
    ========================================= */
 .chat-input-area {
   display: flex;
-  padding: 15px 20px;
+  padding: 15px 24px;
   background-color: #f0f0f0;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #e0e0e0;
   align-items: center;
 }
 
@@ -259,17 +301,23 @@
   border-radius: 24px;
   font-size: 15px;
   background-color: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   outline: none;
+  font-family: inherit;
+  transition: box-shadow 0.2s;
+}
+
+.chat-input-area input:focus {
+  border: 1px solid #813181;
+  box-shadow: 0 4px 10px rgba(129, 49, 129, 0.27);
 }
 
 .btn-send {
-  background-color: #0071bd; /* Tvoja plava za dugme */
+  background-color: #813181; /* Tvoja ljubičasta za akciju slanja */
   color: white;
   border: none;
   padding: 0 24px;
   margin-left: 15px;
-  height: 46px;
+  height: 48px;
   border-radius: 24px;
   font-weight: bold;
   font-size: 15px;
@@ -278,10 +326,10 @@
 }
 
 .btn-send:hover:not(:disabled) {
-  background-color: #005a9e;
+  background-color: #6a286a; /* Malo tamnija ljubičasta na hover */
 }
 
 .btn-send:disabled {
-  background-color: #ccc;
+  opacity: 0.3;
   cursor: not-allowed;
 }
