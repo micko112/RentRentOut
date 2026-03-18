@@ -1,4 +1,4 @@
-.container {
+﻿.container {
   max-width: 1200px;
   margin: 30px auto;
   padding: 0 20px;
@@ -8,117 +8,20 @@
   display: flex;
   gap: 30px;
   min-height: 600px;
+  align-items: flex-start;
 }
 
-/* --- SIDEBAR --- */
-.sidebar-menu {
-  width: 280px;
-  flex-shrink: 0;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-  height: fit-content;
-}
-
-.user-brief {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-
-  .avatar-circle {
-    width: 50px;
-    height: 50px;
-    background-color: #333;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 18px;
-  }
-
-  .names {
-    h3 { margin: 0; font-size: 16px; }
-    .email { font-size: 12px; color: #777; }
-  }
-}
-
-.menu-links {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-
-  a {
-    padding: 10px 12px;
-    text-decoration: none;
-    color: #333;
-    border-radius: 6px;
-    transition: background 0.2s;
-    cursor: pointer;
-
-    &:hover { background-color: #f5f5f5; }
-
-    &.active {
-      background-color: #e3f2fd; /* Svetlo plava */
-      color: #0056b3;
-      font-weight: 600;
-    }
-
-    &.logout {
-      margin-top: 20px;
-      color: #d32f2f;
-      &:hover { background-color: #fee; }
-    }
-  }
-}
-
-/* --- CONTENT --- */
 .content {
   flex-grow: 1;
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 30px;
-
-  h2 { margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 }
 
-.info-card {
-  .info-row {
-    display: flex;
-    margin-bottom: 20px;
-
-    label {
-      width: 150px;
-      color: #777;
-      font-weight: 500;
-    }
-
-    span {
-      font-weight: 600;
-      color: #333;
-    }
-
-    .money {
-      color: #2e7d32; /* Zelena za novac */
-      font-size: 18px;
-    }
-  }
-}
-
-.btn-edit {
-  padding: 10px 20px;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 20px;
-
-  &:hover { background-color: #555; }
+.content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
 }

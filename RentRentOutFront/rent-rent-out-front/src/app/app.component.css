@@ -1,12 +1,28 @@
-.main-app-wrapper {
+﻿.app-shell {
+  width: 100%;
   display: flex;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 15px;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 24px 24px 40px 0;
 }
 
-.page-content {
-  flex-grow: 1;
+.app-sidebar {
+  margin-left: 0;
+}
+
+.app-main {
+  flex: 1;
   min-width: 0;
+  padding-right: 24px;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .app-main {
+    padding-right: 0;
+  }
 }

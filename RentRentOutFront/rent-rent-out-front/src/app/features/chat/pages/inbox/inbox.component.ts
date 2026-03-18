@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { InitialsPipe } from '../../../../shared/pipes/initials.pipe';
-import {Message} from '../../../../shared/models/message.model';
+import {Message, MessageGroup} from '../../../../shared/models/message.model';
 import {ConversationPreview} from '../../../../shared/models/conversation-preview.model';
 import {Subscription, interval} from 'rxjs';
 import {WebsocketService} from '../../../../core/services/websocket.service';
@@ -24,6 +24,8 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   activeConversation: ConversationPreview | null = null;
 
   // Right side
+  groupedMessages: MessageGroup[] =[];
+
   messages: Message[] =[];
   newMessageContent: string = '';
   myUserId: number | null = null;
@@ -96,6 +98,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
         );
         this.removeOptimisticDuplicate(msg);
         this.messages.push(msg);
+        this.updateGroupedMessages();
         this.scrollToBottomNeeded = true;
       }
       // Scenario B: normal room, message belongs to active room
@@ -139,6 +142,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
 
     this.chatService.getMessages(conv.id).subscribe(res => {
       this.messages = res.content;
+      this.updateGroupedMessages();
       this.scrollToBottomNeeded = true;
     });
   }
@@ -254,6 +258,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     };
     (tempMsg as any)._temp = true;
     this.messages.push(tempMsg);
+    this.updateGroupedMessages();
     this.scrollToBottomNeeded = true;
   }
 
@@ -286,5 +291,56 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.messages = res.content;
       this.scrollToBottomNeeded = true;
     });
+  }
+  updateGroupedMessages(): void {
+    if (!this.messages || this.messages.length === 0) {
+      this.groupedMessages = [];
+      return;
+    }
+
+    const groupsMap = new Map<string, Message[]>();
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    this.messages.forEach(msg => {
+      const msgDate = new Date(msg.createdAt);
+      let dateLabel = '';
+
+      // Proveravamo da li je "Danas", "Juče" ili stariji datum
+      if (this.isSameDay(msgDate, today)) {
+        dateLabel = 'Danas';
+      } else if (this.isSameDay(msgDate, yesterday)) {
+        dateLabel = 'Juče';
+      } else {
+        // Ako je starije, formatiramo kao npr. "15.03.2026."
+        // (Najlakše ugrađenim JS metodama da ne vučemo DatePipe u TS ako ne moramo)
+        const d = msgDate.getDate().toString().padStart(2, '0');
+        const m = (msgDate.getMonth() + 1).toString().padStart(2, '0');
+        const y = msgDate.getFullYear();
+        dateLabel = `${d}.${m}.${y}.`;
+      }
+
+      // Ako grupa za ovaj datum već postoji, dodaj poruku u nju
+      if (groupsMap.has(dateLabel)) {
+        groupsMap.get(dateLabel)!.push(msg);
+      } else {
+        // Ako ne postoji, napravi novu grupu sa ovom prvom porukom
+        groupsMap.set(dateLabel,[msg]);
+      }
+    });
+
+    // Pretvaramo Map objekat nazad u niz naših MessageGroup interfejsa
+    this.groupedMessages = Array.from(groupsMap, ([dateLabel, messages]) => ({
+      dateLabel,
+      messages
+    }));
+  }
+
+  // Pomoćna funkcija za poređenje datuma (bez vremena)
+  private isSameDay(d1: Date, d2: Date): boolean {
+    return d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
   }
 }
