@@ -1,0 +1,52 @@
+<div class="admin-users">
+  <h2>Korisnici</h2>
+
+  <div *ngIf="loading" class="loading">Učitavanje...</div>
+
+  <div *ngIf="usersPage && !loading">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Ime i prezime</th>
+          <th>Email</th>
+          <th>Uloga</th>
+          <th>Status</th>
+          <th>Akcija</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of usersPage.content">
+          <td>{{ user.id }}</td>
+          <td>{{ user.firstname }} {{ user.lastname }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="badge" [class.admin]="user.role === 'ROLE_ADMIN'">
+              {{ user.role === 'ROLE_ADMIN' ? 'Admin' : 'Korisnik' }}
+            </span>
+          </td>
+          <td>
+            <span class="status-dot" [class.active]="user.enabled" [class.inactive]="!user.enabled">
+              {{ user.enabled ? 'Aktivan' : 'Deaktiviran' }}
+            </span>
+          </td>
+          <td>
+            <button
+              *ngIf="user.role !== 'ROLE_ADMIN'"
+              class="btn-toggle"
+              [class.disable]="user.enabled"
+              (click)="toggleUser(user)">
+              {{ user.enabled ? 'Deaktiviraj' : 'Aktiviraj' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button class="page-btn" (click)="prevPage()" [disabled]="usersPage.first">Prethodna</button>
+      <span>Strana {{ usersPage.number + 1 }} od {{ usersPage.totalPages }}</span>
+      <button class="page-btn" (click)="nextPage()" [disabled]="usersPage.last">Sledeća</button>
+    </div>
+  </div>
+</div>

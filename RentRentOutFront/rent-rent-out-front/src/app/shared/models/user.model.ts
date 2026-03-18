@@ -9,6 +9,9 @@ export interface User{
   location: string;
   currency: string;
   phoneNumber: string;
+  description: string;
   positiveReviews: number;
   negativeReviews: number;
+  role: string;
+  enabled: boolean;
 }

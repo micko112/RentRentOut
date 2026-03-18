@@ -42,4 +42,10 @@ export class UserService {
   changePassword(payload: ChangePasswordRequest): Observable<string> {
     return this.http.patch(`${this.url}/user/me/password`, payload, { responseType: 'text' });
   }
+
+  uploadAvatar(file: File): Observable<string[]> {
+    const formData = new FormData();
+    formData.append('files', file);
+    return this.http.post<string[]>(`${this.url}/images/upload`, formData);
+  }
 }

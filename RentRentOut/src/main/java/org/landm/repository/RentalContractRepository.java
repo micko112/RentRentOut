@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.landm.entity.RentalContract;
 import org.landm.entity.Enums.ContractStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
@@ -58,14 +60,16 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 			@Param("statuses") List<ContractStatus> statuses);
 
 	@Query("""
-        SELECT rc 
-        FROM RentalContract rc 
-        WHERE rc.ad.id = :adId 
+        SELECT rc
+        FROM RentalContract rc
+        WHERE rc.ad.id = :adId
           AND rc.contractStatus IN ('ACCEPTED', 'ACTIVE')
-          AND rc.startDate <= :endDate 
+          AND rc.startDate <= :endDate
           AND rc.endDate >= :startDate
         """)
-	List<RentalContract> findContractsInDateInterval(@Param("adId") Long adId, 
-			@Param("startDate")LocalDate startDate, 
+	List<RentalContract> findContractsInDateInterval(@Param("adId") Long adId,
+			@Param("startDate")LocalDate startDate,
 			@Param("endDate") LocalDate endDate);
+
+	long countByContractStatusIn(List<ContractStatus> statuses);
 }

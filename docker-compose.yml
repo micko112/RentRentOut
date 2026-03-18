@@ -1,0 +1,53 @@
+services:
+
+  # ─── MySQL ───────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: rentrentout-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rent_rent_out
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ─── Spring Boot backend ─────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./RentRentOut
+      dockerfile: Dockerfile
+    image: rentrentout-backend
+    container_name: rentrentout-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/rent_rent_out?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ─── Angular frontend ─────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./RentRentOutFront/rent-rent-out-front
+      dockerfile: Dockerfile
+    image: rentrentout-frontend
+    container_name: rentrentout-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

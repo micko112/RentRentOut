@@ -55,6 +55,7 @@ public class AdMapper {
         }
         dto.setCity(ad.getLocation().getCity());
         dto.setMunicipality(ad.getLocation().getMunicipality());
+        dto.setAdStatus(ad.getAdStatus());
 
         return dto;
     }

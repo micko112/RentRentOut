@@ -1,0 +1,17 @@
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <h2>Admin Panel</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/admin/users" routerLinkActive="active">Korisnici</a>
+      <a routerLink="/admin/ads" routerLinkActive="active">Oglasi</a>
+      <a routerLink="/admin/contracts" routerLinkActive="active">Ugovori</a>
+    </nav>
+  </aside>
+
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

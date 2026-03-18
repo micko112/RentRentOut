@@ -126,6 +126,21 @@
       box-shadow: 0 4px 10px rgba(40, 56, 89, 0.25);
     }
   }
+  .btn-admin {
+    background-color: #283859;
+    border-radius: 15px;
+    padding: 12px 20px;
+    cursor: pointer;
+    color: white;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+
+    &:hover {
+      background-color: #1a253d;
+      transition: 0.2s;
+    }
+  }
   .btn-profile{
     background-color: white;
     border-radius: 15px;

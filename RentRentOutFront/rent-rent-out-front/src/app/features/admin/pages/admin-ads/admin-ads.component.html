@@ -1,0 +1,53 @@
+<div class="admin-ads">
+  <h2>Oglasi</h2>
+
+  <div *ngIf="loading" class="loading">Učitavanje...</div>
+
+  <div *ngIf="adsPage && !loading">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Naslov</th>
+          <th>Lokacija</th>
+          <th>Cena</th>
+          <th>Status</th>
+          <th>Akcija</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ad of adsPage.content">
+          <td>{{ ad.id }}</td>
+          <td>{{ ad.title }}</td>
+          <td>{{ ad.city }}, {{ ad.municipality }}</td>
+          <td>{{ ad.price | number }} {{ ad.currency }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="ad.adStatus?.toLowerCase()">
+              {{ ad.adStatus }}
+            </span>
+          </td>
+          <td>
+            <button
+              *ngIf="ad.adStatus !== 'SUSPENDED_BY_ADMIN'"
+              class="btn-action suspend"
+              (click)="suspendAd(ad)">
+              Suspenduj
+            </button>
+            <button
+              *ngIf="ad.adStatus === 'SUSPENDED_BY_ADMIN'"
+              class="btn-action unsuspend"
+              (click)="unsuspendAd(ad)">
+              Reaktiviraj
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button class="page-btn" (click)="prevPage()" [disabled]="adsPage.first">Prethodna</button>
+      <span>Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}</span>
+      <button class="page-btn" (click)="nextPage()" [disabled]="adsPage.last">Sledeća</button>
+    </div>
+  </div>
+</div>

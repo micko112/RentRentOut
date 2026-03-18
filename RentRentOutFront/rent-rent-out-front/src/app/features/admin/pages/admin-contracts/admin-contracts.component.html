@@ -1,0 +1,40 @@
+<div class="admin-contracts">
+  <h2>Ugovori</h2>
+
+  <div *ngIf="loading" class="loading">Učitavanje...</div>
+
+  <div *ngIf="contractsPage && !loading">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Oglas</th>
+          <th>Zakupac</th>
+          <th>Period</th>
+          <th>Cena</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contract of contractsPage.content">
+          <td>{{ contract.id }}</td>
+          <td>{{ contract.adDto?.title }}</td>
+          <td>{{ contract.lesseeDto?.firstname }} {{ contract.lesseeDto?.lastname }}</td>
+          <td>{{ contract.startDate }} – {{ contract.endDate }}</td>
+          <td>{{ contract.agreedPrice | number }} {{ contract.currency }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="contract.contractStatus?.toLowerCase()">
+              {{ contract.contractStatus }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button class="page-btn" (click)="prevPage()" [disabled]="contractsPage.first">Prethodna</button>
+      <span>Strana {{ contractsPage.number + 1 }} od {{ contractsPage.totalPages }}</span>
+      <button class="page-btn" (click)="nextPage()" [disabled]="contractsPage.last">Sledeća</button>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-﻿import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AsyncPipe, CommonModule, DecimalPipe, NgIf} from '@angular/common';
 import {Observable} from 'rxjs';
 import {User} from '../../../../shared/models/user.model';
@@ -31,6 +31,10 @@ export class ProfileDetailsComponent implements OnInit {
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
 
+  avatarPreview: string | null = null;
+  selectedAvatarFile: File | null = null;
+  isUploadingAvatar = false;
+
   constructor(private userService: UserService,
               private authService: AuthService,
               private fb: FormBuilder,
@@ -42,7 +46,9 @@ export class ProfileDetailsComponent implements OnInit {
       firstname: ['', [Validators.required, Validators.minLength(2)]],
       lastname: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      currency: ['', [Validators.required, Validators.minLength(3)]]
+      currency: ['', [Validators.required, Validators.minLength(3)]],
+      description: [''],
+      phoneNumber: ['']
     });
 
     this.passwordForm = this.fb.group({
@@ -58,25 +64,43 @@ export class ProfileDetailsComponent implements OnInit {
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
-        currency: user.currency || 'RSD'
+        currency: user.currency || 'RSD',
+        description: user.description || '',
+        phoneNumber: user.phoneNumber || ''
       });
     });
   }
 
   startEdit(): void {
     this.isEditing = true;
+    this.avatarPreview = null;
+    this.selectedAvatarFile = null;
   }
 
   cancelEdit(): void {
     this.isEditing = false;
+    this.avatarPreview = null;
+    this.selectedAvatarFile = null;
     if (this.currentUser) {
       this.profileForm.patchValue({
         firstname: this.currentUser.firstname,
         lastname: this.currentUser.lastname,
         email: this.currentUser.email,
-        currency: this.currentUser.currency || 'RSD'
+        currency: this.currentUser.currency || 'RSD',
+        description: this.currentUser.description || '',
+        phoneNumber: this.currentUser.phoneNumber || ''
       });
     }
+  }
+
+  onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    const file = input.files[0];
+    this.selectedAvatarFile = file;
+    const reader = new FileReader();
+    reader.onload = () => { this.avatarPreview = reader.result as string; };
+    reader.readAsDataURL(file);
   }
 
   onSaveProfile(): void {
@@ -86,10 +110,35 @@ export class ProfileDetailsComponent implements OnInit {
       return;
     }
 
-    this.userService.updateMe(this.profileForm.value).subscribe({
+    if (this.selectedAvatarFile) {
+      this.isUploadingAvatar = true;
+      this.userService.uploadAvatar(this.selectedAvatarFile).subscribe({
+        next: (urls) => {
+          this.isUploadingAvatar = false;
+          this.saveProfile(urls[0]);
+        },
+        error: () => {
+          this.isUploadingAvatar = false;
+          this.toastService.showError('Greska pri otpremanju slike.');
+        }
+      });
+    } else {
+      this.saveProfile(this.currentUser?.avatarUrl);
+    }
+  }
+
+  private saveProfile(avatarUrl?: string): void {
+    const payload = {
+      ...this.profileForm.value,
+      avatarUrl: avatarUrl || null
+    };
+
+    this.userService.updateMe(payload).subscribe({
       next: (updatedUser) => {
         this.authService.setCurrentUser(updatedUser);
         this.isEditing = false;
+        this.avatarPreview = null;
+        this.selectedAvatarFile = null;
         this.toastService.showSuccess('Profil je uspesno azuriran.');
       },
       error: (err) => {
