@@ -1,8 +1,9 @@
 <app-header></app-header>
 <app-navbar></app-navbar>
-<div class="app-shell">
-  <app-sidebar class="app-sidebar"></app-sidebar>
-  <main class="app-main">
+
+<div class="main-app-wrapper">
+  <app-sidebar *ngIf="isLoggedIn$ | async"></app-sidebar>
+  <main class="page-content">
     <router-outlet></router-outlet>
   </main>
 </div>

@@ -1,0 +1,43 @@
+<aside class="sidebar" *ngIf="currentUser$ | async as user">
+  <div class="user-info">
+    <div class="user-avatar">{{ user.firstname.charAt(0) }}{{ user.lastname.charAt(0) }}</div>
+    <div class="user-details">
+      <span class="user-name">{{ user.firstname }} {{ user.lastname }}</span>
+      <span class="user-email">{{ user.email }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/user/me/ads" routerLinkActive="active">
+      <span class="nav-icon">📋</span> Moji oglasi
+    </a>
+    <a routerLink="/messages" routerLinkActive="active">
+      <span class="nav-icon">💬</span> Poruke
+    </a>
+    <a routerLink="/notifications" routerLinkActive="active">
+      <span class="nav-icon">🔔</span> Obaveštenja
+    </a>
+    <a routerLink="/user/me/reviews" routerLinkActive="active">
+      <span class="nav-icon">⭐</span> Ocene
+    </a>
+    <a routerLink="/following" routerLinkActive="active">
+      <span class="nav-icon">👁️</span> Pratim
+    </a>
+    <a routerLink="/saved-searches" routerLinkActive="active">
+      <span class="nav-icon">🔍</span> Sačuvane pretrage
+    </a>
+    <a routerLink="/address-book" routerLinkActive="active">
+      <span class="nav-icon">📖</span> Adresar
+    </a>
+    <a routerLink="/credit" routerLinkActive="active">
+      <span class="nav-icon">💳</span> Kredit
+    </a>
+    <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <span class="nav-icon">⚙️</span> Moj Nalog
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="exchange-rate">Kurs evra: 117.2 RSD</span>
+  </div>
+</aside>

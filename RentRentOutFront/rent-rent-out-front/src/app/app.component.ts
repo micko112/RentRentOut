@@ -12,7 +12,9 @@ import {SidebarComponent} from './shared/components/sidebar/sidebar.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-
 export class AppComponent {
   title = 'rent-rent-out-front';
+
+  private authService = inject(AuthService);
+  isLoggedIn$ = this.authService.currentUser$.pipe(map(user => !!user));
 }
