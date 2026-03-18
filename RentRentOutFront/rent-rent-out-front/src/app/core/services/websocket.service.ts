@@ -1,7 +1,5 @@
-
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { RxStomp } from '@stomp/rx-stomp';
-import { myRxStompConfig } from '../config/rx-stomp.config';
 
 @Injectable({
   providedIn: 'root',
@@ -10,42 +8,61 @@ export class WebsocketService {
 
   // Instanca RxStomp klijenta
   public rxStomp: RxStomp;
+  private lastToken: string | null = null;
 
   constructor() {
     this.rxStomp = new RxStomp();
   }
 
   public connect() {
-    // 1. Čitamo najsvežiji token iz browsera BAŠ U TRENUTKU konekcije
+    // 1. Citamo najsveziji token iz browsera bas u trenutku konekcije
     const token = localStorage.getItem('authToken');
+    if (!token) {
+      return;
+    }
+    if (this.rxStomp.connected() && this.lastToken === token) {
+      return;
+    }
+    this.lastToken = token;
 
-    // 2. Konfigurišemo STOMP
-    this.rxStomp.configure({
-      brokerURL: 'ws://localhost:8080/ws', // Uklonili smo .withSockJS() na backendu pa gadjamo /ws
-      heartbeatIncoming: 0,
-      heartbeatOutgoing: 20000,
-      reconnectDelay: 2000,
-      // 3. OVO JE KLJUČ: Ubacujemo svež token u heder
-      connectHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const start = () => {
+      // 2. Konfigurisi STOMP
+      this.rxStomp.configure({
+        brokerURL: 'ws://localhost:8080/ws',
+        heartbeatIncoming: 0,
+        heartbeatOutgoing: 20000,
+        reconnectDelay: 2000,
+        connectHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
-    // 4. Palimo cev!
-    this.rxStomp.activate();
+      // 3. Palimo cev
+      this.rxStomp.activate();
+    };
+
+    if (this.rxStomp.active) {
+      this.rxStomp.deactivate().then(() => start());
+    } else {
+      start();
+    }
   }
 
-  // Metoda kojom šaljemo poruku na server (npr. na '/app/chat.send')
+  // Metoda kojom saljemo poruku na server (npr. na '/app/chat.send')
   public sendMessage(destination: string, body: any) {
     this.rxStomp.publish({
       destination: destination,
-      body: JSON.stringify(body) // STOMP šalje stringove, pa JSON moramo da pretvorimo u tekst
+      body: JSON.stringify(body)
     });
   }
 
-  // Metoda kojom "slušamo" kanal (npr. '/user/queue/messages')
+  // Metoda kojom "slusamo" kanal (npr. '/user/queue/messages')
   public watch(destination: string) {
     return this.rxStomp.watch(destination);
+  }
+
+  public isConnected(): boolean {
+    return this.rxStomp.connected();
   }
 
   // Kada se izlogujemo, gasimo cev

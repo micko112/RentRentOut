@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -59,6 +60,7 @@ public class ChatServiceImpl implements ChatService {
         Message message = new Message(conv, sender, request.getContent());
         messageRepository.save(message);
 
+        conv.setUpdatedAt(LocalDateTime.now());
         conversationRepository.save(conv);
 
         return chatMapper.toMessageDto(message);

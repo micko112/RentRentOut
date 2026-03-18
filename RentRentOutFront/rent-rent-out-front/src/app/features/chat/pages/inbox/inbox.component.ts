@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy, ChangeDetectorRef} from '@angular/core';
+﻿import {Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat.service';
@@ -6,7 +6,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { InitialsPipe } from '../../../../shared/pipes/initials.pipe';
 import {Message} from '../../../../shared/models/message.model';
 import {ConversationPreview} from '../../../../shared/models/conversation-preview.model';
-import {Subscription} from 'rxjs';
+import {Subscription, interval} from 'rxjs';
 import {WebsocketService} from '../../../../core/services/websocket.service';
 import {ActivatedRoute, Router} from '@angular/router';
 
@@ -19,18 +19,21 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
 
-  // Leva strana
+  // Left side
   conversations: ConversationPreview[] =[];
   activeConversation: ConversationPreview | null = null;
 
-  // Desna strana
+  // Right side
   messages: Message[] =[];
   newMessageContent: string = '';
   myUserId: number | null = null;
 
   private messageSub!: Subscription;
+  private pollSub!: Subscription;
+  private conversationsLoaded = false;
+  private pendingChatCheck = false;
 
-  // Za auto-skrol na dno chata
+  // Auto-scroll to bottom
   @ViewChild('chatScroll') private chatScrollContainer!: ElementRef;
   private scrollToBottomNeeded = false;
 
@@ -50,42 +53,73 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.myUserId = user.id;
     }
 
+    this.authService.currentUser$.subscribe(u => {
+      if (u && u.id) {
+        this.myUserId = u.id;
+      }
+    });
+
     this.loadConversations();
+    this.route.queryParamMap.subscribe(() => {
+      if (this.conversationsLoaded) {
+        this.checkForNewChatRequest();
+      } else {
+        this.pendingChatCheck = true;
+      }
+    });
+
+    this.startPolling();
+
     this.websocketService.connect();
     this.messageSub = this.websocketService.watch('/user/queue/messages').subscribe((stompMsg) => {
-      // Poruka stiže kao običan tekst, moramo da je pretvorimo u JSON (naš Message objekt)
       const incomingMessage: Message = JSON.parse(stompMsg.body);
-
       this.handleIncomingMessage(incomingMessage);
     });
   }
+
   handleIncomingMessage(msg: Message) {
-      console.log("Stigla live poruka!", msg);
+      console.log('Stigla live poruka!', msg);
 
-      // SCENARIO A: Mi smo u "lažnoj" sobi (ID: 0) i mi smo upravo poslali prvu poruku!
+      if (!this.myUserId) {
+        const u = this.authService.currentUserValue;
+        if (u && u.id) {
+          this.myUserId = u.id;
+        }
+      }
+
+      // Scenario A: fake room (ID 0) and we sent the first message
       if (this.activeConversation && this.activeConversation.id === 0 && msg.senderId === this.myUserId) {
-        // Backend je napravio pravu sobu. Ažuriramo naš lažni ID na onaj pravi iz baze!
+        // Backend created a real room. Update the id.
         this.activeConversation.id = msg.conversationId;
+        this.messages = this.messages.map(m =>
+          m.conversationId === 0 ? { ...m, conversationId: msg.conversationId } : m
+        );
+        this.removeOptimisticDuplicate(msg);
         this.messages.push(msg);
         this.scrollToBottomNeeded = true;
       }
-      // SCENARIO B: Mi smo u normalnoj, postojećoj sobi i poruka je za tu sobu
+      // Scenario B: normal room, message belongs to active room
       else if (this.activeConversation && this.activeConversation.id === msg.conversationId) {
+        this.removeOptimisticDuplicate(msg);
         this.messages.push(msg);
         this.scrollToBottomNeeded = true;
       }
 
-      // U svakom slučaju, osveži levu listu soba da bi ovaj chat skočio na vrh
+      // Refresh left list so chat jumps to top
       this.loadConversations();
 
-      // MAGIJA: Drmamo Angular da OBAVEZNO ODMAH nacrta nove oblačiće na ekranu!
+      // Force UI update for new bubbles
       this.cdr.detectChanges();
     }
 
   loadConversations() {
     this.chatService.getMyConversations().subscribe(res => {
       this.conversations = res.content;
-      // Ako nam treba da odma otvorimo prvi chat u listi
+      this.conversationsLoaded = true;
+      if (this.pendingChatCheck) {
+        this.pendingChatCheck = false;
+        this.checkForNewChatRequest();
+      }
       /*
       if (this.conversations.length > 0 && !this.activeConversation) {
         this.openConversation(this.conversations[0]);
@@ -97,37 +131,34 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   openConversation(conv: ConversationPreview) {
     this.activeConversation = conv;
 
+    if (conv.id === 0) {
+      this.messages = [];
+      this.scrollToBottomNeeded = true;
+      return;
+    }
+
     this.chatService.getMessages(conv.id).subscribe(res => {
-      // Backend vraća ASC (najstarije prve), pa je to odlično za iscrtavanje od gore na dole
       this.messages = res.content;
-      this.scrollToBottomNeeded = true; //  da skroluje na novu poruku
+      this.scrollToBottomNeeded = true;
     });
   }
 
   sendMessage() {
-    // Sprečavamo slanje praznih poruka
     if (!this.newMessageContent.trim() || !this.activeConversation) return;
 
-    // Pakujemo podatke u DTO koji Java očekuje
+    const content = this.newMessageContent.trim();
     const request = {
       adId: this.activeConversation.adId,
       receiverId: this.activeConversation.otherParticipant.id,
-      content: this.newMessageContent.trim()
+      content
     };
 
-    // 1. Čistimo input polje odmah da bi korisnik imao osećaj brzine
     this.newMessageContent = '';
 
-    // 2. ŠALJEMO KROZ CEV (WebSocket)
-    // Gađamo destinaciju koju smo definisali u WebSocketConfig.java (@MessageMapping("/chat.send"))
+    this.appendOptimisticMessage(content);
+    // Send via WebSocket
     this.websocketService.sendMessage('/app/chat.send', request);
-
-    // NAPOMENA: Ne dodajemo poruku u niz `this.messages` ovde!
-    // Zašto? Zato što je naš Spring Boot backend pametan. Kada primi poruku na /app/chat.send,
-    // on je sačuva u bazu i odmah je vrati nazad obojici (i tebi i sagovorniku) kroz /user/queue/messages.
-    // Tvoja metoda `handleIncomingMessage` će uhvatiti taj povratni odgovor i iscrtati ga na ekranu.
   }
-
 
   ngAfterViewChecked() {
     if (this.scrollToBottomNeeded) {
@@ -141,59 +172,63 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.chatScrollContainer.nativeElement.scrollTop = this.chatScrollContainer.nativeElement.scrollHeight;
     } catch(err) { }
   }
+
   ngOnDestroy(): void {
-    // Važno za performanse: Kad korisnik pređe na neku drugu stranicu (npr. Profil),
-    // prestajemo da slušamo poruke da ne bismo trošili memoriju browsera.
     if (this.messageSub) {
       this.messageSub.unsubscribe();
     }
+    if (this.pollSub) {
+      this.pollSub.unsubscribe();
+    }
   }
+
   checkForNewChatRequest() {
-    // Čitamo parametre iz URL-a
     const adId = Number(this.route.snapshot.queryParamMap.get('newChatAdId'));
     const receiverId = Number(this.route.snapshot.queryParamMap.get('receiverId'));
     const adTitle = this.route.snapshot.queryParamMap.get('adTitle');
     const receiverName = this.route.snapshot.queryParamMap.get('receiverName');
 
     if (adId && receiverId) {
-      // 1. Proveravamo da li već imamo sobu sa ovim čovekom za ovaj oglas
       const existingConv = this.conversations.find(c => c.adId === adId && c.otherParticipant.id === receiverId);
 
       if (existingConv) {
-        // Soba postoji! Samo je otvori.
         this.openConversation(existingConv);
       } else {
-        // 2. Soba NE POSTOJI. Pravimo "Lažnu" sobu na ekranu da bi korisnik mogao da kuca.
-        const tempConv: ConversationPreview = {
-          id: 0, // 0 znači da još nije u bazi
-          adId: adId,
-          adTitle: adTitle || 'Nepoznat oglas',
-          adThumbnail: 'assets/images/placeholder.png', // Stavljamo placeholder
-          lastMessagePreview: 'Započnite razgovor...',
-          updatedAt: new Date().toISOString(),
-          unreadCount: 0,
-          otherParticipant: {
-            id: receiverId,
-            displayName: receiverName || 'Korisnik',
-            identified: false,
-            avatarUrl: '',
-            locationDisplay: '',
-            phoneNumber: '',
-            positiveReviews: 0,
-            negativeReviews: 0,
-            createdAt: ''
-          }
-        };
+        const existingTemp = this.conversations.find(
+          c => c.id === 0 && c.adId === adId && c.otherParticipant.id === receiverId
+        );
 
-        // Gurnemo ovu privremenu sobu na vrh liste (levo) da je korisnik vidi
-        this.conversations.unshift(tempConv);
+        if (existingTemp) {
+          this.activeConversation = existingTemp;
+          this.messages = [];
+        } else {
+          const tempConv: ConversationPreview = {
+            id: 0,
+            adId: adId,
+            adTitle: adTitle || 'Nepoznat oglas',
+            adThumbnail: 'assets/images/placeholder.png',
+            lastMessagePreview: 'Zapocnite razgovor...',
+            updatedAt: new Date().toISOString(),
+            unreadCount: 0,
+            otherParticipant: {
+              id: receiverId,
+              displayName: receiverName || 'Korisnik',
+              identified: false,
+              avatarUrl: '',
+              locationDisplay: '',
+              phoneNumber: '',
+              positiveReviews: 0,
+              negativeReviews: 0,
+              createdAt: ''
+            }
+          };
 
-        // Postavljamo je kao aktivnu i praznimo poruke (desno)
-        this.activeConversation = tempConv;
-        this.messages =[];
+          this.conversations.unshift(tempConv);
+          this.activeConversation = tempConv;
+          this.messages = [];
+        }
       }
 
-      // 3. ZAVRŠENO: Očisti URL da se ne bi opet otvaralo pri refreshu (F5)
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: {
@@ -202,8 +237,54 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
           adTitle: null,
           receiverName: null
         },
-        queryParamsHandling: 'merge' // Briše ove parametre, ostavlja sve drugo ako ima
+        queryParamsHandling: 'merge'
       });
     }
+  }
+
+  private appendOptimisticMessage(content: string): void {
+    if (!this.activeConversation) return;
+    const tempMsg: Message = {
+      id: -Date.now(),
+      conversationId: this.activeConversation.id,
+      senderId: this.myUserId || 0,
+      content,
+      read: true,
+      createdAt: new Date().toISOString()
+    };
+    (tempMsg as any)._temp = true;
+    this.messages.push(tempMsg);
+    this.scrollToBottomNeeded = true;
+  }
+
+  private removeOptimisticDuplicate(msg: Message): void {
+    const idx = this.messages.findIndex(m =>
+      (m as any)._temp &&
+      m.senderId === msg.senderId &&
+      m.content === msg.content &&
+      (m.conversationId === msg.conversationId || m.conversationId === 0)
+    );
+    if (idx >= 0) {
+      this.messages.splice(idx, 1);
+    }
+  }
+
+  private startPolling(): void {
+    this.pollSub = interval(5000).subscribe(() => {
+      if (!this.websocketService.isConnected()) {
+        this.websocketService.connect();
+      }
+      this.loadConversations();
+      this.refreshActiveMessages();
+    });
+  }
+
+  private refreshActiveMessages(): void {
+    if (!this.activeConversation || this.activeConversation.id === 0) return;
+    if (this.messages.some(m => (m as any)._temp)) return;
+    this.chatService.getMessages(this.activeConversation.id).subscribe(res => {
+      this.messages = res.content;
+      this.scrollToBottomNeeded = true;
+    });
   }
 }

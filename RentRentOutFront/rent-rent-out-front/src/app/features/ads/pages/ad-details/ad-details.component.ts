@@ -387,13 +387,13 @@ export class AdDetailsComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['user/me/inbox']), {
+    this.router.navigate(['/user/me/inbox'], {
       queryParams: {
-        newChatId: this.currentAd.id,
+        newChatAdId: this.currentAd.id,
         receiverId: this.currentAd.owner.id,
         adTitle: this.currentAd.title,
         receiverName: this.currentAd.owner.displayName
       }
-    }
+    });
   }
 }

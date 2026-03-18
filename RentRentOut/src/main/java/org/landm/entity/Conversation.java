@@ -34,6 +34,7 @@ public class Conversation {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("createdAt ASC")
     private List<Message> messages = new ArrayList<>();
 
     public Conversation() {
