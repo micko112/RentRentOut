@@ -1,20 +1,19 @@
-﻿.main-app-wrapper {
+.main-app-wrapper {
+  display: flex;
+  align-items: flex-start; /* critical: lets sticky work and sidebar not stretch */
+  gap: 200px;              /* 200px gap between sidebar and content */
   margin-top: 30px;
-  padding: 0 15px 0;
-}
-
-.main-app-wrapper.has-sidebar {
-  margin-left: 385px;
+  /*padding: 0 15px;*/
 }
 
 .page-content {
-  width: 100%;
+  flex: 1;
   min-width: 0;
 }
 
 @media (max-width: 900px) {
   .main-app-wrapper {
-    margin-left: 0;
-    padding: 0 15px 0;
+    flex-direction: column;
+    gap: 20px;
   }
 }
