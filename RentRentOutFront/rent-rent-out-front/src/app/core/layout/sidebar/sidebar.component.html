@@ -47,7 +47,22 @@
     </nav>
   </ng-container>
 
-  <ng-template #guestBlock></ng-template>
+  <ng-template #guestBlock>
+  <div class="guest-block">
+    <div class="guest-avatar">?</div>
+    <p class="guest-text">Niste prijavljeni</p>
+    <a routerLink="/login" class="btn-login">Prijavi se</a>
+    <a routerLink="/register" class="btn-register">Registruj se</a>
+  </div>
+
+  <nav class="sidebar-nav sidebar-nav--locked">
+    <span class="nav-item-locked"><span class="material-icons nav-icon">article</span> Moji oglasi</span>
+    <span class="nav-item-locked"><span class="material-icons nav-icon">forum</span> Poruke</span>
+    <span class="nav-item-locked"><span class="material-icons nav-icon">notifications</span> Obaveštenja</span>
+    <span class="nav-item-locked"><span class="material-icons nav-icon">star</span> Ocene</span>
+    <span class="nav-item-locked"><span class="material-icons nav-icon">manage_accounts</span> Moj Nalog</span>
+  </nav>
+</ng-template>
 
 
 </aside>

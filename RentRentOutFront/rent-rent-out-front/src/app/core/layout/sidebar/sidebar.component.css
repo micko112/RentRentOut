@@ -128,3 +128,76 @@
   padding: 0 5px;
   line-height: 1;
 }
+
+/* Guest Block */
+.guest-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px;
+  border-bottom: 1px solid #e8e8e8;
+  background: #f9f9f9;
+  border-radius: 8px 8px 0 0;
+  gap: 8px;
+}
+
+.guest-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ccc;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.guest-text {
+  margin: 0;
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+}
+
+.btn-login,
+.btn-register {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 7px 0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.btn-login:hover,
+.btn-register:hover { opacity: 0.85; }
+
+.btn-login {
+  background: #813181;
+  color: #fff;
+}
+
+.btn-register {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+/* Locked nav items (guest) */
+.sidebar-nav--locked {
+  pointer-events: none;
+}
+
+.nav-item-locked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #bbb;
+  user-select: none;
+}
