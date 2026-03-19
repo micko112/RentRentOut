@@ -33,7 +33,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #283859;
+  background: #813181;
   color: #fff;
   display: flex;
   align-items: center;
@@ -96,20 +96,20 @@
 }
 
 .sidebar-nav a:hover {
-  background: #f5f7fa;
-  color: #283859;
+  background: #fdf5ff;
+  color: #813181;
 }
 
 .sidebar-nav a.active {
-  background: #eef2ff;
-  color: #283859;
-  border-left: 3px solid #6ecf7e;
+  background: #f5ecff;
+  color: #813181;
+  border-left: 3px solid #813181;
   font-weight: 600;
 }
 
 .sidebar-nav a:hover .nav-icon,
 .sidebar-nav a.active .nav-icon {
-  color: #283859;
+  color: #813181;
 }
 
 /* Unread badge */
