@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Skill(update-config)"
+      "Bash(npx tsc:*)"
     ]
   }
 }
