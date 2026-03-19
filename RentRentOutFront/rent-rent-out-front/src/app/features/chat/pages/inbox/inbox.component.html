@@ -66,7 +66,11 @@
         <!-- 2. Sredina (Istorija poruka) -->
         <div class="messages-area" #chatScroll>
 
-          <div *ngIf="messages.length === 0" class="no-messages-alert">
+          <div *ngIf="isLoadingMessages" class="messages-loading">
+            <div class="messages-spinner"></div>
+          </div>
+
+          <div *ngIf="!isLoadingMessages && messages.length === 0" class="no-messages-alert">
             Nema poruka. Pošaljite prvu poruku!
           </div>
 

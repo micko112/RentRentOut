@@ -37,6 +37,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   messages: Message[] =[];
   newMessageContent: string = '';
   myUserId: number | null = null;
+  isLoadingMessages = false;
 
   private messageSub!: Subscription;
   private pollSub!: Subscription;
@@ -159,11 +160,15 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
 
     if (conv.id === 0) {
       this.messages = [];
+      this.groupedMessages = [];
+      this.isLoadingMessages = false;
       this.scrollToBottomNeeded = true;
     } else {
+      this.isLoadingMessages = true;
       this.chatService.getMessages(conv.id).subscribe(res => {
         this.messages = res.content;
         this.updateGroupedMessages();
+        this.isLoadingMessages = false;
         this.scrollToBottomNeeded = true;
       });
     }
