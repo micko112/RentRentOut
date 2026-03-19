@@ -1,42 +1,75 @@
 .dashboard h2 {
   margin-top: 0;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   font-size: 22px;
+  font-weight: 700;
   color: #283859;
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
 }
 
 .stat-card {
   background: white;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e8ecf0;
   border-radius: 12px;
   padding: 24px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: box-shadow 0.2s;
 
-  .stat-value {
-    font-size: 40px;
-    font-weight: 700;
-    color: #283859;
-  }
-
-  .stat-label {
-    font-size: 14px;
-    color: #777;
-    margin-top: 8px;
+  &:hover {
+    box-shadow: 0 4px 16px rgba(40, 56, 89, 0.1);
   }
 
   &.highlight {
     border-color: #6ecf7e;
+    background: #f6fef7;
 
-    .stat-value {
-      color: #2e7d32;
-    }
+    .stat-value { color: #16a34a; }
   }
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .material-icons {
+    font-size: 26px;
+    color: white;
+  }
+
+  &.users     { background: #3b82f6; }
+  &.ads       { background: #f59e0b; }
+  &.contracts { background: #8b5cf6; }
+  &.active    { background: #16a34a; }
+}
+
+.stat-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 800;
+  color: #283859;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #888;
+  margin-top: 6px;
 }
 
 .loading {

@@ -16,13 +16,16 @@
     .listing-title {
       text-decoration: underline;
     }
+    img {
+      transform: scale(1.04);
+    }
   }
   img {
     width: 100%;
     height: 182px;
     display: block;
     object-fit: cover;
-
+    transition: transform 300ms ease;
   }
 
   .image-wrapper {
@@ -76,20 +79,20 @@
   }
 
   .listing-price {
-    color: #813181;
+    color: #16a34a;
     font-weight: 700;
     margin: 0;
     font-size: 16px;
   }
 
   .currency {
-    color: #813181;
+    color: #16a34a;
     font-size: 15px;
     font-weight: 700;
   }
 
   .interval {
-    color: #813181;
+    color: #16a34a;
     font-weight: 700;
     font-size: 15px;
     white-space: nowrap;
@@ -119,6 +122,5 @@
     min-height: auto;
   }
 }
-
 
 

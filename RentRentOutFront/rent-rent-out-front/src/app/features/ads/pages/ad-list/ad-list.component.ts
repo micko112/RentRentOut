@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AdCardComponent} from '../../components/ad-card/ad-card.component';
 import {CommonModule} from '@angular/common';
 import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
-import {first, Observable, switchMap, tap} from 'rxjs';
+import {finalize, first, Observable, switchMap, tap} from 'rxjs';
 
 import {AdService} from '../../services/ad.service';
 import {CategoryService} from '../../services/category.service';
@@ -15,12 +15,13 @@ import {
   CategoriesSidebarComponent
 } from '../../components/categories-sidebar/categories-sidebar/categories-sidebar.component';
 import {Location} from '../../../../shared/models/location.model';
+import {SkeletonCardComponent} from '../../../../shared/components/skeleton-card/skeleton-card.component';
 
 
 @Component({
   selector: 'app-ad-list',
   standalone: true,
-  imports: [CommonModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent],
+  imports: [CommonModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent, SkeletonCardComponent],
   templateUrl: './ad-list.component.html',
   styleUrl: './ad-list.component.css'
 })
@@ -33,6 +34,7 @@ export class AdListComponent implements OnInit {
   currentKeyword: string = "";
   activeCategory: string = "Svi oglasi";
   totalResults: number = 0;
+  isLoading = true;
 
   constructor(private adService: AdService,
               private categoryService: CategoryService,
@@ -55,6 +57,7 @@ export class AdListComponent implements OnInit {
     });
     this.adsPage$ = this.route.queryParams.pipe(
       switchMap(params => {
+          this.isLoading = true;
           const categoryId = params['categoryId'] ? Number(params['categoryId']) : undefined;
           this.updateActiveCategory(categoryId);
 
@@ -73,8 +76,8 @@ export class AdListComponent implements OnInit {
           };
 
           return this.adService.search(criteria).pipe(
-            tap(res => this.totalResults = res.totalElements
-            )
+            tap(res => this.totalResults = res.totalElements),
+            finalize(() => this.isLoading = false)
           );
 
         }

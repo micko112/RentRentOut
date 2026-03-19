@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { NotificationService } from '../../services/notification.service';
+import { PushNotificationService } from '../../services/push-notification.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,6 +15,7 @@ import { NotificationService } from '../../services/notification.service';
 export class SidebarComponent implements OnInit {
   private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
+  private pushNotificationService = inject(PushNotificationService);
   currentUser$ = this.authService.currentUser$;
   totalUnread$ = this.notificationService.totalUnread$;
 
@@ -21,6 +23,7 @@ export class SidebarComponent implements OnInit {
     const user = this.authService.currentUserValue;
     if (user) {
       this.notificationService.initialize();
+      this.pushNotificationService.requestAndSubscribe();
     }
   }
 }
