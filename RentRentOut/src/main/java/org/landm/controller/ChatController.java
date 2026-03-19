@@ -44,4 +44,10 @@ public class ChatController {
         Long myId = Long.parseLong(auth.getName());
         return ResponseEntity.ok(chatService.getMessagesForConversation(convId, myId, pageable));
     }
+
+    @GetMapping("/unread-count")
+    public ResponseEntity<Long> getUnreadCount(Authentication auth) {
+        Long myId = Long.parseLong(auth.getName());
+        return ResponseEntity.ok(chatService.getUnreadCount(myId));
+    }
 }

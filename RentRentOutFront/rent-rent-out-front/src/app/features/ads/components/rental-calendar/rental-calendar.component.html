@@ -1,0 +1,99 @@
+<div class="calendar-widget">
+  <div class="month">
+
+    <!-- Navigacija: prethodni / naziv meseca / sledeći -->
+    <div class="nav">
+      <div class="nav-arrow" (click)="changeMonth(-1)">
+        <img src="assets/icons/previous-calendar.png"/>
+      </div>
+      <div class="month-name">{{ displayDate | date:'MMMM yyyy' | titlecase }}</div>
+      <div class="nav-arrow" (click)="changeMonth(1)">
+        <img src="assets/icons/next-calendar.png"/>
+      </div>
+    </div>
+
+    <!-- Dani u nedelji -->
+    <div class="weekdays">
+      <div *ngFor="let day of weekdays" class="weekday">{{ day }}</div>
+    </div>
+
+    <!-- Grid dana -->
+    <div class="dates">
+      <div *ngFor="let day of daysInMonth"
+           class="day-cell"
+           [ngClass]="{
+             'past':       day?.isPast,
+             'blocked':    day?.isBlocked,
+             'in-range':   day?.isSelected,
+             'start-date': day?.isStartDate,
+             'end-date':   day?.isEndDate
+           }"
+           (click)="selectDate(day)">
+        <span class="day-number" *ngIf="day?.isCurrentMonth">{{ day?.dayOfMonth }}</span>
+      </div>
+    </div>
+
+    <!-- Prikaz izabranih datuma + brisanje -->
+    <div class="pickup-clear-dates">
+
+      <!-- Zakupac vidi: Preuzmi / Vrati -->
+      <div class="pickup-dropoff-wrapper" *ngIf="!isMyAd">
+        <div class="date-info">
+          <span class="label">Preuzmi</span>
+          <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
+        </div>
+        <div class="date-info">
+          <span class="label">Vrati</span>
+          <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
+        </div>
+      </div>
+
+      <!-- Vlasnik vidi: Od / Do -->
+      <span class="item-unavailable-message" *ngIf="isMyAd">Predmet neće biti dostupan od</span>
+      <div class="pickup-dropoff-wrapper" *ngIf="isMyAd">
+        <div class="date-info">
+          <span class="label">Od</span>
+          <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
+        </div>
+        <div class="date-info">
+          <span class="label">Do</span>
+          <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
+        </div>
+      </div>
+
+      <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
+    </div>
+
+    <!-- Cena i dugme za akciju -->
+    <div class="payment-section">
+
+      <!-- Zakupac: prikaz cene -->
+      <div class="payment-dates" *ngIf="!isMyAd">
+        <div class="choose-dates" *ngIf="numberOfDays === 0">
+          Izaberite datume
+        </div>
+        <div class="price-calculation" *ngIf="numberOfDays > 0">
+          <div class="total-price">{{ (ad.price * numberOfDays) | number }} din</div>
+          <div class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</div>
+        </div>
+      </div>
+
+      <!-- Zakupac: pošalji zahtev -->
+      <button class="request-btn"
+              *ngIf="!isMyAd"
+              [disabled]="!startDate || !endDate"
+              (click)="sendRequest()">
+        Pošalji zahtev
+      </button>
+
+      <!-- Vlasnik: blokiraj datume -->
+      <button class="request-btn"
+              *ngIf="isMyAd"
+              [disabled]="!startDate || !endDate"
+              (click)="blockDates()">
+        Postavi zauzeto
+      </button>
+
+    </div>
+  </div>
+</div>

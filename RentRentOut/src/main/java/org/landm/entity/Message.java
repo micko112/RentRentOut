@@ -2,6 +2,7 @@ package org.landm.entity;
 
 
 import jakarta.persistence.*;
+import org.landm.entity.Enums.MessageType;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -27,6 +28,13 @@ public class Message {
 
     @Column(name = "is_read", nullable = false)
     private boolean isRead = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "message_type", nullable = false)
+    private MessageType messageType = MessageType.REGULAR;
+
+    @Column(name = "related_contract_id")
+    private Long relatedContractId;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -82,6 +90,22 @@ public class Message {
 
     public void setRead(boolean read) {
         isRead = read;
+    }
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
+    }
+
+    public Long getRelatedContractId() {
+        return relatedContractId;
+    }
+
+    public void setRelatedContractId(Long relatedContractId) {
+        this.relatedContractId = relatedContractId;
     }
 
     public LocalDateTime getCreatedAt() {

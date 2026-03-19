@@ -16,6 +16,7 @@ import org.landm.repository.AdRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
+import org.landm.service.ChatService;
 import org.landm.service.RentalContractService;
 import org.landm.specification.RentalContractSpecification;
 import org.springframework.data.domain.Page;
@@ -42,14 +43,17 @@ public class RentalContractServiceImpl implements RentalContractService {
     private final AdRepository adRepository;
     private final RentalContractMapper rentalContractMapper;
     private final RentalContractRepository rentalContractRepository;
+    private final ChatService chatService;
 
     public RentalContractServiceImpl(JwtUtil jwtUtil, UserRepository userRepository, AdRepository adRepository,
-                                     RentalContractMapper rentalContractMapper, RentalContractRepository rentalContractRepository) {
+                                     RentalContractMapper rentalContractMapper, RentalContractRepository rentalContractRepository,
+                                     ChatService chatService) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.adRepository = adRepository;
         this.rentalContractMapper = rentalContractMapper;
         this.rentalContractRepository = rentalContractRepository;
+        this.chatService = chatService;
     }
     
     @Override
@@ -92,7 +96,11 @@ public class RentalContractServiceImpl implements RentalContractService {
         rentalToCreate.setOfferSender(lessee);
         rentalToCreate.setContractStatus(ContractStatus.REQUESTED);
         rentalToCreate.setAmount(req.getAmount());
-        return rentalContractMapper.toDto(rentalContractRepository.save(rentalToCreate));
+        RentalContract saved = rentalContractRepository.save(rentalToCreate);
+
+        chatService.sendContractRequestMessage(saved);
+
+        return rentalContractMapper.toDto(saved);
     }
 
     @Override
@@ -123,9 +131,10 @@ public class RentalContractServiceImpl implements RentalContractService {
             throw new RuntimeException("Invalid status transition");
         }
 
-        if (newStatus == ContractStatus.ACCEPTED || newStatus == ContractStatus.FINISHED 
-        		|| newStatus == ContractStatus.CANCELLED || newStatus == ContractStatus.ACTIVE) {
-            changeStatus(contract, req.getNewStatus(), userId);	
+        if (newStatus == ContractStatus.ACCEPTED || newStatus == ContractStatus.FINISHED
+        		|| newStatus == ContractStatus.CANCELLED || newStatus == ContractStatus.ACTIVE
+        		|| newStatus == ContractStatus.REJECTED) {
+            changeStatus(contract, req.getNewStatus(), userId);
         }
 
         if(newStatus == ContractStatus.REQUESTED) {
@@ -238,9 +247,18 @@ public class RentalContractServiceImpl implements RentalContractService {
             }
         	
         	//sve provere su prosle, promena statusa i cuvanje ugovora
-        	
+
         	contract.setContractStatus(ContractStatus.ACCEPTED);
             rentalContractRepository.save(contract);
+
+            String ownerName = owner.getFirstname();
+            chatService.sendSystemMessage(
+                ad.getId(),
+                lessee.getId(),
+                owner.getId(),
+                ownerName + " je prihvatio/la vaš zahtev za iznajmljivanje.",
+                userId
+            );
         }
 		if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.ACTIVE) {
 			contract.setContractStatus(ContractStatus.ACTIVE);
@@ -251,6 +269,22 @@ public class RentalContractServiceImpl implements RentalContractService {
             rentalContractRepository.save(contract);
         }
 
+
+        if (oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.REJECTED) {
+            User lessor = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found!"));
+            User contractLessee = contract.getLessee();
+            contract.setContractStatus(ContractStatus.REJECTED);
+            rentalContractRepository.save(contract);
+
+            chatService.sendSystemMessage(
+                contract.getAd().getId(),
+                contractLessee.getId(),
+                lessor.getId(),
+                lessor.getFirstname() + " je odbio/la vaš zahtev za iznajmljivanje.",
+                userId
+            );
+        }
 
         if (oldStatus == ContractStatus.ACTIVE && newStatus == ContractStatus.CANCELLED) {
         	// Prvo pogledati ko je raskinuo ugovor

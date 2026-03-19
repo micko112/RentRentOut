@@ -4,8 +4,12 @@ package org.landm.mapper;
 import org.landm.dto.chat.ConversationPreviewDto;
 import org.landm.dto.chat.MessageDto;
 import org.landm.entity.Conversation;
+import org.landm.entity.Enums.MessageType;
 import org.landm.entity.Message;
+import org.landm.entity.RentalContract;
 import org.landm.entity.User;
+import org.landm.repository.MessageRepository;
+import org.landm.repository.RentalContractRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,9 +20,14 @@ public class ChatMapper {
 
 
     private final UserMapper userMapper;
+    private final MessageRepository messageRepository;
+    private final RentalContractRepository rentalContractRepository;
 
-    public ChatMapper(UserMapper userMapper) {
+    public ChatMapper(UserMapper userMapper, MessageRepository messageRepository,
+                      RentalContractRepository rentalContractRepository) {
         this.userMapper = userMapper;
+        this.messageRepository = messageRepository;
+        this.rentalContractRepository = rentalContractRepository;
     }
 
     public MessageDto toMessageDto(Message m){
@@ -30,7 +39,21 @@ public class ChatMapper {
         dto.setSenderId(m.getSender().getId());
         dto.setContent(m.getContent());
         dto.setRead(m.isRead());
+        dto.setMessageType(m.getMessageType().name());
+        dto.setRelatedContractId(m.getRelatedContractId());
         dto.setCreatedAt(m.getCreatedAt());
+
+        if (m.getMessageType() == MessageType.CONTRACT_REQUEST && m.getRelatedContractId() != null) {
+            rentalContractRepository.findById(m.getRelatedContractId()).ifPresent(contract -> {
+                dto.setContractAdTitle(contract.getAd().getTitle());
+                dto.setContractStartDate(contract.getStartDate().toString());
+                dto.setContractEndDate(contract.getEndDate().toString());
+                dto.setContractTotalPrice(contract.getAgreedPrice()
+                        .multiply(java.math.BigDecimal.valueOf(contract.getAmount())));
+                dto.setContractCurrency(contract.getCurrency().name());
+            });
+        }
+
         return dto;
     }
     public ConversationPreviewDto toDto(Conversation c, Long myUserId){
@@ -55,7 +78,8 @@ public class ChatMapper {
         }
 
 
-        dto.setUnreadCount(0);
+        long unread = messageRepository.countUnreadForConversation(c.getId(), myUserId);
+        dto.setUnreadCount((int) unread);
         return dto;
     }
 }

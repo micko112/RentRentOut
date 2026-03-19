@@ -27,6 +27,8 @@
     <include file="/db/changelog/db.changelog-7-create-email-verification-token.xml"/>
     <include file="/db/changelog/db.changelog-9-create-chat.xml"/>
     <include file="/db/changelog/db.changelog-10-create-password-reset-token.xml"/>
+    <include file="/db/changelog/db.changelog-11-add-message-type.xml"/>
+    <include file="/db/changelog/db.changelog-12-add-related-contract-id.xml"/>
 
     <include file="/db/changelog/db.changelog-seed-location.xml"/>
     <include file="/db/changelog/db.changelog-seed-categories-full.xml"/>
