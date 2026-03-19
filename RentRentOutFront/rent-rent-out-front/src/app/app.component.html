@@ -1,8 +1,8 @@
 <app-header></app-header>
 <app-navbar></app-navbar>
 
-<div class="main-app-wrapper" [class.has-sidebar]="showSidebar$ | async" [class.is-admin]="isAdmin$ | async">
-  <app-sidebar *ngIf="showSidebar$ | async"></app-sidebar>
+<div class="main-app-wrapper" [class.has-sidebar]="openSidebar$ | async">
+  <app-sidebar></app-sidebar>
   <main class="page-content">
     <router-outlet></router-outlet>
   </main>

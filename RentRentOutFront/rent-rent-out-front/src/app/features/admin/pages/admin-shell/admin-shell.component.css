@@ -1,66 +1,46 @@
 .admin-layout {
   display: flex;
-  min-height: calc(100vh - 142px);
+  min-height: calc(100vh - 100px);
 }
 
-/* ── Sidebar ── */
 .admin-sidebar {
-  width: 220px;
+  width: 240px;
   flex-shrink: 0;
   background: #283859;
   color: white;
-  display: flex;
-  flex-direction: column;
+  padding: 20px 0;
 }
 
 .sidebar-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 20px 20px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 
   h2 {
     margin: 0;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
-    white-space: nowrap;
   }
-}
-
-.sidebar-logo-icon {
-  font-size: 22px;
-  color: #6ecf7e;
-  flex-shrink: 0;
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  padding-top: 8px;
+  padding-top: 12px;
 
   a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     padding: 12px 20px;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255,255,255,0.8);
     text-decoration: none;
-    font-size: 14px;
-    transition: background 0.15s, color 0.15s;
-
-    .material-icons {
-      font-size: 18px;
-      flex-shrink: 0;
-    }
+    font-size: 15px;
+    transition: background 0.2s;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.1);
       color: white;
     }
 
     &.active {
-      background: rgba(110, 207, 126, 0.15);
+      background: rgba(110, 207, 126, 0.25);
       color: #6ecf7e;
       font-weight: 600;
       border-left: 3px solid #6ecf7e;
@@ -68,11 +48,9 @@
   }
 }
 
-/* ── Content ── */
 .admin-content {
   flex-grow: 1;
-  background: #f5f7fa;
-  padding: 32px;
+  background: #f5f5f5;
+  padding: 30px;
   min-width: 0;
-  overflow-x: auto;
 }

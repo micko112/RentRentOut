@@ -45,41 +45,30 @@
 
       <h1 class="page-title" *ngIf="!isSearchMode">{{ activeCategory }}</h1>
 
-      <ng-container *ngIf="isLoading; else adsList">
+      <ng-container *ngIf="adsPage$ | async as adsPage">
+        <!-- Ovde se menja Grid ili Lista -->
         <div [ngClass]="isSearchMode ? 'list-layout' : 'grid-layout'">
-          <app-skeleton-card
-            *ngFor="let i of [1,2,3,4,5,6,7,8]"
-            [listView]="isSearchMode">
-          </app-skeleton-card>
+          <app-ad-card
+            *ngFor="let ad of adsPage.content"
+            [ad]="ad"
+            [viewMode]="isSearchMode ? 'list' : 'grid'">
+          </app-ad-card>
+        </div>
+
+        <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
+          <button class="page-btn"
+                  [disabled]="adsPage.first"
+                  (click)="goToPage(adsPage.number - 1)">
+            &laquo; Prethodna
+          </button>
+          <span class="page-info">Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}</span>
+          <button class="page-btn"
+                  [disabled]="adsPage.last"
+                  (click)="goToPage(adsPage.number + 1)">
+            Sledeća &raquo;
+          </button>
         </div>
       </ng-container>
-
-      <ng-template #adsList>
-        <ng-container *ngIf="adsPage$ | async as adsPage">
-          <!-- Ovde se menja Grid ili Lista -->
-          <div [ngClass]="isSearchMode ? 'list-layout' : 'grid-layout'">
-            <app-ad-card
-              *ngFor="let ad of adsPage.content"
-              [ad]="ad"
-              [viewMode]="isSearchMode ? 'list' : 'grid'">
-            </app-ad-card>
-          </div>
-
-          <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
-            <button class="page-btn"
-                    [disabled]="adsPage.first"
-                    (click)="goToPage(adsPage.number - 1)">
-              &laquo; Prethodna
-            </button>
-            <span class="page-info">Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}</span>
-            <button class="page-btn"
-                    [disabled]="adsPage.last"
-                    (click)="goToPage(adsPage.number + 1)">
-              Sledeća &raquo;
-            </button>
-          </div>
-        </ng-container>
-      </ng-template>
 
     </main>
 

@@ -1,10 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'Lato';
+  src: url('/assets/fonts/lato/LatoLatin-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('/assets/fonts/lato/LatoLatin-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 * {
   box-sizing: border-box;
 }
 html{
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: 'Lato', Arial, sans-serif;
 }
 button,
 input,
@@ -27,7 +42,7 @@ body {
   border-bottom:  1px solid #dfdede;
 }
 :root {
-  --primary-color: #6ecf7e;
+  --primary-color: #813181;
   --secondary-color: #6ecf7e;
   --accent-color: #283859;
   --bg-color: #ffffff;

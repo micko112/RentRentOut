@@ -1,15 +1,8 @@
 .main-app-wrapper {
   display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-.main-app-wrapper:not(.has-sidebar) .page-content {
-  max-width: 1180px;
-  margin: 0 auto;
-  width: 100%;
-  padding-left: 15px;
-  padding-right: 15px;
+  align-items: flex-start; /* critical: lets sticky work and sidebar not stretch */
+  gap: 200px;              /* 200px gap between sidebar and content */
+  /*padding: 0 15px;*/
 }
 
 .page-content {
@@ -18,20 +11,9 @@
   padding-top: 30px;
 }
 
-.main-app-wrapper.is-admin .page-content {
-  padding: 0;
-  max-width: none;
-  margin: 0;
-}
-
 @media (max-width: 900px) {
   .main-app-wrapper {
     flex-direction: column;
-    gap: 0;
-  }
-
-  .main-app-wrapper:not(.has-sidebar) .page-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    gap: 20px;
   }
 }

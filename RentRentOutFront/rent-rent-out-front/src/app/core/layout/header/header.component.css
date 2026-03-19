@@ -97,8 +97,8 @@
   }
 }
 .search-bar:focus-within {
-  border: 1px solid #6ecf7e;
-  box-shadow: 0 4px 10px rgba(110, 207, 126, 0.27);
+  border: 1px solid #813181;
+  box-shadow: 0 4px 10px rgba(129, 49, 129, 0.27);
 }
 .user-actions {
   flex: 0 0 auto;
