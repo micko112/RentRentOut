@@ -67,4 +67,8 @@ export class AdService {
   getAdsByUser(userId: number) : Observable<Page<AdPreview>> {
     return this.http.get<Page<AdPreview>>(`${this.adApiUrl}/user/${userId}`);
   }
+
+  updateAdStatus(id: number, status: string): Observable<Ad> {
+    return this.http.patch<Ad>(`${this.adApiUrl}/${id}/status?status=${status}`, {});
+  }
 }

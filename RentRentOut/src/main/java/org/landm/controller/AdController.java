@@ -2,6 +2,7 @@ package org.landm.controller;
 
 import jakarta.validation.Valid;
 import org.landm.dto.ad.*;
+import org.landm.entity.Enums.AdStatus;
 import org.landm.service.AdService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +57,15 @@ public class AdController {
     public ResponseEntity<String> deleteAd(@PathVariable Long adId, Authentication auth){
     	Long userId = Long.parseLong(auth.getName());
     	return new ResponseEntity<>(adService.deleteAd(adId, userId), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PatchMapping("/{adId}/status")
+    public ResponseEntity<AdDto> updateAdStatus(@PathVariable Long adId,
+                                                @RequestParam AdStatus status,
+                                                Authentication auth) {
+        Long userId = Long.parseLong(auth.getName());
+        return ResponseEntity.ok(adService.updateAdStatus(adId, status, userId));
     }
     
     @GetMapping("/search")

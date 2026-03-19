@@ -250,6 +250,21 @@ public class AdServiceImpl implements AdService {
 		return "Successfully deleted your Ad!";
 	}
 
+    @Transactional
+    @Override
+    public AdDto updateAdStatus(Long adId, AdStatus newStatus, Long userId) {
+        Ad ad = adRepository.findById(adId)
+                .orElseThrow(() -> new RuntimeException("Ad not found"));
+        if (!ad.getOwner().getId().equals(userId)) {
+            throw new RuntimeException("Not authorized to modify this ad");
+        }
+        if (newStatus == AdStatus.DELETED || newStatus == AdStatus.SUSPENDED_BY_ADMIN) {
+            throw new RuntimeException("Invalid status transition — use the delete endpoint instead.");
+        }
+        ad.setAdStatus(newStatus);
+        return adMapper.toDto(adRepository.save(ad));
+    }
+
     @Override
     public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable) {
         Specification<Ad> specification = (root, query, criteriaBuilder) -> {

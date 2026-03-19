@@ -23,5 +23,6 @@ public interface AdService {
     public Page<AdPreviewDto> findAll(Pageable pageable);
     public Page<AdPreviewDto> findAllByUser(Pageable pageable, Long userId);
 
+    public AdDto updateAdStatus(Long adId, AdStatus newStatus, Long userId);
 
 }

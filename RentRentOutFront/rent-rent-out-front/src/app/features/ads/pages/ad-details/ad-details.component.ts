@@ -30,6 +30,7 @@ export class AdDetailsComponent implements OnInit {
   isMyAd: boolean = false;
   currentAd!: Ad;
   blockedIntervals: { start: Date, end: Date }[] = [];
+  showDeleteConfirm: boolean = false;
 
   realPhoneNumber: string | null = null;
   isLoadingPhone: boolean = false;
@@ -138,6 +139,54 @@ export class AdDetailsComponent implements OnInit {
         this.isLoadingPhone = false;
       }
     });
+  }
+
+  deleteAd(): void {
+    if (!this.currentAd) return;
+    this.adService.deleteAd(this.currentAd.id).subscribe({
+      next: () => {
+        this.showDeleteConfirm = false;
+        this.toastService.showSuccess('Oglas je uspešno obrisan.');
+        this.router.navigate(['/ads']);
+      },
+      error: (err) => {
+        this.showDeleteConfirm = false;
+        this.toastService.showError(err.error?.message || 'Greška pri brisanju oglasa.');
+      }
+    });
+  }
+
+  parkAd(): void {
+    if (!this.currentAd) return;
+    this.adService.updateAdStatus(this.currentAd.id, 'PAUSED').subscribe({
+      next: (updated) => {
+        this.currentAd = { ...this.currentAd, adStatus: updated.adStatus };
+        this.toastService.showSuccess('Oglas je parkiran i više nije vidljiv u pretrazi.');
+      },
+      error: (err) => this.toastService.showError(err.error?.message || 'Greška pri parkiranju.')
+    });
+  }
+
+  unparkAd(): void {
+    if (!this.currentAd) return;
+    this.adService.updateAdStatus(this.currentAd.id, 'ACTIVE').subscribe({
+      next: (updated) => {
+        this.currentAd = { ...this.currentAd, adStatus: updated.adStatus };
+        this.toastService.showSuccess('Oglas je ponovo aktivan.');
+      },
+      error: (err) => this.toastService.showError(err.error?.message || 'Greška pri obnavljanju.')
+    });
+  }
+
+  getAdStatusLabel(status: string): string {
+    const map: Record<string, string> = {
+      ACTIVE: 'Aktivan',
+      PAUSED: 'Parkiran',
+      RENTED: 'Iznajmljeno',
+      ARCHIVED: 'Arhiviran',
+      DELETED: 'Obrisan',
+    };
+    return map[status] ?? status;
   }
 
   startChat(): void {
