@@ -10,6 +10,8 @@ public enum ContractStatus {
     AD_DELETED,
     DELETED,
     BLOCKED_BY_OWNER,
-    CANCELLED_BY_ADMIN;
+    CANCELLED_BY_ADMIN,
+    EXPIRED,
+    CANCELLED_AFTER_ACCEPT;
 
 }

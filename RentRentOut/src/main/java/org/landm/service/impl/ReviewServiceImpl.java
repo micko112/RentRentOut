@@ -75,8 +75,9 @@ public class ReviewServiceImpl implements ReviewService {
             throw new RuntimeException("Vec ste stavili ocenu!");
         }
 
-        if(rc.getContractStatus() != ContractStatus.FINISHED){
-            throw new RuntimeException("Ugovor nije zavrsen");
+        if (rc.getContractStatus() != ContractStatus.FINISHED
+                && rc.getContractStatus() != ContractStatus.CANCELLED_AFTER_ACCEPT) {
+            throw new RuntimeException("Ugovor nije završen ili otkazan nakon prihvatanja.");
         }
 
         User reviewee;
@@ -127,8 +128,9 @@ public class ReviewServiceImpl implements ReviewService {
            return new ReviewEligibilityDto(false, "Ne možete ocenjivati jer ste se nedavno registrovali.");
                 }
         */
-        if (rc.getContractStatus() != ContractStatus.FINISHED) {
-            return new ReviewEligibilityDto(false, "Ne može se utvrditi da je do kupoprodaje (iznajmljivanja) došlo.");
+        if (rc.getContractStatus() != ContractStatus.FINISHED
+                && rc.getContractStatus() != ContractStatus.CANCELLED_AFTER_ACCEPT) {
+            return new ReviewEligibilityDto(false, "Ne može se utvrditi da je do iznajmljivanja došlo.");
         }
         if (rc.getEndDate().isBefore(LocalDate.now().minusDays(30))) {
             return new ReviewEligibilityDto(false, "Ovaj dogovor je završen pre više od 30 dana.");
