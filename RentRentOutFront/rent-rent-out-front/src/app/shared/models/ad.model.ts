@@ -21,4 +21,6 @@ location: Location;
 dateIntervals: string;
 blockedIntervals: DateInterval[];
 currency: string;
+viewCount?: number;
+saved?: boolean;
 }

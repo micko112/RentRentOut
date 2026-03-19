@@ -161,7 +161,7 @@
 .btn-text-only {
   width: 100%;
   padding: 12px;
-  background-color: rgb(0, 138, 230);
+  background-color: #813181;
   border: none;
   color: #ffffff;
   border-radius: 8px;
@@ -171,7 +171,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #0071bd;
+    background-color: #6a2769;
     color: white;
   }
 }
@@ -194,6 +194,21 @@
   padding: 24px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
+
+  .title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.2;
+      margin: 0;
+      flex: 1;
+    }
+  }
 
   h1 {
     font-size: 28px;
@@ -252,7 +267,7 @@
     height: 64px;
     flex-shrink: 0;
     border-radius: 50%;
-    background-color: #0071bd; /* Tvoja teget boja */
+    background-color: #813181;
     color: white;
     display: flex;
     align-items: center;
@@ -290,7 +305,7 @@
 
         &:hover {
           text-decoration: underline;
-          color: #0071bd;
+          color: #813181;
         }
       }
 
@@ -372,8 +387,9 @@
     .btn-reveal-phone {
       border: none;
       background-color: white;
+      cursor: pointer;
       &:hover {
-        background-color: #eef6fc; /* Blago plava na hover */
+        background-color: #f5ecff;
       }
     }
 
@@ -394,10 +410,70 @@
   }
 
 }
+.btn-save-details {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 2px solid #813181;
+  border-radius: 8px;
+  background: white;
+  color: #813181;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  .material-icons {
+    font-size: 20px;
+    transition: color 0.2s ease;
+  }
+
+  &:hover {
+    background: #f5ecff;
+  }
+
+  &.saved {
+    background: #813181;
+    color: white;
+
+    .material-icons {
+      color: white;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.ad-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #888;
+
+    .stat-icon {
+      font-size: 16px;
+      color: #aaa;
+    }
+  }
+}
+
 .btn-message {
   width: 100%;
   padding: 12px;
-  background-color: rgb(0, 138, 230); /* Tvoja plava boja za glavnu akciju */
+  background-color: #813181;
   color: white;
   border: none;
   border-radius: 8px;
@@ -407,7 +483,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #0071bd;
+    background-color: #6a2769;
   }
 }
 /* image overlay ------------------------------------------------------------------*/

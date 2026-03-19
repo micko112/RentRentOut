@@ -23,6 +23,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -38,12 +40,15 @@ public class AdServiceImpl implements AdService {
     private final LocationRepository locationRepository;
     private final RentalContractRepository rentalContractRepository;
     private final RentalContractService rentalContractService;
+    private final AdViewRepository adViewRepository;
+    private final SavedAdRepository savedAdRepository;
 
     public AdServiceImpl(AdRepository adRepository, UserRepository userRepository,
-                         AdMapper adMapper, LocationMapper locationMapper, 
-                         CategoryRepository categoryRepository, LocationRepository locationRepository, 
-                         JwtUtil jwtUtil, RentalContractRepository rentalContractRepository, 
-                         RentalContractService rentalContractService, CategoryService categoryService) {
+                         AdMapper adMapper, LocationMapper locationMapper,
+                         CategoryRepository categoryRepository, LocationRepository locationRepository,
+                         JwtUtil jwtUtil, RentalContractRepository rentalContractRepository,
+                         RentalContractService rentalContractService, CategoryService categoryService,
+                         AdViewRepository adViewRepository, SavedAdRepository savedAdRepository) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adMapper = adMapper;
@@ -52,8 +57,10 @@ public class AdServiceImpl implements AdService {
         this.locationRepository = locationRepository;
         this.jwtUtil = jwtUtil;
         this.rentalContractRepository = rentalContractRepository;
-        this.rentalContractService = rentalContractService ;
+        this.rentalContractService = rentalContractService;
         this.categoryService = categoryService;
+        this.adViewRepository = adViewRepository;
+        this.savedAdRepository = savedAdRepository;
     }
 
 //    @Override
@@ -91,16 +98,24 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdDto getAdById(Long id) {
         Ad ad = adRepository.findById(id).orElseThrow(() -> new RuntimeException("Ad not found with id: " + id));
-        
+
         List<RentalContract> contracts = rentalContractService
-        		.findByAdIdAndContractStatusIn(ad.getId(), List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE, ContractStatus.BLOCKED_BY_OWNER));
-        //TREBA TRANSACTIONAL
+                .findByAdIdAndContractStatusIn(ad.getId(), List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE, ContractStatus.BLOCKED_BY_OWNER));
         System.out.println("DEBUG: Broj ugovora za oglas " + id + " je: " + contracts.size());
         List<DateInterval> blockedIntervals = getBlockedIntervals(contracts, ad.getTotalQuantity());
-        
+
         AdDto adDto = adMapper.toDto(ad);
         adDto.setBlockedIntervals(blockedIntervals);
-        
+
+        return adDto;
+    }
+
+    @Override
+    public AdDto getAdById(Long id, Long userId) {
+        AdDto adDto = getAdById(id);
+        if (userId != null) {
+            adDto.setSaved(savedAdRepository.existsByUserIdAndAdId(userId, id));
+        }
         return adDto;
     }
     
@@ -186,9 +201,19 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public Page<AdPreviewDto> getAllActiveAds(Pageable pageable) {
-
         Page<Ad> adPage = adRepository.findAllByAdStatus(AdStatus.ACTIVE, pageable);
         return adPage.map(adMapper::toPreviewDto);
+    }
+
+    @Override
+    public Page<AdPreviewDto> getAllActiveAds(Pageable pageable, Long userId) {
+        Page<Ad> adPage = adRepository.findAllByAdStatus(AdStatus.ACTIVE, pageable);
+        Set<Long> savedAdIds = getSavedAdIds(userId, adPage);
+        return adPage.map(ad -> {
+            AdPreviewDto dto = adMapper.toPreviewDto(ad);
+            dto.setSaved(savedAdIds.contains(ad.getId()));
+            return dto;
+        });
     }
 
     @Override
@@ -250,21 +275,19 @@ public class AdServiceImpl implements AdService {
 		return "Successfully deleted your Ad!";
 	}
 
-    @Override
-    public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable) {
-        Specification<Ad> specification = (root, query, criteriaBuilder) -> {
+    private Specification<Ad> buildSearchSpec(AdSearchCriteriaDto criteria) {
+        return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if(criteria.getKeyword() != null && !criteria.getKeyword().isBlank()){
+            if (criteria.getKeyword() != null && !criteria.getKeyword().isBlank()) {
                 String keywordPattern = "%" + criteria.getKeyword().toLowerCase() + "%";
                 Predicate titleLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), keywordPattern);
                 Predicate descriptionLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), keywordPattern);
                 predicates.add(criteriaBuilder.or(titleLike, descriptionLike));
             }
-            if(criteria.getCategoryId() != null){
+            if (criteria.getCategoryId() != null) {
                 List<Long> categoryIds = categoryService.findAllSubCategoryId(criteria.getCategoryId());
-                if (!categoryIds.isEmpty()){
+                if (!categoryIds.isEmpty()) {
                     predicates.add(root.get("category").get("id").in(categoryIds));
-
                 }
             }
             if (criteria.getMinPrice() != null) {
@@ -279,8 +302,33 @@ public class AdServiceImpl implements AdService {
             predicates.add(criteriaBuilder.equal(root.get("adStatus"), AdStatus.ACTIVE));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
-        Page<Ad> adPage = adRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable) {
+        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), pageable);
         return adPage.map(adMapper::toPreviewDto);
+    }
+
+    @Override
+    public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable, Long userId) {
+        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), pageable);
+        Set<Long> savedAdIds = getSavedAdIds(userId, adPage);
+        return adPage.map(ad -> {
+            AdPreviewDto dto = adMapper.toPreviewDto(ad);
+            dto.setSaved(savedAdIds.contains(ad.getId()));
+            return dto;
+        });
+    }
+
+    private Set<Long> getSavedAdIds(Long userId, Page<Ad> adPage) {
+        if (userId == null) {
+            return Set.of();
+        }
+        List<Long> adIds = adPage.getContent().stream().map(Ad::getId).collect(Collectors.toList());
+        return adIds.stream()
+                .filter(adId -> savedAdRepository.existsByUserIdAndAdId(userId, adId))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -288,12 +336,60 @@ public class AdServiceImpl implements AdService {
         Page<Ad> adPage = adRepository.findAll(pageable);
         return adPage.map(adMapper::toPreviewDto);
     }
+
     @Override
-    public Page<AdPreviewDto> findAllByUser(Pageable pageable, Long userId){
+    public Page<AdPreviewDto> findAllByUser(Pageable pageable, Long userId) {
         Page<Ad> adPage = adRepository.findAllByOwnerId(userId, pageable);
         return adPage.map(adMapper::toPreviewDto);
     }
 
+    @Override
+    @Transactional
+    public void recordView(Long adId, Long userId) {
+        if (!adViewRepository.existsByUserIdAndAdId(userId, adId)) {
+            Ad ad = adRepository.findById(adId)
+                    .orElseThrow(() -> new RuntimeException("Ad not found with id: " + adId));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+            AdView adView = new AdView(user, ad);
+            adViewRepository.save(adView);
+            ad.setViewCount(ad.getViewCount() + 1);
+            adRepository.save(ad);
+        }
+    }
 
+    @Override
+    @Transactional
+    public void saveAd(Long adId, Long userId) {
+        if (!savedAdRepository.existsByUserIdAndAdId(userId, adId)) {
+            Ad ad = adRepository.findById(adId)
+                    .orElseThrow(() -> new RuntimeException("Ad not found with id: " + adId));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+            SavedAd savedAd = new SavedAd(user, ad);
+            savedAdRepository.save(savedAd);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void unsaveAd(Long adId, Long userId) {
+        savedAdRepository.deleteByUserIdAndAdId(userId, adId);
+    }
+
+    @Override
+    public boolean isSaved(Long adId, Long userId) {
+        return savedAdRepository.existsByUserIdAndAdId(userId, adId);
+    }
+
+    @Override
+    public Page<AdPreviewDto> getSavedAds(Long userId, Pageable pageable) {
+        Page<SavedAd> savedAds = savedAdRepository.findAllByUserId(userId, pageable);
+        return savedAds.map(savedAd -> {
+            AdPreviewDto dto = adMapper.toPreviewDto(savedAd.getAd());
+            dto.setSaved(true);
+            return dto;
+        });
+    }
 
 }

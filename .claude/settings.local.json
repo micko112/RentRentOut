@@ -2,8 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc:*)",
-      "Skill(update-config)"
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)",
+      "Bash(mvn package:*)"
     ]
-
   }
 }

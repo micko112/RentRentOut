@@ -40,7 +40,26 @@
         </div>
       </div>
       <div class="info">
-        <h1>{{ ad.title }}</h1>
+        <div class="title-row">
+          <h1>{{ ad.title }}</h1>
+          <button
+            *ngIf="isLoggedIn && !isMyAd"
+            class="btn-save-details"
+            [class.saved]="isSaved"
+            [disabled]="isTogglingS"
+            (click)="toggleSave()">
+            <span class="material-icons">{{ isSaved ? 'bookmark' : 'bookmark_border' }}</span>
+            <span>{{ isSaved ? 'Sačuvano' : 'Sačuvaj oglas' }}</span>
+          </button>
+        </div>
+
+        <div class="ad-stats" *ngIf="ad.viewCount && ad.viewCount > 0">
+          <span class="stat-item">
+            <span class="material-icons stat-icon">visibility</span>
+            {{ ad.viewCount }} pregleda
+          </span>
+        </div>
+
         <div class="price-currency">
           <div class="price">{{ ad.price | number }}</div>
           <span class="currency">{{ ad.currency }} </span>

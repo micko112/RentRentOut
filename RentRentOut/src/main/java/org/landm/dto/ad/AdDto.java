@@ -29,6 +29,8 @@ public class AdDto {
     private LocationDto location;
 
     private List<DateInterval> blockedIntervals;
+    private int viewCount;
+    private boolean saved;
 
     public String getTitle() {
         return title;
@@ -115,5 +117,21 @@ public class AdDto {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
     }
 }

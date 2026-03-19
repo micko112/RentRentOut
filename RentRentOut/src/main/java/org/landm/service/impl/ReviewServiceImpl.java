@@ -117,7 +117,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(review);
         userRepository.save(reviewee);
         String reviewerName = reviewer.getFirstname() + " " + reviewer.getLastname();
-        String sentiment = review.getType() == ReviewType.POSITIVE ? "pozitivnu" : "negativnu";
+        String sentiment = review.getReviewType() == ReviewType.POSITIVE ? "pozitivnu" : "negativnu";
         notifPersistenceService.create(
             reviewee.getId(), NotificationType.NEW_REVIEW,
             "Nova ocena",

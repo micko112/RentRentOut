@@ -28,7 +28,8 @@
   .image-wrapper {
     width: 100%;
     height: 182px;
-    background-color: #f5f5f5
+    background-color: #f5f5f5;
+    position: relative;
   }
 }
 
@@ -97,6 +98,64 @@
   }
 }
 
+
+.save-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: background 0.15s ease, transform 0.15s ease;
+  z-index: 2;
+
+  .material-icons {
+    font-size: 18px;
+    color: #888;
+    transition: color 0.15s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+
+    .material-icons {
+      color: #813181;
+    }
+  }
+
+  &.saved .material-icons {
+    color: #813181;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+    transform: none;
+  }
+}
+
+.view-count {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  color: #888;
+  font-size: 12px;
+
+  .view-icon {
+    font-size: 14px;
+    color: #aaa;
+  }
+}
 
 .listing-card.list-view {
   width: 100%;

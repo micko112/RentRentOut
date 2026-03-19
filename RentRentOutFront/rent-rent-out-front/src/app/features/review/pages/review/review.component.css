@@ -5,6 +5,18 @@
   font-family: Arial, sans-serif;
 }
 
+.type-btn.positive-btn.active {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-color: #4caf50;
+}
+
+.type-btn.negative-btn.active {
+  background: #ffebee;
+  color: #c62828;
+  border-color: #ef5350;
+}
+
 /* ===============================
    PROFIL HEADER KARTICA
    =============================== */

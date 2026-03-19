@@ -1,0 +1,44 @@
+<div class="saved-ads-container">
+  <div class="header-row">
+    <h2>Sačuvani oglasi</h2>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Učitavanje...</p>
+  </div>
+
+  <ng-container *ngIf="!isLoading">
+    <ng-container *ngIf="adsPage && adsPage.totalElements > 0; else noAds">
+      <div class="ads-grid">
+        <app-ad-card
+          *ngFor="let ad of adsPage.content"
+          [ad]="ad"
+          viewMode="grid">
+        </app-ad-card>
+      </div>
+
+      <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
+        <button class="page-btn"
+                [disabled]="adsPage.first"
+                (click)="goToPage(adsPage.number - 1)">
+          &laquo; Prethodna
+        </button>
+        <span class="page-info">Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}</span>
+        <button class="page-btn"
+                [disabled]="adsPage.last"
+                (click)="goToPage(adsPage.number + 1)">
+          Sledeća &raquo;
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-template #noAds>
+      <div class="empty-state">
+        <span class="material-icons empty-icon">bookmark_border</span>
+        <h3>Nemate sačuvanih oglasa</h3>
+        <p>Sačuvajte oglase koji vas zanimaju klikom na ikonu knjižne oznake.</p>
+        <a routerLink="/ads" class="btn-browse">Pregledaj oglase</a>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>

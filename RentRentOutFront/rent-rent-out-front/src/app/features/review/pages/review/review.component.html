@@ -56,6 +56,12 @@
     <button [class.active]="activeTab === 'LESSEE'" (click)="setTab('LESSEE')">
       Kao iznajmljivač
     </button>
+    <button [class.active]="activeTypeTab === 'POSITIVE'" (click)="setTypeTab(activeTypeTab === 'POSITIVE' ? 'ALL' : 'POSITIVE')" class="type-btn positive-btn">
+      👍 Pozitivne
+    </button>
+    <button [class.active]="activeTypeTab === 'NEGATIVE'" (click)="setTypeTab(activeTypeTab === 'NEGATIVE' ? 'ALL' : 'NEGATIVE')" class="type-btn negative-btn">
+      👎 Negativne
+    </button>
   </div>
 
   <!-- Ovde ispod će ići ngFor petlja za prikaz samih kartica sa ocenama -->

@@ -38,6 +38,7 @@ public class AdMapper {
         dto.setOwner(userMapper.toUserShortDto(ad.getOwner()));
         dto.setCategory(categoryMapper.toDto(ad.getCategory()));
         dto.setLocation((locationMapper.toDto(ad.getLocation())));
+        dto.setViewCount(ad.getViewCount());
 
         return dto;
     }
@@ -56,6 +57,7 @@ public class AdMapper {
         dto.setCity(ad.getLocation().getCity());
         dto.setMunicipality(ad.getLocation().getMunicipality());
         dto.setAdStatus(ad.getAdStatus());
+        dto.setViewCount(ad.getViewCount());
 
         return dto;
     }

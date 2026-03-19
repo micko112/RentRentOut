@@ -36,6 +36,14 @@ docker-compose up             # Start all services (MySQL, backend :8080, fronte
 docker-compose up --build     # Rebuild and start
 ```
 
+## Git Worktrees
+
+This repo uses **two worktrees**:
+- `C:/xampp/htdocs/Rent Rent Out/` — `main` branch
+- `C:/xampp/htdocs/RentRentOut-Profile/` — `features/user-profile` branch (this directory)
+
+When making changes to `main`, always `cd` into `C:/xampp/htdocs/Rent Rent Out/` first.
+
 ## Architecture
 
 ### Backend (`RentRentOut/src/main/java/org/landm/`)
@@ -45,13 +53,13 @@ Layered Spring Boot architecture: Controller → Service (interface + impl) → 
 Key packages:
 - `controller/` — REST endpoints; `ChatWsController` handles WebSocket messaging
 - `service/` — Business logic; each domain has an interface and implementation
-- `entity/` — JPA entities: `User`, `Ad`, `RentalContract`, `Review`, `Conversation`, `Message`; `MessageType` enum (`REGULAR`, `SYSTEM`, `CONTRACT_REQUEST`)
-- `dto/` — DTOs grouped by feature (ad, chat, review, user, contract)
+- `entity/` — JPA entities: `User`, `Ad`, `RentalContract`, `Review`, `Conversation`, `Message`, `Notification`; `MessageType` enum (`REGULAR`, `SYSTEM`)
+- `dto/` — DTOs grouped by feature (ad, chat, review, user, contract, notification)
 - `repository/` — Spring Data JPA repositories
 - `security/` — JWT auth (`JwtUtil`, `JwtFilter`), WebSocket JWT (`JwtChannelInterceptor`), `SecurityConfig`
 - `config/` — CORS (`WebConfig`), WebSocket (`WebSocketConfig`), mail
 
-Database migrations are in `src/main/resources/db/changelog/` (21 Liquibase XML changesets). **Always add new schema changes as new migration files, never edit existing ones.** Changeset 12 added `related_contract_id BIGINT nullable` to the `message` table.
+Database migrations are in `src/main/resources/db/changelog/` (Liquibase XML changesets). **Always add new schema changes as new migration files, never edit existing ones.**
 
 Two Spring profiles: default (local) uses `application.properties`; `docker` uses `application-docker.properties`.
 
@@ -61,19 +69,45 @@ Feature-based module structure with lazy loading:
 
 - `core/` — Singleton services and layout shell
   - `config/` — API endpoint constants and RxStomp WebSocket config
-  - `layout/` — Header, Footer, Navbar, Sidebar components (the app shell); Sidebar calls `NotificationService.initialize()` on load to fetch the global unread badge count; Sidebar nav includes "Moji Ugovori" link (`/user/me/contracts`) between "Poruke" and "Obaveštenja"
-  - `services/` — `NotificationService` (global unread badge via `BehaviorSubject`; `initialize()` hits `GET /api/chat/unread-count`); WebSocket service for real-time chat
-- `shared/` — Shared models (TypeScript interfaces) and reusable components (Toast)
+  - `layout/` — Header, Footer, Navbar, Sidebar components (the app shell)
+  - `services/` — `NotificationService` (global chat unread badge via `BehaviorSubject`; `initialize()` hits `GET /api/chat/unread-count`); WebSocket service for real-time chat
+- `shared/` — Shared models (TypeScript interfaces) and reusable components (Toast, SkeletonCard)
 - `features/` — Lazy-loaded feature modules:
   - `auth/` — Login, Register, email verification, password reset; `authGuard` protects routes
-  - `ads/` — Ad listings, details, create/edit; includes category/filter sidebars; `RentalCalendarComponent` (`features/ads/components/rental-calendar/`) is a standalone reusable calendar widget accepting `@Input() ad`, `@Input() blockedIntervals`, `@Input() isMyAd`
-  - `chat/` — Real-time inbox using `@stomp/rx-stomp` over WebSocket; three-column layout (conversation list | messages | calendar); three message types rendered differently (see Message Types below)
-  - `user/` — User profile pages; `ContractsComponent` (`user/pages/contracts/`) supports `?contractId=X` query param to auto-scroll and highlight a specific contract on load
+  - `ads/` — Ad listings, details, create/edit; `RentalCalendarComponent` (`features/ads/components/rental-calendar/`) is a standalone reusable calendar widget
+  - `chat/` — Real-time inbox using `@stomp/rx-stomp` over WebSocket; three-column layout (conversation list | messages | calendar); system messages rendered as centered gray bubbles
+  - `user/` — User profile pages
   - `contracts/` — Rental contract management
   - `review/` — Review/rating system
+  - `notifications/` — In-app notification center (`/notifications` route); `NotificationsService` (`features/notifications/services/`) holds unread count via `BehaviorSubject`
   - `admin/` — Admin dashboard; `adminGuard` restricts access
 
 Routes are defined in `app.routes.ts` with lazy loading for all feature modules.
+
+### App Shell Layout (`app.component`)
+
+`app.component.css` uses flexbox with `gap: 200px` between sidebar and content. The sidebar is `185px` wide and `position: sticky`. Key CSS classes:
+- `.has-sidebar` — added when sidebar is visible (logged-in, non-admin routes); used to apply max-width centering on pages without sidebar
+- `.is-admin` — added on `/admin` routes; removes padding from page-content
+
+`app.component.ts` exposes:
+- `showSidebar$` — based on **route only** (not auth state); `true` on all non-`/admin` routes
+- `isAdmin$` — `true` when URL starts with `/admin`
+
+`app.component.html` conditionally renders `<app-sidebar *ngIf="showSidebar$ | async">`.
+
+Router uses `withPreloading(PreloadAllModules)` + `withInMemoryScrolling({ scrollPositionRestoration: 'top' })` — preloads all lazy chunks in the background (eliminates FOUC on first navigation) and scrolls to top on every route change.
+
+### Sidebar (`core/layout/sidebar/`)
+
+- Uses **Material Icons** (`<span class="material-icons nav-icon">`) — CDN loaded in `index.html`
+- Color theme: purple `#813181` for avatar background, active state, hover state, and left border on active link
+- Active link: `background: #f5ecff`, `border-left: 3px solid #813181`, `color: #813181`
+- Unread badge (red `#e53935`) shown on Poruke and Obaveštenja links
+- **Sidebar always visible** — shown on all non-admin routes regardless of login state
+- **Guest state**: shows login/register buttons + locked (greyed-out, `pointer-events: none`) nav items with Material Icons
+- **Logged-in state**: shows user avatar (initials), full interactive nav
+- `SidebarComponent.ngOnInit()` calls both `NotificationService.initialize()` (chat unread) and `NotificationsService.loadUnreadCount()` (app notifications unread) — only when user is logged in
 
 ### Authentication Flow
 
@@ -83,61 +117,68 @@ JWT-based: login returns a token stored client-side → sent as `Authorization: 
 
 WebSocket endpoint at `/ws` (STOMP protocol). Frontend uses `RxStompService` (configured in `core/config/`). Messages published to user-specific STOMP destinations.
 
-#### InboxComponent (`features/chat/pages/inbox/`)
-
-Three-column layout: conversation list sidebar | messages area | rental calendar. Key implementation notes:
-- `groupedMessages: MessageGroup[]` is what the template iterates — **always call `updateGroupedMessages()` after modifying `this.messages`**, including in `handleIncomingMessage` Scenario B (WebSocket) and `refreshActiveMessages()` (polling). Missing this call is a known bug pattern.
-- Polling runs every 5 seconds via `interval(5000)` — reconnects WebSocket if needed and refreshes messages.
-- "Pogledaj detalje" button on CONTRACT_REQUEST cards calls `goToContract(contractId)` which navigates to `/user/me/contracts?contractId=X`.
+`InboxComponent` (`features/chat/pages/inbox/`) uses `isLoadingMessages` flag — shows a spinner while messages load on conversation switch instead of blanking the area (prevents layout flash). Polling every 5s refreshes conversation list and active messages as WebSocket fallback.
 
 ### Message Types
 
-`Message` entity has a `messageType` column (`VARCHAR(20)`, default `REGULAR`). Three values:
-- `REGULAR` — normal user chat bubble (green for sent, white for received)
-- `SYSTEM` — auto-generated by backend (e.g. contract accepted/rejected); rendered as centered italic gray bubble
-- `CONTRACT_REQUEST` — generated when a rental contract is created; rendered as a styled card with ad title, dates, total price, and "Pogledaj detalje" button
+`Message` entity has a `messageType` column (`VARCHAR(20)`, default `REGULAR`). Two values:
+- `REGULAR` — normal user message
+- `SYSTEM` — auto-generated by the backend (e.g. contract accepted/rejected); rendered in the UI as a centered italic gray bubble
 
-System messages are created by `ChatServiceImpl.sendSystemMessage()` (called from `RentalContractServiceImpl` on status changes) and broadcast via `SimpMessagingTemplate` to both conversation participants over WebSocket.
+System messages are created by `ChatServiceImpl.sendSystemMessage()` (called from `RentalContractServiceImpl` on status changes) and broadcast via `SimpMessagingTemplate` to both conversation participants.
 
-Contract request messages are created by `ChatServiceImpl.sendContractRequestMessage(RentalContract contract)` — called from `RentalContractServiceImpl.create()` after saving. Broadcasts to both lessee and lessor. The method accepts a full `RentalContract` object (not just an ID) to avoid an extra DB round-trip.
+### Global Chat Unread Badge
 
-#### MessageDto contract fields
-
-`MessageDto` carries extra fields for `CONTRACT_REQUEST` messages (populated by `ChatMapper.toMessageDto` via a `RentalContractRepository.findById` lookup, and also set directly in `sendContractRequestMessage`):
-- `contractAdTitle` — ad title
-- `contractStartDate` / `contractEndDate` — ISO date strings (e.g. `"2026-03-20"`)
-- `contractTotalPrice` — `agreedPrice × amount`
-- `contractCurrency` — enum name (e.g. `"RSD"`)
-
-Frontend `Message` model (`shared/models/message.model.ts`) has matching optional fields.
-
-### Global Unread Badge
-
-`NotificationService` (`core/services/`) holds a `BehaviorSubject<number>` for the total unread message count:
-- `initialize()` — fetches `GET /api/chat/unread-count` from backend; called by `SidebarComponent.ngOnInit()` when a user is logged in
+`NotificationService` (`core/services/`) holds a `BehaviorSubject<number>` for total unread chat message count:
+- `initialize()` — fetches `GET /api/chat/unread-count`; called by `SidebarComponent.ngOnInit()`
 - `updateFromConversations()` — recomputes from conversation list (called when Inbox loads)
 - `onConversationOpened(n)` — optimistically subtracts `n` when a conversation is opened
 - `onNewMessageInBackground()` — increments by 1 when a WebSocket message arrives for a background conversation
 
 Backend: `MessageRepository.countUnreadForUser(userId)` uses a single JPQL query joining `participantOne`/`participantTwo` to avoid N+1.
 
+### In-App Notifications System
+
+Full notification system for contract and review events.
+
+**Backend:**
+- `NotificationType` enum (`entity/Enums/`): `CONTRACT_REQUESTED`, `CONTRACT_ACCEPTED`, `CONTRACT_REJECTED`, `CONTRACT_CANCELLED`, `CONTRACT_ACTIVE`, `CONTRACT_FINISHED`, `NEW_REVIEW`
+- `Notification` JPA entity: `id`, `recipient` (ManyToOne User), `type` (EnumType.STRING), `title`, `message` (TEXT), `isRead` (default false), `relatedEntityId`, `relatedEntityType`, `actorName`, `createdAt`
+- `NotificationPersistenceService` interface + impl (`service/`) — CRUD; depends only on `NotificationRepository` + `UserRepository` (no circular deps)
+- `NotificationController` at `/api/notifications`:
+  - `GET /api/notifications` — all for current user
+  - `GET /api/notifications/unread-count` → `{ count: N }`
+  - `PATCH /api/notifications/{id}/read`
+  - `PATCH /api/notifications/read-all`
+- Hooks in `RentalContractServiceImpl` (fires on create, ACCEPTED, REJECTED) and `ReviewServiceImpl` (fires NEW_REVIEW after save)
+- Liquibase migration: `db.changelog-13-create-notification.xml`
+
+**Frontend:**
+- `AppNotification` interface (`shared/models/`) — named to avoid conflict with browser `Notification` API
+- `NotificationsService` (`features/notifications/services/`) — `unreadCount$` BehaviorSubject; `loadUnreadCount()`, `getAll()`, `markOneAsRead(id)`, `markAllAsRead()`
+- `NotificationsPageComponent` (`features/notifications/pages/`) — filter tabs (Sve / Nepročitana), relative time formatting (`formatTime()`), icon+color per type, "Pogledaj →" router link per notification
+- Route: `/notifications` (protected by `authGuard`)
+
 ### RentalCalendarComponent
 
-Standalone component at `features/ads/components/rental-calendar/`. Extracted from `AdDetailsComponent` and reused in both `AdDetailsComponent` and `InboxComponent` (third column). Accepts:
+Standalone component at `features/ads/components/rental-calendar/`. Accepts:
 - `@Input() ad: Ad` — the ad being viewed
-- `@Input() set blockedIntervals(value)` — setter that regenerates the calendar when new intervals arrive
+- `@Input() set blockedIntervals(value)` — setter that regenerates calendar when new intervals arrive
 - `@Input() isMyAd: boolean` — shows "Block dates" button instead of "Send request" when true
 
-`blockDates()` self-refreshes blocked intervals via `adService.getAdById()` after a successful block, avoiding the need for an `@Output()` emitter.
+Reused in both `AdDetailsComponent` and `InboxComponent` (third column).
 
-### App Layout
+### Create Ad Wizard
 
-`app.component.html` renders: `<app-header>` → `<app-navbar>` → `.main-app-wrapper` (flex row: `<app-sidebar>` + `.page-content`).
+Two-step wizard at `features/ads/pages/create-ad/`:
+- Step 1: Category card grid + subcategory chips + title (char counter) + description (char counter)
+- Step 2: Drag-drop image upload (10 images max, 10MB each), cover image selection, price/currency/interval, location autocomplete, quantity stepper
+- CSS: uses `margin-left: -200px; width: calc(100% + 200px)` to cancel the app layout gap and expand to full width (reset at 900px breakpoint)
 
-- `.main-app-wrapper` has no `margin-top`; `.page-content` has `padding-top: 30px` so only content (not the sidebar) has the top gap
-- Global sidebar (`.sidebar`) uses `position: sticky; top: 142px` (matches header height: 40px padding × 2 + 61px logo + 1px border)
-- Chat container (`.chat-container`) uses `max-width: 1400px; margin-left: 40px` to give the three-column chat layout more room
+### Color Theme
 
-### ContractsComponent Scroll-to-Contract
+Two primary colors:
+- **Purple** `#813181` — sidebar avatar, active nav links, notification badges/pills, buttons, accents
+- **Green** `#6ecf7e` — secondary accent; opacity is intentionally varied per context (e.g. `rgba(110, 207, 126, 0.X)`)
 
-When navigating to `/user/me/contracts?contractId=X` (e.g. from a chat contract card), `ContractsComponent` reads the `contractId` query param on init, waits for contracts to load, then scrolls to `#contract-X` with a smooth animation and a 2-second purple pulse highlight (`contract-highlighted` CSS class).
+**Do not replace either color with blue or other colors.**
