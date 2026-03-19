@@ -167,6 +167,11 @@
   flex-shrink: 0;
 }
 
+.sidebar-nav a .nav-icon.material-icons {
+  font-size: 18px;
+  line-height: 1;
+}
+
 .sidebar-nav a:hover,
 .sidebar-nav a.active {
   background: #f0f0f0;

@@ -26,12 +26,16 @@ import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
 export class ReviewComponent implements OnInit {
 
   activeTab: 'ALL' | 'LESSOR' | 'LESSEE' = 'ALL';
+  activeTypeTab: 'ALL' | 'POSITIVE' | 'NEGATIVE' = 'ALL';
 
   setTab(tab: 'ALL' | 'LESSOR' | 'LESSEE') {
     this.activeTab = tab;
     this.applyFilter();
-    console.log(this.activeTab);
-    console.log(this.filteredReviews);
+  }
+
+  setTypeTab(tab: 'ALL' | 'POSITIVE' | 'NEGATIVE') {
+    this.activeTypeTab = tab;
+    this.applyFilter();
   }
 
   showForm: boolean = false;
@@ -92,19 +96,12 @@ export class ReviewComponent implements OnInit {
       queryParamsHandling: 'merge'
     })
   }
-  applyFilter():  void {
-    console.log("Filtriram sa tabom:", this.activeTab);
-    console.log("Ukupno ocena:", this.reviews.length);
-    if(this.activeTab==="ALL"){
-      this.filteredReviews=[...this.reviews];
-
-    }else {
-      this.filteredReviews = this.reviews.filter(review => {
-        console.log("Poredim:", review.revieweeRole, "sa", this.activeTab);
-        return review.revieweeRole === this.activeTab;
-      });
-    }
-    console.log("Rezultat filtriranja:", this.filteredReviews);
+  applyFilter(): void {
+    this.filteredReviews = this.reviews.filter(review => {
+      const roleMatch = this.activeTab === 'ALL' || review.revieweeRole === this.activeTab;
+      const typeMatch = this.activeTypeTab === 'ALL' || review.reviewType === this.activeTypeTab;
+      return roleMatch && typeMatch;
+    });
   }
 
   toggleForm(): void {

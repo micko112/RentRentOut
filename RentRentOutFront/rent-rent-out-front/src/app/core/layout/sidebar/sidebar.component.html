@@ -14,6 +14,9 @@
       <a routerLink="/user/me/ads" routerLinkActive="active">
         <span class="nav-icon">📋</span> Moji oglasi
       </a>
+      <a routerLink="/user/saved-ads" routerLinkActive="active">
+        <span class="material-icons nav-icon">bookmark</span> Sačuvani oglasi
+      </a>
       <a routerLink="/messages" routerLinkActive="active">
         <span class="nav-icon">💬</span> Poruke
         <span class="unread-badge" *ngIf="(totalUnread$ | async) as count">

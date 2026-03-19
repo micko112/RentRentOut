@@ -9,6 +9,8 @@ export interface AdPreview {
   currency: string;
   thumbnail:  string;
   adStatus: string;
+  viewCount?: number;
+  saved?: boolean;
 }
 
 export interface Page<T>{

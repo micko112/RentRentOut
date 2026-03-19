@@ -4,6 +4,16 @@
     <img [src]="imageUrl"
          (error)="handleImageError($event)"
          alt="{{ ad.title }}" style="">
+
+    <button
+      *ngIf="isLoggedIn"
+      class="save-btn"
+      [class.saved]="isSaved"
+      [disabled]="isSavingToggle"
+      (click)="toggleSave($event)"
+      title="{{ isSaved ? 'Ukloni iz sačuvanih' : 'Sačuvaj oglas' }}">
+      <span class="material-icons">{{ isSaved ? 'bookmark' : 'bookmark_border' }}</span>
+    </button>
   </div>
 
   <div class="listing-info">
@@ -17,6 +27,11 @@
          <span class="currency" *ngIf="ad.currency === 'EUR'">€</span>
         <span class="currency" *ngIf="ad.currency === 'RSD'">din</span>
         <span class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</span>
+      </div>
+
+      <div class="view-count" *ngIf="ad.viewCount && ad.viewCount > 0">
+        <span class="material-icons view-icon">visibility</span>
+        <span>{{ ad.viewCount }}</span>
       </div>
     </div>
   </div>

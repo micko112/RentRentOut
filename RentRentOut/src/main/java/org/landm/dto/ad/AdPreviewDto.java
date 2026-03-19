@@ -19,6 +19,8 @@ public class AdPreviewDto {
     private PriceInterval priceInterval;
     private String thumbnail;
     private AdStatus adStatus;
+    private int viewCount;
+    private boolean saved;
 
     public AdStatus getAdStatus() {
         return adStatus;
@@ -99,5 +101,21 @@ public class AdPreviewDto {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
     }
 }

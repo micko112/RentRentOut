@@ -36,6 +36,10 @@ export class AdDetailsComponent implements OnInit {
 
   latestReviews$!: Observable<Review[]>;
 
+  isSaved: boolean = false;
+  isTogglingS: boolean = false;
+  isLoggedIn: boolean = false;
+
   @ViewChild('thumbnailScroll') thumbnailScrollContainer!: ElementRef;
 
   constructor(
@@ -49,13 +53,22 @@ export class AdDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.isLoggedIn = !!localStorage.getItem('authToken');
+
     this.ad$ = this.route.paramMap.pipe(
       switchMap(params => {
         const id = Number(params.get('id'));
+
+        if (this.isLoggedIn) {
+          this.adService.trackView(id).subscribe({ error: () => {} });
+        }
+
         return this.adService.getAdById(id);
       }),
       tap(ad => {
         this.currentAd = ad;
+        this.isSaved = ad.saved ?? false;
+
         if (ad.images && ad.images.length > 0) {
           this.selectedImageUrl = ad.images[0];
         } else {
@@ -162,6 +175,28 @@ export class AdDetailsComponent implements OnInit {
         receiverId: this.currentAd.owner.id,
         adTitle: this.currentAd.title,
         receiverName: this.currentAd.owner.displayName
+      }
+    });
+  }
+
+  toggleSave(): void {
+    if (this.isTogglingS || !this.currentAd) return;
+    this.isTogglingS = true;
+
+    const wasSaved = this.isSaved;
+    this.isSaved = !wasSaved;
+
+    const request$ = wasSaved
+      ? this.adService.unsaveAd(this.currentAd.id)
+      : this.adService.saveAd(this.currentAd.id);
+
+    request$.subscribe({
+      next: () => {
+        this.isTogglingS = false;
+      },
+      error: () => {
+        this.isSaved = wasSaved;
+        this.isTogglingS = false;
       }
     });
   }

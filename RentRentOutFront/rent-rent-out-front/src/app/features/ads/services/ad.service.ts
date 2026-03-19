@@ -67,4 +67,27 @@ export class AdService {
   getAdsByUser(userId: number) : Observable<Page<AdPreview>> {
     return this.http.get<Page<AdPreview>>(`${this.adApiUrl}/user/${userId}`);
   }
+
+  trackView(adId: number): Observable<void> {
+    return this.http.post<void>(`${this.adApiUrl}/${adId}/view`, {});
+  }
+
+  saveAd(adId: number): Observable<void> {
+    return this.http.post<void>(`${this.adApiUrl}/${adId}/save`, {});
+  }
+
+  unsaveAd(adId: number): Observable<void> {
+    return this.http.delete<void>(`${this.adApiUrl}/${adId}/save`);
+  }
+
+  isSaved(adId: number): Observable<{saved: boolean}> {
+    return this.http.get<{saved: boolean}>(`${this.adApiUrl}/${adId}/saved-status`);
+  }
+
+  getSavedAds(page: number = 0, size: number = 12): Observable<Page<AdPreview>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<Page<AdPreview>>(`${this.adApiUrl}/me/saved`, { params });
+  }
 }

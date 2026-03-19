@@ -50,9 +50,15 @@ export class UserProfileComponent implements OnInit {
   reviews: Review[] = [];
   filteredReviews: Review[] = [];
   activeReviewTab: 'ALL' | 'LESSOR' | 'LESSEE' = 'ALL';
+  activeTypeTab: 'ALL' | 'POSITIVE' | 'NEGATIVE' = 'ALL';
 
   setReviewTab(tab: 'ALL' | 'LESSOR' | 'LESSEE') {
     this.activeReviewTab = tab;
+    this.applyFilter();
+  }
+
+  setTypeTab(tab: 'ALL' | 'POSITIVE' | 'NEGATIVE') {
+    this.activeTypeTab = tab;
     this.applyFilter();
   }
   showForm: boolean = false;
@@ -75,17 +81,12 @@ export class UserProfileComponent implements OnInit {
 
   }
 
-  applyFilter():  void {
-    if(this.activeReviewTab==="ALL"){
-      this.filteredReviews=[...this.reviews];
-
-    }else {
-      this.filteredReviews = this.reviews.filter(review => {
-
-        return review.revieweeRole === this.activeReviewTab;
-      });
-    }
-    console.log("Rezultat filtriranja:", this.filteredReviews);
+  applyFilter(): void {
+    this.filteredReviews = this.reviews.filter(review => {
+      const roleMatch = this.activeReviewTab === 'ALL' || review.revieweeRole === this.activeReviewTab;
+      const typeMatch = this.activeTypeTab === 'ALL' || review.reviewType === this.activeTypeTab;
+      return roleMatch && typeMatch;
+    });
   }
 
   toggleForm(): void {

@@ -55,6 +55,9 @@ public class Ad {
     private int totalQuantity = 1; // Podrazumevano 1 za unikatne stvari
 
 
+    @Column(name = "view_count", nullable = false)
+    private int viewCount = 0;
+
     @ElementCollection
     @CollectionTable(name = "ad_image", joinColumns = @JoinColumn(name = "ad_id"))
     @Column(name="image_url")
@@ -156,6 +159,14 @@ public class Ad {
     }
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public int getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
     }
 
 	@Override

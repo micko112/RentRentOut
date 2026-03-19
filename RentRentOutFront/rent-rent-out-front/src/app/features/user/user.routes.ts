@@ -7,6 +7,7 @@ import {authGuard} from '../auth/auth.guard';
 import {ReviewComponent} from '../review/pages/review/review.component';
 import {UserProfileComponent} from './public-user/user-profile/user-profile.component';
 import {PlaceholderPageComponent} from './pages/placeholder-page/placeholder-page.component';
+import {SavedAdsComponent} from './pages/saved-ads/saved-ads.component';
 
 export const USER_ROUTES: Routes = [
   {
@@ -34,6 +35,11 @@ export const USER_ROUTES: Routes = [
         component: ProfileDetailsComponent
       },
     ]
+  },
+  {
+    path: 'saved-ads',
+    component: SavedAdsComponent,
+    canActivate: [authGuard]
   },
   {path:':id/reviews',
     component: ReviewComponent},
