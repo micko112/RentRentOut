@@ -1,109 +1,358 @@
-﻿import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {AdService} from '../../services/ad.service';
-import {Category} from '../../../../shared/models/category.model';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {PriceInterval, PriceIntervalLabels} from '../../../../shared/models/price-interval.enum';
-import {CategoryService} from '../../services/category.service';
-import {LocationService} from '../../services/location.service';
-import {Router, RouterLink} from '@angular/router';
-import {switchMap} from 'rxjs';
-import {ToastService} from '../../../../shared/services/toast.service';
-import {Location} from '../../../../shared/models/location.model';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AdService } from '../../services/ad.service';
+import { Category } from '../../../../shared/models/category.model';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PriceInterval } from '../../../../shared/models/price-interval.enum';
+import { CategoryService } from '../../services/category.service';
+import { LocationService } from '../../services/location.service';
+import { Router, RouterLink } from '@angular/router';
+import { switchMap } from 'rxjs';
+import { ToastService } from '../../../../shared/services/toast.service';
+import { Location } from '../../../../shared/models/location.model';
 
 @Component({
   selector: 'app-create-ad',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink,],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   standalone: true,
   templateUrl: './create-ad.component.html',
   styleUrl: './create-ad.component.css'
 })
 export class CreateAdComponent implements OnInit {
+
+  // ── Step state ──────────────────────────────────────────────────────────
+  currentStep = 1;
+  readonly totalSteps = 6;
+  isSubmitting = false;
+
+  // ── Images ──────────────────────────────────────────────────────────────
   selectedFiles: File[] = [];
+  previewUrls: string[] = [];
+  isDragging = false;
+  readonly MAX_IMAGES = 10;
 
-  previewUrl: string[] = [];
-
+  // ── Categories ──────────────────────────────────────────────────────────
   categories: Category[] = [];
-  form!: FormGroup;
-  priceIntervals = Object.values(PriceInterval);
-  priceLabels = PriceIntervalLabels;
-  locations: Location[] = [];
+  parentCategories: Category[] = [];
+  childCategories: Category[] = [];
+  selectedParentId: number | null = null;
 
-  constructor(private adService: AdService,
-              private categoryService: CategoryService,
-              private locationService: LocationService,
-              private fb: FormBuilder,
-              private router: Router,
-              private toastService: ToastService,) {
-  }
+  // ── Locations ───────────────────────────────────────────────────────────
+  locations: Location[] = [];
+  filteredLocations: Location[] = [];
+  locationSearch = '';
+  showLocationDropdown = false;
+
+  // ── Form ────────────────────────────────────────────────────────────────
+  form!: FormGroup;
+  readonly MAX_TITLE = 100;
+  readonly MAX_DESC = 2000;
+
+  readonly priceIntervalOptions = [
+    { value: PriceInterval.PER_HOUR,  label: 'Po satu',   unit: '/h'   },
+    { value: PriceInterval.PER_DAY,   label: 'Po danu',   unit: '/dan' },
+    { value: PriceInterval.PER_MONTH, label: 'Po mesecu', unit: '/mes' },
+  ];
+
+  readonly stepConfig = [
+    { label: 'Kategorija' },
+    { label: 'Opis'       },
+    { label: 'Slike'      },
+    { label: 'Cena'       },
+    { label: 'Lokacija'   },
+    { label: 'Pregled'    },
+  ];
+
+  private readonly catIconMap: Record<string, string> = {
+    alat: '🔧', bušil: '🔧', mašin: '⚙️',
+    vozil: '🚗', automobil: '🚗', motor: '🏍️', bicikl: '🚲',
+    elektron: '💻', kompjuter: '💻', telefon: '📱',
+    sport: '⚽', fitnes: '🏋️', ski: '⛷️',
+    muzik: '🎸', instrument: '🎸',
+    knjig: '📚',
+    kuhin: '🍳',
+    namešt: '🛋️',
+    kamp: '⛺', planin: '🏔️',
+    foto: '📷', kamera: '📷', video: '🎥',
+  };
+
+  constructor(
+    private adService: AdService,
+    private categoryService: CategoryService,
+    private locationService: LocationService,
+    private fb: FormBuilder,
+    private router: Router,
+    private toastService: ToastService,
+  ) {}
 
   ngOnInit(): void {
-    this.categoryService.getAll().subscribe(category => {
-      this.categories = category;
-      console.log('CreateAdComponent je inicijalizovan!');
+    this.categoryService.getAll().subscribe(cats => {
+      this.categories = cats;
+      this.parentCategories = cats.filter(c => !c.parentId);
     });
+
     this.locationService.getAll().subscribe({
-      next: (locs) => this.locations = locs,
-      error: () => this.toastService.showError('Greska pri ucitavanju lokacija.')
+      next: locs => { this.locations = locs; this.filteredLocations = locs.slice(0, 20); },
+      error: () => this.toastService.showError('Greška pri učitavanju lokacija.'),
     });
 
     this.form = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(5)]],
-      description: ['', [Validators.required, Validators.minLength(20)]],
-      price: [null, [Validators.required, Validators.min(1)]],
-      currency: ['', [Validators.required, Validators.min(3)]],
+      title:         ['', [Validators.required, Validators.minLength(5), Validators.maxLength(this.MAX_TITLE)]],
+      description:   ['', [Validators.required, Validators.minLength(20), Validators.maxLength(this.MAX_DESC)]],
+      price:         [null, [Validators.required, Validators.min(1)]],
+      currency:      ['RSD', Validators.required],
       priceInterval: [PriceInterval.PER_DAY, Validators.required],
-      categoryId: [null, Validators.required],
-      locationId: [null, Validators.required],
-      totalQuantity: [1, [Validators.required, Validators.min(1)]],
-      images: [['https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=1000&auto=format&fit=crop']]
-    })
+      categoryId:    [null, Validators.required],
+      locationId:    [null, Validators.required],
+      totalQuantity: [1, [Validators.required, Validators.min(1), Validators.max(999)]],
+      images:        [[]],
+    });
   }
 
-  onSubmit() {
-    if (this.form.invalid || this.selectedFiles.length === 0) {
-      alert('Molimo popunite sva polja i izaberite barem jednu sliku.');
-      this.form.markAsTouched();
-      return;
-    }
-    this.adService.uploadImages(this.selectedFiles).pipe(
-      switchMap(uploadedImagesUrls => {
-        this.form.patchValue({images: uploadedImagesUrls});
-        console.log(this.selectedFiles);
-        return this.adService.createAd(this.form.value);
-      })
-    ).subscribe({
-      next: (newAd) => {
-        this.toastService.showSuccess('Oglas uspesno kreiran');
-        this.router.navigate(['/ads', newAd.id]);
-      },
-      error: (error) => {
-        console.error('Greska:', error);
-        this.toastService.showError('Doslo je do greske prilikom kreiranja oglasa.');
+  // ════════════════════════════════════════════════════════
+  //  NAVIGATION
+  // ════════════════════════════════════════════════════════
 
-      }
-    })
+  get stepProgress(): number {
+    return Math.round(((this.currentStep - 1) / (this.totalSteps - 1)) * 100);
   }
 
-  onFileSelected(event: any){
-    const files: FileList = event.target.files;
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (!file.type.match(/image\/*/)) continue;
-
-        this.selectedFiles.push(file);
-
-        this.previewUrl.push(URL.createObjectURL(file));
-
-        this.form.patchValue({ images: this.previewUrl });
-        this.form.get('images')?.updateValueAndValidity();
-      }
+  get stepValid(): boolean {
+    switch (this.currentStep) {
+      case 1: return !!this.form.get('categoryId')?.value;
+      case 2: return !this.form.get('title')?.invalid && !this.form.get('description')?.invalid
+                     && this.titleLength >= 5 && this.descLength >= 20;
+      case 3: return this.selectedFiles.length > 0;
+      case 4: return !this.form.get('price')?.invalid && !!this.form.get('currency')?.value;
+      case 5: return !!this.form.get('locationId')?.value;
+      case 6: return !this.form.invalid && this.selectedFiles.length > 0;
+      default: return false;
     }
+  }
+
+  nextStep(): void {
+    if (!this.stepValid) { this.markCurrentStepTouched(); return; }
+    if (this.currentStep < this.totalSteps) this.currentStep++;
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 1) this.currentStep--;
+  }
+
+  goToStep(step: number): void {
+    if (step < this.currentStep) this.currentStep = step;
+  }
+
+  private markCurrentStepTouched(): void {
+    const map: Record<number, string[]> = {
+      1: ['categoryId'],
+      2: ['title', 'description'],
+      3: ['images'],
+      4: ['price', 'currency'],
+      5: ['locationId'],
+    };
+    (map[this.currentStep] ?? []).forEach(f => this.form.get(f)?.markAsTouched());
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  CATEGORIES
+  // ════════════════════════════════════════════════════════
+
+  getCategoryIcon(name: string): string {
+    const lower = name.toLowerCase();
+    for (const [key, icon] of Object.entries(this.catIconMap)) {
+      if (lower.includes(key)) return icon;
+    }
+    return '📦';
+  }
+
+  selectParentCategory(cat: Category): void {
+    this.selectedParentId = cat.id;
+    this.childCategories = this.categories.filter(c => c.parentId === cat.id);
+    if (this.childCategories.length === 0) {
+      this.form.patchValue({ categoryId: cat.id });
+    } else {
+      this.form.patchValue({ categoryId: null });
+    }
+  }
+
+  selectChildCategory(cat: Category): void {
+    this.form.patchValue({ categoryId: cat.id });
+  }
+
+  isParentSelected(cat: Category): boolean { return this.selectedParentId === cat.id; }
+  isChildSelected(cat: Category): boolean  { return this.form.get('categoryId')?.value === cat.id; }
+
+  getSelectedCategoryName(): string {
+    const id = this.form.get('categoryId')?.value;
+    return this.categories.find(c => c.id === id)?.name ?? '—';
+  }
+
+  getSelectedParentName(): string {
+    return this.parentCategories.find(c => c.id === this.selectedParentId)?.name ?? '';
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  IMAGES
+  // ════════════════════════════════════════════════════════
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) this.addFiles(input.files);
+    input.value = '';
+  }
+
+  onDragOver(e: DragEvent): void  { e.preventDefault(); e.stopPropagation(); this.isDragging = true;  }
+  onDragLeave(e: DragEvent): void { e.preventDefault(); e.stopPropagation(); this.isDragging = false; }
+
+  onDrop(e: DragEvent): void {
+    e.preventDefault();
+    e.stopPropagation();
+    this.isDragging = false;
+    if (e.dataTransfer?.files) this.addFiles(e.dataTransfer.files);
+  }
+
+  private addFiles(files: FileList): void {
+    const remaining = this.MAX_IMAGES - this.selectedFiles.length;
+    let added = 0;
+    for (let i = 0; i < files.length && added < remaining; i++) {
+      const file = files[i];
+      if (!file.type.match(/image\/*/)) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
+      if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
+      this.selectedFiles.push(file);
+      this.previewUrls.push(URL.createObjectURL(file));
+      added++;
+    }
+    this.form.patchValue({ images: this.previewUrls });
   }
 
   removeImage(index: number): void {
+    URL.revokeObjectURL(this.previewUrls[index]);
     this.selectedFiles.splice(index, 1);
-    this.previewUrl.splice(index, 1);
+    this.previewUrls.splice(index, 1);
+    this.form.patchValue({ images: this.previewUrls });
   }
+
+  setCoverImage(index: number): void {
+    if (index === 0) return;
+    const [f] = this.selectedFiles.splice(index, 1);
+    const [u] = this.previewUrls.splice(index, 1);
+    this.selectedFiles.unshift(f);
+    this.previewUrls.unshift(u);
+    this.form.patchValue({ images: this.previewUrls });
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  LOCATION
+  // ════════════════════════════════════════════════════════
+
+  onLocationFocus(): void {
+    this.showLocationDropdown = true;
+    this.filteredLocations = this.locations.slice(0, 20);
+  }
+
+  onLocationInput(event: Event): void {
+    const q = (event.target as HTMLInputElement).value;
+    this.locationSearch = q;
+    this.showLocationDropdown = true;
+    this.form.patchValue({ locationId: null });
+    const lower = q.toLowerCase();
+    this.filteredLocations = (lower
+      ? this.locations.filter(l =>
+          l.city.toLowerCase().includes(lower) ||
+          (l.municipality ?? '').toLowerCase().includes(lower))
+      : this.locations
+    ).slice(0, 20);
+  }
+
+  selectLocation(loc: Location): void {
+    this.form.patchValue({ locationId: loc.id });
+    this.locationSearch = loc.municipality ? `${loc.city}, ${loc.municipality}` : loc.city;
+    this.showLocationDropdown = false;
+  }
+
+  hideLocationDropdown(): void {
+    setTimeout(() => { this.showLocationDropdown = false; }, 200);
+  }
+
+  clearLocation(): void {
+    this.form.patchValue({ locationId: null });
+    this.locationSearch = '';
+  }
+
+  getSelectedLocationDisplay(): string {
+    const id = this.form.get('locationId')?.value;
+    if (!id) return '';
+    const loc = this.locations.find(l => l.id === id);
+    return loc ? (loc.municipality ? `${loc.city}, ${loc.municipality}` : loc.city) : '';
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  PRICING
+  // ════════════════════════════════════════════════════════
+
+  get priceDisplay(): string {
+    const price = this.form.get('price')?.value;
+    if (!price || price <= 0) return '—';
+    const sym  = this.selectedCurrency === 'EUR' ? '€' : 'RSD';
+    const unit = this.priceIntervalOptions.find(p => p.value === this.selectedInterval)?.unit ?? '';
+    return `${Number(price).toLocaleString('sr-RS')} ${sym}${unit}`;
+  }
+
+  selectPriceInterval(value: PriceInterval): void {
+    this.form.patchValue({ priceInterval: value });
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  QUANTITY
+  // ════════════════════════════════════════════════════════
+
+  increment(): void {
+    const v = this.quantity;
+    if (v < 999) this.form.patchValue({ totalQuantity: v + 1 });
+  }
+
+  decrement(): void {
+    const v = this.quantity;
+    if (v > 1) this.form.patchValue({ totalQuantity: v - 1 });
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  SUBMIT
+  // ════════════════════════════════════════════════════════
+
+  onSubmit(): void {
+    if (this.form.invalid || this.selectedFiles.length === 0) {
+      this.form.markAllAsTouched();
+      this.toastService.showError('Molimo popunite sva polja.');
+      return;
+    }
+    this.isSubmitting = true;
+    this.adService.uploadImages(this.selectedFiles).pipe(
+      switchMap(urls => {
+        this.form.patchValue({ images: urls });
+        return this.adService.createAd(this.form.value);
+      })
+    ).subscribe({
+      next: (ad) => {
+        this.isSubmitting = false;
+        this.toastService.showSuccess('Oglas uspešno kreiran!');
+        this.router.navigate(['/ads', ad.id]);
+      },
+      error: () => {
+        this.isSubmitting = false;
+        this.toastService.showError('Greška pri kreiranju oglasa. Pokušajte ponovo.');
+      },
+    });
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  GETTERS
+  // ════════════════════════════════════════════════════════
+
+  get titleLength(): number     { return this.form.get('title')?.value?.length ?? 0; }
+  get descLength(): number      { return this.form.get('description')?.value?.length ?? 0; }
+  get quantity(): number        { return this.form.get('totalQuantity')?.value ?? 1; }
+  get selectedCurrency(): string { return this.form.get('currency')?.value ?? 'RSD'; }
+  get selectedInterval(): string { return this.form.get('priceInterval')?.value ?? PriceInterval.PER_DAY; }
 }
