@@ -72,4 +72,9 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 			@Param("endDate") LocalDate endDate);
 
 	long countByContractStatusIn(List<ContractStatus> statuses);
+
+	@Query("SELECT rc FROM RentalContract rc WHERE rc.contractStatus IN :statuses AND rc.startDate < :today")
+	List<RentalContract> findByStatusInAndStartDateBefore(
+			@Param("statuses") List<ContractStatus> statuses,
+			@Param("today") LocalDate today);
 }

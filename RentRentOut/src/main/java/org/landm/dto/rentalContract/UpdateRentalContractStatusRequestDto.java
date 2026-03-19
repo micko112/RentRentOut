@@ -4,15 +4,20 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import org.landm.entity.Enums.ContractStatus;
 
 public class UpdateRentalContractStatusRequestDto {
     @NotNull
     private ContractStatus newStatus;
-    
+
     @Positive
     private BigDecimal newPrice;
+
+    private LocalDate newStartDate;
+
+    private LocalDate newEndDate;
 
     public ContractStatus getNewStatus() {
         return newStatus;
@@ -29,6 +34,20 @@ public class UpdateRentalContractStatusRequestDto {
 	public void setNewPrice(BigDecimal newPrice) {
 		this.newPrice = newPrice;
 	}
-    
-    
+
+    public LocalDate getNewStartDate() {
+        return newStartDate;
+    }
+
+    public void setNewStartDate(LocalDate newStartDate) {
+        this.newStartDate = newStartDate;
+    }
+
+    public LocalDate getNewEndDate() {
+        return newEndDate;
+    }
+
+    public void setNewEndDate(LocalDate newEndDate) {
+        this.newEndDate = newEndDate;
+    }
 }

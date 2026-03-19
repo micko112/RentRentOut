@@ -28,10 +28,28 @@ export class ContractCardComponent {
           else if (newStatus === 'REJECTED') this.toastService.showSuccess('Zahtev je odbijen.');
           else if (newStatus === 'ACTIVE') this.toastService.showSuccess('Predmet je uspešno predat!');
           else if (newStatus === 'FINISHED') this.toastService.showSuccess('Iznajmljivanje je završeno.');
+          else if (newStatus === 'CANCELLED') this.toastService.showSuccess('Ugovor je otkazan.');
+          else if (newStatus === 'CANCELLED_AFTER_ACCEPT') this.toastService.showSuccess('Ugovor je otkazan. Obe strane mogu ostaviti ocenu.');
           this.statusUpdated.emit();
         },
         error: (err) => {
           this.toastService.showError('Greška: ' + (err.error?.message || 'Pokušajte ponovo.'));
         }})
+  }
+
+  getStatusLabel(status: string): string {
+    const labels: Record<string, string> = {
+      REQUESTED: 'Na čekanju',
+      ACCEPTED: 'Prihvaćen',
+      ACTIVE: 'Aktivan',
+      FINISHED: 'Završen',
+      CANCELLED: 'Otkazan',
+      REJECTED: 'Odbijen',
+      EXPIRED: 'Istekao',
+      CANCELLED_AFTER_ACCEPT: 'Otkazan (prihvaćen)',
+      AD_DELETED: 'Oglas obrisan',
+      DELETED: 'Obrisan',
+    };
+    return labels[status] ?? status;
   }
 }

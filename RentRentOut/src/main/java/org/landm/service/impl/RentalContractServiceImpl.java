@@ -133,12 +133,13 @@ public class RentalContractServiceImpl implements RentalContractService {
 
         if (newStatus == ContractStatus.ACCEPTED || newStatus == ContractStatus.FINISHED
         		|| newStatus == ContractStatus.CANCELLED || newStatus == ContractStatus.ACTIVE
-        		|| newStatus == ContractStatus.REJECTED) {
+        		|| newStatus == ContractStatus.REJECTED
+        		|| newStatus == ContractStatus.CANCELLED_AFTER_ACCEPT) {
             changeStatus(contract, req.getNewStatus(), userId);
         }
 
-        if(newStatus == ContractStatus.REQUESTED) {
-            handlePriceNegotiation(contract, req, userId);
+        if (newStatus == ContractStatus.REQUESTED) {
+            handleCounterOffer(contract, req, userId);
             contract.setContractStatus(newStatus);
         }
 
@@ -194,19 +195,19 @@ public class RentalContractServiceImpl implements RentalContractService {
         return switch (from) {
             case REQUESTED ->
                     to == ContractStatus.ACCEPTED ||
-                            to == ContractStatus.REJECTED || 
-                            to == ContractStatus.REQUESTED ||
-							to == ContractStatus.CANCELLED;
+                            to == ContractStatus.REJECTED ||
+                            to == ContractStatus.REQUESTED ||       // kontra-ponuda
+                            to == ContractStatus.CANCELLED;         // lessee otkazuje pre prihvatanja
 
             case ACCEPTED ->
                     to == ContractStatus.ACTIVE ||
-					to == ContractStatus.CANCELLED;
+                    to == ContractStatus.CANCELLED_AFTER_ACCEPT;    // otkazivanje prihvaćenog
 
             case ACTIVE ->
-					to == ContractStatus.FINISHED ||
-							to == ContractStatus.CANCELLED;
+                    to == ContractStatus.FINISHED ||
+                    to == ContractStatus.CANCELLED_AFTER_ACCEPT;    // raskid aktivnog
 
-			case REJECTED, FINISHED, CANCELLED, DELETED -> false;
+            case REJECTED, FINISHED, CANCELLED, CANCELLED_AFTER_ACCEPT, DELETED, EXPIRED -> false;
 
             default -> false;
         };
@@ -286,10 +287,48 @@ public class RentalContractServiceImpl implements RentalContractService {
             );
         }
 
+        if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.CANCELLED_AFTER_ACCEPT) {
+            User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found!"));
+            User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found!"));
+
+            String cancellerName = userId.equals(owner.getId()) ? owner.getFirstname() : lessee.getFirstname();
+            contract.setContractStatus(ContractStatus.CANCELLED_AFTER_ACCEPT);
+            rentalContractRepository.save(contract);
+
+            // Zalihe se automatski oslobadjaju — dostupnost se racuna samo iz ACCEPTED/ACTIVE ugovora
+            chatService.sendSystemMessage(
+                contract.getAd().getId(),
+                lessee.getId(),
+                owner.getId(),
+                cancellerName + " je otkazao/la prihvaćeni ugovor. Obe strane mogu da ostave ocenu.",
+                userId
+            );
+        }
+
+        if (oldStatus == ContractStatus.ACTIVE && newStatus == ContractStatus.CANCELLED_AFTER_ACCEPT) {
+            User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found!"));
+            User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found!"));
+
+            String cancellerName = userId.equals(owner.getId()) ? owner.getFirstname() : lessee.getFirstname();
+            contract.setContractStatus(ContractStatus.CANCELLED_AFTER_ACCEPT);
+            rentalContractRepository.save(contract);
+
+            chatService.sendSystemMessage(
+                contract.getAd().getId(),
+                lessee.getId(),
+                owner.getId(),
+                cancellerName + " je raskinuo/la aktivan ugovor. Obe strane mogu da ostave ocenu.",
+                userId
+            );
+        }
+
         if (oldStatus == ContractStatus.ACTIVE && newStatus == ContractStatus.CANCELLED) {
-        	// Prvo pogledati ko je raskinuo ugovor
-        	
-        	//Ako je raskinuo korisnik nikom nista
+        	// stari blok — ne moze se vise triggerovati jer ACTIVE->CANCELLED nije validan prelaz
+        	// ostavljeno radi kompajlabilnosti, mrtav kod
         	if(userId == contract.getLessee().getId()) {
                 contract.setContractStatus(newStatus);
                 rentalContractRepository.save(contract);
@@ -324,19 +363,39 @@ public class RentalContractServiceImpl implements RentalContractService {
         
     }
 
-    private void handlePriceNegotiation(RentalContract contract, UpdateRentalContractStatusRequestDto req, Long userId){
-        ContractStatus oldStatus = contract.getContractStatus();
-        ContractStatus newStatus = req.getNewStatus();
-        if(newStatus == ContractStatus.REQUESTED && contract.getContractStatus() == ContractStatus.REQUESTED) {
-            if(contract.getOfferSender().getId() == userId){
-                throw new IllegalStateException("You cannot send counter-offer to yourself");
-            }
-            contract.setOfferSender(
-                    userRepository.findById(userId)
-                            .orElseThrow(() -> new UserNotFoundException("User not found!")));
-            if(req.getNewPrice() == null) throw new RuntimeException("New price must be bidded!");
-            contract.setAgreedPrice(req.getNewPrice());
+    private void handleCounterOffer(RentalContract contract, UpdateRentalContractStatusRequestDto req, Long userId) {
+        if (req.getNewStatus() != ContractStatus.REQUESTED || contract.getContractStatus() != ContractStatus.REQUESTED) {
+            return;
         }
+        if (contract.getOfferSender().getId().equals(userId)) {
+            throw new IllegalStateException("Ne možete slati kontra-ponudu sami sebi.");
+        }
+
+        contract.setOfferSender(
+                userRepository.findById(userId)
+                        .orElseThrow(() -> new UserNotFoundException("User not found!")));
+
+        // Ako su novi datumi prosleđeni, proveri dostupnost i ažuriraj
+        if (req.getNewStartDate() != null && req.getNewEndDate() != null) {
+            List<ContractStatus> activeStatuses = List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE);
+            List<RentalContract> activeContracts = rentalContractRepository
+                    .findActiveContractForAd(contract.getAd().getId(), activeStatuses);
+
+            int available = getAvailableAmountForInterval(
+                    activeContracts, req.getNewStartDate(), req.getNewEndDate(),
+                    contract.getAd().getTotalQuantity());
+
+            if (contract.getAmount() > available) {
+                throw new RuntimeException("Nema dovoljno dostupnih predmeta za tražene datume.");
+            }
+            contract.setStartDate(req.getNewStartDate());
+            contract.setEndDate(req.getNewEndDate());
+        }
+
+        if (req.getNewPrice() == null) {
+            throw new RuntimeException("Morate ponuditi novu cenu u kontra-ponudi!");
+        }
+        contract.setAgreedPrice(req.getNewPrice());
     }
 
 	@Override

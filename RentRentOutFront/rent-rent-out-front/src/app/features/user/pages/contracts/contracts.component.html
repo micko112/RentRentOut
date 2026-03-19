@@ -1,12 +1,12 @@
-<div class="contracts-dashboard">
-  <h2>Upravljanje zahtevima</h2>
+<div class="contracts-page">
 
-  <section  class="contract-section">
+  <section class="contract-section">
     <div class="section-header">
-      <h3>Dolazni zahtevi</h3>
-      <span class="badge count">{{ incomingRequests.length }}</span>
+      <h3 class="section-title">Dolazni zahtevi</h3>
+      <span class="count-badge">{{ incomingRequests.length }}</span>
     </div>
-    <div class="contract-list" *ngIf="incomingRequests.length>0; else noIncoming">
+
+    <div *ngIf="incomingRequests.length > 0; else noIncoming">
       <app-contract-card
         *ngFor="let contract of incomingRequests"
         [id]="'contract-' + contract.id"
@@ -16,20 +16,17 @@
       </app-contract-card>
     </div>
     <ng-template #noIncoming>
-      <div class="empty">
-        <p>Nema dolaznih zahteva</p>
-        <button class="create-listing"></button>
-      </div>
+      <p class="empty-state">Nema dolaznih zahteva.</p>
     </ng-template>
   </section>
 
   <section class="contract-section">
     <div class="section-header">
-      <h3>Moji zahtevi (Ono što ti iznajmljuješ)</h3>
-      <span class="badge count">{{ outgoingRequests.length }}</span>
+      <h3 class="section-title">Moji zahtevi</h3>
+      <span class="count-badge">{{ outgoingRequests.length }}</span>
     </div>
 
-    <div class="contracts-list" *ngIf="outgoingRequests.length > 0; else noOutgoing">
+    <div *ngIf="outgoingRequests.length > 0; else noOutgoing">
       <app-contract-card
         *ngFor="let contract of outgoingRequests"
         [id]="'contract-' + contract.id"
@@ -38,6 +35,9 @@
         (statusUpdated)="refreshData()">
       </app-contract-card>
     </div>
-    <ng-template #noOutgoing><p class="empty">Nisi poslao nijedan zahtev.</p></ng-template>
+    <ng-template #noOutgoing>
+      <p class="empty-state">Nisi poslao nijedan zahtev.</p>
+    </ng-template>
   </section>
+
 </div>
