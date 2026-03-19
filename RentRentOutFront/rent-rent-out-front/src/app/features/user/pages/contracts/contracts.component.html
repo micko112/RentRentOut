@@ -9,9 +9,10 @@
     <div class="contract-list" *ngIf="incomingRequests.length>0; else noIncoming">
       <app-contract-card
         *ngFor="let contract of incomingRequests"
+        [id]="'contract-' + contract.id"
         [contract]="contract"
         [isOwnerView]="true"
-        (statusUpdated) ="refreshData()">
+        (statusUpdated)="refreshData()">
       </app-contract-card>
     </div>
     <ng-template #noIncoming>
@@ -31,6 +32,7 @@
     <div class="contracts-list" *ngIf="outgoingRequests.length > 0; else noOutgoing">
       <app-contract-card
         *ngFor="let contract of outgoingRequests"
+        [id]="'contract-' + contract.id"
         [contract]="contract"
         [isOwnerView]="false"
         (statusUpdated)="refreshData()">

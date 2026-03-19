@@ -26,4 +26,8 @@ export class ChatService {
   sendMessage(request: SendMessageRequest): Observable<Message> {
     return this.http.post<Message>(`${this.url}/send`, request);
   }
+
+  getUnreadCount(): Observable<number> {
+    return this.http.get<number>(`${this.url}/unread-count`);
+  }
 }

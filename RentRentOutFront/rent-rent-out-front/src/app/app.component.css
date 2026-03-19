@@ -2,13 +2,13 @@
   display: flex;
   align-items: flex-start; /* critical: lets sticky work and sidebar not stretch */
   gap: 200px;              /* 200px gap between sidebar and content */
-  margin-top: 30px;
   /*padding: 0 15px;*/
 }
 
 .page-content {
   flex: 1;
   min-width: 0;
+  padding-top: 30px;
 }
 
 @media (max-width: 900px) {

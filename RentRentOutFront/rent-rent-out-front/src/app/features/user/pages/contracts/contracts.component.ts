@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {UserService} from '../../services/user.service';
 import {ContractCardComponent} from '../../components/contract-card/contract-card.component';
 import {AuthService} from '../../../auth/services/auth.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-contracts',
@@ -21,9 +22,14 @@ export class ContractsComponent implements OnInit {
   incomingRequests: RentalContract[] = [];
   outgoingRequests: RentalContract[] = [];
 
+  private scrollToContractId: string | null = null;
+
   constructor(private userService: UserService,
-              private authService: AuthService) {}
+              private authService: AuthService,
+              private route: ActivatedRoute) {}
+
   ngOnInit() {
+    this.scrollToContractId = this.route.snapshot.queryParamMap.get('contractId');
     this.loadContracts();
   }
 
@@ -32,12 +38,23 @@ export class ContractsComponent implements OnInit {
     if(!currentUser) return;
 
     this.userService.getAllContract().subscribe(allContracts => {
-    this.outgoingRequests = allContracts.filter(c=> c.lesseeDto.id === currentUser.id);
+      this.outgoingRequests = allContracts.filter(c=> c.lesseeDto.id === currentUser.id);
+      this.incomingRequests = allContracts.filter(c=> c.adDto.owner.id === currentUser.id);
 
-    this.incomingRequests = allContracts.filter(c=> c.adDto.owner.id === currentUser.id);
-
+      if (this.scrollToContractId) {
+        const targetId = this.scrollToContractId;
+        setTimeout(() => {
+          const el = document.getElementById('contract-' + targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('contract-highlighted');
+            setTimeout(() => el.classList.remove('contract-highlighted'), 2000);
+          }
+        }, 150);
+      }
     });
   }
+
   refreshData(){
     this.loadContracts();
   }

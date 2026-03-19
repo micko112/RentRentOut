@@ -16,6 +16,12 @@
       </a>
       <a routerLink="/messages" routerLinkActive="active">
         <span class="nav-icon">💬</span> Poruke
+        <span class="unread-badge" *ngIf="(totalUnread$ | async) as count">
+          {{ count > 99 ? '99+' : count }}
+        </span>
+      </a>
+      <a routerLink="/user/me/contracts" routerLinkActive="active">
+        <span class="nav-icon">🤝</span> Moji Ugovori
       </a>
       <a routerLink="/notifications" routerLinkActive="active">
         <span class="nav-icon">🔔</span> Obaveštenja

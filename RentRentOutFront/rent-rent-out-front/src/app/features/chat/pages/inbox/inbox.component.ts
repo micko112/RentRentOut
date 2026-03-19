@@ -8,23 +8,31 @@ import {Message, MessageGroup} from '../../../../shared/models/message.model';
 import {ConversationPreview} from '../../../../shared/models/conversation-preview.model';
 import {Subscription, interval} from 'rxjs';
 import {WebsocketService} from '../../../../core/services/websocket.service';
+import {NotificationService} from '../../../../core/services/notification.service';
+import {AdService} from '../../../ads/services/ad.service';
+import {Ad} from '../../../../shared/models/ad.model';
+import {RentalCalendarComponent} from '../../../ads/components/rental-calendar/rental-calendar.component';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-inbox',
   standalone: true,
-  imports: [CommonModule, FormsModule, InitialsPipe, RouterLink],
+  imports: [CommonModule, FormsModule, InitialsPipe, RouterLink, RentalCalendarComponent],
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.css']
 })
 export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   // Left side
-  conversations: ConversationPreview[] =[];
+  conversations: ConversationPreview[] = [];
   activeConversation: ConversationPreview | null = null;
 
   // Right side
-  groupedMessages: MessageGroup[] =[];
+  groupedMessages: MessageGroup[] = [];
+
+  // Calendar (treća kolona)
+  currentAdFullDetails: Ad | null = null;
+  calendarBlockedIntervals: { start: Date, end: Date }[] = [];
 
   messages: Message[] =[];
   newMessageContent: string = '';
@@ -43,6 +51,8 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     private chatService: ChatService,
     private authService: AuthService,
     private websocketService: WebsocketService,
+    private notificationService: NotificationService,
+    private adService: AdService,
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -105,7 +115,12 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
       else if (this.activeConversation && this.activeConversation.id === msg.conversationId) {
         this.removeOptimisticDuplicate(msg);
         this.messages.push(msg);
+        this.updateGroupedMessages();
         this.scrollToBottomNeeded = true;
+      }
+      // Scenario C: message arrived for a different (background) conversation
+      else if (msg.senderId !== this.myUserId) {
+        this.notificationService.onNewMessageInBackground();
       }
 
       // Refresh left list so chat jumps to top
@@ -118,6 +133,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   loadConversations() {
     this.chatService.getMyConversations().subscribe(res => {
       this.conversations = res.content;
+      this.notificationService.updateFromConversations(this.conversations);
       this.conversationsLoaded = true;
       if (this.pendingChatCheck) {
         this.pendingChatCheck = false;
@@ -132,18 +148,39 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   openConversation(conv: ConversationPreview) {
+    const prevUnread = conv.unreadCount || 0;
     this.activeConversation = conv;
+    conv.unreadCount = 0;
+    this.notificationService.onConversationOpened(prevUnread);
+
+    // Reset kalendara pri svakom prelasku na novu konverzaciju
+    this.currentAdFullDetails = null;
+    this.calendarBlockedIntervals = [];
 
     if (conv.id === 0) {
       this.messages = [];
       this.scrollToBottomNeeded = true;
-      return;
+    } else {
+      this.chatService.getMessages(conv.id).subscribe(res => {
+        this.messages = res.content;
+        this.updateGroupedMessages();
+        this.scrollToBottomNeeded = true;
+      });
     }
 
-    this.chatService.getMessages(conv.id).subscribe(res => {
-      this.messages = res.content;
-      this.updateGroupedMessages();
-      this.scrollToBottomNeeded = true;
+    // Učitaj detalje oglasa za prikaz kalendara
+    this.adService.getAdById(conv.adId).subscribe({
+      next: (ad) => {
+        this.currentAdFullDetails = ad;
+        this.calendarBlockedIntervals = (ad.blockedIntervals || []).map(interval => ({
+          start: new Date(interval.from),
+          end: new Date(interval.to),
+        }));
+      },
+      error: () => {
+        // Ako oglas nije dostupan (obrisan itd.), kalendar se neće prikazati
+        this.currentAdFullDetails = null;
+      }
     });
   }
 
@@ -254,6 +291,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
       senderId: this.myUserId || 0,
       content,
       read: true,
+      messageType: 'REGULAR',
       createdAt: new Date().toISOString()
     };
     (tempMsg as any)._temp = true;
@@ -289,6 +327,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     if (this.messages.some(m => (m as any)._temp)) return;
     this.chatService.getMessages(this.activeConversation.id).subscribe(res => {
       this.messages = res.content;
+      this.updateGroupedMessages();
       this.scrollToBottomNeeded = true;
     });
   }
@@ -338,6 +377,11 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   // Pomoćna funkcija za poređenje datuma (bez vremena)
+  goToContract(contractId?: number): void {
+    if (!contractId) return;
+    this.router.navigate(['/user/me/contracts'], { queryParams: { contractId } });
+  }
+
   private isSameDay(d1: Date, d2: Date): boolean {
     return d1.getFullYear() === d2.getFullYear() &&
       d1.getMonth() === d2.getMonth() &&

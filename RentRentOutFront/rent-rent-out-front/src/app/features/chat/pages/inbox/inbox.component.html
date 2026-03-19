@@ -48,69 +48,122 @@
       <p>Izaberite razgovor sa leve strane</p>
     </div>
 
-    <!-- SLUČAJ B: Izabran je razgovor -->
-    <div class="active-chat-wrapper" *ngIf="activeConversation">
+    <!-- SLUČAJ B: Izabran je razgovor — trostubačni layout -->
+    <div class="chat-and-calendar-layout" *ngIf="activeConversation">
 
-      <!-- 1. Header (Info o oglasu i sagovorniku) -->
-      <div class="chat-header">
-        <img [src]="activeConversation.adThumbnail || 'assets/images/placeholder.png'" alt="Oglas" class="header-ad-img">
-        <div class="header-info">
-          <a class="header-ad-link" [routerLink]="['/ads', activeConversation.adId]">{{ activeConversation.adTitle }}</a>
-          <a class="header-user-link" [routerLink]="['/user', activeConversation.otherParticipant.id]">{{ activeConversation.otherParticipant.displayName }}</a>
-        </div>
-      </div>
+      <!-- SREDNJA KOLONA: Poruke -->
+      <div class="chat-messages-section">
 
-      <!-- 2. Sredina (Istorija poruka) -->
-      <div class="messages-area" #chatScroll>
-
-        <div *ngIf="messages.length === 0" class="no-messages-alert">
-          Nema poruka. Pošaljite prvu poruku!
+        <!-- 1. Header (Info o oglasu i sagovorniku) -->
+        <div class="chat-header">
+          <img [src]="activeConversation.adThumbnail || 'assets/images/placeholder.png'" alt="Oglas" class="header-ad-img">
+          <div class="header-info">
+            <a class="header-ad-link" [routerLink]="['/ads', activeConversation.adId]">{{ activeConversation.adTitle }}</a>
+            <a class="header-user-link" [routerLink]="['/user', activeConversation.otherParticipant.id]">{{ activeConversation.otherParticipant.displayName }}</a>
+          </div>
         </div>
 
-        <!-- DUPLA PETLJA: 1. Vrtimo grupe (Datume) -->
-        <ng-container *ngFor="let group of groupedMessages">
+        <!-- 2. Sredina (Istorija poruka) -->
+        <div class="messages-area" #chatScroll>
 
-          <!-- Prikazujemo datum za grupu u sredini (npr. "Danas") -->
-          <div class="message-date-divider">
-            <span>{{ group.dateLabel }}</span>
+          <div *ngIf="messages.length === 0" class="no-messages-alert">
+            Nema poruka. Pošaljite prvu poruku!
           </div>
 
-          <!-- 2. Vrtimo poruke unutar te grupe -->
-          <div class="message-row"
-               *ngFor="let msg of group.messages"
-               [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
+          <ng-container *ngFor="let group of groupedMessages">
 
-            <div class="message-content-wrapper">
-              <div class="message-bubble">
-                {{ msg.content }}
-                <!-- Mala oznaka za vreme unutar oblačića (npr. 14:35) -->
-                <span class="message-time">{{ msg.createdAt | date:'HH:mm' }}</span>
-              </div>
-
-              <!-- Opciono: Značka za pročitano (seen) samo za tvoje poruke -->
-              <!-- <span class="message-status" *ngIf="msg.senderId === myUserId && msg.read">✓✓</span> -->
+            <div class="message-date-divider">
+              <span>{{ group.dateLabel }}</span>
             </div>
 
-          </div>
+            <ng-container *ngFor="let msg of group.messages">
 
-        </ng-container>
+              <!-- Sistemska poruka: centrirani sivi box -->
+              <div class="system-message-row" *ngIf="msg.messageType === 'SYSTEM'">
+                <div class="system-message-bubble">{{ msg.content }}</div>
+              </div>
+
+              <!-- Kartica ugovora -->
+              <div class="message-row"
+                   *ngIf="msg.messageType === 'CONTRACT_REQUEST'"
+                   [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
+                <div class="contract-card">
+                  <div class="contract-card-header">
+                    <span class="contract-card-icon">🤝</span>
+                    <span class="contract-card-title">Zahtev za iznajmljivanje</span>
+                  </div>
+                  <div class="contract-card-body">
+                    <!-- Oglas (ceo red) -->
+                    <div class="contract-card-row">
+                      <span class="contract-card-label">📦 Oglas:</span>
+                      <span class="contract-card-value">{{ msg.contractAdTitle }}</span>
+                    </div>
+                    <!-- Datumi i cena u jednom horizontalnom redu -->
+                    <div class="contract-meta-row">
+                      <div class="contract-meta-item">
+                        <span class="contract-card-label">📅 Od:</span>
+                        <span class="contract-card-value">{{ msg.contractStartDate | date:'dd.MM.yyyy.' }}</span>
+                      </div>
+                      <div class="contract-meta-item">
+                        <span class="contract-card-label">📅 Do:</span>
+                        <span class="contract-card-value">{{ msg.contractEndDate | date:'dd.MM.yyyy.' }}</span>
+                      </div>
+                      <div class="contract-meta-item">
+                        <span class="contract-card-label">💰 Ukupno:</span>
+                        <span class="contract-price-value">{{ msg.contractTotalPrice | number:'1.2-2' }} {{ msg.contractCurrency }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="contract-card-footer">
+                    <button class="contract-card-btn" (click)="goToContract(msg.relatedContractId)">Pogledaj detalje</button>
+                    <span class="message-time-card">{{ msg.createdAt | date:'HH:mm' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Obična poruka -->
+              <div class="message-row"
+                   *ngIf="msg.messageType === 'REGULAR'"
+                   [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
+                <div class="message-content-wrapper">
+                  <div class="message-bubble">
+                    {{ msg.content }}
+                    <span class="message-time">{{ msg.createdAt | date:'HH:mm' }}</span>
+                  </div>
+                </div>
+              </div>
+
+            </ng-container>
+
+          </ng-container>
+
+        </div>
+
+        <!-- 3. Dno (Polje za kucanje) -->
+        <div class="chat-input-area">
+          <input type="text"
+                 placeholder="Napišite poruku..."
+                 [(ngModel)]="newMessageContent"
+                 (keyup.enter)="sendMessage()">
+          <button class="btn-send"
+                  (click)="sendMessage()"
+                  [disabled]="!newMessageContent.trim()">Pošalji</button>
+        </div>
 
       </div>
+      <!-- /chat-messages-section -->
 
-      <!-- 3. Dno (Polje za kucanje) -->
-      <div class="chat-input-area">
-        <input type="text"
-               placeholder="Napišite poruku..."
-               [(ngModel)]="newMessageContent"
-               (keyup.enter)="sendMessage()"> <!-- Okida na Enter -->
-
-        <button class="btn-send"
-                (click)="sendMessage()"
-                [disabled]="!newMessageContent.trim()">Pošalji</button> <!-- Okida na klik -->
-      </div>
-
+      <!-- DESNA KOLONA: Kalendar -->
+      <aside class="chat-calendar-section" *ngIf="currentAdFullDetails">
+        <app-rental-calendar
+          [ad]="currentAdFullDetails"
+          [blockedIntervals]="calendarBlockedIntervals"
+          [isMyAd]="currentAdFullDetails.owner.id === myUserId">
+        </app-rental-calendar>
+      </aside>
 
     </div>
+    <!-- /chat-and-calendar-layout -->
   </main>
 
 </div>
