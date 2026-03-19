@@ -1,5 +1,5 @@
 import {ApplicationConfig, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import {
   HttpClientModule, HttpEvent, HttpHandler,
   HttpInterceptor, HttpInterceptorFn,
@@ -34,7 +34,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 export const appConfig: ApplicationConfig = {
   providers:
     [provideZoneChangeDetection({ eventCoalescing: true }),
-      provideRouter(routes),
+      provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
       provideHttpClient(withInterceptors([authInterceptor])),
       {provide: LOCALE_ID, useValue: 'sr-Latn'},
     DatePipe
