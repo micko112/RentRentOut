@@ -169,9 +169,9 @@
     /* Izgled teksta KAD JE SELEKTOVAN (Tvoja Ljubičasta) */
 
     input[type="radio"]:checked + span {
-      background-color: #813181; /* Brend ljubičasta */
+      background-color: #6ecf7e; /* Brend ljubičasta */
       color: white; /* Beli tekst za maksimalan kontrast */
-      box-shadow: 0 2px 6px rgba(129, 49, 129, 0.3); /* Blaga ljubičasta senka */
+      box-shadow: 0 2px 6px rgba(110, 207, 126, 0.3); /* Blaga ljubičasta senka */
     }
 
     input[type="radio"]:not(checked) + span {

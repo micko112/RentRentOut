@@ -14,7 +14,7 @@
   width: 100%;
   height: 40px;
   margin-bottom: 10px;
-  border: 1px solid #813181;
+  border: 1px solid #6ecf7e;
   border-radius: 12px;
   .buttons{
     display: flex;
@@ -30,7 +30,7 @@
       font-size: 14px;
 
       &:hover{
-        color: #813181;
+        color: #6ecf7e;
       }
     }
   }
@@ -85,8 +85,8 @@
     overflow: hidden;
     transition: border-color 0.2s;
 
-    &:hover { border-color: rgba(129, 49, 129, 0.87); }
-    &.active { border-color: #813181; }
+    &:hover { border-color: rgba(110, 207, 126, 0.87); }
+    &.active { border-color: #6ecf7e; }
 
     img {
       width: 100%;
@@ -113,8 +113,8 @@
   transition: background-color 0.2s;
 
   &:hover {
-    border-color: rgba(129, 49, 129, 0.87);
-    background-color: rgba(129, 49, 129, 0.22);
+    border-color: rgba(110, 207, 126, 0.87);
+    background-color: rgba(110, 207, 126, 0.22);
   }
 }
 

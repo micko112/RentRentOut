@@ -2,13 +2,19 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="
-       http://www.liquibase.org/xml/ns/dbchangelog
-       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="11-add-message-type" author="system">
+    <changeSet id="11-add-message-type-column" author="codex">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="message"/>
+            <not>
+                <columnExists tableName="message" columnName="message_type"/>
+            </not>
+        </preConditions>
+
         <addColumn tableName="message">
-            <column name="message_type" type="VARCHAR(20)" defaultValue="REGULAR">
+            <column name="message_type" type="VARCHAR(32)" defaultValue="REGULAR">
                 <constraints nullable="false"/>
             </column>
         </addColumn>

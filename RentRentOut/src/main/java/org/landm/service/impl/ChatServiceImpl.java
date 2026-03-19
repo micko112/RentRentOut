@@ -16,6 +16,7 @@ import org.landm.repository.ConversationRepository;
 import org.landm.repository.MessageRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.ChatService;
+import org.landm.service.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,14 +34,16 @@ public class ChatServiceImpl implements ChatService {
     private final AdRepository adRepository;
     private final ChatMapper chatMapper;
     private final SimpMessagingTemplate messagingTemplate;
+    private final NotificationService notificationService;
 
-    public ChatServiceImpl(ConversationRepository conversationRepository, MessageRepository messageRepository, UserRepository userRepository, AdRepository adRepository, ChatMapper chatMapper, SimpMessagingTemplate messagingTemplate) {
+    public ChatServiceImpl(ConversationRepository conversationRepository, MessageRepository messageRepository, UserRepository userRepository, AdRepository adRepository, ChatMapper chatMapper, SimpMessagingTemplate messagingTemplate, NotificationService notificationService) {
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
         this.adRepository = adRepository;
         this.chatMapper = chatMapper;
         this.messagingTemplate = messagingTemplate;
+        this.notificationService = notificationService;
     }
 
 
@@ -66,6 +69,14 @@ public class ChatServiceImpl implements ChatService {
 
         conv.setUpdatedAt(LocalDateTime.now());
         conversationRepository.save(conv);
+
+        notificationService.sendPushNotification(
+            receiver.getId(),
+            "New message from " + sender.getFirstname(),
+            request.getContent().length() > 80
+                ? request.getContent().substring(0, 80) + "..."
+                : request.getContent()
+        );
 
         return chatMapper.toMessageDto(message);
     }

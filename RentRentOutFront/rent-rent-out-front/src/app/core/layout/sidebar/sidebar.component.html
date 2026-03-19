@@ -12,61 +12,42 @@
 
     <nav class="sidebar-nav">
       <a routerLink="/user/me/ads" routerLinkActive="active">
-        <span class="nav-icon">📋</span> Moji oglasi
+        <span class="material-icons nav-icon">article</span> Moji oglasi
       </a>
       <a routerLink="/messages" routerLinkActive="active">
-        <span class="nav-icon">💬</span> Poruke
+        <span class="material-icons nav-icon">forum</span> Poruke
         <span class="unread-badge" *ngIf="(totalUnread$ | async) as count">
           {{ count > 99 ? '99+' : count }}
         </span>
       </a>
       <a routerLink="/user/me/contracts" routerLinkActive="active">
-        <span class="nav-icon">🤝</span> Moji Ugovori
+        <span class="material-icons nav-icon">description</span> Moji Ugovori
       </a>
       <a routerLink="/notifications" routerLinkActive="active">
-        <span class="nav-icon">🔔</span> Obaveštenja
+        <span class="material-icons nav-icon">notifications</span> Obaveštenja
       </a>
       <a [routerLink]="['/user', user.id, 'reviews']" routerLinkActive="active">
-        <span class="nav-icon">⭐</span> Ocene
+        <span class="material-icons nav-icon">star</span> Ocene
       </a>
       <a routerLink="/following" routerLinkActive="active">
-        <span class="nav-icon">👁️</span> Pratim
+        <span class="material-icons nav-icon">visibility</span> Pratim
       </a>
       <a routerLink="/saved-searches" routerLinkActive="active">
-        <span class="nav-icon">🔍</span> Sačuvane pretrage
+        <span class="material-icons nav-icon">search</span> Sačuvane pretrage
       </a>
       <a routerLink="/address-book" routerLinkActive="active">
-        <span class="nav-icon">📖</span> Adresar
+        <span class="material-icons nav-icon">contacts</span> Adresar
       </a>
       <a routerLink="/credit" routerLinkActive="active">
-        <span class="nav-icon">💳</span> Kredit
+        <span class="material-icons nav-icon">account_balance_wallet</span> Kredit
       </a>
       <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <span class="nav-icon">⚙️</span> Moj Nalog
+        <span class="material-icons nav-icon">manage_accounts</span> Moj Nalog
       </a>
     </nav>
   </ng-container>
 
-  <!-- Not logged in: guest prompt -->
-  <ng-template #guestBlock>
-    <div class="guest-block">
-      <div class="guest-avatar">?</div>
-      <p class="guest-text">Niste prijavljeni</p>
-      <a routerLink="/login" class="btn-login">Prijavi se</a>
-      <a routerLink="/register" class="btn-register">Registruj se</a>
-    </div>
+  <ng-template #guestBlock></ng-template>
 
-    <nav class="sidebar-nav sidebar-nav--locked">
-      <span class="nav-item-locked"><span class="nav-icon">📋</span> Moji oglasi</span>
-      <span class="nav-item-locked"><span class="nav-icon">💬</span> Poruke</span>
-      <span class="nav-item-locked"><span class="nav-icon">🔔</span> Obaveštenja</span>
-      <span class="nav-item-locked"><span class="nav-icon">⭐</span> Ocene</span>
-      <span class="nav-item-locked"><span class="nav-icon">⚙️</span> Moj Nalog</span>
-    </nav>
-  </ng-template>
-
-  <div class="sidebar-footer">
-    <span class="exchange-rate">Kurs evra: 117.2 RSD</span>
-  </div>
 
 </aside>

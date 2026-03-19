@@ -5,20 +5,43 @@
 
   <div class="stats-grid" *ngIf="stats">
     <div class="stat-card">
-      <div class="stat-value">{{ stats.totalUsers }}</div>
-      <div class="stat-label">Ukupno korisnika</div>
+      <div class="stat-icon users">
+        <span class="material-icons">people</span>
+      </div>
+      <div class="stat-body">
+        <div class="stat-value">{{ stats.totalUsers }}</div>
+        <div class="stat-label">Ukupno korisnika</div>
+      </div>
     </div>
+
     <div class="stat-card">
-      <div class="stat-value">{{ stats.totalAds }}</div>
-      <div class="stat-label">Ukupno oglasa</div>
+      <div class="stat-icon ads">
+        <span class="material-icons">article</span>
+      </div>
+      <div class="stat-body">
+        <div class="stat-value">{{ stats.totalAds }}</div>
+        <div class="stat-label">Ukupno oglasa</div>
+      </div>
     </div>
+
     <div class="stat-card">
-      <div class="stat-value">{{ stats.totalContracts }}</div>
-      <div class="stat-label">Ukupno ugovora</div>
+      <div class="stat-icon contracts">
+        <span class="material-icons">description</span>
+      </div>
+      <div class="stat-body">
+        <div class="stat-value">{{ stats.totalContracts }}</div>
+        <div class="stat-label">Ukupno ugovora</div>
+      </div>
     </div>
+
     <div class="stat-card highlight">
-      <div class="stat-value">{{ stats.activeContracts }}</div>
-      <div class="stat-label">Aktivni ugovori</div>
+      <div class="stat-icon active">
+        <span class="material-icons">task_alt</span>
+      </div>
+      <div class="stat-body">
+        <div class="stat-value">{{ stats.activeContracts }}</div>
+        <div class="stat-label">Aktivni ugovori</div>
+      </div>
     </div>
   </div>
 </div>

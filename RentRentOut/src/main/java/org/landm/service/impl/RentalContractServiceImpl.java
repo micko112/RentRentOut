@@ -17,6 +17,7 @@ import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
 import org.landm.service.ChatService;
+import org.landm.service.NotificationService;
 import org.landm.service.RentalContractService;
 import org.landm.specification.RentalContractSpecification;
 import org.springframework.data.domain.Page;
@@ -44,16 +45,18 @@ public class RentalContractServiceImpl implements RentalContractService {
     private final RentalContractMapper rentalContractMapper;
     private final RentalContractRepository rentalContractRepository;
     private final ChatService chatService;
+    private final NotificationService notificationService;
 
     public RentalContractServiceImpl(JwtUtil jwtUtil, UserRepository userRepository, AdRepository adRepository,
                                      RentalContractMapper rentalContractMapper, RentalContractRepository rentalContractRepository,
-                                     ChatService chatService) {
+                                     ChatService chatService, NotificationService notificationService) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.adRepository = adRepository;
         this.rentalContractMapper = rentalContractMapper;
         this.rentalContractRepository = rentalContractRepository;
         this.chatService = chatService;
+        this.notificationService = notificationService;
     }
     
     @Override
@@ -99,6 +102,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         RentalContract saved = rentalContractRepository.save(rentalToCreate);
 
         chatService.sendContractRequestMessage(saved);
+        notificationService.sendContractRequestEmail(ad.getOwner(), ad, lessee);
 
         return rentalContractMapper.toDto(saved);
     }
@@ -260,6 +264,7 @@ public class RentalContractServiceImpl implements RentalContractService {
                 ownerName + " je prihvatio/la vaš zahtev za iznajmljivanje.",
                 userId
             );
+            notificationService.sendContractAcceptedEmail(lessee, ad);
         }
 		if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.ACTIVE) {
 			contract.setContractStatus(ContractStatus.ACTIVE);
@@ -285,6 +290,7 @@ public class RentalContractServiceImpl implements RentalContractService {
                 lessor.getFirstname() + " je odbio/la vaš zahtev za iznajmljivanje.",
                 userId
             );
+            notificationService.sendContractRejectedEmail(contractLessee, contract.getAd());
         }
 
         if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.CANCELLED_AFTER_ACCEPT) {
