@@ -16,7 +16,9 @@ import org.landm.repository.AdRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
+import org.landm.entity.Enums.NotificationType;
 import org.landm.service.ChatService;
+import org.landm.service.NotificationPersistenceService;
 import org.landm.service.NotificationService;
 import org.landm.service.RentalContractService;
 import org.landm.specification.RentalContractSpecification;
@@ -46,10 +48,12 @@ public class RentalContractServiceImpl implements RentalContractService {
     private final RentalContractRepository rentalContractRepository;
     private final ChatService chatService;
     private final NotificationService notificationService;
+    private final NotificationPersistenceService notifPersistenceService;
 
     public RentalContractServiceImpl(JwtUtil jwtUtil, UserRepository userRepository, AdRepository adRepository,
                                      RentalContractMapper rentalContractMapper, RentalContractRepository rentalContractRepository,
-                                     ChatService chatService, NotificationService notificationService) {
+                                     ChatService chatService, NotificationService notificationService,
+                                     NotificationPersistenceService notifPersistenceService) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.adRepository = adRepository;
@@ -57,6 +61,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         this.rentalContractRepository = rentalContractRepository;
         this.chatService = chatService;
         this.notificationService = notificationService;
+        this.notifPersistenceService = notifPersistenceService;
     }
     
     @Override
@@ -103,6 +108,13 @@ public class RentalContractServiceImpl implements RentalContractService {
 
         chatService.sendContractRequestMessage(saved);
         notificationService.sendContractRequestEmail(ad.getOwner(), ad, lessee);
+        String lesseeFullName = lessee.getFirstname() + " " + lessee.getLastname();
+        notifPersistenceService.create(
+            ad.getOwner().getId(), NotificationType.CONTRACT_REQUESTED,
+            "Novi zahtev za iznajmljivanje",
+            lesseeFullName + " je zatražio/la iznajmljivanje predmeta \"" + ad.getTitle() + "\".",
+            saved.getId(), "CONTRACT", lesseeFullName
+        );
 
         return rentalContractMapper.toDto(saved);
     }
@@ -265,6 +277,12 @@ public class RentalContractServiceImpl implements RentalContractService {
                 userId
             );
             notificationService.sendContractAcceptedEmail(lessee, ad);
+            notifPersistenceService.create(
+                lessee.getId(), NotificationType.CONTRACT_ACCEPTED,
+                "Zahtev prihvaćen",
+                owner.getFirstname() + " " + owner.getLastname() + " je prihvatio/la vaš zahtev za iznajmljivanje predmeta \"" + ad.getTitle() + "\".",
+                contract.getId(), "CONTRACT", owner.getFirstname() + " " + owner.getLastname()
+            );
         }
 		if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.ACTIVE) {
 			contract.setContractStatus(ContractStatus.ACTIVE);
@@ -291,6 +309,12 @@ public class RentalContractServiceImpl implements RentalContractService {
                 userId
             );
             notificationService.sendContractRejectedEmail(contractLessee, contract.getAd());
+            notifPersistenceService.create(
+                contractLessee.getId(), NotificationType.CONTRACT_REJECTED,
+                "Zahtev odbijen",
+                lessor.getFirstname() + " " + lessor.getLastname() + " je odbio/la vaš zahtev za iznajmljivanje predmeta \"" + contract.getAd().getTitle() + "\".",
+                contract.getId(), "CONTRACT", lessor.getFirstname() + " " + lessor.getLastname()
+            );
         }
 
         if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.CANCELLED_AFTER_ACCEPT) {

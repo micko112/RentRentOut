@@ -13,6 +13,8 @@ import org.landm.mapper.ReviewMapper;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.ReviewRepository;
 import org.landm.repository.UserRepository;
+import org.landm.entity.Enums.NotificationType;
+import org.landm.service.NotificationPersistenceService;
 import org.landm.service.ReviewService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,11 +31,15 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final RentalContractRepository rentalContractRepository;
-    public ReviewServiceImpl(ReviewMapper reviewMapper, UserRepository userRepository, ReviewRepository reviewRepository, RentalContractRepository rentalContractRepository) {
+    private final NotificationPersistenceService notifPersistenceService;
+
+    public ReviewServiceImpl(ReviewMapper reviewMapper, UserRepository userRepository, ReviewRepository reviewRepository,
+                             RentalContractRepository rentalContractRepository, NotificationPersistenceService notifPersistenceService) {
         this.reviewMapper = reviewMapper;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.rentalContractRepository = rentalContractRepository;
+        this.notifPersistenceService = notifPersistenceService;
     }
 
     @Override
@@ -110,6 +116,14 @@ public class ReviewServiceImpl implements ReviewService {
         }
         reviewRepository.save(review);
         userRepository.save(reviewee);
+        String reviewerName = reviewer.getFirstname() + " " + reviewer.getLastname();
+        String sentiment = review.getType() == ReviewType.POSITIVE ? "pozitivnu" : "negativnu";
+        notifPersistenceService.create(
+            reviewee.getId(), NotificationType.NEW_REVIEW,
+            "Nova ocena",
+            reviewerName + " vam je ostavio/la " + sentiment + " ocenu.",
+            review.getId(), "REVIEW", reviewerName
+        );
 
         return reviewMapper.toDto(review);
     }

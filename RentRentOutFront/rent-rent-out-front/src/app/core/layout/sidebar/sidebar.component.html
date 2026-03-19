@@ -25,6 +25,9 @@
       </a>
       <a routerLink="/notifications" routerLinkActive="active">
         <span class="material-icons nav-icon">notifications</span> Obaveštenja
+        <span class="unread-badge" *ngIf="(notifUnread$ | async) as count">
+          {{ count > 99 ? '99+' : count }}
+        </span>
       </a>
       <a [routerLink]="['/user', user.id, 'reviews']" routerLinkActive="active">
         <span class="material-icons nav-icon">star</span> Ocene
