@@ -10,6 +10,7 @@ import {ReviewComponent} from './features/review/pages/review/review.component';
 import {ForgotPasswordComponent} from './features/auth/pages/forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './features/auth/pages/reset-password/reset-password.component';
 import {InboxComponent} from './features/chat/pages/inbox/inbox.component';
+import {NotificationsPageComponent} from './features/notifications/pages/notifications-page/notifications-page.component';
 import {authGuard} from './features/auth/auth.guard';
 
 export const routes: Routes = [
@@ -20,6 +21,7 @@ export const routes: Routes = [
   {path:'admin',
     loadChildren: () => import('./features/admin/admin.routes').then(m=>m.ADMIN_ROUTES)},
   {path: 'messages', component: InboxComponent, canActivate: [authGuard]},
+  {path: 'notifications', component: NotificationsPageComponent, canActivate: [authGuard]},
 
   {path: '',
     redirectTo: '/ads',

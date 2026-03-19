@@ -16,7 +16,9 @@ import org.landm.repository.AdRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
+import org.landm.entity.Enums.NotificationType;
 import org.landm.service.ChatService;
+import org.landm.service.NotificationPersistenceService;
 import org.landm.service.RentalContractService;
 import org.landm.specification.RentalContractSpecification;
 import org.springframework.data.domain.Page;
@@ -44,16 +46,18 @@ public class RentalContractServiceImpl implements RentalContractService {
     private final RentalContractMapper rentalContractMapper;
     private final RentalContractRepository rentalContractRepository;
     private final ChatService chatService;
+    private final NotificationPersistenceService notificationService;
 
     public RentalContractServiceImpl(JwtUtil jwtUtil, UserRepository userRepository, AdRepository adRepository,
                                      RentalContractMapper rentalContractMapper, RentalContractRepository rentalContractRepository,
-                                     ChatService chatService) {
+                                     ChatService chatService, NotificationPersistenceService notificationService) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.adRepository = adRepository;
         this.rentalContractMapper = rentalContractMapper;
         this.rentalContractRepository = rentalContractRepository;
         this.chatService = chatService;
+        this.notificationService = notificationService;
     }
     
     @Override
@@ -99,6 +103,15 @@ public class RentalContractServiceImpl implements RentalContractService {
         RentalContract saved = rentalContractRepository.save(rentalToCreate);
 
         chatService.sendContractRequestMessage(saved);
+
+        String lesseeFullName = lessee.getFirstname() + " " + lessee.getLastname();
+        notificationService.create(
+            ad.getOwner().getId(),
+            NotificationType.CONTRACT_REQUESTED,
+            "Novi zahtev za iznajmljivanje",
+            lesseeFullName + " je zatražio/la iznajmljivanje predmeta \"" + ad.getTitle() + "\".",
+            saved.getId(), "CONTRACT", lesseeFullName
+        );
 
         return rentalContractMapper.toDto(saved);
     }
@@ -251,6 +264,14 @@ public class RentalContractServiceImpl implements RentalContractService {
         	contract.setContractStatus(ContractStatus.ACCEPTED);
             rentalContractRepository.save(contract);
 
+            notificationService.create(
+                lessee.getId(),
+                NotificationType.CONTRACT_ACCEPTED,
+                "Zahtev prihvaćen",
+                owner.getFirstname() + " " + owner.getLastname() + " je prihvatio/la vaš zahtev za iznajmljivanje predmeta \"" + ad.getTitle() + "\".",
+                contract.getId(), "CONTRACT", owner.getFirstname() + " " + owner.getLastname()
+            );
+
             String ownerName = owner.getFirstname();
             chatService.sendSystemMessage(
                 ad.getId(),
@@ -276,6 +297,14 @@ public class RentalContractServiceImpl implements RentalContractService {
             User contractLessee = contract.getLessee();
             contract.setContractStatus(ContractStatus.REJECTED);
             rentalContractRepository.save(contract);
+
+            notificationService.create(
+                contractLessee.getId(),
+                NotificationType.CONTRACT_REJECTED,
+                "Zahtev odbijen",
+                lessor.getFirstname() + " " + lessor.getLastname() + " je odbio/la vaš zahtev za iznajmljivanje predmeta \"" + contract.getAd().getTitle() + "\".",
+                contract.getId(), "CONTRACT", lessor.getFirstname() + " " + lessor.getLastname()
+            );
 
             chatService.sendSystemMessage(
                 contract.getAd().getId(),

@@ -4,8 +4,10 @@ import org.landm.dto.review.CreateReviewRequestDto;
 import org.landm.dto.review.ReviewDto;
 import org.landm.dto.review.ReviewEligibilityDto;
 import org.landm.entity.Enums.ContractStatus;
+import org.landm.entity.Enums.NotificationType;
 import org.landm.entity.Enums.ReviewOption;
 import org.landm.entity.Enums.ReviewType;
+import org.landm.service.NotificationPersistenceService;
 import org.landm.entity.RentalContract;
 import org.landm.entity.Review;
 import org.landm.entity.User;
@@ -29,11 +31,15 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final RentalContractRepository rentalContractRepository;
-    public ReviewServiceImpl(ReviewMapper reviewMapper, UserRepository userRepository, ReviewRepository reviewRepository, RentalContractRepository rentalContractRepository) {
+    private final NotificationPersistenceService notificationService;
+
+    public ReviewServiceImpl(ReviewMapper reviewMapper, UserRepository userRepository, ReviewRepository reviewRepository,
+                             RentalContractRepository rentalContractRepository, NotificationPersistenceService notificationService) {
         this.reviewMapper = reviewMapper;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.rentalContractRepository = rentalContractRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -109,6 +115,16 @@ public class ReviewServiceImpl implements ReviewService {
         }
         reviewRepository.save(review);
         userRepository.save(reviewee);
+
+        String reviewerName = reviewer.getFirstname() + " " + reviewer.getLastname();
+        String sentiment = type == ReviewType.POSITIVE ? "pozitivnu" : "negativnu";
+        notificationService.create(
+            reviewee.getId(),
+            NotificationType.NEW_REVIEW,
+            "Nova ocena",
+            reviewerName + " vam je ostavio/la " + sentiment + " ocenu.",
+            review.getId(), "REVIEW", reviewerName
+        );
 
         return reviewMapper.toDto(review);
     }

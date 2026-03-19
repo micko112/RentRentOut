@@ -7,8 +7,8 @@
 
 /* ── Izlazimo iz sidebar layouta ──────────────────────── */
 .wizard-page {
-  margin-left: -385px;                /* sidebar 185px + gap 200px */
-  width: calc(100% + 385px);
+  margin-left: -200px;                /* samo gap između sidebara i contenta */
+  width: calc(100% + 200px);
   margin-top: -30px;                  /* page-content padding-top */
   min-height: 100vh;
   background: linear-gradient(145deg, #f0f2ff 0%, #f5f0ff 45%, #eefdf4 100%);
@@ -839,7 +839,6 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
    RESPONSIVE
    ════════════════════════════════════════════════════════ */
 
-/* Ispod 900px sidebar već ide u column, resetuj offset */
 @media (max-width: 900px) {
   .wizard-page {
     margin-left: 0;
