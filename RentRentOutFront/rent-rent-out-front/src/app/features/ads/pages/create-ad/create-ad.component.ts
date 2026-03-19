@@ -22,7 +22,7 @@ export class CreateAdComponent implements OnInit {
 
   // ── Step state ──────────────────────────────────────────────────────────
   currentStep = 1;
-  readonly totalSteps = 6;
+  readonly totalSteps = 2;
   isSubmitting = false;
 
   // ── Images ──────────────────────────────────────────────────────────────
@@ -55,12 +55,8 @@ export class CreateAdComponent implements OnInit {
   ];
 
   readonly stepConfig = [
-    { label: 'Kategorija' },
-    { label: 'Opis'       },
-    { label: 'Slike'      },
-    { label: 'Cena'       },
-    { label: 'Lokacija'   },
-    { label: 'Pregled'    },
+    { label: 'Kategorija i opis' },
+    { label: 'Slike, cena i lokacija' },
   ];
 
   private readonly catIconMap: Record<string, string> = {
@@ -119,13 +115,15 @@ export class CreateAdComponent implements OnInit {
 
   get stepValid(): boolean {
     switch (this.currentStep) {
-      case 1: return !!this.form.get('categoryId')?.value;
-      case 2: return !this.form.get('title')?.invalid && !this.form.get('description')?.invalid
-                     && this.titleLength >= 5 && this.descLength >= 20;
-      case 3: return this.selectedFiles.length > 0;
-      case 4: return !this.form.get('price')?.invalid && !!this.form.get('currency')?.value;
-      case 5: return !!this.form.get('locationId')?.value;
-      case 6: return !this.form.invalid && this.selectedFiles.length > 0;
+      case 1: return !!this.form.get('categoryId')?.value
+                     && !this.form.get('title')?.invalid
+                     && !this.form.get('description')?.invalid
+                     && this.titleLength >= 5
+                     && this.descLength >= 20;
+      case 2: return this.selectedFiles.length > 0
+                     && !this.form.get('price')?.invalid
+                     && !!this.form.get('currency')?.value
+                     && !!this.form.get('locationId')?.value;
       default: return false;
     }
   }
@@ -145,11 +143,8 @@ export class CreateAdComponent implements OnInit {
 
   private markCurrentStepTouched(): void {
     const map: Record<number, string[]> = {
-      1: ['categoryId'],
-      2: ['title', 'description'],
-      3: ['images'],
-      4: ['price', 'currency'],
-      5: ['locationId'],
+      1: ['categoryId', 'title', 'description'],
+      2: ['images', 'price', 'currency', 'locationId'],
     };
     (map[this.currentStep] ?? []).forEach(f => this.form.get(f)?.markAsTouched());
   }

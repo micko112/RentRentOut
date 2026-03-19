@@ -1,459 +1,318 @@
 <div class="wizard-page">
 
   <!-- ══════════════════════════════════════
-       STICKY HEADER — progress + steps
+       HEADER
        ══════════════════════════════════════ -->
   <header class="wizard-header">
     <div class="header-inner">
+      <a routerLink=".." class="back-btn" title="Nazad">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M11 14L7 9l4-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
 
-      <div class="header-left">
-        <a routerLink=".." class="back-btn" title="Nazad">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <div class="header-titles">
-          <h1>Postavi oglas</h1>
-          <p>Iznajmite vaš predmet u par koraka</p>
+      <div class="header-center">
+        <h1>Postavi oglas</h1>
+        <div class="step-pills">
+          <span *ngFor="let s of stepConfig; let i = index"
+                class="step-pill"
+                [class.active]="currentStep === i + 1"
+                [class.done]="currentStep > i + 1"
+                (click)="goToStep(i + 1)">
+            <span class="pill-num">{{ currentStep > i + 1 ? '✓' : i + 1 }}</span>
+            {{ s.label }}
+          </span>
         </div>
       </div>
 
-      <div class="step-badge">{{ currentStep }} / {{ totalSteps }}</div>
+      <div class="step-counter">{{ currentStep }}/{{ totalSteps }}</div>
     </div>
 
-    <!-- Progress bar -->
     <div class="progress-track">
       <div class="progress-fill" [style.width.%]="stepProgress"></div>
-    </div>
-
-    <!-- Step indicators -->
-    <div class="step-indicators">
-      <div *ngFor="let s of stepConfig; let i = index"
-           class="step-indicator"
-           [class.is-active]="currentStep === i + 1"
-           [class.is-done]="currentStep > i + 1"
-           [class.is-clickable]="currentStep > i + 1"
-           (click)="goToStep(i + 1)">
-        <div class="s-bubble">
-          <span *ngIf="currentStep > i + 1">✓</span>
-          <span *ngIf="currentStep <= i + 1">{{ i + 1 }}</span>
-        </div>
-        <span class="s-label">{{ s.label }}</span>
-      </div>
     </div>
   </header>
 
   <!-- ══════════════════════════════════════
-       MAIN BODY
+       BODY
        ══════════════════════════════════════ -->
   <main class="wizard-body">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
       <!-- ──────────────────────────────────
-           STEP 1 · KATEGORIJA
+           KORAK 1 · KATEGORIJA + OPIS
            ────────────────────────────────── -->
       <div class="step-panel" *ngIf="currentStep === 1">
-        <div class="panel-header">
-          <span class="panel-emoji">🏷️</span>
-          <div>
-            <h2>Kategorija</h2>
-            <p>Izaberite kategoriju koja najbolje opisuje vaš predmet</p>
+
+        <!-- KATEGORIJA -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">1</span>
+            Kategorija
           </div>
-        </div>
+          <p class="section-hint">Izaberite kategoriju koja opisuje vaš predmet</p>
 
-        <div class="category-grid">
-          <button type="button"
-                  *ngFor="let cat of parentCategories"
-                  class="cat-card"
-                  [class.selected]="isParentSelected(cat)"
-                  (click)="selectParentCategory(cat)">
-            <span class="cat-icon">{{ getCategoryIcon(cat.name) }}</span>
-            <span class="cat-name">{{ cat.name }}</span>
-            <div class="cat-check" *ngIf="isParentSelected(cat)">✓</div>
-          </button>
-        </div>
-
-        <!-- Subcategories -->
-        <div class="subcategory-section" *ngIf="childCategories.length > 0">
-          <div class="sub-label">Odaberite podkategoriju <span class="req">*</span></div>
-          <div class="subcategory-chips">
+          <div class="category-grid">
             <button type="button"
-                    *ngFor="let child of childCategories"
-                    class="sub-chip"
-                    [class.selected]="isChildSelected(child)"
-                    (click)="selectChildCategory(child)">
-              {{ child.name }}
+                    *ngFor="let cat of parentCategories"
+                    class="cat-card"
+                    [class.selected]="isParentSelected(cat)"
+                    (click)="selectParentCategory(cat)">
+              <span class="cat-icon">{{ getCategoryIcon(cat.name) }}</span>
+              <span class="cat-name">{{ cat.name }}</span>
+              <div class="cat-check" *ngIf="isParentSelected(cat)">✓</div>
             </button>
           </div>
-        </div>
 
-        <small class="field-error" *ngIf="form.get('categoryId')?.touched && !form.get('categoryId')?.value">
-          Molimo izaberite kategoriju pre nastavka.
-        </small>
+          <!-- Podkategorije -->
+          <div class="subcategory-section" *ngIf="childCategories.length > 0">
+            <div class="sub-label">Podkategorija <span class="req">*</span></div>
+            <div class="subcategory-chips">
+              <button type="button"
+                      *ngFor="let child of childCategories"
+                      class="sub-chip"
+                      [class.selected]="isChildSelected(child)"
+                      (click)="selectChildCategory(child)">
+                {{ child.name }}
+              </button>
+            </div>
+          </div>
+
+          <small class="field-error" *ngIf="form.get('categoryId')?.touched && !form.get('categoryId')?.value">
+            Izaberite kategoriju pre nastavka.
+          </small>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- NASLOV & OPIS -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">2</span>
+            Opis oglasa
+          </div>
+
+          <div class="form-field">
+            <label class="field-label">Naslov <span class="req">*</span></label>
+            <div class="counted-wrap" [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
+              <input type="text"
+                     formControlName="title"
+                     placeholder="npr. Hilti SDS+ bušilica TE-70, profesionalna"
+                     [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
+              <span class="char-count"
+                    [class.near]="titleLength > MAX_TITLE * 0.8"
+                    [class.over]="titleLength >= MAX_TITLE">{{ titleLength }}/{{ MAX_TITLE }}</span>
+            </div>
+            <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['minlength']">
+              Naslov mora imati najmanje 5 karaktera.
+            </small>
+            <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
+              Naslov je obavezan.
+            </small>
+          </div>
+
+          <div class="form-field">
+            <label class="field-label">Opis <span class="req">*</span></label>
+            <div class="counted-wrap textarea" [class.invalid]="form.get('description')?.touched && form.get('description')?.invalid">
+              <textarea formControlName="description"
+                        rows="6"
+                        placeholder="Opišite stanje predmeta, šta je uključeno u cenu, gde se preuzima i napomene..."></textarea>
+              <span class="char-count"
+                    [class.near]="descLength > MAX_DESC * 0.85"
+                    [class.over]="descLength >= MAX_DESC">{{ descLength }}/{{ MAX_DESC }}</span>
+            </div>
+            <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['minlength']">
+              Opis mora imati najmanje 20 karaktera.
+            </small>
+            <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['required']">
+              Opis je obavezan.
+            </small>
+          </div>
+        </section>
+
       </div>
 
       <!-- ──────────────────────────────────
-           STEP 2 · OPIS
+           KORAK 2 · SLIKE + CENA + LOKACIJA
            ────────────────────────────────── -->
       <div class="step-panel" *ngIf="currentStep === 2">
-        <div class="panel-header">
-          <span class="panel-emoji">📝</span>
-          <div>
-            <h2>Opis oglasa</h2>
-            <p>Dobar naslov i opis pomažu kupcima da brže nađu vaš oglas</p>
+
+        <!-- SLIKE -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">1</span>
+            Fotografije
           </div>
-        </div>
+          <p class="section-hint">Dodajte do {{ MAX_IMAGES }} fotografija. Prva slika biće naslovna.</p>
 
-        <!-- Title -->
-        <div class="form-field">
-          <label class="field-label">Naslov <span class="req">*</span></label>
-          <div class="counted-input" [class.is-invalid]="form.get('title')?.touched && form.get('title')?.invalid">
-            <input type="text"
-                   formControlName="title"
-                   placeholder="npr. Hilti SDS+ bušilica TE-70 — profesionalna"
-                   [class.is-invalid]="form.get('title')?.touched && form.get('title')?.invalid">
-            <span class="char-count"
-                  [class.near]="titleLength > MAX_TITLE * 0.8"
-                  [class.over]="titleLength >= MAX_TITLE">{{ titleLength }}/{{ MAX_TITLE }}</span>
-          </div>
-          <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">Naslov je obavezan.</small>
-          <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['minlength']">Naslov mora imati najmanje 5 karaktera.</small>
-          <small class="field-hint" *ngIf="!form.get('title')?.touched || !form.get('title')?.invalid">Budite precizni — navedite brend, model i ključne karakteristike.</small>
-        </div>
+          <input type="file" id="fileInput" multiple accept="image/*" (change)="onFileSelected($event)" hidden>
 
-        <!-- Description -->
-        <div class="form-field">
-          <label class="field-label">Opis <span class="req">*</span></label>
-          <div class="counted-textarea" [class.is-invalid]="form.get('description')?.touched && form.get('description')?.invalid">
-            <textarea formControlName="description"
-                      rows="7"
-                      placeholder="Opišite stanje predmeta, šta je uključeno u cenu, uslove preuzimanja, posebne napomene..."></textarea>
-            <span class="char-count"
-                  [class.near]="descLength > MAX_DESC * 0.85"
-                  [class.over]="descLength >= MAX_DESC">{{ descLength }}/{{ MAX_DESC }}</span>
-          </div>
-          <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['required']">Opis je obavezan.</small>
-          <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['minlength']">Opis mora imati najmanje 20 karaktera.</small>
-          <small class="field-hint" *ngIf="!form.get('description')?.touched || !form.get('description')?.invalid">
-            Savjet: opišite stanje (novo/korišćeno), šta je uključeno i kako se predmet preuzima.
-          </small>
-        </div>
-
-        <!-- Writing tips -->
-        <div class="tips-box">
-          <div class="tips-title">✍️ Savjeti za dobar oglas</div>
-          <ul class="tips-list">
-            <li>Koristite ključne reči koje zakupci pretražuju</li>
-            <li>Navedite godinu kupovine i broj sati/km upotrebe</li>
-            <li>Jasno opišite šta ide uz predmet (torba, punjač, futrola...)</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- ──────────────────────────────────
-           STEP 3 · SLIKE
-           ────────────────────────────────── -->
-      <div class="step-panel" *ngIf="currentStep === 3">
-        <div class="panel-header">
-          <span class="panel-emoji">📸</span>
-          <div>
-            <h2>Fotografije</h2>
-            <p>Dodajte do {{ MAX_IMAGES }} fotografija. Prva slika biće naslovna.</p>
-          </div>
-        </div>
-
-        <input type="file" id="fileInput" multiple accept="image/*" (change)="onFileSelected($event)" hidden>
-
-        <!-- Drop zone -->
-        <label for="fileInput"
-               class="drop-zone"
-               [class.dragging]="isDragging"
-               [class.has-files]="selectedFiles.length > 0"
-               (dragover)="onDragOver($event)"
-               (dragleave)="onDragLeave($event)"
-               (drop)="onDrop($event)">
-          <div class="dz-inner">
-            <div class="dz-icon">{{ isDragging ? '📂' : '🖼️' }}</div>
-            <div class="dz-title">{{ isDragging ? 'Ispusti slike ovde' : 'Prevuci slike ili klikni za odabir' }}</div>
-            <div class="dz-sub">PNG · JPG · WEBP &nbsp;·&nbsp; max 10MB po slici &nbsp;·&nbsp; max {{ MAX_IMAGES }} slika</div>
-            <div class="dz-badge" *ngIf="selectedFiles.length > 0">
-              {{ selectedFiles.length }} / {{ MAX_IMAGES }} odabrano
-            </div>
-          </div>
-        </label>
-
-        <!-- Image grid -->
-        <div class="image-grid" *ngIf="selectedFiles.length > 0">
-
-          <div class="img-cell" *ngFor="let url of previewUrls; let i = index">
-            <div class="img-inner">
-              <img [src]="url" [alt]="'Slika ' + (i + 1)">
-              <div class="cover-badge" *ngIf="i === 0">⭐ Naslovna</div>
-              <div class="img-overlay">
-                <button type="button" class="img-btn cover-btn" *ngIf="i !== 0"
-                        (click)="setCoverImage(i)" title="Postavi kao naslovnu">⭐</button>
-                <button type="button" class="img-btn remove-btn"
-                        (click)="removeImage(i)" title="Ukloni">✕</button>
-              </div>
-            </div>
-            <div class="img-num">{{ i + 1 }}</div>
-          </div>
-
-          <!-- Add more -->
-          <label for="fileInput" class="img-cell add-cell" *ngIf="selectedFiles.length < MAX_IMAGES">
-            <div class="add-inner">
-              <span class="add-plus">+</span>
-              <span class="add-lbl">Dodaj još</span>
+          <label for="fileInput"
+                 class="drop-zone"
+                 [class.dragging]="isDragging"
+                 [class.has-files]="selectedFiles.length > 0"
+                 (dragover)="onDragOver($event)"
+                 (dragleave)="onDragLeave($event)"
+                 (drop)="onDrop($event)">
+            <div class="dz-inner">
+              <span class="dz-icon">{{ isDragging ? '📂' : '🖼️' }}</span>
+              <span class="dz-title">{{ isDragging ? 'Ispusti slike ovde' : 'Prevuci slike ili klikni za odabir' }}</span>
+              <span class="dz-sub">PNG · JPG · WEBP &nbsp;·&nbsp; max 10MB po slici</span>
+              <span class="dz-badge" *ngIf="selectedFiles.length > 0">{{ selectedFiles.length }}/{{ MAX_IMAGES }} odabrano</span>
             </div>
           </label>
 
-        </div>
+          <div class="image-grid" *ngIf="selectedFiles.length > 0">
+            <div class="img-cell" *ngFor="let url of previewUrls; let i = index">
+              <div class="img-inner">
+                <img [src]="url" [alt]="'Slika ' + (i + 1)">
+                <div class="cover-badge" *ngIf="i === 0">⭐ Naslovna</div>
+                <div class="img-overlay">
+                  <button type="button" class="img-btn cover-btn" *ngIf="i !== 0"
+                          (click)="setCoverImage(i)" title="Postavi kao naslovnu">⭐</button>
+                  <button type="button" class="img-btn remove-btn"
+                          (click)="removeImage(i)" title="Ukloni">✕</button>
+                </div>
+              </div>
+              <div class="img-num">{{ i + 1 }}</div>
+            </div>
 
-        <!-- Image tips -->
-        <div class="tips-box tips-green" *ngIf="selectedFiles.length === 0">
-          <div class="tips-title">📸 Savjeti za fotografije</div>
-          <ul class="tips-list">
-            <li>Fotografišite predmet iz više uglova na neutralnoj pozadini</li>
-            <li>Prva slika privlači najviše pažnje — odaberite najljepšu</li>
-            <li>Dobra osvetljenost povećava šanse za iznajmljivanje</li>
-          </ul>
-        </div>
-
-        <small class="field-error" *ngIf="form.get('images')?.touched && selectedFiles.length === 0">
-          Dodajte najmanje jednu fotografiju.
-        </small>
-      </div>
-
-      <!-- ──────────────────────────────────
-           STEP 4 · CENA
-           ────────────────────────────────── -->
-      <div class="step-panel" *ngIf="currentStep === 4">
-        <div class="panel-header">
-          <span class="panel-emoji">💰</span>
-          <div>
-            <h2>Cena iznajmljivanja</h2>
-            <p>Postavite konkurentnu cenu koja odgovara tržištu</p>
+            <label for="fileInput" class="img-cell add-cell" *ngIf="selectedFiles.length < MAX_IMAGES">
+              <div class="add-inner">
+                <span class="add-plus">+</span>
+                <span class="add-lbl">Dodaj još</span>
+              </div>
+            </label>
           </div>
-        </div>
 
-        <!-- Live price preview -->
-        <div class="price-card">
-          <div class="price-card-lbl">Pregled cene</div>
-          <div class="price-card-val">{{ priceDisplay }}</div>
-        </div>
+          <small class="field-error" *ngIf="form.get('images')?.touched && selectedFiles.length === 0">
+            Dodajte najmanje jednu fotografiju.
+          </small>
+        </section>
 
-        <!-- Amount + currency -->
-        <div class="form-field">
-          <label class="field-label">Iznos <span class="req">*</span></label>
+        <div class="section-divider"></div>
+
+        <!-- CENA -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">2</span>
+            Cena
+          </div>
+
+          <div class="price-preview-card">
+            <span class="ppc-label">Pregled cene</span>
+            <span class="ppc-value">{{ priceDisplay }}</span>
+          </div>
+
           <div class="price-row">
-            <input type="number"
-                   formControlName="price"
-                   placeholder="0"
-                   min="1"
-                   class="price-input"
-                   [class.is-invalid]="form.get('price')?.touched && form.get('price')?.invalid">
-            <div class="currency-toggle">
-              <button type="button" class="cur-btn"
-                      [class.active]="selectedCurrency === 'RSD'"
-                      (click)="form.patchValue({currency: 'RSD'})">din</button>
-              <button type="button" class="cur-btn"
-                      [class.active]="selectedCurrency === 'EUR'"
-                      (click)="form.patchValue({currency: 'EUR'})">eur</button>
-            </div>
-          </div>
-          <small class="field-error" *ngIf="form.get('price')?.touched && form.get('price')?.invalid">
-            Unesite ispravnu cenu (minimum 1).
-          </small>
-        </div>
-
-        <!-- Interval -->
-        <div class="form-field">
-          <label class="field-label">Period naplate <span class="req">*</span></label>
-          <div class="interval-row">
-            <button type="button"
-                    *ngFor="let opt of priceIntervalOptions"
-                    class="interval-card"
-                    [class.selected]="selectedInterval === opt.value"
-                    (click)="selectPriceInterval(opt.value)">
-              <span class="int-unit">{{ opt.unit }}</span>
-              <span class="int-label">{{ opt.label }}</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="tips-box">
-          <div class="tips-title">💡 Savjeti za cenu</div>
-          <ul class="tips-list">
-            <li>Pogledajte slične oglase da postavite konkurentnu cenu</li>
-            <li>Snižena cena za duži period može povećati interesovanje</li>
-            <li>Zakupci cijene transparentnost — uključite šta je u ceni</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- ──────────────────────────────────
-           STEP 5 · LOKACIJA & KOLIČINA
-           ────────────────────────────────── -->
-      <div class="step-panel" *ngIf="currentStep === 5">
-        <div class="panel-header">
-          <span class="panel-emoji">📍</span>
-          <div>
-            <h2>Lokacija i količina</h2>
-            <p>Gde se predmet preuzima i koliko komada imate?</p>
-          </div>
-        </div>
-
-        <!-- Location search -->
-        <div class="form-field">
-          <label class="field-label">Lokacija preuzimanja <span class="req">*</span></label>
-
-          <div class="loc-wrapper">
-            <div class="loc-input-row" [class.focused]="showLocationDropdown">
-              <span class="loc-pin">📍</span>
-              <input type="text"
-                     class="loc-input"
-                     [value]="locationSearch"
-                     placeholder="Pretraži grad ili opštinu..."
-                     (input)="onLocationInput($event)"
-                     (focus)="onLocationFocus()"
-                     (blur)="hideLocationDropdown()">
-              <span class="loc-clear" *ngIf="form.get('locationId')?.value" (click)="clearLocation()">✕</span>
+            <div class="form-field flex-grow">
+              <label class="field-label">Iznos <span class="req">*</span></label>
+              <input type="number"
+                     formControlName="price"
+                     placeholder="0"
+                     min="1"
+                     class="price-input"
+                     [class.invalid]="form.get('price')?.touched && form.get('price')?.invalid">
+              <small class="field-error" *ngIf="form.get('price')?.touched && form.get('price')?.invalid">
+                Unesite ispravnu cenu (min. 1).
+              </small>
             </div>
 
-            <div class="loc-dropdown" *ngIf="showLocationDropdown && filteredLocations.length > 0">
-              <div class="loc-option"
-                   *ngFor="let loc of filteredLocations"
-                   (mousedown)="selectLocation(loc)">
-                <span class="loc-city">{{ loc.city }}</span>
-                <span class="loc-muni" *ngIf="loc.municipality">, {{ loc.municipality }}</span>
+            <div class="form-field">
+              <label class="field-label">Valuta</label>
+              <div class="currency-toggle">
+                <button type="button" class="cur-btn" [class.active]="selectedCurrency === 'RSD'"
+                        (click)="form.patchValue({currency: 'RSD'})">din</button>
+                <button type="button" class="cur-btn" [class.active]="selectedCurrency === 'EUR'"
+                        (click)="form.patchValue({currency: 'EUR'})">eur</button>
               </div>
             </div>
 
-            <div class="loc-dropdown" *ngIf="showLocationDropdown && filteredLocations.length === 0">
-              <div class="loc-empty">Nema rezultata za "{{ locationSearch }}"</div>
-            </div>
-          </div>
-
-          <div class="loc-selected" *ngIf="form.get('locationId')?.value">
-            <span>✅ {{ getSelectedLocationDisplay() }}</span>
-          </div>
-
-          <small class="field-error" *ngIf="form.get('locationId')?.touched && !form.get('locationId')?.value">
-            Molimo izaberite lokaciju.
-          </small>
-        </div>
-
-        <!-- Quantity -->
-        <div class="form-field">
-          <label class="field-label">Dostupna količina <span class="req">*</span></label>
-          <div class="stepper">
-            <button type="button" class="stepper-btn" (click)="decrement()" [disabled]="quantity <= 1">−</button>
-            <div class="stepper-mid">
-              <span class="stepper-val">{{ quantity }}</span>
-              <span class="stepper-unit">{{ quantity === 1 ? 'komad' : 'komada' }}</span>
-            </div>
-            <button type="button" class="stepper-btn" (click)="increment()" [disabled]="quantity >= 999">+</button>
-          </div>
-          <small class="field-hint">Koliko komada istovremeno možete iznajmiti?</small>
-        </div>
-      </div>
-
-      <!-- ──────────────────────────────────
-           STEP 6 · PREGLED
-           ────────────────────────────────── -->
-      <div class="step-panel" *ngIf="currentStep === 6">
-        <div class="panel-header">
-          <span class="panel-emoji">✅</span>
-          <div>
-            <h2>Pregled oglasa</h2>
-            <p>Proverite sve detalje pre objavljivanja</p>
-          </div>
-        </div>
-
-        <div class="review-grid">
-
-          <!-- Category -->
-          <div class="review-card">
-            <div class="review-head">
-              <span class="review-hl">🏷️ Kategorija</span>
-              <button type="button" class="review-edit" (click)="goToStep(1)">Izmeni</button>
-            </div>
-            <div class="review-body">
-              <span class="review-val">{{ getSelectedParentName() }}</span>
-              <span class="review-sub" *ngIf="getSelectedCategoryName() !== getSelectedParentName()"> → {{ getSelectedCategoryName() }}</span>
-            </div>
-          </div>
-
-          <!-- Price -->
-          <div class="review-card">
-            <div class="review-head">
-              <span class="review-hl">💰 Cena</span>
-              <button type="button" class="review-edit" (click)="goToStep(4)">Izmeni</button>
-            </div>
-            <div class="review-body">
-              <span class="review-price">{{ priceDisplay }}</span>
-            </div>
-          </div>
-
-          <!-- Description (full width) -->
-          <div class="review-card review-full">
-            <div class="review-head">
-              <span class="review-hl">📝 Opis</span>
-              <button type="button" class="review-edit" (click)="goToStep(2)">Izmeni</button>
-            </div>
-            <div class="review-body">
-              <div class="review-title-txt">{{ form.get('title')?.value }}</div>
-              <div class="review-desc-txt">{{ (form.get('description')?.value ?? '') | slice:0:180 }}{{ (form.get('description')?.value?.length ?? 0) > 180 ? '…' : '' }}</div>
-            </div>
-          </div>
-
-          <!-- Images (full width) -->
-          <div class="review-card review-full">
-            <div class="review-head">
-              <span class="review-hl">📸 Fotografije</span>
-              <button type="button" class="review-edit" (click)="goToStep(3)">Izmeni</button>
-            </div>
-            <div class="review-body">
-              <div class="review-thumbs">
-                <img *ngFor="let url of previewUrls.slice(0, 6)" [src]="url" class="r-thumb">
-                <div class="r-thumb-more" *ngIf="previewUrls.length > 6">+{{ previewUrls.length - 6 }}</div>
+            <div class="form-field">
+              <label class="field-label">Period</label>
+              <div class="interval-row">
+                <button type="button"
+                        *ngFor="let opt of priceIntervalOptions"
+                        class="interval-card"
+                        [class.selected]="selectedInterval === opt.value"
+                        (click)="selectPriceInterval(opt.value)">
+                  <span class="int-unit">{{ opt.unit }}</span>
+                  <span class="int-label">{{ opt.label }}</span>
+                </button>
               </div>
-              <small class="review-img-count">{{ previewUrls.length }} {{ previewUrls.length === 1 ? 'fotografija' : 'fotografija' }}</small>
             </div>
           </div>
+        </section>
 
-          <!-- Location + Quantity -->
-          <div class="review-card review-full">
-            <div class="review-head">
-              <span class="review-hl">📍 Lokacija i količina</span>
-              <button type="button" class="review-edit" (click)="goToStep(5)">Izmeni</button>
-            </div>
-            <div class="review-body review-loc-row">
-              <div class="rloc-item">📍 {{ getSelectedLocationDisplay() }}</div>
-              <div class="rloc-item">📦 {{ quantity }} {{ quantity === 1 ? 'komad' : 'komada' }}</div>
-            </div>
+        <div class="section-divider"></div>
+
+        <!-- LOKACIJA & KOLIČINA -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">3</span>
+            Lokacija i količina
           </div>
 
-        </div>
+          <div class="loc-qty-row">
+            <!-- Location -->
+            <div class="form-field flex-grow">
+              <label class="field-label">Lokacija preuzimanja <span class="req">*</span></label>
+              <div class="loc-wrapper">
+                <div class="loc-input-row" [class.focused]="showLocationDropdown">
+                  <span class="loc-pin">📍</span>
+                  <input type="text"
+                         class="loc-input"
+                         [value]="locationSearch"
+                         placeholder="Pretraži grad..."
+                         (input)="onLocationInput($event)"
+                         (focus)="onLocationFocus()"
+                         (blur)="hideLocationDropdown()">
+                  <span class="loc-clear" *ngIf="form.get('locationId')?.value" (click)="clearLocation()">✕</span>
+                </div>
 
-        <!-- Terms notice -->
-        <div class="notice-box">
-          <span class="notice-icon">ℹ️</span>
-          <span class="notice-txt">
-            Objavljivanjem oglasa prihvatate naše <a href="#" class="notice-link">Uslove korišćenja</a>.
-            Oglas će biti odmah vidljiv svim korisnicima platforme.
-          </span>
-        </div>
+                <div class="loc-dropdown" *ngIf="showLocationDropdown && filteredLocations.length > 0">
+                  <div class="loc-option" *ngFor="let loc of filteredLocations" (mousedown)="selectLocation(loc)">
+                    <span class="loc-city">{{ loc.city }}</span>
+                    <span class="loc-muni" *ngIf="loc.municipality">, {{ loc.municipality }}</span>
+                  </div>
+                </div>
+                <div class="loc-dropdown" *ngIf="showLocationDropdown && filteredLocations.length === 0">
+                  <div class="loc-empty">Nema rezultata</div>
+                </div>
+              </div>
+
+              <div class="loc-selected" *ngIf="form.get('locationId')?.value">
+                ✅ {{ getSelectedLocationDisplay() }}
+              </div>
+              <small class="field-error" *ngIf="form.get('locationId')?.touched && !form.get('locationId')?.value">
+                Izaberite lokaciju.
+              </small>
+            </div>
+
+            <!-- Quantity -->
+            <div class="form-field">
+              <label class="field-label">Količina</label>
+              <div class="stepper">
+                <button type="button" class="stepper-btn" (click)="decrement()" [disabled]="quantity <= 1">−</button>
+                <div class="stepper-mid">
+                  <span class="stepper-val">{{ quantity }}</span>
+                  <span class="stepper-unit">{{ quantity === 1 ? 'kom.' : 'kom.' }}</span>
+                </div>
+                <button type="button" class="stepper-btn" (click)="increment()" [disabled]="quantity >= 999">+</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </div>
 
       <!-- ══════════════════════════════════════
-           NAVIGATION BAR
+           NAVIGACIJA
            ══════════════════════════════════════ -->
       <div class="wizard-nav">
-
         <button type="button" class="btn-prev" (click)="prevStep()" *ngIf="currentStep > 1">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Nazad
         </button>
@@ -463,8 +322,8 @@
 
           <button type="button" class="btn-next" (click)="nextStep()" *ngIf="currentStep < totalSteps">
             Dalje
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
 
@@ -473,10 +332,9 @@
                   *ngIf="currentStep === totalSteps"
                   [disabled]="isSubmitting || form.invalid || selectedFiles.length === 0">
             <span class="submit-spinner" *ngIf="isSubmitting"></span>
-            <span>{{ isSubmitting ? 'Objavljujem...' : '🚀 Objavi oglas' }}</span>
+            {{ isSubmitting ? 'Objavljujem...' : 'Objavi oglas' }}
           </button>
         </div>
-
       </div>
 
     </form>
