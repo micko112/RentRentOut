@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -6,62 +6,939 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="7-insert-initial-locations" author="micko112">
-
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ada"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Aleksandrovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Aleksinac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Alibunar"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Apatin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Aranđelovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Arilje"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Babušnica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bač"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bačka Palanka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bačka Topola"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bački Petrovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bajina Bašta"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bajmok"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Banatski Karlovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Banja Koviljača"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Batočina"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bečej"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bela Crkva"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bela Palanka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Stari grad"/>
+        </insert>
         <insert tableName="location">
             <column name="country" value="Srbija"/>
             <column name="city" value="Beograd"/>
             <column name="municipality" value="Vračar"/>
-            <column name="lat" valueNumeric="44.7975018"/>
-            <column name="lng" valueNumeric="20.4741334"/>
         </insert>
-
         <insert tableName="location">
             <column name="country" value="Srbija"/>
             <column name="city" value="Beograd"/>
-            <column name="municipality" value="Vozdovac"/>
-            <column name="lat" valueNumeric="44.7451172"/>
-            <column name="lng" valueNumeric="20.4881893"/>
+            <column name="municipality" value="Savski venac"/>
         </insert>
         <insert tableName="location">
             <column name="country" value="Srbija"/>
-            <column name="city" value="Novi Sad"/>
-            <column name="municipality" value="Detelinara"/>
-            <column name="lat" valueNumeric="45.2523556"/>
-            <column name="lng" valueNumeric="19.8247222"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Novi Beograd"/>
         </insert>
-
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Zvezdara"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Voždovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Palilula"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Zemun"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Rakovica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Čukarica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Barajevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Grocka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Lazarevac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Mladenovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Obrenovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Sopot"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Surčin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Batajnica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Kaluđerica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Umka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Rušanj"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Beli Potok"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Barič"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Stepojevac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beograd"/>
+            <column name="municipality" value="Vranić"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beočin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Beška"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bezdan"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Blace"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bogatić"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bojnik"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Boljevac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bor"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bosilegrad"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Brezovica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Brus"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Brza Palanka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Bujanovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Čačak"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Čantavir"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ćićevac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Čoka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Crvenka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ćuprija"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Despotovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Dimitrovgrad"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Divčibare"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Doljevac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Donji Milanovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Elemir"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Gadžin Han"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Gnjilane"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Golubac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Gornji Milanovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Gračanica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Guča"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Inđija"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Irig"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ivanjica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Jagodina"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Jošanička Banja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kačarevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kanjiža"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kikinda"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kladovo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kljajićevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Knić"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Knjaževac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Koceljeva"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kovin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kragujevac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kraljevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Krupanj"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kruševac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kučevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kula"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Kuršumlija"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Lajkovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Lapovo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Lebane"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Leposavić"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Leskovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Lipljan"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ljig"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ljubovija"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Loznica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Lučani"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Lukovska Banja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Majdanpek"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Mali Iđoš"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Mali Zvornik"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Mataruška Banja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Medveđa"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Melenci"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Merošina"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Mionica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Mokrin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Mol"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Negotin"/>
+        </insert>
         <insert tableName="location">
             <column name="country" value="Srbija"/>
             <column name="city" value="Niš"/>
             <column name="municipality" value="Medijana"/>
-            <column name="lat" valueNumeric="43.3205556"/>
-            <column name="lng" valueNumeric="21.8958333"/>
         </insert>
-
         <insert tableName="location">
             <column name="country" value="Srbija"/>
-            <column name="city" value="Kragujevac"/>
-            <column name="municipality" value="Aerodrom"/>
-            <column name="lat" valueNumeric="44.0116667"/>
-            <column name="lng" valueNumeric="20.9158333"/>
+            <column name="city" value="Niš"/>
+            <column name="municipality" value="Palilula"/>
         </insert>
-
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Niš"/>
+            <column name="municipality" value="Crveni Krst"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Niš"/>
+            <column name="municipality" value="Pantelej"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Niš"/>
+            <column name="municipality" value="Niška Banja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Niš"/>
+            <column name="municipality" value="Brzi Brod"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Niš"/>
+            <column name="municipality" value="Novo Selo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Nova Crnja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Nova Pazova"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Nova Varoš"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Bečej"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Kneževac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Pazar"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Grad"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Petrovaradin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Sremska Kamenica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Veternik"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Futog"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Begeč"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Budisava"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Bukovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Kać"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Kisač"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Rumenka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Čenej"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Novi Sad"/>
+            <column name="municipality" value="Stepanovićevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Odžaci"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Opovo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Osečina"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Pačir"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Palić"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Pančevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Paraćin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Pećinci"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Perlez"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Petrovac na Mlavi"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Pirot"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Plandište"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Požarevac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Požega"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Preševo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Priboj"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Prijepolje"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Priština"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Prokuplje"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Prolom Banja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Rača"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Raška"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ražanj"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Rekovac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Resavica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ruma"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Šabac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Sečanj"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Senta"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Šid"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Sijarinska Banja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Sivac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Sjenica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Smederevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Smederevska Palanka"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Sokobanja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Sombor"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Srbobran"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Starčevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Stari Banovci"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Štrpce"/>
+        </insert>
         <insert tableName="location">
             <column name="country" value="Srbija"/>
             <column name="city" value="Subotica"/>
-            <column name="municipality" value="Centar"/>
-            <column name="lat" valueNumeric="46.0980556"/>
-            <column name="lng" valueNumeric="19.6738889"/>
         </insert>
-
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Surdulica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Svilajnac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Svrljig"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Temerin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Titel"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Topola"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Trgovište"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Trstenik"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Tutin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Ub"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Užice"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Valjevo"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Varvarin"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Velika Plana"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Veliko Gradište"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vitina"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vladimirci"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vladičin Han"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vlasotince"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vranje"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vranjska Banja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vrbas"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vrdnik"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vrnjačka Banja"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Vršac"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Zaječar"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Žabalj"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Žabari"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Žagubica"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Žitište"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Žitorađa"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Zlatibor"/>
+        </insert>
         <insert tableName="location">
             <column name="country" value="Srbija"/>
             <column name="city" value="Zrenjanin"/>
-            <column name="municipality" value="Gradski park"/>
-            <column name="lat" valueNumeric="45.3763889"/>
-            <column name="lng" valueNumeric="20.3963889"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Zubin Potok"/>
+        </insert>
+        <insert tableName="location">
+            <column name="country" value="Srbija"/>
+            <column name="city" value="Zvečan"/>
         </insert>
     </changeSet>
-
 
 </databaseChangeLog>

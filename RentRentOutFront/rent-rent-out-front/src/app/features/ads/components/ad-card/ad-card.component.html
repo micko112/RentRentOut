@@ -6,7 +6,7 @@
          alt="{{ ad.title }}" style="">
 
     <button
-      *ngIf="isLoggedIn"
+      *ngIf="isLoggedIn && viewMode === 'grid'"
       class="save-btn"
       [class.saved]="isSaved"
       [disabled]="isSavingToggle"
@@ -17,22 +17,52 @@
   </div>
 
   <div class="listing-info">
-    <a class="listing-title">{{ ad.title }}</a>
-    <div class="listing-location">{{ ad.city }}, {{ ad.municipality }}</div>
+    <div class="text-area">
+      <a class="listing-title">{{ ad.title }}</a>
+      <div class="listing-description" *ngIf="viewMode === 'list'">{{ ad.description }}</div>
+    </div>
+    <div class="listing-location" *ngIf="!ad.municipality">{{ ad.city }} </div>
+    <div class="listing-location" *ngIf="ad.municipality">{{ ad.city }} | {{ ad.municipality }}</div>
 
     <div class="price-tag">
-      <div class="listing-price">{{ ad.price | number: '1.0-0' }}</div>
+      <!-- Range price (if tiers exist) -->
+      <ng-container *ngIf="priceRange; else singlePrice">
+        <div class="listing-price-range">{{ priceRange }}</div>
+      </ng-container>
+      <ng-template #singlePrice>
+        <div class="listing-price">{{ ad.price | number: '1.0-0' }}</div>
+        <div class="currency-interval">
+          <span class="currency" *ngIf="ad.currency === 'EUR'">€</span>
+          <span class="currency" *ngIf="ad.currency === 'RSD'">din</span>
+          <span class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</span>
+        </div>
+      </ng-template>
 
-      <div class="currency-interval">
-         <span class="currency" *ngIf="ad.currency === 'EUR'">€</span>
-        <span class="currency" *ngIf="ad.currency === 'RSD'">din</span>
-        <span class="interval">{{ intervalMap[ad.priceInterval] || ad.priceInterval }}</span>
-      </div>
+      <ng-container *ngIf="viewMode === 'grid'">
+        <div class="view-count" *ngIf="ad.viewCount && ad.viewCount > 0">
+          <span class="material-icons view-icon">visibility</span>
+          <span>{{ ad.viewCount }}</span>
+        </div>
+        <div class="save-count" *ngIf="ad.saveCount && ad.saveCount > 0">
+          <span class="material-icons save-icon">bookmark</span>
+          <span>{{ ad.saveCount }}</span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 
-      <div class="view-count" *ngIf="ad.viewCount && ad.viewCount > 0">
-        <span class="material-icons view-icon">visibility</span>
-        <span>{{ ad.viewCount }}</span>
-      </div>
+  <div class="listing-stats" *ngIf="viewMode === 'list'">
+    <div class="stat-row">
+      <span class="material-icons stat-icon">visibility</span>
+      <span>{{ ad.viewCount ?? 0 }}</span>
+    </div>
+    <div class="stat-row">
+      <span class="material-icons stat-icon">bookmark</span>
+      <span>{{ ad.saveCount ?? 0 }}</span>
+    </div>
+    <div class="stat-row" *ngIf="ad.createdAt">
+      <span class="material-icons stat-icon">schedule</span>
+      <span>{{ timeAgo(ad.createdAt) }}</span>
     </div>
   </div>
 </div>

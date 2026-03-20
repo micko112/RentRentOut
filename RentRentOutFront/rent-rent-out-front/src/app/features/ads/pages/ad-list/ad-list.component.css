@@ -60,7 +60,8 @@
   width: 280px;
   flex-shrink: 0;
   position: sticky;
-  top: 100px; /* Da prati skrolovanje */
+  top: 155px;
+  z-index: 1000;
 }
 
 .ads-display-area {
@@ -166,40 +167,77 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 4px;
   margin-top: 40px;
   padding-top: 25px;
   border-top: 1px solid #eaeaea;
 }
 
-.page-btn {
-  padding: 10px 20px;
-  background-color: white;
-  border: 1px solid #d1d5db;
+.page-nav-btn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  color: #283859;
-  font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  color: #555;
+  transition: all 0.15s ease;
+
+  .material-icons { font-size: 20px; }
 
   &:hover:not(:disabled) {
-    background-color: #f3f4f6;
-    border-color: #9ca3af;
+    background: #f5ecff;
+    border-color: #813181;
+    color: #813181;
   }
 
   &:disabled {
-    color: #9ca3af;
-    background-color: #f9fafb;
-    border-color: #e5e7eb;
+    color: #ccc;
+    border-color: #eee;
     cursor: not-allowed;
   }
 }
 
-.page-info {
-  font-size: 15px;
-  color: #4b5563;
+.page-num-btn {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
   font-weight: 500;
+  color: #444;
+  transition: all 0.15s ease;
+
+  &:hover:not(.active) {
+    background: #f5ecff;
+    border-color: #813181;
+    color: #813181;
+  }
+
+  &.active {
+    background: #813181;
+    border-color: #813181;
+    color: white;
+    font-weight: 700;
+    cursor: default;
+  }
+}
+
+.page-ellipsis {
+  width: 32px;
+  text-align: center;
+  color: #aaa;
+  font-size: 16px;
+  user-select: none;
 }
 
 /* =========================================

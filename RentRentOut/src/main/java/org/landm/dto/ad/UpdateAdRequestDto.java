@@ -20,6 +20,8 @@ public class UpdateAdRequestDto {
     private String description;
     @NotNull
     private BigDecimal price;
+    private BigDecimal pricePerWeek;
+    private BigDecimal pricePerMonth;
     @NotNull
     private Currency currency;
     @NotNull
@@ -57,6 +59,22 @@ public class UpdateAdRequestDto {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public BigDecimal getPricePerWeek() {
+        return pricePerWeek;
+    }
+
+    public void setPricePerWeek(BigDecimal pricePerWeek) {
+        this.pricePerWeek = pricePerWeek;
+    }
+
+    public BigDecimal getPricePerMonth() {
+        return pricePerMonth;
+    }
+
+    public void setPricePerMonth(BigDecimal pricePerMonth) {
+        this.pricePerMonth = pricePerMonth;
     }
 
     public Currency getCurrency() {

@@ -11,8 +11,10 @@ import org.landm.mapper.AdMapper;
 import org.landm.mapper.LocationMapper;
 import org.landm.repository.*;
 import org.landm.security.JwtUtil;
+import org.landm.entity.Enums.NotificationType;
 import org.landm.service.AdService;
 import org.landm.service.CategoryService;
+import org.landm.service.NotificationPersistenceService;
 import org.landm.service.RentalContractService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,13 +44,15 @@ public class AdServiceImpl implements AdService {
     private final RentalContractService rentalContractService;
     private final AdViewRepository adViewRepository;
     private final SavedAdRepository savedAdRepository;
+    private final NotificationPersistenceService notificationPersistenceService;
 
     public AdServiceImpl(AdRepository adRepository, UserRepository userRepository,
                          AdMapper adMapper, LocationMapper locationMapper,
                          CategoryRepository categoryRepository, LocationRepository locationRepository,
                          JwtUtil jwtUtil, RentalContractRepository rentalContractRepository,
                          RentalContractService rentalContractService, CategoryService categoryService,
-                         AdViewRepository adViewRepository, SavedAdRepository savedAdRepository) {
+                         AdViewRepository adViewRepository, SavedAdRepository savedAdRepository,
+                         NotificationPersistenceService notificationPersistenceService) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adMapper = adMapper;
@@ -61,6 +65,7 @@ public class AdServiceImpl implements AdService {
         this.categoryService = categoryService;
         this.adViewRepository = adViewRepository;
         this.savedAdRepository = savedAdRepository;
+        this.notificationPersistenceService = notificationPersistenceService;
     }
 
 //    @Override
@@ -92,6 +97,8 @@ public class AdServiceImpl implements AdService {
                 req.getTotalQuantity(),
                 req.getImages()
                 );
+        adToCreate.setPricePerWeek(req.getPricePerWeek());
+        adToCreate.setPricePerMonth(req.getPricePerMonth());
         return adMapper.toDto(adRepository.save(adToCreate));
     }
 
@@ -238,6 +245,8 @@ public class AdServiceImpl implements AdService {
         adToUpdate.setTitle(req.getTitle());
         adToUpdate.setDescription(req.getDescription());
         adToUpdate.setPrice(req.getPrice());
+        adToUpdate.setPricePerWeek(req.getPricePerWeek());
+        adToUpdate.setPricePerMonth(req.getPricePerMonth());
         adToUpdate.setPriceInterval(req.getPriceInterval());
         adToUpdate.setCurrency(req.getCurrency());
         adToUpdate.setImages(req.getImages());
@@ -298,6 +307,12 @@ public class AdServiceImpl implements AdService {
             }
             if (criteria.getLocationId() != null) {
                 predicates.add(criteriaBuilder.equal(root.get("location").get("id"), criteria.getLocationId()));
+            }
+            if (criteria.getCity() != null && !criteria.getCity().isBlank()) {
+                predicates.add(criteriaBuilder.equal(root.get("location").get("city"), criteria.getCity()));
+            }
+            if (criteria.getPriceInterval() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("priceInterval"), criteria.getPriceInterval()));
             }
             predicates.add(criteriaBuilder.equal(root.get("adStatus"), AdStatus.ACTIVE));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
@@ -368,12 +383,31 @@ public class AdServiceImpl implements AdService {
                     .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
             SavedAd savedAd = new SavedAd(user, ad);
             savedAdRepository.save(savedAd);
+            ad.setSaveCount(ad.getSaveCount() + 1);
+            adRepository.save(ad);
+            if (!ad.getOwner().getId().equals(userId)) {
+                notificationPersistenceService.create(
+                    ad.getOwner().getId(),
+                    NotificationType.AD_SAVED,
+                    "Neko je sačuvao vaš oglas",
+                    user.getFirstname() + " " + user.getLastname() + " je sačuvao/la vaš oglas \"" + ad.getTitle() + "\"",
+                    ad.getId(),
+                    "AD",
+                    user.getFirstname() + " " + user.getLastname()
+                );
+            }
         }
     }
 
     @Override
     @Transactional
     public void unsaveAd(Long adId, Long userId) {
+        if (savedAdRepository.existsByUserIdAndAdId(userId, adId)) {
+            Ad ad = adRepository.findById(adId)
+                    .orElseThrow(() -> new RuntimeException("Ad not found with id: " + adId));
+            ad.setSaveCount(Math.max(0, ad.getSaveCount() - 1));
+            adRepository.save(ad);
+        }
         savedAdRepository.deleteByUserIdAndAdId(userId, adId);
     }
 

@@ -1,11 +1,13 @@
 package org.landm.dto.ad;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.landm.dto.LocationDto;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PriceInterval;
 import org.landm.entity.Location;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class AdPreviewDto {
 
@@ -15,12 +17,17 @@ public class AdPreviewDto {
     private String municipality;
     private String description;
     private BigDecimal price;
+    private BigDecimal pricePerWeek;
+    private BigDecimal pricePerMonth;
     private String currency;
     private PriceInterval priceInterval;
     private String thumbnail;
     private AdStatus adStatus;
     private int viewCount;
+    private int saveCount;
     private boolean saved;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdAt;
 
     public AdStatus getAdStatus() {
         return adStatus;
@@ -61,6 +68,22 @@ public class AdPreviewDto {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public BigDecimal getPricePerWeek() {
+        return pricePerWeek;
+    }
+
+    public void setPricePerWeek(BigDecimal pricePerWeek) {
+        this.pricePerWeek = pricePerWeek;
+    }
+
+    public BigDecimal getPricePerMonth() {
+        return pricePerMonth;
+    }
+
+    public void setPricePerMonth(BigDecimal pricePerMonth) {
+        this.pricePerMonth = pricePerMonth;
     }
 
     public String getCurrency() {
@@ -111,11 +134,27 @@ public class AdPreviewDto {
         this.viewCount = viewCount;
     }
 
+    public int getSaveCount() {
+        return saveCount;
+    }
+
+    public void setSaveCount(int saveCount) {
+        this.saveCount = saveCount;
+    }
+
     public boolean isSaved() {
         return saved;
     }
 
     public void setSaved(boolean saved) {
         this.saved = saved;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

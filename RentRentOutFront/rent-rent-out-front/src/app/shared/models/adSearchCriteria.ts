@@ -6,8 +6,10 @@ export interface AdSearchCriteria{
   minPrice?: number;
   maxPrice?: number;
   locationId?: number;
+  city?: string;
+  priceInterval?: string;
 
   page?: number;
   size?: number;
   sort?: string;
-  }
+}

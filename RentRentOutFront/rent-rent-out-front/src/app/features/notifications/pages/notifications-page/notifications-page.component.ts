@@ -27,6 +27,7 @@ export class NotificationsPageComponent implements OnInit {
     CONTRACT_ACTIVE:    { icon: '🔑', color: 'purple' },
     CONTRACT_FINISHED:  { icon: '🏁', color: 'gray'   },
     NEW_REVIEW:         { icon: '⭐', color: 'yellow' },
+    AD_SAVED:           { icon: 'bookmark', color: '#813181' },
   };
 
   constructor(private notificationsService: NotificationsService) {}
@@ -91,6 +92,9 @@ export class NotificationsPageComponent implements OnInit {
     }
     if (n.relatedEntityType === 'REVIEW' && n.relatedEntityId) {
       return ['/user/me/reviews'];
+    }
+    if (n.relatedEntityType === 'AD' && n.relatedEntityId) {
+      return ['/ads', String(n.relatedEntityId)];
     }
     return null;
   }

@@ -7,13 +7,15 @@ import { PriceInterval } from '../../../../shared/models/price-interval.enum';
 import { CategoryService } from '../../services/category.service';
 import { LocationService } from '../../services/location.service';
 import { Router, RouterLink } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { Location } from '../../../../shared/models/location.model';
+import { CityPickerComponent, CityPickerOption } from '../../../../shared/components/city-picker/city-picker.component';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-create-ad',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CityPickerComponent],
   standalone: true,
   templateUrl: './create-ad.component.html',
   styleUrl: './create-ad.component.css'
@@ -39,9 +41,7 @@ export class CreateAdComponent implements OnInit {
 
   // ── Locations ───────────────────────────────────────────────────────────
   locations: Location[] = [];
-  filteredLocations: Location[] = [];
-  locationSearch = '';
-  showLocationDropdown = false;
+  initialLocationId: number | null = null;
 
   // ── Form ────────────────────────────────────────────────────────────────
   form!: FormGroup;
@@ -76,6 +76,7 @@ export class CreateAdComponent implements OnInit {
     private adService: AdService,
     private categoryService: CategoryService,
     private locationService: LocationService,
+    private authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
     private toastService: ToastService,
@@ -88,8 +89,17 @@ export class CreateAdComponent implements OnInit {
     });
 
     this.locationService.getAll().subscribe({
-      next: locs => { this.locations = locs; this.filteredLocations = locs.slice(0, 20); },
+      next: locs => { this.locations = locs; },
       error: () => this.toastService.showError('Greška pri učitavanju lokacija.'),
+    });
+
+    this.authService.currentUser$.pipe(
+      filter(u => u !== null),
+      take(1)
+    ).subscribe(user => {
+      if (user?.locationId && !this.initialLocationId) {
+        this.initialLocationId = user.locationId;
+      }
     });
 
     this.form = this.fb.group({
@@ -102,6 +112,8 @@ export class CreateAdComponent implements OnInit {
       locationId:    [null, Validators.required],
       totalQuantity: [1, [Validators.required, Validators.min(1), Validators.max(999)]],
       images:        [[]],
+      pricePerWeek:  [null],
+      pricePerMonth: [null],
     });
   }
 
@@ -241,45 +253,8 @@ export class CreateAdComponent implements OnInit {
   //  LOCATION
   // ════════════════════════════════════════════════════════
 
-  onLocationFocus(): void {
-    this.showLocationDropdown = true;
-    this.filteredLocations = this.locations.slice(0, 20);
-  }
-
-  onLocationInput(event: Event): void {
-    const q = (event.target as HTMLInputElement).value;
-    this.locationSearch = q;
-    this.showLocationDropdown = true;
-    this.form.patchValue({ locationId: null });
-    const lower = q.toLowerCase();
-    this.filteredLocations = (lower
-      ? this.locations.filter(l =>
-          l.city.toLowerCase().includes(lower) ||
-          (l.municipality ?? '').toLowerCase().includes(lower))
-      : this.locations
-    ).slice(0, 20);
-  }
-
-  selectLocation(loc: Location): void {
-    this.form.patchValue({ locationId: loc.id });
-    this.locationSearch = loc.municipality ? `${loc.city}, ${loc.municipality}` : loc.city;
-    this.showLocationDropdown = false;
-  }
-
-  hideLocationDropdown(): void {
-    setTimeout(() => { this.showLocationDropdown = false; }, 200);
-  }
-
-  clearLocation(): void {
-    this.form.patchValue({ locationId: null });
-    this.locationSearch = '';
-  }
-
-  getSelectedLocationDisplay(): string {
-    const id = this.form.get('locationId')?.value;
-    if (!id) return '';
-    const loc = this.locations.find(l => l.id === id);
-    return loc ? (loc.municipality ? `${loc.city}, ${loc.municipality}` : loc.city) : '';
+  onLocationChange(option: CityPickerOption | null): void {
+    this.form.patchValue({ locationId: option?.locationId ?? null });
   }
 
   // ════════════════════════════════════════════════════════

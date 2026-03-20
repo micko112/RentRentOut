@@ -56,16 +56,28 @@
         </div>
 
         <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
-          <button class="page-btn"
+          <button class="page-nav-btn"
                   [disabled]="adsPage.first"
-                  (click)="goToPage(adsPage.number - 1)">
-            &laquo; Prethodna
+                  (click)="goToPage(adsPage.number - 1)"
+                  title="Prethodna">
+            <span class="material-icons">chevron_left</span>
           </button>
-          <span class="page-info">Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}</span>
-          <button class="page-btn"
+
+          <ng-container *ngFor="let p of getPageRange(adsPage.number, adsPage.totalPages)">
+            <span *ngIf="p === '...'" class="page-ellipsis">…</span>
+            <button *ngIf="p !== '...'"
+                    class="page-num-btn"
+                    [class.active]="asNumber(p) === adsPage.number"
+                    (click)="goToPage(asNumber(p))">
+              {{ asNumber(p) + 1 }}
+            </button>
+          </ng-container>
+
+          <button class="page-nav-btn"
                   [disabled]="adsPage.last"
-                  (click)="goToPage(adsPage.number + 1)">
-            Sledeća &raquo;
+                  (click)="goToPage(adsPage.number + 1)"
+                  title="Sledeća">
+            <span class="material-icons">chevron_right</span>
           </button>
         </div>
       </ng-container>

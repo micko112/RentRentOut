@@ -1,14 +1,19 @@
 <div class="contracts-page">
 
+  <div class="search-bar">
+    <span class="material-icons">search</span>
+    <input type="text" [(ngModel)]="searchQuery" placeholder="Pretražite ugovore po naslovu oglasa...">
+  </div>
+
   <section class="contract-section">
     <div class="section-header">
       <h3 class="section-title">Dolazni zahtevi</h3>
-      <span class="count-badge">{{ incomingRequests.length }}</span>
+      <span class="count-badge">{{ filteredIncoming.length }}</span>
     </div>
 
-    <div *ngIf="incomingRequests.length > 0; else noIncoming">
+    <div *ngIf="filteredIncoming.length > 0; else noIncoming">
       <app-contract-card
-        *ngFor="let contract of incomingRequests"
+        *ngFor="let contract of filteredIncoming"
         [id]="'contract-' + contract.id"
         [contract]="contract"
         [isOwnerView]="true"
@@ -16,19 +21,19 @@
       </app-contract-card>
     </div>
     <ng-template #noIncoming>
-      <p class="empty-state">Nema dolaznih zahteva.</p>
+      <p class="empty-state">{{ searchQuery ? 'Nema rezultata pretrage.' : 'Nema dolaznih zahteva.' }}</p>
     </ng-template>
   </section>
 
   <section class="contract-section">
     <div class="section-header">
       <h3 class="section-title">Moji zahtevi</h3>
-      <span class="count-badge">{{ outgoingRequests.length }}</span>
+      <span class="count-badge">{{ filteredOutgoing.length }}</span>
     </div>
 
-    <div *ngIf="outgoingRequests.length > 0; else noOutgoing">
+    <div *ngIf="filteredOutgoing.length > 0; else noOutgoing">
       <app-contract-card
-        *ngFor="let contract of outgoingRequests"
+        *ngFor="let contract of filteredOutgoing"
         [id]="'contract-' + contract.id"
         [contract]="contract"
         [isOwnerView]="false"
@@ -36,7 +41,7 @@
       </app-contract-card>
     </div>
     <ng-template #noOutgoing>
-      <p class="empty-state">Nisi poslao nijedan zahtev.</p>
+      <p class="empty-state">{{ searchQuery ? 'Nema rezultata pretrage.' : 'Nisi poslao nijedan zahtev.' }}</p>
     </ng-template>
   </section>
 

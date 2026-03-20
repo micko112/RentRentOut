@@ -1,35 +1,75 @@
-<div class="my-ads-container" *ngIf="ads$ | async as adsPage">
+<div class="my-ads-container">
   <div class="header-row">
-    <h2>Moji oglasi ({{ adsPage.totalElements }})</h2>
+    <h2>Moji oglasi ({{ totalElements }})</h2>
     <button class="btn-add-new" routerLink="/ads/create">+ Novi oglas</button>
   </div>
 
-  <!-- Lista oglasa -->
-  <div class="ads-list" *ngIf="adsPage.totalElements > 0; else noAds">
-    <div class="ad-item-wrapper" *ngFor="let ad of adsPage.content">
+  <!-- Search bar -->
+  <div class="search-bar">
+    <span class="material-icons search-icon">search</span>
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      placeholder="Pretražite vaše oglase..."
+      class="search-input">
+  </div>
 
-      <!-- Koristimo tvoj AdCard ali dodajemo akcije pored/ispod -->
+  <!-- Lista oglasa -->
+  <div class="ads-list" *ngIf="totalElements > 0; else noAds">
+    <div class="ad-item-wrapper" *ngFor="let ad of filteredAds">
+
       <app-ad-card [ad]="ad" viewMode="list"></app-ad-card>
 
       <!-- AKCIJE ZA VLASNIKA -->
       <div class="ad-management-actions">
         <button class="btn-edit" (click)="onEdit(ad.id)">
-          <span class="icon">✏️</span> Izmeni
+          <span class="material-icons">edit</span> Izmeni
         </button>
-        <button class="btn-delete" (click)="onDelete(ad.id)">
-          <span class="icon">🗑️</span> Obriši
+        <button class="btn-delete" (click)="openDeleteModal(ad)">
+          <span class="material-icons">delete_outline</span> Obriši
         </button>
       </div>
+    </div>
+
+    <!-- Nema rezultata pretrage -->
+    <div class="no-results" *ngIf="filteredAds.length === 0 && searchQuery">
+      <span class="material-icons">search_off</span>
+      <p>Nema oglasa koji odgovaraju pretrazi "{{ searchQuery }}".</p>
     </div>
   </div>
 
   <!-- Prazno stanje (Empty State) -->
   <ng-template #noAds>
     <div class="empty-state">
-      <div class="empty-icon">📢</div>
+      <div class="empty-icon">
+        <span class="material-icons">campaign</span>
+      </div>
       <h3>Još uvek nemate objavljenih oglasa</h3>
       <p>Postavite oglas i počnite sa izdavanjem svojih stvari već danas.</p>
       <button class="btn-primary" routerLink="/ads/create">Postavi prvi oglas</button>
     </div>
   </ng-template>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <span class="material-icons modal-icon">delete_outline</span>
+      <h3>Brisanje oglasa</h3>
+    </div>
+    <p class="modal-subtitle">Razlog za brisanje oglasa "{{ adToDelete?.title }}"</p>
+
+    <div class="reason-list">
+      <label class="reason-option" *ngFor="let reason of deleteReasons">
+        <input type="radio" name="deleteReason" [value]="reason" [(ngModel)]="deleteReason">
+        <span>{{ reason }}</span>
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeDeleteModal()">Odustanite</button>
+      <button class="btn-delete-confirm" (click)="confirmDelete()" [disabled]="!deleteReason">Obrišite oglas</button>
+    </div>
+  </div>
 </div>

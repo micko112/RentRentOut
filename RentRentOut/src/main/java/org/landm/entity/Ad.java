@@ -7,6 +7,7 @@ import org.landm.entity.Enums.Currency;
 import org.landm.entity.Enums.PriceInterval;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +27,13 @@ public class Ad {
 
     @Column(nullable = false, name="price")
     private BigDecimal price;
-    
+
+    @Column(name = "price_per_week", nullable = true)
+    private BigDecimal pricePerWeek;
+
+    @Column(name = "price_per_month", nullable = true)
+    private BigDecimal pricePerMonth;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable=false, name="currency")
     private Currency currency = Currency.RSD;
@@ -57,6 +64,12 @@ public class Ad {
 
     @Column(name = "view_count", nullable = false)
     private int viewCount = 0;
+
+    @Column(name = "save_count", nullable = false)
+    private int saveCount = 0;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @ElementCollection
     @CollectionTable(name = "ad_image", joinColumns = @JoinColumn(name = "ad_id"))
@@ -107,7 +120,23 @@ public class Ad {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-    
+
+    public BigDecimal getPricePerWeek() {
+        return pricePerWeek;
+    }
+
+    public void setPricePerWeek(BigDecimal pricePerWeek) {
+        this.pricePerWeek = pricePerWeek;
+    }
+
+    public BigDecimal getPricePerMonth() {
+        return pricePerMonth;
+    }
+
+    public void setPricePerMonth(BigDecimal pricePerMonth) {
+        this.pricePerMonth = pricePerMonth;
+    }
+
     public Currency getCurrency() {
 		return currency;
 	}
@@ -167,6 +196,29 @@ public class Ad {
 
     public void setViewCount(int viewCount) {
         this.viewCount = viewCount;
+    }
+
+    public int getSaveCount() {
+        return saveCount;
+    }
+
+    public void setSaveCount(int saveCount) {
+        this.saveCount = saveCount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
     }
 
 	@Override

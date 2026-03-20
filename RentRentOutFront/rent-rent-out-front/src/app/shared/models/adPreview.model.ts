@@ -10,7 +10,11 @@ export interface AdPreview {
   thumbnail:  string;
   adStatus: string;
   viewCount?: number;
+  saveCount?: number;
   saved?: boolean;
+  createdAt?: string;
+  pricePerWeek?: number;
+  pricePerMonth?: number;
 }
 
 export interface Page<T>{

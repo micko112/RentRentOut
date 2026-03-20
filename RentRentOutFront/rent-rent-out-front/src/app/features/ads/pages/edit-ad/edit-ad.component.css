@@ -1,377 +1,923 @@
-.page-container {
-  display: flex;
-  justify-content: center;
-  padding: 40px 0;
-  background-color: #f9f9f9;
+/* ════════════════════════════════════════════════════════
+   EDIT AD WIZARD — 2-step form
+   Sidebar: 185px + gap: 200px = 385px offset fixed below
+   ════════════════════════════════════════════════════════ */
+
+:host { display: block; }
+
+/* ── Izlazimo iz sidebar layouta ──────────────────────── */
+.wizard-page {
+  margin-left: -385px;                /* sidebar 185px + gap 200px */
+  width: calc(100% + 385px);
+  margin-top: -30px;                  /* page-content padding-top */
   min-height: 100vh;
-}
-
-.form-card {
-  background: white;
-  width: 100%;
-  max-width: 700px; /* Ne previše široko za čitljivost forme */
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e0e0e0;
-}
-
-.header {
-  margin-bottom: 40px;
-  text-align: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 20px;
-
-  h2 {
-    margin: 0 0 5px 0;
-    color: #283859;
-    font-size: 28px;
-  }
-
-  p {
-    color: #666;
-    font-size: 15px;
-    margin: 0;
-  }
-}
-
-/* --- KORACI (STEPS) --- */
-.step {
+  background: linear-gradient(145deg, #f0f2ff 0%, #f5f0ff 45%, #eefdf4 100%);
   display: flex;
-  gap: 20px;
-  margin-bottom: 45px;
-  position: relative;
-
-  /* Linija koja spaja krugove */
-
-  &:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 40px;
-    left: 19px; /* Tačno na sredini kruga širine 40px */
-    width: 2px;
-    height: calc(100% + 5px); /* +5px da spoji i margine */
-    background-color: #e5e5e5;
-    z-index: 0;
-  }
+  flex-direction: column;
+  overflow-x: hidden;
 }
 
-.numeration {
-  width: 40px;
-  height: 40px;
-  background-color: #f0f0f0; /* Blaga boja, ističe se samo sadržaj */
-  color: #283859;
-  border: 2px solid #e5e5e5;
-  border-radius: 50%;
+/* ════════════════════════════════════════════════════════
+   HEADER
+   ════════════════════════════════════════════════════════ */
+.wizard-header {
+  background: #fff;
+  border-bottom: 1px solid #e0e5ef;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0 40px;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 0 14px;
+}
+
+.back-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 18px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #e0e5ef;
+  background: #f8fafc;
+  color: #374151;
+  text-decoration: none;
   flex-shrink: 0;
-  z-index: 1; /* Preko linije */
+  transition: all .2s;
+}
+.back-btn:hover {
+  background: #813181;
+  border-color: #813181;
+  color: #fff;
+  transform: translateX(-2px);
 }
 
-.content {
-  flex-grow: 1;
-  padding-top: 6px; /* Ravnanje sa centrom broja */
-
-  h3 {
-    margin: 0 0 5px 0;
-    font-size: 18px;
-    color: #333;
-  }
-
-  .hint {
-    color: #888;
-    font-size: 13px;
-    margin: 0 0 15px 0;
-  }
-}
-
-/* --- ELEMENTI FORME --- */
-.form-group {
-  margin-bottom: 15px;
-
-  label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-    font-size: 13px;
-    color: #444;
-    text-transform: uppercase;
-  }
-}
-
-/* --- STILOVI ZA CENU (JASAN TOGGLE) --- */
-
-.price-section-wrapper {
+.header-center {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 15px;
-  flex-wrap: wrap;
+  gap: 28px;
 }
 
-/* Polje za upis broja */
-.price-input-box {
+.header-center h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.step-pills {
+  display: flex;
+  gap: 8px;
+}
+
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #f3f4f6;
+  border: 1.5px solid transparent;
+  cursor: default;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.step-pill.active {
+  background: #f5ecff;
+  color: #813181;
+  border-color: #d8a8e0;
+}
+.step-pill.done {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+  cursor: pointer;
+}
+.step-pill.done:hover { opacity: .8; }
+
+.pill-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #d1d5db;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.step-pill.active .pill-num { background: #813181; }
+.step-pill.done .pill-num   { background: #059669; }
+
+.step-counter {
+  background: linear-gradient(135deg, #813181, #a855a7);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.progress-track {
+  height: 3px;
+  background: #e5e7eb;
+  margin: 0 -40px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #813181, #a855a7 50%, #6ecf7e);
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+}
+
+/* ════════════════════════════════════════════════════════
+   BODY
+   ════════════════════════════════════════════════════════ */
+.wizard-body {
   flex: 1;
-  min-width: 150px;
-
-  input {
-    margin: 0;
-    font-weight: bold;
-    font-size: 16px;
-
-    /* Na fokus ide tvoja zelena */
-
-    &:focus {
-      border-color: #6ecf7e;
-      box-shadow: 0 0 0 3px rgba(110, 207, 126, 0.2);
-    }
-  }
+  padding: 32px 40px 80px;
 }
 
-/* --- JASAN RADIO TOGGLE (VALUTA) --- */
-.currency-toggle {
+form {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Loading state */
+.loading-state {
   display: flex;
-  background-color: #f5f5f5; /* Svetlo siva pozadina celog prekidača */
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
-  padding: 4px;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  color: #6b7280;
+  padding: 60px 0;
+  justify-content: center;
+}
+.loading-icon {
+  animation: spin .9s linear infinite;
+  font-size: 22px;
+  color: #813181;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-  &:focus {
-    border-color: #6ecf7e;
-  }
-  .radio-pill {
-    cursor: pointer;
-    margin: 0;
-
-    input[type="radio"] {
-      display: none; /* Sakrivamo ružni kružić */
-    }
-
-    /* Izgled teksta KAD NIJE SELEKTOVAN */
-
-    span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 60px; /* Fiksna širina da oba dugmeta budu ista */
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #303030; /* Sivi tekst */
-      transition: all 0.25s ease;
-      user-select: none;
-    }
-
-    /* Izgled teksta KAD JE SELEKTOVAN (Tvoja Ljubičasta) */
-
-    input[type="radio"]:checked + span {
-      background-color: #813181; /* Brend ljubičasta */
-      color: white; /* Beli tekst za maksimalan kontrast */
-      box-shadow: 0 2px 6px rgba(129, 49, 129, 0.3); /* Blaga ljubičasta senka */
-    }
-
-    input[type="radio"]:not(checked) + span {
-      color: #575757;
-    }
-  }
+/* ════════════════════════════════════════════════════════
+   STEP PANEL
+   ════════════════════════════════════════════════════════ */
+.step-panel {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.07);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  animation: fadeUp .3s cubic-bezier(.4,0,.2,1);
+  margin-bottom: 12px;
 }
 
-/* Polje za interval */
-.interval-select-box {
-  width: 160px;
-
-  select {
-    margin: 0;
-    cursor: pointer;
-    font-weight: 600;
-    color: #333;
-
-    /* Na fokus ide zelena */
-
-    &:focus {
-      border-color: #6ecf7e;
-      box-shadow: 0 0 0 3px rgba(110, 207, 126, 0.2);
-    }
-  }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-input, select, textarea {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 15px;
-  background-color: #fff;
-  font-family: inherit;
-  transition: all 0.2s;
-
-  &:focus {
-    border-color: #6ecf7e;
-    box-shadow: 0 0 0 3px rgba(110, 207, 126, 0.2);
-    outline: none;
-  }
-
-  &.invalid {
-    border-color: #d32f2f;
-    background-color: #fffafa;
-  }
+/* ── Sekcije unutar panela ── */
+.section-block {
+  padding: 32px 40px;
 }
 
-textarea {
-  resize: vertical;
-  min-height: 120px;
+.section-divider {
+  height: 1px;
+  background: #f0f2f7;
+  margin: 0;
 }
 
-.short-input {
-  width: 120px;
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
 }
 
-.error {
-  color: #d32f2f;
-  font-size: 12px;
-  margin-top: 6px;
+.section-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #813181, #a855a7);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.section-hint {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 20px 38px;
+  line-height: 1.5;
+}
+
+/* ════════════════════════════════════════════════════════
+   SHARED FORM ELEMENTS
+   ════════════════════════════════════════════════════════ */
+.form-field { margin-bottom: 22px; }
+.form-field:last-child { margin-bottom: 0; }
+.form-field.flex-grow { flex: 1; min-width: 0; }
+
+.field-label {
   display: block;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+.req { color: #ef4444; margin-left: 1px; }
+
+input[type="text"],
+input[type="number"],
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #111827;
+  background: #fff;
+  transition: border-color .2s, box-shadow .2s;
+}
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #813181;
+  box-shadow: 0 0 0 4px rgba(129,49,129,.1);
+}
+input.invalid, textarea.invalid {
+  border-color: #ef4444;
+  background: #fff5f5;
+}
+input::placeholder, textarea::placeholder { color: #9ca3af; }
+textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
+
+/* Category select */
+.category-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #111827;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+  appearance: auto;
+}
+.category-select:focus {
+  outline: none;
+  border-color: #813181;
+  box-shadow: 0 0 0 4px rgba(129,49,129,.1);
+}
+.category-select.invalid {
+  border-color: #ef4444;
+  background: #fff5f5;
 }
 
-/* --- MREŽA ZA CENU --- */
-.row {
+/* Char counters */
+.counted-wrap {
+  position: relative;
+}
+.counted-wrap input   { padding-bottom: 32px; }
+.counted-wrap.textarea textarea { padding-bottom: 32px; }
+.counted-wrap.invalid input,
+.counted-wrap.invalid textarea  { border-color: #ef4444; background: #fff5f5; }
+
+.char-count {
+  position: absolute;
+  bottom: 10px;
+  right: 14px;
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 600;
+  pointer-events: none;
+}
+.char-count.near { color: #f59e0b; }
+.char-count.over { color: #ef4444; font-weight: 700; }
+
+.field-error {
+  display: block;
+  font-size: 13px;
+  color: #ef4444;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+/* ════════════════════════════════════════════════════════
+   SLIKE
+   ════════════════════════════════════════════════════════ */
+.drop-zone {
   display: flex;
-  gap: 15px;
-
-  .half {
-    flex: 1;
-  }
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #d1d5db;
+  border-radius: 14px;
+  padding: 44px 20px;
+  cursor: pointer;
+  transition: all .25s ease;
+  background: #fafbff;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.drop-zone:hover, .drop-zone.dragging {
+  border-color: #813181;
+  background: linear-gradient(145deg, #fdf5ff, #f7f0ff);
+}
+.drop-zone.has-files {
+  padding: 20px;
+  border-style: solid;
+  border-color: #a7f3d0;
+  background: #f0fdf4;
 }
 
-/* --- PLACEHOLDER ZA SLIKU --- */
-/* --- UPLOAD SLIKA --- */
-.image-upload-container {
-  margin-top: 10px;
+.dz-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.dz-icon  { font-size: 38px; }
+.dz-title { font-size: 16px; font-weight: 600; color: #374151; }
+.dz-sub   { font-size: 13px; color: #9ca3af; }
+.dz-badge {
+  margin-top: 4px;
+  background: #6ecf7e;
+  color: #fff;
+  padding: 4px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
-.upload-dropzone {
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.img-cell { position: relative; }
+
+.img-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
+}
+.img-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.img-inner:hover .img-overlay { opacity: 1; }
+
+.cover-badge {
+  position: absolute;
+  top: 5px; left: 5px;
+  background: linear-gradient(135deg, #813181, #a855a7);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  z-index: 2;
+}
+
+.img-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity .2s;
+  z-index: 3;
+}
+
+.img-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: transform .15s;
+}
+.img-btn:hover { transform: scale(1.12); }
+.remove-btn { background: rgba(239,68,68,.9); color: #fff; }
+
+.img-num {
+  position: absolute;
+  bottom: 3px; right: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,.8);
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  z-index: 2;
+}
+
+.add-cell { cursor: pointer; display: block; }
+.add-inner {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  border: 2px dashed #a7f3d0;
+  background: #f0fdf4;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 40px 20px;
-  background-color: #fafafa;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: #f0f8f1; /* Blago zeleno na hover */
-    border-color: #6ecf7e;
-  }
-
-  .upload-icon {
-    font-size: 32px;
-    margin-bottom: 10px;
-  }
-
-  .upload-text {
-    font-size: 15px;
-    font-weight: 500;
-    color: #555;
-  }
+  gap: 3px;
+  transition: all .2s;
 }
+.add-inner:hover { border-color: #6ecf7e; background: #dcfce7; }
+.add-plus { font-size: 24px; color: #22c55e; font-weight: 300; line-height: 1; }
+.add-lbl  { font-size: 11px; color: #22c55e; font-weight: 700; }
 
-.image-previews {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.preview-box {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .btn-remove {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 24px;
-    height: 24px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background-color: #d32f2f; /* Pocrveni kad se stane mišem */
-    }
-  }
-}
-
-/* --- DUGMIĆI --- */
-.actions {
-  margin-top: 40px;
+/* ════════════════════════════════════════════════════════
+   CENA
+   ════════════════════════════════════════════════════════ */
+.price-preview-card {
   display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  padding-top: 25px;
-  border-top: 1px solid #eee;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #813181 0%, #9c4dcc 60%, #6ecf7e 140%);
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 20px rgba(129,49,129,.22);
+}
+.ppc-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,.65);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ppc-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.5px;
+  text-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
 
-  button {
-    padding: 12px 24px;
-    border-radius: 6px;
-    font-weight: bold;
+.price-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.price-input {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+}
+
+.currency-toggle {
+  display: flex;
+  background: #f9fafb;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+.cur-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all .2s;
+  text-transform: lowercase;
+}
+.cur-btn.active {
+  background: #813181;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(129,49,129,.3);
+}
+.cur-btn:not(.active):hover { background: #f3f4f6; color: #374151; }
+
+.interval-row { display: flex; gap: 8px; }
+.interval-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 10px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: all .18s;
+  min-width: 64px;
+}
+.interval-card:hover { border-color: #813181; background: #fdf5ff; }
+.interval-card.selected {
+  border-color: #813181;
+  background: linear-gradient(145deg, #fdf5ff, #f5e8ff);
+  box-shadow: 0 4px 10px rgba(129,49,129,.14);
+}
+.int-unit  { font-size: 16px; font-weight: 800; color: #813181; }
+.int-label { font-size: 11px; font-weight: 600; color: #6b7280; white-space: nowrap; }
+
+/* ════════════════════════════════════════════════════════
+   LOKACIJA & KOLIČINA
+   ════════════════════════════════════════════════════════ */
+.loc-qty-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.loc-wrapper {
+  position: relative;
+}
+
+.loc-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+  min-height: 52px;
+
+  &:hover, &.focused {
+    border-color: #813181;
+    box-shadow: 0 0 0 4px rgba(129,49,129,.1);
+  }
+
+  &.has-value .loc-trigger-text {
+    color: #111827;
+    font-weight: 600;
+  }
+
+  .loc-pin { font-size: 18px; flex-shrink: 0; }
+
+  .loc-trigger-text {
+    flex: 1;
+    font-size: 16px;
+    color: #9ca3af;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .loc-clear-btn {
+    color: #9ca3af;
+    font-size: 13px;
+    padding: 2px 6px;
     cursor: pointer;
-    font-size: 15px;
-    transition: all 0.2s;
+    flex-shrink: 0;
+    &:hover { color: #ef4444; }
   }
+}
 
-  .btn-cancel {
+.loc-dropdown {
+  position: fixed;
+  /* top and left set via ngStyle */
+  max-width: 500px;
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.14);
+  z-index: 9999;
+  overflow: hidden;
+  animation: dropIn .15s ease;
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.loc-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 2px solid #f0f2f7;
+  background: #fafbff;
+
+  .loc-search-input {
+    flex: 1;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    font-size: 16px;
     background: transparent;
-    border: 1px solid #ccc;
-    color: #555;
+    color: #111827;
+    min-width: 0;
 
-    &:hover {
-      background: #f0f0f0;
-    }
+    &::placeholder { color: #9ca3af; }
+    &:focus { outline: none; }
   }
 
-  .btn-submit {
-    background: #6ecf7e;
-    color: white;
-    border: none;
-
-    &:hover:not(:disabled) {
-      background: #5bbd6a;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(110, 207, 126, 0.3);
-    }
-
-    &:disabled {
-      background: #e0e0e0;
-      color: #999;
-      cursor: not-allowed;
-    }
+  .loc-search-clear {
+    cursor: pointer;
+    color: #9ca3af;
+    font-size: 12px;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    &:hover { color: #ef4444; }
   }
+}
+
+.loc-list {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.loc-option {
+  padding: 13px 20px;
+  cursor: pointer;
+  font-size: 17px;
+  color: #374151;
+  border-bottom: 1px solid #f5f5f5;
+  display: flex;
+  align-items: center;
+  transition: background .1s;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: #f9fafb; }
+
+  .loc-city { font-weight: 700; color: #111827; }
+  .loc-muni { color: #6b7280; font-size: 15px; }
+}
+
+.loc-empty {
+  padding: 20px;
+  text-align: center;
+  font-size: 15px;
+  color: #9ca3af;
+}
+
+/* Količina stepper */
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  width: fit-content;
+}
+.stepper-btn {
+  width: 46px; height: 48px;
+  border: none;
+  background: #fff;
+  font-size: 22px;
+  font-weight: 300;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.stepper-btn:hover:not(:disabled) { background: #813181; color: #fff; }
+.stepper-btn:disabled { color: #d1d5db; cursor: not-allowed; }
+
+.stepper-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px;
+  border-left: 2px solid #e5e7eb;
+  border-right: 2px solid #e5e7eb;
+  min-width: 80px;
+}
+.stepper-val  { font-size: 24px; font-weight: 800; color: #111827; line-height: 1; }
+.stepper-unit { font-size: 11px; color: #9ca3af; font-weight: 600; text-transform: uppercase; }
+
+/* ════════════════════════════════════════════════════════
+   NAVIGACIJA
+   ════════════════════════════════════════════════════════ */
+.wizard-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0 4px;
+}
+.nav-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.btn-prev {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 20px;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-prev:hover { border-color: #813181; color: #813181; background: #fdf5ff; }
+
+.btn-cancel {
+  padding: 11px 20px;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all .2s;
+}
+.btn-cancel:hover { background: #f9fafb; color: #374151; }
+
+.btn-next {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #813181, #9c4dcc);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 4px 14px rgba(129,49,129,.3);
+}
+.btn-next:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(129,49,129,.4);
+}
+.btn-next:active { transform: translateY(0); }
+
+.btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 34px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #22c55e, #6ecf7e);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 4px 14px rgba(110,207,126,.35);
+}
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 20px rgba(110,207,126,.45);
+}
+.btn-submit:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ════════════════════════════════════════════════════════
+   TIERED PRICING
+   ════════════════════════════════════════════════════════ */
+.tiered-pricing {
+  margin-top: 20px;
+  border: 2px solid #f0f2f7;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tier-hint {
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: #6b7280;
+  background: #f9fafb;
+  border-bottom: 1px solid #f0f2f7;
+}
+
+.tier-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f2f7;
+
+  &:last-child { border-bottom: none; }
+}
+
+.tier-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .tier-icon { font-size: 22px; flex-shrink: 0; }
+  .tier-name { font-size: 15px; font-weight: 700; color: #111827; }
+  .tier-sub  { font-size: 12px; color: #9ca3af; margin-top: 1px; }
+}
+
+.tier-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .tier-input {
+    width: 130px;
+    padding: 10px 14px !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    text-align: right;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 8px !important;
+
+    &:focus {
+      border-color: #813181 !important;
+      box-shadow: 0 0 0 3px rgba(129,49,129,.1) !important;
+    }
+    &::placeholder { color: #d1d5db !important; font-weight: 400 !important; }
+  }
+
+  .tier-currency {
+    font-size: 16px;
+    font-weight: 700;
+    color: #813181;
+    white-space: nowrap;
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════ */
+
+/* Ispod 900px sidebar već ide u column, resetuj offset */
+@media (max-width: 900px) {
+  .wizard-page {
+    margin-left: 0;
+    width: 100%;
+    margin-top: 0;
+  }
+  .wizard-header { padding: 0 16px; }
+  .wizard-body   { padding: 20px 16px 60px; }
+  .section-block { padding: 24px 20px; }
+  .progress-track { margin: 0 -16px; }
+  .step-pills { display: none; }
+}
+
+@media (max-width: 640px) {
+  .price-row   { flex-direction: column; }
+  .loc-qty-row { flex-direction: column; }
+  .interval-row { flex-wrap: wrap; }
+  .ppc-value   { font-size: 22px; }
 }

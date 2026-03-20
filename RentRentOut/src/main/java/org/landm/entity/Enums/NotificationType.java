@@ -7,5 +7,6 @@ public enum NotificationType {
     CONTRACT_CANCELLED,
     CONTRACT_ACTIVE,
     CONTRACT_FINISHED,
-    NEW_REVIEW
+    NEW_REVIEW,
+    AD_SAVED
 }

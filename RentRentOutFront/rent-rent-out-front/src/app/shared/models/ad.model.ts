@@ -23,4 +23,6 @@ blockedIntervals: DateInterval[];
 currency: string;
 viewCount?: number;
 saved?: boolean;
+pricePerWeek?: number;
+pricePerMonth?: number;
 }

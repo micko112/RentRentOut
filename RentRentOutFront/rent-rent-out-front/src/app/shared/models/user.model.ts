@@ -7,6 +7,7 @@ export interface User{
   identified:  boolean;
   credit:  number;
   location: string;
+  locationId?: number;
   currency: string;
   phoneNumber: string;
   description: string;

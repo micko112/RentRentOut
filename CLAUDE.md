@@ -76,7 +76,7 @@ Feature-based module structure with lazy loading:
   - `auth/` — Login, Register, email verification, password reset; `authGuard` protects routes
   - `ads/` — Ad listings, details, create/edit; `RentalCalendarComponent` (`features/ads/components/rental-calendar/`) is a standalone reusable calendar widget
   - `chat/` — Real-time inbox using `@stomp/rx-stomp` over WebSocket; three-column layout (conversation list | messages | calendar); system messages rendered as centered gray bubbles
-  - `user/` — User profile pages
+  - `user/` — User profile pages (`my-ads`, `saved-ads`, `contracts`, `my-profile`)
   - `contracts/` — Rental contract management
   - `review/` — Review/rating system
   - `notifications/` — In-app notification center (`/notifications` route); `NotificationsService` (`features/notifications/services/`) holds unread count via `BehaviorSubject`
@@ -139,10 +139,10 @@ Backend: `MessageRepository.countUnreadForUser(userId)` uses a single JPQL query
 
 ### In-App Notifications System
 
-Full notification system for contract and review events.
+Full notification system for contract, review, and saved-ad events.
 
 **Backend:**
-- `NotificationType` enum (`entity/Enums/`): `CONTRACT_REQUESTED`, `CONTRACT_ACCEPTED`, `CONTRACT_REJECTED`, `CONTRACT_CANCELLED`, `CONTRACT_ACTIVE`, `CONTRACT_FINISHED`, `NEW_REVIEW`
+- `NotificationType` enum (`entity/Enums/`): `CONTRACT_REQUESTED`, `CONTRACT_ACCEPTED`, `CONTRACT_REJECTED`, `CONTRACT_CANCELLED`, `CONTRACT_ACTIVE`, `CONTRACT_FINISHED`, `NEW_REVIEW`, `AD_SAVED`
 - `Notification` JPA entity: `id`, `recipient` (ManyToOne User), `type` (EnumType.STRING), `title`, `message` (TEXT), `isRead` (default false), `relatedEntityId`, `relatedEntityType`, `actorName`, `createdAt`
 - `NotificationPersistenceService` interface + impl (`service/`) — CRUD; depends only on `NotificationRepository` + `UserRepository` (no circular deps)
 - `NotificationController` at `/api/notifications`:
@@ -150,7 +150,7 @@ Full notification system for contract and review events.
   - `GET /api/notifications/unread-count` → `{ count: N }`
   - `PATCH /api/notifications/{id}/read`
   - `PATCH /api/notifications/read-all`
-- Hooks in `RentalContractServiceImpl` (fires on create, ACCEPTED, REJECTED) and `ReviewServiceImpl` (fires NEW_REVIEW after save)
+- Hooks in `RentalContractServiceImpl` (fires on create, ACCEPTED, REJECTED), `ReviewServiceImpl` (fires NEW_REVIEW), `AdServiceImpl.saveAd()` (fires AD_SAVED to owner when someone saves their ad)
 - Liquibase migration: `db.changelog-13-create-notification.xml`
 
 **Frontend:**
@@ -158,6 +158,14 @@ Full notification system for contract and review events.
 - `NotificationsService` (`features/notifications/services/`) — `unreadCount$` BehaviorSubject; `loadUnreadCount()`, `getAll()`, `markOneAsRead(id)`, `markAllAsRead()`
 - `NotificationsPageComponent` (`features/notifications/pages/`) — filter tabs (Sve / Nepročitana), relative time formatting (`formatTime()`), icon+color per type, "Pogledaj →" router link per notification
 - Route: `/notifications` (protected by `authGuard`)
+
+### Save Count na oglasima
+
+`Ad` entity ima `saveCount` kolonu (INT, default 0) koja se:
+- **inkrementira** u `AdServiceImpl.saveAd()` kada korisnik sačuva oglas
+- **dekrementira** u `AdServiceImpl.unsaveAd()` (minimum 0)
+
+`AdPreviewDto` i `AdDto` oba imaju `saveCount` polje. Prikazuje se na `AdCardComponent` pored `viewCount` (ikonica `bookmark`).
 
 ### RentalCalendarComponent
 
@@ -175,6 +183,60 @@ Two-step wizard at `features/ads/pages/create-ad/`:
 - Step 2: Drag-drop image upload (10 images max, 10MB each), cover image selection, price/currency/interval, location autocomplete, quantity stepper
 - CSS: uses `margin-left: -200px; width: calc(100% + 200px)` to cancel the app layout gap and expand to full width (reset at 900px breakpoint)
 
+### Edit Ad Wizard
+
+Isti dvokokračni wizard format kao Create Ad, na `features/ads/pages/edit-ad/`:
+- Step 1: Kategorija (select) + naslov (char counter) + opis (char counter)
+- Step 2: Drag-drop slike (postojeće + nove) + cena/valuta/interval + lokacija autocomplete + quantity stepper
+- Forma se pre-popunjava sa postojećim podacima oglasa; submit šalje PATCH zahtev
+
+### My Ads stranica
+
+`features/user/pages/my-ads/` — upravljanje sopstvenim oglasima:
+- Prikazuje listu oglasa sa `AdCardComponent` (list view)
+- **Pretraga** po naslovu (client-side filter, `searchQuery` getter `filteredAds`)
+- **Material Icons** umesto emojija (`edit`, `delete_outline`, `campaign` za empty state)
+- **Delete modal** — otvara se klikom na "Obriši"; sadrži razloge za brisanje (radio) + dugmad "Odustanite" / "Obrišite oglas"
+
+### Ad List stranica i pretraga
+
+`features/ads/pages/ad-list/` — glavna stranica sa oglasima:
+- **Grid mod**: kategorijski pregled, prikazuje se `CategoriesSidebar`
+- **Search mod**: aktivan kad ima keyword ili categoryId; prikazuje `FiltersSidebar` i kartice u list view-u
+- **Paginacija**: numerisana (page buttons), sa `…` za preskočene opsege; trenutna stranica purple `#813181`
+- `goToPage()` skroluje na vrh stranice
+
+### FiltersSidebar
+
+`features/ads/components/filters-sidebar/` — filter panel u search modu:
+- **Keyword**: search input sa ikonom i × za brisanje
+- **Kategorija**: select sa `category` ikonom
+- **Grad**: select sa `location_on` ikonom; prikazuje `"Grad – Opština"` format
+- **Tip zakupa**: toggle pill dugmad (Po satu / Po danu / Po mesecu) — šalje `priceInterval` na backend
+- **Raspon cene**: Od — Do inputi
+- **Apply dugme**: purple, prikazuje badge sa brojem aktivnih filtera
+- Backend `AdServiceImpl.buildSearchSpec()` filtrira i po `priceInterval`
+
+### AdCard komponenta
+
+`features/ads/components/ad-card/`:
+- **Grid view**: slika + naslov + lokacija + cena + view/save count
+- **List view**: pored gore navedenog, prikazuje i **opis** (2 reda, ellipsis)
+- `saveCount` prikazan sa `bookmark` ikonicom pored `viewCount`
+
+### Lokacije
+
+Lokacije se **isključivo** dodaju kroz Liquibase seed fajlove — nema Create Location endpointa.
+- Seed fajl: `db.changelog-seed-location.xml` — sadrži 40+ lokacija Srbije (Beograd 14 opština, Novi Sad 6, Niš 4, Kragujevac 3, Subotica 2, ostali gradovi po jedan unos)
+- `db.changelog-4-create-location.xml` — sadrži **samo** kreaciju tabele, bez insert-a
+- `LocationRepository.findAllByOrderByCityAscMunicipalityAsc()` — vraća lokacije abecedno
+- Location autocomplete (create-ad, edit-ad) pretražuje po gradu I opštini
+
+### Contracts stranica
+
+`features/user/pages/contracts/` — prikazuje dolazne i odlazne ugovore:
+- **Pretraga** po naslovu oglasa (client-side, `filteredIncoming` / `filteredOutgoing` getteri)
+
 ### Color Theme
 
 Two primary colors:
@@ -182,3 +244,7 @@ Two primary colors:
 - **Green** `#6ecf7e` — secondary accent; opacity is intentionally varied per context (e.g. `rgba(110, 207, 126, 0.X)`)
 
 **Do not replace either color with blue or other colors.**
+
+## Communication
+
+Uvek odgovaraj na srpskom jeziku (latinica). Korisnik je iz Srbije.

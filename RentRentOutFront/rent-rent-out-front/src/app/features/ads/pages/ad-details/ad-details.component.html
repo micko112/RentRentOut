@@ -62,7 +62,8 @@
 
         <div class="price-currency">
           <div class="price">{{ ad.price | number }}</div>
-          <span class="currency">{{ ad.currency }} </span>
+          <span class="currency" *ngIf="ad.currency === 'EUR'">€</span>
+          <span class="currency" *ngIf="ad.currency === 'RSD'">din</span>
         </div>
 
         <h3>Detalji</h3>
@@ -102,6 +103,44 @@
           [blockedIntervals]="blockedIntervals"
           [isMyAd]="isMyAd">
         </app-rental-calendar>
+        <!-- TIERED PRICING TABLE (shown if any tier is set) -->
+        <div class="pricing-tiers" *ngIf="ad.pricePerWeek || ad.pricePerMonth">
+          <div class="pt-header">Cene po periodu</div>
+          <div class="pt-row">
+            <span class="pt-label">
+              <span class="material-icons pt-icon">today</span>
+              Po danu
+            </span>
+            <span class="pt-price">
+              {{ ad.price | number: '1.0-0' }}
+              <span *ngIf="ad.currency === 'EUR'">€</span>
+              <span *ngIf="ad.currency === 'RSD'">din</span>
+            </span>
+          </div>
+          <div class="pt-row" *ngIf="ad.pricePerWeek">
+            <span class="pt-label">
+              <span class="material-icons pt-icon">date_range</span>
+              Po sedmici <small>(7 dana)</small>
+            </span>
+            <span class="pt-price">
+              {{ ad.pricePerWeek | number: '1.0-0' }}
+              <span *ngIf="ad.currency === 'EUR'">€</span>
+              <span *ngIf="ad.currency === 'RSD'">din</span>
+            </span>
+          </div>
+          <div class="pt-row" *ngIf="ad.pricePerMonth">
+            <span class="pt-label">
+              <span class="material-icons pt-icon">calendar_month</span>
+              Po mesecu <small>(30 dana)</small>
+            </span>
+            <span class="pt-price">
+              {{ ad.pricePerMonth | number: '1.0-0' }}
+              <span *ngIf="ad.currency === 'EUR'">€</span>
+              <span *ngIf="ad.currency === 'RSD'">din</span>
+            </span>
+          </div>
+        </div>
+
         <div class="user-info-card" *ngIf="ad.owner">
 
           <div class="user-header">

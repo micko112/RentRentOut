@@ -29,6 +29,8 @@ public class AdMapper {
         dto.setTitle(ad.getTitle());
         dto.setDescription(ad.getDescription());
         dto.setPrice(ad.getPrice());
+        dto.setPricePerWeek(ad.getPricePerWeek());
+        dto.setPricePerMonth(ad.getPricePerMonth());
         dto.setPriceInterval(PriceInterval.valueOf(ad.getPriceInterval().name()));
         dto.setCurrency(ad.getCurrency().toString());
         dto.setAdStatus(AdStatus.valueOf(ad.getAdStatus().name()));
@@ -39,6 +41,7 @@ public class AdMapper {
         dto.setCategory(categoryMapper.toDto(ad.getCategory()));
         dto.setLocation((locationMapper.toDto(ad.getLocation())));
         dto.setViewCount(ad.getViewCount());
+        dto.setSaveCount(ad.getSaveCount());
 
         return dto;
     }
@@ -48,6 +51,8 @@ public class AdMapper {
         dto.setTitle(ad.getTitle());
         dto.setDescription(ad.getDescription());
         dto.setPrice(ad.getPrice());
+        dto.setPricePerWeek(ad.getPricePerWeek());
+        dto.setPricePerMonth(ad.getPricePerMonth());
         dto.setCurrency(ad.getCurrency().toString());
         dto.setPriceInterval(PriceInterval.valueOf(ad.getPriceInterval().name()));
 
@@ -58,6 +63,8 @@ public class AdMapper {
         dto.setMunicipality(ad.getLocation().getMunicipality());
         dto.setAdStatus(ad.getAdStatus());
         dto.setViewCount(ad.getViewCount());
+        dto.setSaveCount(ad.getSaveCount());
+        dto.setCreatedAt(ad.getCreatedAt());
 
         return dto;
     }

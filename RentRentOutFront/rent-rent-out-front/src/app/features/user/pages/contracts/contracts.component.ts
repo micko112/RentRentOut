@@ -1,5 +1,6 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
 import {CommonModule, NgForOf, NgIf, NgIfContext} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
 import {Observable} from 'rxjs';
 import {UserService} from '../../services/user.service';
@@ -13,6 +14,7 @@ import {ActivatedRoute} from '@angular/router';
     NgForOf,
     NgIf,
     CommonModule,
+    FormsModule,
     ContractCardComponent
   ],
   templateUrl: './contracts.component.html',
@@ -21,6 +23,23 @@ import {ActivatedRoute} from '@angular/router';
 export class ContractsComponent implements OnInit {
   incomingRequests: RentalContract[] = [];
   outgoingRequests: RentalContract[] = [];
+  searchQuery = '';
+
+  get filteredIncoming(): RentalContract[] {
+    const q = this.searchQuery.toLowerCase().trim();
+    if (!q) return this.incomingRequests;
+    return this.incomingRequests.filter(c =>
+      c.adDto?.title?.toLowerCase().includes(q)
+    );
+  }
+
+  get filteredOutgoing(): RentalContract[] {
+    const q = this.searchQuery.toLowerCase().trim();
+    if (!q) return this.outgoingRequests;
+    return this.outgoingRequests.filter(c =>
+      c.adDto?.title?.toLowerCase().includes(q)
+    );
+  }
 
   private scrollToContractId: string | null = null;
 

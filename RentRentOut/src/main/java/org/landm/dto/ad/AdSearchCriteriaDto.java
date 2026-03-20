@@ -11,6 +11,7 @@ public class AdSearchCriteriaDto {
     private BigDecimal maxPrice;
     private PriceInterval priceInterval;
     private Long locationId;
+    private String city;
 
     public AdSearchCriteriaDto() {
     }
@@ -61,5 +62,13 @@ public class AdSearchCriteriaDto {
 
     public void setLocationId(Long locationId) {
         this.locationId = locationId;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

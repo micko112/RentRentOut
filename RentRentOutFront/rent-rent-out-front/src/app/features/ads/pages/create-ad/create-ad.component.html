@@ -242,6 +242,37 @@
               </div>
             </div>
           </div>
+
+          <!-- TIERED PRICING -->
+          <div class="tiered-pricing">
+            <div class="tier-hint">Popust za duži period iznajmljivanja (opcionalno)</div>
+            <div class="tier-row">
+              <div class="tier-label">
+                <span class="tier-icon">📅</span>
+                <div>
+                  <div class="tier-name">Po sedmici</div>
+                  <div class="tier-sub">7 dana</div>
+                </div>
+              </div>
+              <div class="tier-input-wrap">
+                <input type="number" formControlName="pricePerWeek" placeholder="—" min="1" class="tier-input">
+                <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
+              </div>
+            </div>
+            <div class="tier-row">
+              <div class="tier-label">
+                <span class="tier-icon">📆</span>
+                <div>
+                  <div class="tier-name">Po mesecu</div>
+                  <div class="tier-sub">30 dana</div>
+                </div>
+              </div>
+              <div class="tier-input-wrap">
+                <input type="number" formControlName="pricePerMonth" placeholder="—" min="1" class="tier-input">
+                <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
+              </div>
+            </div>
+          </div>
         </section>
 
         <div class="section-divider"></div>
@@ -257,33 +288,14 @@
             <!-- Location -->
             <div class="form-field flex-grow">
               <label class="field-label">Lokacija preuzimanja <span class="req">*</span></label>
-              <div class="loc-wrapper">
-                <div class="loc-input-row" [class.focused]="showLocationDropdown">
-                  <span class="loc-pin">📍</span>
-                  <input type="text"
-                         class="loc-input"
-                         [value]="locationSearch"
-                         placeholder="Pretraži grad..."
-                         (input)="onLocationInput($event)"
-                         (focus)="onLocationFocus()"
-                         (blur)="hideLocationDropdown()">
-                  <span class="loc-clear" *ngIf="form.get('locationId')?.value" (click)="clearLocation()">✕</span>
-                </div>
-
-                <div class="loc-dropdown" *ngIf="showLocationDropdown && filteredLocations.length > 0">
-                  <div class="loc-option" *ngFor="let loc of filteredLocations" (mousedown)="selectLocation(loc)">
-                    <span class="loc-city">{{ loc.city }}</span>
-                    <span class="loc-muni" *ngIf="loc.municipality">, {{ loc.municipality }}</span>
-                  </div>
-                </div>
-                <div class="loc-dropdown" *ngIf="showLocationDropdown && filteredLocations.length === 0">
-                  <div class="loc-empty">Nema rezultata</div>
-                </div>
-              </div>
-
-              <div class="loc-selected" *ngIf="form.get('locationId')?.value">
-                ✅ {{ getSelectedLocationDisplay() }}
-              </div>
+              <app-city-picker
+                [locations]="locations"
+                [allowCityOnly]="false"
+                placeholder="Pretraži grad ili opštinu..."
+                [initialLocationId]="initialLocationId"
+                [isInvalid]="!!(form.get('locationId')?.touched && !form.get('locationId')?.value)"
+                (selectionChange)="onLocationChange($event)">
+              </app-city-picker>
               <small class="field-error" *ngIf="form.get('locationId')?.touched && !form.get('locationId')?.value">
                 Izaberite lokaciju.
               </small>

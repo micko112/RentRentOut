@@ -15,6 +15,8 @@ public class AdDto {
     private String title;
     private String description;
     private BigDecimal price;
+    private BigDecimal pricePerWeek;
+    private BigDecimal pricePerMonth;
 
     private String currency;
     private PriceInterval priceInterval;
@@ -30,6 +32,7 @@ public class AdDto {
 
     private List<DateInterval> blockedIntervals;
     private int viewCount;
+    private int saveCount;
     private boolean saved;
 
     public String getTitle() {
@@ -50,6 +53,23 @@ public class AdDto {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    public BigDecimal getPricePerWeek() {
+        return pricePerWeek;
+    }
+
+    public void setPricePerWeek(BigDecimal pricePerWeek) {
+        this.pricePerWeek = pricePerWeek;
+    }
+
+    public BigDecimal getPricePerMonth() {
+        return pricePerMonth;
+    }
+
+    public void setPricePerMonth(BigDecimal pricePerMonth) {
+        this.pricePerMonth = pricePerMonth;
+    }
+
     public PriceInterval getPriceInterval() {
         return priceInterval;
     }
@@ -125,6 +145,14 @@ public class AdDto {
 
     public void setViewCount(int viewCount) {
         this.viewCount = viewCount;
+    }
+
+    public int getSaveCount() {
+        return saveCount;
+    }
+
+    public void setSaveCount(int saveCount) {
+        this.saveCount = saveCount;
     }
 
     public boolean isSaved() {

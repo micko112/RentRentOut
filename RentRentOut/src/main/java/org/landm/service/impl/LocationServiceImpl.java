@@ -22,7 +22,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationDto> getAll() {
-        return locationRepository.findAll()
+        return locationRepository.findAllByOrderByCityAscMunicipalityAsc()
                 .stream()
                 .map(locationMapper::toDto)
                 .toList();

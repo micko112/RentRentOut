@@ -62,7 +62,15 @@ export class AdListComponent implements OnInit {
           this.updateActiveCategory(categoryId);
 
           this.currentKeyword = params['keyword'] || "";
-          this.isSearchMode = !!(this.currentKeyword || categoryId)
+          this.isSearchMode = !!(
+            this.currentKeyword ||
+            categoryId ||
+            params['locationId'] ||
+            params['city'] ||
+            params['minPrice'] ||
+            params['maxPrice'] ||
+            params['priceInterval']
+          );
 
           const criteria: AdSearchCriteria = {
             keyword: this.currentKeyword,
@@ -70,6 +78,8 @@ export class AdListComponent implements OnInit {
             minPrice: params['minPrice'] ? Number(params['minPrice']) : undefined,
             maxPrice: params['maxPrice'] ? Number(params['maxPrice']) : undefined,
             locationId: params['locationId'] ? Number(params['locationId']) : undefined,
+            city: params['city'] || undefined,
+            priceInterval: params['priceInterval'] || undefined,
             page: params['page'] ? Number(params['page']) : undefined,
             size: params['size'] ? Number(params['size']) : undefined,
             sort: params['sort']
@@ -123,6 +133,8 @@ export class AdListComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {
         ...criteria,
+        city: criteria.city ?? null,
+        locationId: criteria.locationId ?? null,
         page: 0
       },
       queryParamsHandling: 'merge'
@@ -134,8 +146,18 @@ export class AdListComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {page: pageIndex},
       queryParamsHandling: 'merge'
-    })
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  getPageRange(current: number, total: number): (number | '...')[] {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i);
+    if (current <= 3) return [0, 1, 2, 3, 4, '...', total - 1];
+    if (current >= total - 4) return [0, '...', total - 5, total - 4, total - 3, total - 2, total - 1];
+    return [0, '...', current - 1, current, current + 1, '...', total - 1];
+  }
+
+  asNumber(p: number | '...'): number { return p as number; }
 
   protected readonly first = first;
 }

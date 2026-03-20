@@ -33,6 +33,9 @@
     <include file="/db/changelog/db.changelog-13-create-notification.xml"/>
     <include file="/db/changelog/db.changelog-14-create-ad-view.xml"/>
     <include file="/db/changelog/db.changelog-15-create-saved-ad.xml"/>
+    <include file="/db/changelog/db.changelog-16-add-save-count-to-ad.xml"/>
+    <include file="/db/changelog/db.changelog-17-add-created-at-to-ad.xml"/>
+    <include file="/db/changelog/db.changelog-18-add-tiered-pricing-to-ad.xml"/>
 
     <include file="/db/changelog/db.changelog-seed-location.xml"/>
     <include file="/db/changelog/db.changelog-seed-categories-full.xml"/>
