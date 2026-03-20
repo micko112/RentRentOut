@@ -1,0 +1,52 @@
+<div class="city-picker">
+
+  <div class="city-trigger"
+       (click)="toggleDropdown()"
+       [class.active]="showDropdown"
+       [class.invalid]="isInvalid">
+    <span class="material-icons select-icon">location_on</span>
+    <span class="city-trigger-text">{{ selectedOption?.label || placeholder }}</span>
+    <button class="city-clear" *ngIf="selectedOption"
+            type="button"
+            (click)="clear(); $event.stopPropagation()">
+      <span class="material-icons">close</span>
+    </button>
+    <span class="material-icons city-arrow" *ngIf="!selectedOption">expand_more</span>
+  </div>
+
+  <div class="city-dropdown"
+       *ngIf="showDropdown"
+       tabindex="0"
+       (keydown)="onDropdownKey($event)">
+
+    <div class="city-search-indicator" *ngIf="citySearch">
+      <span class="material-icons">search</span>
+      <span class="csi-text">{{ citySearch }}</span>
+      <button class="csi-clear" type="button"
+              (mousedown)="citySearch = ''; $event.preventDefault()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    <div class="city-search-hint" *ngIf="!citySearch">
+      <span class="material-icons">keyboard</span>
+      <span>Počni da kucaš za pretragu</span>
+    </div>
+
+    <div class="city-grid">
+      <button *ngFor="let option of columnSortedOptions"
+              class="city-chip"
+              type="button"
+              [class.city-only]="option.isCityOnly"
+              [class.selected]="selectedOption?.label === option.label"
+              (mousedown)="select(option); $event.preventDefault()">
+        {{ option.label }}
+      </button>
+    </div>
+
+    <div class="city-empty" *ngIf="filteredOptions.length === 0">
+      Nema gradova za "{{ citySearch }}"
+    </div>
+
+  </div>
+
+</div>

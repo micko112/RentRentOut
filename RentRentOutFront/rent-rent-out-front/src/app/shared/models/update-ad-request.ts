@@ -8,4 +8,6 @@
   images: string[];
   categoryId: number;
   locationId: number;
+  pricePerWeek?: number;
+  pricePerMonth?: number;
 }
