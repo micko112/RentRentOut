@@ -41,6 +41,8 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   private messageSub!: Subscription;
   private pollSub!: Subscription;
+  private userSub!: Subscription;
+  private queryParamSub!: Subscription;
   private conversationsLoaded = false;
   private pendingChatCheck = false;
 
@@ -66,14 +68,14 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.myUserId = user.id;
     }
 
-    this.authService.currentUser$.subscribe(u => {
+    this.userSub = this.authService.currentUser$.subscribe(u => {
       if (u && u.id) {
         this.myUserId = u.id;
       }
     });
 
     this.loadConversations();
-    this.route.queryParamMap.subscribe(() => {
+    this.queryParamSub = this.route.queryParamMap.subscribe(() => {
       if (this.conversationsLoaded) {
         this.checkForNewChatRequest();
       } else {
@@ -91,8 +93,6 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   handleIncomingMessage(msg: Message) {
-      console.log('Stigla live poruka!', msg);
-
       if (!this.myUserId) {
         const u = this.authService.currentUserValue;
         if (u && u.id) {
@@ -220,12 +220,10 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.messageSub) {
-      this.messageSub.unsubscribe();
-    }
-    if (this.pollSub) {
-      this.pollSub.unsubscribe();
-    }
+    if (this.messageSub) this.messageSub.unsubscribe();
+    if (this.pollSub) this.pollSub.unsubscribe();
+    if (this.userSub) this.userSub.unsubscribe();
+    if (this.queryParamSub) this.queryParamSub.unsubscribe();
   }
 
   checkForNewChatRequest() {
@@ -333,8 +331,19 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.chatService.getMessages(this.activeConversation.id).subscribe(res => {
       this.messages = res.content;
       this.updateGroupedMessages();
-      this.scrollToBottomNeeded = true;
+      // Skroluj na dno samo ako je korisnik vec bio na dnu
+      if (this.isScrolledToBottom()) {
+        this.scrollToBottomNeeded = true;
+      }
     });
+  }
+
+  private isScrolledToBottom(): boolean {
+    try {
+      const el = this.chatScrollContainer?.nativeElement;
+      if (!el) return true;
+      return el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+    } catch { return true; }
   }
   updateGroupedMessages(): void {
     if (!this.messages || this.messages.length === 0) {

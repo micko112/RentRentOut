@@ -33,14 +33,13 @@ public class RentalContractController {
     public ResponseEntity<RentalContractDto> createRentalContract(@Valid @RequestBody CreateRentalContractRequestDto req,
                                                                   Authentication auth){
 		Long userId = Long.parseLong(auth.getName());
-		System.out.println("Calling service");
 	    RentalContractDto newRental = service.create(req, userId);
 	    return new ResponseEntity<>(newRental, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/{id}")
-	public ResponseEntity<RentalContractDto> getRentalContractById(@PathVariable Long rentalId){
+	public ResponseEntity<RentalContractDto> getRentalContractById(@PathVariable("id") Long rentalId){
 		return new ResponseEntity<>(service.getRentalContractById(rentalId), HttpStatus.OK);
 	}
 	
@@ -59,7 +58,6 @@ public class RentalContractController {
 		boolean isAdmin = auth.getAuthorities()
 				.stream()
 				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-		System.out.println(isAdmin);
 		Map res = new HashMap<>();
 		res.put("Contracts: ", service.search(userId, isAdmin, searchDto));
 		return new ResponseEntity<>(res, HttpStatus.OK);

@@ -25,8 +25,10 @@ export class AdService {
     if (criteria.minPrice) params = params.append('minPrice', criteria.minPrice.toString());
     if (criteria.maxPrice) params = params.append('maxPrice', criteria.maxPrice.toString());
     if (criteria.locationId) params = params.append('locationId', criteria.locationId);
+    if (criteria.city) params = params.append('city', criteria.city);
+    if (criteria.priceInterval) params = params.append('priceInterval', criteria.priceInterval);
 
-    if (criteria.page) params = params.append('page', criteria.page.toString());
+    if (criteria.page !== undefined) params = params.append('page', criteria.page.toString());
     if (criteria.size) params = params.append('size', criteria.size.toString());
     if (criteria.sort) params = params.append('sort', criteria.sort);
 

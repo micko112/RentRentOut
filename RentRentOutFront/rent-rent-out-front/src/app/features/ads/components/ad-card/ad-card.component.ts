@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {RouterLink, RouterModule} from '@angular/router';
 import {AdPreview} from '../../../../shared/models/adPreview.model';
 import {AdService} from '../../services/ad.service';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-ad-card',
@@ -19,10 +20,10 @@ export class AdCardComponent implements OnInit {
   isSavingToggle: boolean = false;
   isLoggedIn: boolean = false;
 
-  constructor(private adService: AdService) {}
+  constructor(private adService: AdService, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.isLoggedIn = !!localStorage.getItem('authToken');
+    this.isLoggedIn = !!this.authService.currentUserValue;
     this.isSaved = this.ad.saved ?? false;
   }
 

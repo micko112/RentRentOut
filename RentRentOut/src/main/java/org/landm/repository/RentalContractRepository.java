@@ -71,6 +71,18 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 			@Param("startDate")LocalDate startDate,
 			@Param("endDate") LocalDate endDate);
 
+	@Query("""
+        SELECT rc
+        FROM RentalContract rc
+        WHERE rc.ad.id = :adId
+          AND rc.contractStatus IN ('ACCEPTED', 'ACTIVE', 'BLOCKED_BY_OWNER')
+          AND rc.startDate <= :endDate
+          AND rc.endDate >= :startDate
+        """)
+	List<RentalContract> findContractsInDateIntervalIncludingBlocked(@Param("adId") Long adId,
+			@Param("startDate") LocalDate startDate,
+			@Param("endDate") LocalDate endDate);
+
 	long countByContractStatusIn(List<ContractStatus> statuses);
 
 	@Query("SELECT rc FROM RentalContract rc WHERE rc.contractStatus IN :statuses AND rc.startDate < :today")

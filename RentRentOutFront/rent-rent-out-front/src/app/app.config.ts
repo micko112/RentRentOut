@@ -1,24 +1,21 @@
-import {ApplicationConfig, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
-import { provideRouter, withInMemoryScrolling, withPreloading, PreloadAllModules } from '@angular/router';
+import {ApplicationConfig, inject, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
+import { provideRouter, withInMemoryScrolling, withPreloading, PreloadAllModules, Router } from '@angular/router';
 import {
-  HttpClientModule, HttpEvent, HttpHandler,
-  HttpInterceptor, HttpInterceptorFn,
-  HttpRequest,
+  HttpInterceptorFn,
   provideHttpClient,
   withInterceptors
 } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
 import localeSr from '@angular/common/locales/sr-Latn';
 
 import { routes } from './app.routes';
 import {DatePipe, registerLocaleData} from '@angular/common';
 
-import {Observable} from 'rxjs';
+import {catchError, throwError} from 'rxjs';
+import {ToastService} from './shared/services/toast.service';
 
-registerLocaleData(localeSr)
+registerLocaleData(localeSr);
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  // const authService = inject(AuthService); // <-- Ovako bi injektovao servis ako ti treba
-
   const token = localStorage.getItem('authToken');
 
   if (token) {
@@ -31,11 +28,30 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req);
 };
 
+export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
+  const toastService = inject(ToastService);
+
+  return next(req).pipe(
+    catchError(err => {
+      if (err.status === 401) {
+        localStorage.removeItem('authToken');
+        router.navigate(['/login']);
+      } else if (err.status === 403) {
+        toastService.showError('Nemate dozvolu za ovu akciju.');
+      } else if (err.status >= 500) {
+        toastService.showError('Greška na serveru. Pokušajte ponovo.');
+      }
+      return throwError(() => err);
+    })
+  );
+};
+
 export const appConfig: ApplicationConfig = {
   providers:
     [provideZoneChangeDetection({ eventCoalescing: true }),
       provideRouter(routes, withPreloading(PreloadAllModules), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
-      provideHttpClient(withInterceptors([authInterceptor])),
+      provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
       {provide: LOCALE_ID, useValue: 'sr-Latn'},
     DatePipe
     ]

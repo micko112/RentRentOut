@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AdCardComponent} from '../../components/ad-card/ad-card.component';
 import {CommonModule} from '@angular/common';
 import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
-import {finalize, first, Observable, switchMap, tap} from 'rxjs';
+import {finalize, Observable, switchMap, tap} from 'rxjs';
 
 import {AdService} from '../../services/ad.service';
 import {CategoryService} from '../../services/category.service';
@@ -45,7 +45,6 @@ export class AdListComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryService.getAll().subscribe(res => {
-      console.log('Kategorije sa backenda: ', res);
       this.categories = res;
       this.updateActiveCategory(this.route.snapshot.queryParams['categoryId']);
     })
@@ -93,10 +92,6 @@ export class AdListComponent implements OnInit {
         }
       )
     )
-    this.adsPage$.subscribe(res => {
-      console.log('ADS PAGE:', res);
-      console.log()
-    });
   }
 
   onCategoryFiltered(categoryId: number): void {
@@ -158,6 +153,4 @@ export class AdListComponent implements OnInit {
   }
 
   asNumber(p: number | '...'): number { return p as number; }
-
-  protected readonly first = first;
 }

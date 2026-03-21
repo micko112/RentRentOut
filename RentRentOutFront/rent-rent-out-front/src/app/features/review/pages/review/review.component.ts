@@ -78,7 +78,6 @@ export class ReviewComponent implements OnInit {
     this.reviewService.getReviewsForUser(this.targetUserId).subscribe(reviews => {
       this.reviews = reviews.content;
       this.applyFilter();
-      console.log(this.reviews);
     });
   }
 

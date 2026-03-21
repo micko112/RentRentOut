@@ -76,7 +76,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         User lessee = userRepository.findByIdForCheck(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        System.out.println("Found user");
+
 
 				Ad ad = adRepository.findById(req.getAdId())
                 .orElseThrow(() -> new RuntimeException("Ad not found"));
@@ -86,8 +86,8 @@ public class RentalContractServiceImpl implements RentalContractService {
 		}
     	// Should check for amount of available items and allow sending offer only if there are some
         List<RentalContract> contractsInInterval = rentalContractRepository.
-        		findContractsInDateInterval(req.getAdId(), 
-        				req.getStartDate(), 
+        		findContractsInDateIntervalIncludingBlocked(req.getAdId(),
+        				req.getStartDate(),
         				req.getEndDate());
         
         int availableAmountForAd = getAvailableAmountForInterval(contractsInInterval, req.getStartDate(), req.getEndDate(), 
@@ -141,7 +141,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         ContractStatus oldStatus = contract.getContractStatus();
         ContractStatus newStatus = req.getNewStatus();
 
-		System.out.println("DEBUG: Prelaz sa " + oldStatus + " na " + newStatus);
+
 
         if (!isValidTransition(oldStatus, newStatus)) {
             throw new RuntimeException("Invalid status transition");
@@ -229,8 +229,8 @@ public class RentalContractServiceImpl implements RentalContractService {
         };
     }
     private void checkPermissions(Long userId, RentalContract contract){
-        boolean isOwner = contract.getAd().getOwner().getId() == userId;
-        boolean isLessee = contract.getLessee().getId() == userId;
+        boolean isOwner = contract.getAd().getOwner().getId().equals(userId);
+        boolean isLessee = contract.getLessee().getId().equals(userId);
         if(!isOwner && !isLessee){
             throw new AccessDeniedException("User is not in contract");
         }
@@ -359,7 +359,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         if (oldStatus == ContractStatus.ACTIVE && newStatus == ContractStatus.CANCELLED) {
         	// stari blok — ne moze se vise triggerovati jer ACTIVE->CANCELLED nije validan prelaz
         	// ostavljeno radi kompajlabilnosti, mrtav kod
-        	if(userId == contract.getLessee().getId()) {
+        	if(userId.equals(contract.getLessee().getId())) {
                 contract.setContractStatus(newStatus);
                 rentalContractRepository.save(contract);
         	}
@@ -479,7 +479,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 		RentalContract currContr = rentalContractRepository.findById(rentalId)
 				.orElseThrow(() -> new RuntimeException("Error deleting contract - contract not found"));
 		
-		if(currContr.getLessee().getId() != userId) {
+		if(!currContr.getLessee().getId().equals(userId)) {
 			throw new RuntimeException("Deleting someone's contract - not allowed!");
 		}
 		

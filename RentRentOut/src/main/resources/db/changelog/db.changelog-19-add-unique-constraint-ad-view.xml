@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+       http://www.liquibase.org/xml/ns/dbchangelog
+       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
+
+    <changeSet id="19-add-unique-constraint-ad-view" author="system">
+        <addUniqueConstraint
+                tableName="ad_view"
+                columnNames="user_id, ad_id"
+                constraintName="uq_ad_view_user_ad"/>
+    </changeSet>
+
+</databaseChangeLog>

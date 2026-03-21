@@ -93,6 +93,10 @@ public class ReviewServiceImpl implements ReviewService {
             reviewee = rc.getLessee();
         }else throw new RuntimeException("Niste ucestvovali u ovom ugovoru, ne mozete da ocenite");
 
+        if(reviewerId.equals(reviewee.getId())){
+            throw new RuntimeException("Ne mozete sami sebi da ostavite ocenu");
+        }
+
         Review review = new Review(
                 rc,
                 reviewer,
@@ -105,10 +109,6 @@ public class ReviewServiceImpl implements ReviewService {
                 LocalDateTime.now()
         );
 
-
-        if(reviewerId == reviewee.getId()){
-            throw new RuntimeException("Ne mozete sami sebi da ostavite ocenu");
-        }
         if(type == ReviewType.POSITIVE){
             reviewee.setPositiveReviews(reviewee.getPositiveReviews() + 1);
         }else {
@@ -130,11 +130,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewEligibilityDto checkEligibility(Long contractId, Long reviewerId) {
-        RentalContract rc = rentalContractRepository.findById(contractId).orElseThrow(() -> new RuntimeException("Ne posotji ugovor!"));
+        RentalContract rc = rentalContractRepository.findById(contractId).orElseThrow(() -> new RuntimeException("Ne postoji ugovor!"));
 
-        if( rc ==null){
-            return new ReviewEligibilityDto(false, "Ugovor ne postoji.");
-        }
         User reviewer = userRepository.findById(reviewerId).orElseThrow();
 
         /*
@@ -158,7 +155,6 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Page<ReviewDto> getAllForUser(Pageable pageable, Long revieweeId) {
         Page<Review> page = reviewRepository.findAllByRevieweeId(revieweeId, pageable);
-        System.out.println(page);
         return page.map(reviewMapper::toDto);
 
     }

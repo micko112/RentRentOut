@@ -1,5 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { RxStomp } from '@stomp/rx-stomp';
+import { WS_BASE_URL } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,7 @@ export class WebsocketService {
     const start = () => {
       // 2. Konfigurisi STOMP
       this.rxStomp.configure({
-        brokerURL: 'ws://localhost:8080/ws',
+        brokerURL: WS_BASE_URL,
         heartbeatIncoming: 0,
         heartbeatOutgoing: 20000,
         reconnectDelay: 2000,

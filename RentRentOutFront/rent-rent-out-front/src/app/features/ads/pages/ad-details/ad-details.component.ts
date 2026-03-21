@@ -53,7 +53,7 @@ export class AdDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isLoggedIn = !!localStorage.getItem('authToken');
+    this.isLoggedIn = !!this.authService.currentUserValue;
 
     this.ad$ = this.route.paramMap.pipe(
       switchMap(params => {
@@ -156,8 +156,7 @@ export class AdDetailsComponent implements OnInit {
   startChat(): void {
     if (!this.currentAd) return;
 
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    if (!this.authService.currentUserValue) {
       this.toastService.showError('Morate biti ulogovani da biste poslali poruku.');
       this.router.navigate(['/login']);
       return;

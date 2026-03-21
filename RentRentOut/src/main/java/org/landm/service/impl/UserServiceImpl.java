@@ -103,23 +103,16 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findByEmail(req.getEmail());
 
-        if (user != null && user.isEnabled()) {
-            if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
-//                throw new RuntimeException("Wrong email or password!");
-                throw new WrongCredentialsException("Wrong email or password!");
-            }
-//            Map<String, Object> respMap = new HashMap<>();
-//            List<String> roles = user.getStringRoles();
-//            respMap.put("token", jwtUtil.generateToken(user.getId(), roles));
-//            respMap.put("user", userMapper.toDto(user));
-//            return respMap;
-            
-            return user;
-            
-        } else {
-//            throw new RuntimeException("User not found!");
+        if (user == null) {
             throw new UserNotFoundException("User not found!");
         }
+        if (!user.isEnabled()) {
+            throw new WrongCredentialsException("Email nije verifikovan. Proverite svoju poštu.");
+        }
+        if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+            throw new WrongCredentialsException("Wrong email or password!");
+        }
+        return user;
     }
     
 //    public UserDto update(UserDto newInfo, String authHeader){

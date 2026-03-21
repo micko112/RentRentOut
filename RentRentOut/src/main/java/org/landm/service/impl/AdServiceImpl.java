@@ -2,6 +2,7 @@ package org.landm.service.impl;
 
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.landm.dto.ad.*;
 import org.landm.entity.*;
 import org.landm.entity.Enums.AdStatus;
@@ -83,7 +84,7 @@ public class AdServiceImpl implements AdService {
         Category category = categoryRepository.findById(req.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + req.getCategoryId()));
         Location location = locationRepository.findById(req.getLocationId())
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + req.getCategoryId()));
+                .orElseThrow(() -> new RuntimeException("Location not found with id: " + req.getLocationId()));
         Ad adToCreate = new Ad(
                 req.getTitle(),
                 req.getDescription(),
@@ -108,7 +109,6 @@ public class AdServiceImpl implements AdService {
 
         List<RentalContract> contracts = rentalContractService
                 .findByAdIdAndContractStatusIn(ad.getId(), List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE, ContractStatus.BLOCKED_BY_OWNER));
-        System.out.println("DEBUG: Broj ugovora za oglas " + id + " je: " + contracts.size());
         List<DateInterval> blockedIntervals = getBlockedIntervals(contracts, ad.getTotalQuantity());
 
         AdDto adDto = adMapper.toDto(ad);
@@ -154,29 +154,35 @@ public class AdServiceImpl implements AdService {
     	LocalDate blockedStart = null;
     	
     	for(Event event : events) {
-    		
+
     		int prevActive = active;
     		active += event.itemCount;
-    		
+
     		if(prevActive < quantity && active >= quantity) {
     			blockedStart = event.date;
     		}
-    		
+
     		if(prevActive >= quantity && active < quantity) {
-    			blockedIntervals.add(new DateInterval(blockedStart, event.date.minusDays(0)));
+    			blockedIntervals.add(new DateInterval(blockedStart, event.date.minusDays(1)));
     			blockedStart = null;
     		}
     	}
-    	
+
+    	// Zatvori poslednji interval ako ostaje otvoren (sve je zauzeto do kraja podataka)
+    	if (blockedStart != null) {
+    		LocalDate farFuture = LocalDate.now().plusYears(5);
+    		blockedIntervals.add(new DateInterval(blockedStart, farFuture));
+    	}
+
     	return blockedIntervals;
     }
     
-    public int getAvailableAmountForInterval(List<RentalContract> contracts, LocalDate startDate, 
+    public int getAvailableAmountForInterval(List<RentalContract> contracts, LocalDate startDate,
     		LocalDate endDate, int totalAmount) {
     	List<Event> events = new ArrayList<>();
-    	
-    	int avaliableAmountForDates = 0;
-    	
+
+    	int avaliableAmountForDates = totalAmount;
+
     	for(RentalContract rc : contracts) {
     		events.add(new Event(rc.getStartDate(), rc.getAmount()));
     		
@@ -227,7 +233,7 @@ public class AdServiceImpl implements AdService {
     public AdDto updateAd(UpdateAdRequestDto req, Long id, Long userId) {
 
         Ad adToUpdate = adRepository.findById(id).orElseThrow(() -> new RuntimeException("There is no ad"));
-        if (adToUpdate.getOwner().getId() != (userId)) {
+        if (!adToUpdate.getOwner().getId().equals(userId)) {
             throw new RuntimeException("You are not the owner of this ad");
         }
 
@@ -266,7 +272,7 @@ public class AdServiceImpl implements AdService {
 		Ad currAd = adRepository.findById(adId)
 				.orElseThrow(() -> new RuntimeException("Error deleting ad - ad not found"));
 		
-		if(currAd.getOwner().getId() != userId) {
+		if(!currAd.getOwner().getId().equals(userId)) {
 			throw new RuntimeException("Deleting someone's ad - not allowed!");
 		}
 		
@@ -341,9 +347,8 @@ public class AdServiceImpl implements AdService {
             return Set.of();
         }
         List<Long> adIds = adPage.getContent().stream().map(Ad::getId).collect(Collectors.toList());
-        return adIds.stream()
-                .filter(adId -> savedAdRepository.existsByUserIdAndAdId(userId, adId))
-                .collect(Collectors.toSet());
+        if (adIds.isEmpty()) return Set.of();
+        return savedAdRepository.findSavedAdIdsByUserIdAndAdIdIn(userId, adIds);
     }
 
     @Override
@@ -361,7 +366,7 @@ public class AdServiceImpl implements AdService {
     @Override
     @Transactional
     public void recordView(Long adId, Long userId) {
-        if (!adViewRepository.existsByUserIdAndAdId(userId, adId)) {
+        try {
             Ad ad = adRepository.findById(adId)
                     .orElseThrow(() -> new RuntimeException("Ad not found with id: " + adId));
             User user = userRepository.findById(userId)
@@ -370,6 +375,8 @@ public class AdServiceImpl implements AdService {
             adViewRepository.save(adView);
             ad.setViewCount(ad.getViewCount() + 1);
             adRepository.save(ad);
+        } catch (DataIntegrityViolationException e) {
+            // Unique constraint — korisnik je već pogledao ovaj oglas (race condition zaštita)
         }
     }
 

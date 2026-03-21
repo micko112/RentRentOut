@@ -7,6 +7,7 @@ import {ToastService} from '../../../../shared/services/toast.service';
 import {AdService} from '../../services/ad.service';
 import {Router} from '@angular/router';
 import {CreateRentalContractRequest} from '../../../../shared/models/create-rental-contract-request';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-rental-calendar',
@@ -44,7 +45,8 @@ export class RentalCalendarComponent implements OnChanges {
     private toastService: ToastService,
     private adService: AdService,
     private router: Router,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private authService: AuthService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -136,18 +138,49 @@ export class RentalCalendarComponent implements OnChanges {
     if (this.startDate && this.endDate && this.ad) {
       const diffTime = Math.abs(this.endDate.getTime() - this.startDate.getTime());
       this.numberOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      this.totalPrice = this.numberOfDays * this.ad.price;
+      this.totalPrice = this.calculateTieredPrice(this.numberOfDays);
     } else {
       this.numberOfDays = 0;
       this.totalPrice = 0;
     }
   }
 
+  private calculateTieredPrice(days: number): number {
+    if (!this.ad) return 0;
+    const interval = this.ad.priceInterval;
+    if (interval === 'PER_MONTH' || interval === 'MONTHLY') {
+      const months = days / 30;
+      if (this.ad.pricePerMonth && months >= 1) {
+        return Math.round(months * this.ad.pricePerMonth);
+      }
+    }
+    if (interval === 'PER_DAY' || interval === 'DAILY') {
+      if (this.ad.pricePerMonth && days >= 30) {
+        const months = Math.floor(days / 30);
+        const remainingDays = days % 30;
+        if (this.ad.pricePerWeek && remainingDays >= 7) {
+          const weeks = Math.floor(remainingDays / 7);
+          const leftoverDays = remainingDays % 7;
+          return months * this.ad.pricePerMonth + weeks * this.ad.pricePerWeek + leftoverDays * this.ad.price;
+        }
+        return months * this.ad.pricePerMonth + remainingDays * this.ad.price;
+      }
+      if (this.ad.pricePerWeek && days >= 7) {
+        const weeks = Math.floor(days / 7);
+        const remainingDays = days % 7;
+        return weeks * this.ad.pricePerWeek + remainingDays * this.ad.price;
+      }
+    }
+    return days * this.ad.price;
+  }
+
   isDateBlocked(date: Date): boolean {
-    return this._blockedIntervals.some(interval =>
-      date.setHours(0, 0, 0, 0) >= interval.start.setHours(0, 0, 0, 0) &&
-      date.setHours(0, 0, 0, 0) <= interval.end.setHours(0, 0, 0, 0)
-    );
+    const d = new Date(date).setHours(0, 0, 0, 0);
+    return this._blockedIntervals.some(interval => {
+      const s = new Date(interval.start).setHours(0, 0, 0, 0);
+      const e = new Date(interval.end).setHours(0, 0, 0, 0);
+      return d >= s && d <= e;
+    });
   }
 
   isDateSelected(date: Date): boolean {
@@ -171,19 +204,16 @@ export class RentalCalendarComponent implements OnChanges {
 
   isInRange(date: Date): boolean {
     if (!this.startDate || !this.endDate) return false;
-    const day = new Date(date);
-    const start = this.startDate;
-    const end = this.endDate;
-    day.setHours(0, 0, 0, 0);
-    start.setHours(0, 0, 0, 0);
-    end.setHours(0, 0, 0, 0);
+    const day = new Date(date).setHours(0, 0, 0, 0);
+    const start = new Date(this.startDate).setHours(0, 0, 0, 0);
+    const end = new Date(this.endDate).setHours(0, 0, 0, 0);
     return day > start && day < end;
   }
 
   sendRequest(): void {
     if (!this.startDate || !this.endDate || !this.ad) return;
 
-    if (!localStorage.getItem('authToken')) {
+    if (!this.authService.currentUserValue) {
       this.router.navigate(['/login']);
       return;
     }
