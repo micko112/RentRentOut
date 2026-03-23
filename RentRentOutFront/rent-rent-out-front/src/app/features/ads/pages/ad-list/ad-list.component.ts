@@ -76,7 +76,6 @@ export class AdListComponent implements OnInit, OnDestroy {
     const snap = this.route.snapshot.queryParams;
     this.isSearchMode = this.isSearchModeFromParams(snap);
     this.homeMode = !this.isSearchMode;
-    if (this.homeMode) this.loadHomeData();
 
     this.categoryService.getAll().subscribe(res => {
       this.categories = res;

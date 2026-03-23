@@ -88,7 +88,11 @@
 
         <h1 class="page-title" *ngIf="!isSearchMode">{{ activeCategory }}</h1>
 
-        <ng-container *ngIf="adsPage">
+        <div class="loading-spinner" *ngIf="isLoading">
+          <span class="material-icons spin">autorenew</span>
+        </div>
+
+        <ng-container *ngIf="adsPage && !isLoading">
           <div [ngClass]="isSearchMode ? 'list-layout' : 'grid-layout'">
             <app-ad-card
               *ngFor="let ad of adsPage.content"

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
 import {CommonModule} from '@angular/common';
 import {UserService} from '../../services/user.service';

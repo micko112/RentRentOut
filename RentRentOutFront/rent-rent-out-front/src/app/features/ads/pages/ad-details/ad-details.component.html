@@ -5,14 +5,10 @@
     <div class="left-column">
       <div class="my-ad-options" *ngIf="isMyAd">
         <div class="buttons">
-
-          <button class="park">Parkiraj</button>
-          <button class="park">Izmeni</button>
-          <button class="park">Obriši</button>
-          <button class="park">Obnovite</button>
-          <button class="park">Promocije</button>
+          <button class="park" [routerLink]="['/ads', ad.id, 'edit']">
+            <span class="material-icons" style="font-size:16px;vertical-align:middle;margin-right:4px">edit</span>Izmeni
+          </button>
         </div>
-
       </div>
       <div class="gallery">
         <div class="thumbnail-column" *ngIf="ad.images && ad.images.length >0">
@@ -98,7 +94,7 @@
       <div class="latest-reviews-section" *ngIf="latestReviews$ | async as reviews">
         <h3 *ngIf="(reviews.length > 0) && !isMyAd">Šta drugi kažu o vlasniku:</h3>
         <h3 *ngIf="(reviews.length > 0) && isMyAd">Vaše najnovije ocene</h3>
-        <div class="reviews-list" *ngIf="latestReviews$ | async as reviews">
+        <div class="reviews-list" *ngIf="reviews.length > 0">
           <app-review-card
             *ngFor="let rev of reviews"
             [review]="rev"></app-review-card>

@@ -144,22 +144,7 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
-    
-//    public UserDto update(UserDto newInfo, String authHeader){
-//    	Long userId = jwtUtil.extractUserId(authHeader.substring(7));
-//    	Optional<User> userToUpdateOpt = userRepository.findById(userId);
-//    	if(userToUpdateOpt.isPresent()) {
-//    		User userToUpdate = userToUpdateOpt.get();
-//    		userToUpdate.setFirstname(newInfo.getFirstName());
-//    		userToUpdate.setLastname(newInfo.getLastname());
-//    		userToUpdate = userRepository.save(userToUpdate);
-//    		return userMapper.toDto(userToUpdate);
-//    	}else {
-////            throw new RuntimeException("Error with updating user data!");
-//    		throw new UserNotFoundException("Error with updating user data!");
-//    	}
-//    }
-    
+
 	@Override
 	public UserProfileDto getUserProfile(Long userId) {
 		User user = userRepository.findById(userId)
@@ -205,10 +190,8 @@ public class UserServiceImpl implements UserService {
     	User user = userRepository.findByIdForCheck(userId)
     			.orElseThrow(() -> new RuntimeException("User not found!"));
     	
-    	if(true) {
-    		BigDecimal userMoney = user.getCredit();
-    		user.setCredit(userMoney.add(amount));
-    	}
+    	BigDecimal userMoney = user.getCredit();
+    	user.setCredit(userMoney.add(amount));
     	
 		return userMapper.toDto(
 				userRepository.save(user));

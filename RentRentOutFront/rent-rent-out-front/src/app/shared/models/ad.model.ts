@@ -14,7 +14,6 @@ adStatus: string;
 totalQuantity: number;
 availableQuantity: number;
 images: string[];
-email: string;
 owner: UserShort;
 category: Category;
 location: Location;

@@ -1,7 +1,6 @@
 package org.landm.dto.rentalContract;
 
 import org.landm.dto.ad.AdDto;
-import org.landm.dto.user.UserDto;
 import org.landm.entity.Enums.ContractStatus;
 
 import java.math.BigDecimal;
@@ -12,7 +11,7 @@ public class RentalContractDto {
     private Long id;
 
     private AdDto adDto;
-    private UserDto lesseeDto;
+    private ContractParticipantDto lesseeDto;
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -36,11 +35,11 @@ public class RentalContractDto {
         this.adDto = adDto;
     }
 
-    public UserDto getLesseeDto() {
+    public ContractParticipantDto getLesseeDto() {
         return lesseeDto;
     }
 
-    public void setLesseeDto(UserDto lesseeDto) {
+    public void setLesseeDto(ContractParticipantDto lesseeDto) {
         this.lesseeDto = lesseeDto;
     }
 

@@ -9,9 +9,9 @@ public class UserShortDto {
     private boolean identified;
     private String LocationDisplay;
     private LocalDateTime createdAt;
-    private String phoneNumber;
     private int positiveReviews;
     private int negativeReviews;
+    private String phoneNumber;
 
     public Long getId() {
         return id;
@@ -61,14 +61,6 @@ public class UserShortDto {
         this.createdAt = createdAt;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public int getPositiveReviews() {
         return positiveReviews;
     }
@@ -83,5 +75,13 @@ public class UserShortDto {
 
     public void setNegativeReviews(int negativeReviews) {
         this.negativeReviews = negativeReviews;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

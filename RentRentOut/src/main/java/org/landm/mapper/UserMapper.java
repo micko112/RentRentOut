@@ -96,10 +96,10 @@ public class UserMapper {
             dto.setLocationDisplay(null);
         }
         dto.setCreatedAt(user.getCreatedAt());
-        dto.setPhoneNumber(user.getPhoneNumber());
         dto.setPositiveReviews(user.getPositiveReviews());
         dto.setNegativeReviews(user.getNegativeReviews());
-        dto.setCreatedAt(user.getCreatedAt());
+        dto.setPhoneNumber(user.getPhoneNumber() != null && !user.getPhoneNumber().isBlank()
+                ? "06x / xxx-xxxx" : null);
 
         return dto;
     }

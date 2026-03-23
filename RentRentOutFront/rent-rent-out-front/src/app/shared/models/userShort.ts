@@ -5,8 +5,7 @@ export interface UserShort {
   identified: boolean;
   locationDisplay:  string;
   createdAt: string;
-  phoneNumber: string;
   positiveReviews:  number;
   negativeReviews:   number;
-
+  phoneNumber?: string;
 }

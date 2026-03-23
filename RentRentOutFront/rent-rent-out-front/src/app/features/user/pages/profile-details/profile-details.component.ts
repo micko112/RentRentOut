@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {AsyncPipe, CommonModule, DecimalPipe, NgIf} from '@angular/common';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {User} from '../../../../shared/models/user.model';
 import {UserService} from '../../services/user.service';
 import {AuthService} from '../../../auth/services/auth.service';
@@ -23,13 +23,15 @@ import {ToastService} from '../../../../shared/services/toast.service';
   templateUrl: './profile-details.component.html',
   styleUrl: './profile-details.component.css'
 })
-export class ProfileDetailsComponent implements OnInit {
+export class ProfileDetailsComponent implements OnInit, OnDestroy {
   user$!: Observable<User | null>;
   currentUser: User | null = null;
 
   isEditing = false;
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
+
+  private userSub?: Subscription;
 
   avatarPreview: string | null = null;
   bannerAvatarPreview: string | null = null;
@@ -58,7 +60,7 @@ export class ProfileDetailsComponent implements OnInit {
     });
 
     this.user$ = this.authService.currentUser$;
-    this.user$.subscribe(user => {
+    this.userSub = this.user$.subscribe(user => {
       if (!user) return;
       this.currentUser = user;
       this.profileForm.patchValue({
@@ -70,6 +72,10 @@ export class ProfileDetailsComponent implements OnInit {
         phoneNumber: user.phoneNumber || ''
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.userSub?.unsubscribe();
   }
 
   startEdit(): void {

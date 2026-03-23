@@ -69,6 +69,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   login() {
+    this.submitted = true;
     if (this.form.invalid) {
       return;
     }
@@ -83,7 +84,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.toastService.showError('Pogrešan email ili lozinka.');
       }
     });
-    this.submitted = true;
   }
 
   loginWithFacebook(): void {

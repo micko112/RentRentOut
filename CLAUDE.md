@@ -265,102 +265,42 @@ Two primary colors:
 
 **Do not replace either color with blue or other colors.**
 
-## Production Deployment Plan
+## Production
 
-### Kritični blokatori (moraju biti rešeni PRE deploymenta)
+Aplikacija je deployovana na: **https://izdajemiznajmljujem.com**
 
-1. **`spring.liquibase.drop-first=true`** u `application.properties` — BRIŠE celu bazu pri svakom restartu. Mora biti `false`.
-2. **Hardkodovani sekrete** u `application.properties` — Mailtrap credentials, Facebook app-secret, VAPID private key, DB password (prazan). Mora ići u env varijable.
-3. **Lokalni upload fajlova** (`RentRentOut/uploads/`) — efemerni su u Docker kontejneru, brišu se pri rebuildu. Migrisati na Cloudinary (ili S3).
-4. **Mailtrap sandbox** — ne dostavlja mejlove pravim korisnicima. Zameniti sa Gmail SMTP ili SendGrid za produkciju.
+- **VPS**: Hetzner CX22 — IP `178.104.97.101`, Ubuntu 22.04
+- **Stack**: Docker Compose (`docker-compose.prod.yml`) — MySQL + backend + frontend + Nginx
+- **SSL**: Let's Encrypt (Certbot), auto-renewal cron u 3h svake noći (`/opt/app/renew-ssl.sh`)
+- **Slike**: Cloudinary (cloud name: `drwxucq4m`)
+- **Mail**: Gmail SMTP (`izdajemiznajmljujem.rs@gmail.com`)
+- **Repo na VPS-u**: `/opt/app/`
+- **Env fajl**: `/opt/app/RentRentOut/.env` (nikad ne commitovati)
+- **Symlink**: `/opt/app/.env` → `/opt/app/RentRentOut/.env` (potreban za Docker Compose varijable)
 
-### Preporučena infrastruktura
+### Deploy komande (na VPS-u)
 
-- **VPS**: Hetzner CX22 (~4€/mes) — 2 vCPU, 4GB RAM, 40GB SSD, dovoljan za start
-- **Domen**: kupiti .rs ili .com domen, pointirati A record na VPS IP
-- **Reverse proxy**: Nginx ispred svega (port 80/443 → interni Docker servisi)
-- **SSL**: Let's Encrypt (Certbot) — besplatan, auto-renewal
-
-### Redosled koraka (sprovoditi ovim redom)
-
-#### Korak 1 — Popravi `drop-first` (5 min)
-```
-application.properties: spring.liquibase.drop-first=false
-application-docker.properties: spring.liquibase.drop-first=false
-```
-
-#### Korak 2 — Izvuci sekrete u env varijable (30 min)
-Kreirati `application-prod.properties` koji čita iz env:
-```properties
-spring.datasource.password=${DB_PASSWORD}
-spring.mail.username=${MAIL_USERNAME}
-spring.mail.password=${MAIL_PASSWORD}
-facebook.app-secret=${FACEBOOK_APP_SECRET}
-vapid.private-key=${VAPID_PRIVATE_KEY}
-```
-Dodati `.env` fajl na VPS (nikad ga ne commitovati u git).
-
-#### Korak 3 — Migracija slika na Cloudinary (2-3h)
-- Registrovati Cloudinary nalog (besplatan tier: 25GB storage, 25GB bandwidth/mes)
-- U `ImageController` (backend) zameniti lokalni `Files.copy()` sa Cloudinary Java SDK upload
-- Dodate env varijable: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
-- Postojeće slike iz `uploads/` folder-a uploadovati ručno jednom pre deploymenta
-
-#### Korak 4 — Pravi SMTP (15 min)
-- Opcija A: Gmail SMTP (`smtp.gmail.com:587`) — kreirati App Password u Google nalogu
-- Opcija B: SendGrid (100 mejlova/dan besplatno, bolja deliverability)
-- Promeniti `spring.mail.*` konfiguraciju u prod properties
-
-#### Korak 5 — `docker-compose.prod.yml` (1h)
-Kreirati produkcioni compose fajl sa:
-- `restart: unless-stopped` na svim servisima
-- Nginx servis (sa SSL volumenom za Certbot)
-- Backend i frontend **bez** eksponiranih portova prema van (samo Nginx na 80/443)
-- MySQL samo interno dostupan (ne eksponirati port 3306)
-- `env_file: .env` za sekrete
-- Named volume za MySQL data
-
-#### Korak 6 — Nginx konfiguracija
-```nginx
-server {
-    listen 443 ssl;
-    server_name tvoj-domen.com;
-    # SSL via Certbot
-    location /api/ { proxy_pass http://backend:8080; }
-    location /ws    { proxy_pass http://backend:8080; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; }
-    location /      { proxy_pass http://frontend:80; }
-}
-```
-WebSocket proxy zahteva `Upgrade` header — obavezno!
-
-#### Korak 7 — CORS update
-U `WebConfig.java` zameniti `http://localhost:4200` sa produkcijskim domenom.
-Čuvati dev origin za local razvoj (čitati iz env ili koristiti Spring profile).
-
-#### Korak 8 — Angular environment
-Kreirati/ažurirati `environment.prod.ts`:
-```typescript
-export const environment = {
-  production: true,
-  apiUrl: 'https://tvoj-domen.com/api'
-};
-```
-Proveriti da `angular.json` koristi `fileReplacements` za prod build.
-
-#### Korak 9 — OAuth update
-- **Google Cloud Console**: dodati produkcijski domen u Authorized JavaScript Origins i Authorized Redirect URIs
-- **Facebook Developer**: dodati produkcijski domen u App Domains i Valid OAuth Redirect URIs
-
-#### Korak 10 — Deploy
 ```bash
-# Na VPS-u
+cd /opt/app
 git pull
-docker-compose -f docker-compose.prod.yml up --build -d
-# Certbot za SSL
-docker run --rm -v certbot-data:/etc/letsencrypt certbot/certbot certonly ...
+docker compose -f docker-compose.prod.yml up --build -d
 ```
 
-### Šta je već urađeno (sesija 2026-03-22)
+### Produkciski profil
+
+Backend koristi `--spring.profiles.active=prod` → učitava `application-prod.properties`.
+`application.properties` je u `.gitignore` — ne postoji na serveru, sve ide kroz `application-prod.properties`.
+
+### Ključne arhitekturne odluke
+
+- `WebConfig.java` čita `app.frontend.base-url` iz properties za CORS (ne hardkodovano)
+- Angular `environment.prod.ts` koristi relativni `/api` URL — Nginx proxira na backend
+- WebSocket URL se izvodi iz `window.location` u produkciji (HTTP→WS, HTTPS→WSS)
+- `google.client-id` je u `environment.ts` / `environment.prod.ts`, ne hardkodovan
+
+---
+
+## Šta je urađeno (sesija 2026-03-22)
 
 - Emojiji zamenjeni Material Icons-ima u celoj aplikaciji
 - `locationDisplay` null bug popravljen u `UserMapper.java`
@@ -371,6 +311,23 @@ docker run --rm -v certbot-data:/etc/letsencrypt certbot/certbot certonly ...
 - `RentalContractServiceImpl`: dodata provera `endDate.isBefore(now())` pri prihvatanju zahteva
 - Login: uklonjen Apple dugme, dodat Facebook SVG logo
 - Create/Edit Ad: uklonjen `overflow: hidden` sa `.step-panel` da se vidi city picker dropdown
+
+## Šta je urađeno (sesija 2026-03-23)
+
+### Production deployment
+- **Cloudinary**: `ImageController` migriran sa lokalnog diska na Cloudinary SDK; `CloudinaryConfig.java` bean; `/uploads/**` static serving uklonjen iz `WebConfig` i `SecurityConfig`
+- **Sekreti**: kreiran `application-prod.properties` sa `${ENV_VAR}` placeholderima; `application.properties` untrackovan iz git-a; `.env.example` u root-u
+- **Docker**: `docker-compose.prod.yml` sa `restart: unless-stopped`, Nginx, Certbot; `nginx.prod.conf` sa HTTP→HTTPS redirect, ACME challenge, `/api/` i `/ws` proxy
+- **CORS**: `WebConfig.java` čita `app.frontend.base-url` iz properties
+- **Angular environments**: `src/environments/environment.ts` i `environment.prod.ts`; `angular.json` `fileReplacements`; `api.config.ts` i `rx-stomp.config.ts` koriste environment; `category.service.ts` popravljen
+
+### API hardening
+- **`GlobalExceptionHandler`**: dodat catch-all za `RuntimeException` (loguje, vraća "Interna serverska greška"); fix pogrešnog importa `AccessDeniedException` (bio `java.nio.file`, sad `Spring Security`); dodat handler za `MethodArgumentNotValidException`
+- **`AdDto`**: uklonjen `email` field vlasnika (curenje PII)
+- **`UserShortDto`**: uklonjen `phoneNumber` (telefon više nije u javnim DTO-ovima — reviews, chat preview)
+- **`RentalContractDto`**: `UserDto lesseeDto` zamenjeno sa `ContractParticipantDto` (samo id, ime, prezime, avatar — nema credit, role, enabled, email)
+- **`NotificationController`**: dodat `@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")` na nivou klase
+- **Frontend modeli**: `userShort.ts` bez `phoneNumber`; `ad.model.ts` bez `email`; `rental-contract.model.ts` koristi novi `ContractParticipant` interface
 
 ---
 

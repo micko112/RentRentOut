@@ -7,11 +7,7 @@
     <div class="form-field">
       <label for="email" >Email</label>
       <input id="email" formControlName="email" placeholder="Email">
-      <div *ngIf="submitted &&
-                  form.get('email')?.errors &&
-                  form.get('email')?.errors?.['required'] &&
-                  form.get('email')?.errors?.['email']"
-           class="error-msg">
+      <div *ngIf="submitted && form.get('email')?.invalid" class="error-msg">
         Unesite validan email.
       </div>
     </div>

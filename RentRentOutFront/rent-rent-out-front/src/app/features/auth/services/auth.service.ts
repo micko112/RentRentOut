@@ -97,11 +97,9 @@ export class AuthService {
     if (token) {
       this.http.get<User>(`${API_BASE_URL}/user/me`).subscribe({
         next: (user) => {
-          console.log('Auto-login uspešan:', user);
           this.currentUserSubject.next(user);
         },
-        error: (err) => {
-          console.log('Token je istekao ili nevalidan. Auto-logout.');
+        error: () => {
           this.logout();
         }
       })

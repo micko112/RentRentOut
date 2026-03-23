@@ -24,8 +24,6 @@ public class AdDto {
     private int totalQuantity;
 
     private List<String> images;
-    // email znaci username
-    private String email;
     private UserShortDto owner;
     private CategoryDto category;
     private LocationDto location;
@@ -118,12 +116,6 @@ public class AdDto {
     public void setId(Long id) {
         this.id = id;
     }
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
 	public List<DateInterval> getBlockedIntervals() {
 		return blockedIntervals;
 	}

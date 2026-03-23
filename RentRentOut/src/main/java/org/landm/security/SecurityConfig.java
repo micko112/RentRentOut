@@ -70,7 +70,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.DELETE, "/api/rental-contract/**").authenticated()
 
 						.requestMatchers(HttpMethod.DELETE, "/api/ads/**").authenticated()
-						.requestMatchers(HttpMethod.DELETE, "api/admin/**").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.DELETE, "/api/admin/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/locations").permitAll()
@@ -83,7 +83,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/user/**").permitAll()
 
 						.requestMatchers(HttpMethod.POST, "/api/reviews").authenticated()
-
+						.requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
 
 						.requestMatchers(HttpMethod.POST, "/api/images/upload").authenticated()
 
@@ -91,8 +91,6 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
 
-						.requestMatchers(HttpMethod.POST, "/api/reviews").authenticated()
-						.requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
 
 						.requestMatchers("/api/chat/**").authenticated()
 						.requestMatchers("/api/notifications/**").authenticated()
