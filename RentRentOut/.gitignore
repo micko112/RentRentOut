@@ -14,5 +14,8 @@ target/
 
 # OS-specific files
 .DS_Store
-Thumbs.db"src/main/resources/application.properties" 
-"../.idea/" 
+Thumbs.db
+
+# Secrets — nikad ne commitovati
+.env
+src/main/resources/application.properties

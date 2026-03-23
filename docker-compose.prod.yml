@@ -1,0 +1,84 @@
+services:
+
+  # ─── MySQL ───────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: rentrentout-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME:-rent_rent_out}
+      MYSQL_ROOT_HOST: '%'
+    # Port 3306 nije eksponovan prema van — dostupan samo interno
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ─── Spring Boot backend ─────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./RentRentOut
+      dockerfile: Dockerfile
+    image: rentrentout-backend
+    container_name: rentrentout-backend
+    restart: unless-stopped
+    env_file: ./RentRentOut/.env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mysql
+    # Port 8080 nije eksponovan prema van — Nginx komunicira interno
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ─── Angular frontend ─────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./RentRentOutFront/rent-rent-out-front
+      dockerfile: Dockerfile
+    image: rentrentout-frontend
+    container_name: rentrentout-frontend
+    restart: unless-stopped
+    # Port 80 nije eksponovan prema van — Nginx komunicira interno
+    depends_on:
+      - backend
+
+  # ─── Nginx reverse proxy ──────────────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: rentrentout-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot-conf:/etc/letsencrypt:ro
+      - certbot-www:/var/www/certbot:ro
+    depends_on:
+      - backend
+      - frontend
+
+  # ─── Certbot (SSL) ────────────────────────────────────────────────────────────
+  # Pokreni jednom da dobiješ sertifikat:
+  #   docker-compose -f docker-compose.prod.yml run --rm certbot
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot-conf:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/certbot
+             --email ${CERTBOT_EMAIL} --agree-tos --no-eff-email
+             -d ${DOMAIN}
+    profiles:
+      - certbot
+
+volumes:
+  mysql_data:
+  certbot-conf:
+  certbot-www:

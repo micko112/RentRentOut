@@ -13,10 +13,8 @@
       <div class="details">
         <h1>{{ data.userInfo?.displayName }}</h1>
         <p class="meta-info">
-          <!--          <span class="location">📍 {{ user?.city || 'Nepoznata lokacija' }}</span>-->
-          <span class="location">📍 {{ 'Nepoznata lokacija' }}</span>
-          <!--          <span class="member-since">📅 Član od: {{ user?.createdAt | date:'yyyy' }}.</span>-->
-          <span class="member-since">📅 Član od: Neki datum.</span>
+          <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ data.userInfo?.locationDisplay || 'Nepoznata lokacija' }}</span>
+          <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>Član od: {{ data.userInfo?.createdAt | date:'dd.MM.yyyy' }}.</span>
         </p>
       </div>
     </div>
@@ -24,8 +22,8 @@
     <!-- Ocene i akcije (Desno) -->
     <div class="review-action-panel">
       <div class="rating-score">
-        <div class="score positive"><span class="icon">👍</span> {{ data.userInfo?.positiveReviews || 0 }}</div>
-        <div class="score negative"><span class="icon">👎</span> {{ data.userInfo?.negativeReviews || 0 }}</div>
+        <div class="score positive"><span class="icon material-symbols-outlined">thumb_up</span> {{ data.userInfo?.positiveReviews || 0 }}</div>
+        <div class="score negative"><span class="icon material-symbols-outlined">thumb_down</span> {{ data.userInfo?.negativeReviews || 0 }}</div>
       </div>
 
       <!-- Prikazujemo dugme Ocenite SAMO ako NEMA contractId u URL-u -->
@@ -81,10 +79,10 @@
           Kao iznajmljivač
         </button>
         <button [class.active]="activeTypeTab === 'POSITIVE'" (click)="setTypeTab(activeTypeTab === 'POSITIVE' ? 'ALL' : 'POSITIVE')" class="type-btn positive-btn">
-          👍 Pozitivne
+          <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_up</span>Pozitivne
         </button>
         <button [class.active]="activeTypeTab === 'NEGATIVE'" (click)="setTypeTab(activeTypeTab === 'NEGATIVE' ? 'ALL' : 'NEGATIVE')" class="type-btn negative-btn">
-          👎 Negativne
+          <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_down</span>Negativne
         </button>
       </div>
       <app-review-card

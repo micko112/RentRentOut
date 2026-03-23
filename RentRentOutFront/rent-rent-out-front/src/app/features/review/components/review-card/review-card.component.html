@@ -10,8 +10,8 @@
   <!-- 2. RED: Ikonica i Naslov Oglasa -->
   <div class="card-title-section">
     <div class="icon" [ngClass]="review.reviewType === 'POSITIVE' ? 'icon-green' : 'icon-red'">
-      <span class="material-icons" *ngIf="review.reviewType === 'POSITIVE'">thumb_up</span>
-      <span class="material-icons" *ngIf="review.reviewType === 'NEGATIVE'">thumb_down</span>
+      <span class="material-symbols-outlined" *ngIf="review.reviewType === 'POSITIVE'">thumb_up</span>
+      <span class="material-symbols-outlined" *ngIf="review.reviewType === 'NEGATIVE'">thumb_down</span>
     </div>
     <h4 class="ad-title">{{ review.adTitle || 'Nepoznat oglas' }}</h4>
   </div>

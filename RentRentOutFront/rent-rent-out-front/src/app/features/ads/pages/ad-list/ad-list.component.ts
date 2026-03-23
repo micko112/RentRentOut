@@ -36,6 +36,7 @@ export class AdListComponent implements OnInit {
   activeCategory: string = "Svi oglasi";
   totalResults: number = 0;
   isLoading = true;
+  currentCriteria: Partial<AdSearchCriteria> = {};
 
   latestAds: AdPreview[] = [];
   homeCategories: Array<{
@@ -107,16 +108,26 @@ export class AdListComponent implements OnInit {
           }
 
           const criteria: AdSearchCriteria = {
-            keyword: this.currentKeyword,
-            categoryId: categoryId,
-            minPrice: params['minPrice'] ? Number(params['minPrice']) : undefined,
-            maxPrice: params['maxPrice'] ? Number(params['maxPrice']) : undefined,
-            locationId: params['locationId'] ? Number(params['locationId']) : undefined,
-            city: params['city'] || undefined,
+            keyword:       this.currentKeyword,
+            categoryId:    categoryId,
+            minPrice:      params['minPrice']      ? Number(params['minPrice'])   : undefined,
+            maxPrice:      params['maxPrice']      ? Number(params['maxPrice'])   : undefined,
+            locationId:    params['locationId']    ? Number(params['locationId']) : undefined,
+            city:          params['city']          || undefined,
             priceInterval: params['priceInterval'] || undefined,
-            page: params['page'] ? Number(params['page']) : undefined,
-            size: params['size'] ? Number(params['size']) : undefined,
-            sort: params['sort']
+            page:          params['page'] !== undefined ? Number(params['page'])  : undefined,
+            size:          params['size']          ? Number(params['size'])       : undefined,
+            sort:          params['sort']
+          };
+
+          this.currentCriteria = {
+            keyword:       criteria.keyword,
+            categoryId:    criteria.categoryId,
+            minPrice:      criteria.minPrice,
+            maxPrice:      criteria.maxPrice,
+            locationId:    criteria.locationId,
+            city:          criteria.city,
+            priceInterval: criteria.priceInterval,
           };
 
           return this.adService.search(criteria).pipe(
@@ -179,15 +190,20 @@ export class AdListComponent implements OnInit {
     })
   }
   onApplyFilters(criteria: Partial<AdSearchCriteria>){
+    const currentSort = this.route.snapshot.queryParams['sort'] || null;
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        ...criteria,
-        city: criteria.city ?? null,
-        locationId: criteria.locationId ?? null,
-        page: 0
-      },
-      queryParamsHandling: 'merge'
+        keyword:       criteria.keyword       || null,
+        categoryId:    criteria.categoryId    || null,
+        city:          criteria.city          || null,
+        locationId:    criteria.locationId    || null,
+        minPrice:      criteria.minPrice      || null,
+        maxPrice:      criteria.maxPrice      || null,
+        priceInterval: criteria.priceInterval || null,
+        sort:          currentSort,
+        page:          0,
+      }
     })
   }
 

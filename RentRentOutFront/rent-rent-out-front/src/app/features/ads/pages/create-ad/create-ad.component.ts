@@ -62,12 +62,16 @@ export class CreateAdComponent implements OnInit {
   private readonly catIconMap: Record<string, string> = {
     alat: 'build', bušil: 'build', mašin: 'settings',
     vozil: 'directions_car', automobil: 'directions_car', motor: 'two_wheeler', bicikl: 'pedal_bike',
-    elektron: 'laptop', kompjuter: 'laptop', telefon: 'smartphone',
+    elektronika: 'laptop', kompjuter: 'laptop', telefon: 'smartphone',
     sport: 'sports_soccer', fitnes: 'fitness_center', ski: 'downhill_skiing',
     muzik: 'music_note', instrument: 'music_note',
     knjig: 'menu_book',
     kuhin: 'kitchen',
     namešt: 'chair',
+    bašta: 'tools_power_drill',
+    kuća: 'home',
+    proslave: 'celebration',
+    nekretnine: 'home_work',
     kamp: 'landscape', planin: 'landscape',
     foto: 'photo_camera', kamera: 'photo_camera', video: 'videocam',
   };

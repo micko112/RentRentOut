@@ -25,7 +25,7 @@
         *ngIf="isSearchMode"
         [categories]="categories"
         [locations]="locations"
-        [totalResults]="totalResults"
+        [initialCriteria]="currentCriteria"
         (applyFilters)="onApplyFilters($event)">
       </app-filters-sidebar>
     </aside>

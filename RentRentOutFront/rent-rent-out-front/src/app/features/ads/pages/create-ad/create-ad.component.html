@@ -58,7 +58,7 @@
                     class="cat-card"
                     [class.selected]="isParentSelected(cat)"
                     (click)="selectParentCategory(cat)">
-              <span class="cat-icon material-icons">{{ getCategoryIcon(cat.name) }}</span>
+              <span class="cat-icon material-symbols-outlined">{{ getCategoryIcon(cat.name) }}</span>
               <span class="cat-name">{{ cat.name }}</span>
               <div class="cat-check" *ngIf="isParentSelected(cat)">✓</div>
             </button>

@@ -4,6 +4,7 @@ import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
 import {CommonModule} from '@angular/common';
 import {ToastService} from '../../../../shared/services/toast.service';
+import { environment } from '../../../../../environments/environment';
 
 declare const google: any;
 declare const FB: any;
@@ -44,7 +45,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (typeof google !== 'undefined') {
       google.accounts.id.initialize({
-        client_id: '1030670787389-cftefckkjmpgiv41okb87oatffou4e5k.apps.googleusercontent.com',
+        client_id: environment.googleClientId,
         callback: (response: any) => this.ngZone.run(() => this.handleGoogleResponse(response))
       });
       google.accounts.id.renderButton(
