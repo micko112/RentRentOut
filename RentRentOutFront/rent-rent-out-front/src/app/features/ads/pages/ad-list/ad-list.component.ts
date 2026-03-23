@@ -1,21 +1,18 @@
-import {Component, OnInit} from '@angular/core';
-import {AdCardComponent} from '../../components/ad-card/ad-card.component';
-import {CommonModule} from '@angular/common';
-import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
-import {finalize, Observable, of, switchMap, tap} from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AdCardComponent } from '../../components/ad-card/ad-card.component';
+import { CommonModule } from '@angular/common';
+import { AdPreview, Page } from '../../../../shared/models/adPreview.model';
+import { finalize, Subject, switchMap, takeUntil, tap, of } from 'rxjs';
 
-import {AdService} from '../../services/ad.service';
-import {CategoryService} from '../../services/category.service';
-import {LocationService} from '../../services/location.service';
-import {Category} from '../../../../shared/models/category.model';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import {AdSearchCriteria} from '../../../../shared/models/adSearchCriteria';
-import {FiltersSidebarComponent} from '../../components/filters-sidebar/filters-sidebar.component';
-import {
-  CategoriesSidebarComponent
-} from '../../components/categories-sidebar/categories-sidebar/categories-sidebar.component';
-import {Location} from '../../../../shared/models/location.model';
-
+import { AdService } from '../../services/ad.service';
+import { CategoryService } from '../../services/category.service';
+import { LocationService } from '../../services/location.service';
+import { Category } from '../../../../shared/models/category.model';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AdSearchCriteria } from '../../../../shared/models/adSearchCriteria';
+import { FiltersSidebarComponent } from '../../components/filters-sidebar/filters-sidebar.component';
+import { CategoriesSidebarComponent } from '../../components/categories-sidebar/categories-sidebar/categories-sidebar.component';
+import { Location } from '../../../../shared/models/location.model';
 
 
 @Component({
@@ -25,16 +22,16 @@ import {Location} from '../../../../shared/models/location.model';
   templateUrl: './ad-list.component.html',
   styleUrl: './ad-list.component.css'
 })
-export class AdListComponent implements OnInit {
+export class AdListComponent implements OnInit, OnDestroy {
 
-  adsPage$!: Observable<Page<AdPreview>>
+  adsPage: Page<AdPreview> | null = null;
   categories: Category[] = [];
   locations: Location[] = [];
   isSearchMode = false;
   homeMode = false;
-  currentKeyword: string = "";
-  activeCategory: string = "Svi oglasi";
-  totalResults: number = 0;
+  currentKeyword = '';
+  activeCategory = 'Svi oglasi';
+  totalResults = 0;
   isLoading = true;
   currentCriteria: Partial<AdSearchCriteria> = {};
 
@@ -56,12 +53,15 @@ export class AdListComponent implements OnInit {
     { id: 700, displayName: 'Prevoz i oprema za prirodu',   icon: 'explore'       },
   ];
 
-  constructor(private adService: AdService,
-              private categoryService: CategoryService,
-              private locationService: LocationService,
-              private route: ActivatedRoute,
-              private router: Router) {
-  }
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private adService: AdService,
+    private categoryService: CategoryService,
+    private locationService: LocationService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   private isSearchModeFromParams(params: Record<string, string>): boolean {
     return !!(
@@ -72,75 +72,72 @@ export class AdListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Postavljamo inicijalne vrednosti iz snapshot-a SINHRONO pre prvog CD ciklusa
-    // (sprečava NG0100 koji nastaje kad async pipe detektuje promenu tokom prvog check-a)
-    const initialParams = this.route.snapshot.queryParams;
-    this.isSearchMode = this.isSearchModeFromParams(initialParams);
+    // Sinhrona inicijalizacija pre prvog CD ciklusa (sprečava NG0100)
+    const snap = this.route.snapshot.queryParams;
+    this.isSearchMode = this.isSearchModeFromParams(snap);
     this.homeMode = !this.isSearchMode;
-    if (this.homeMode) {
-      this.loadHomeData();
-    }
+    if (this.homeMode) this.loadHomeData();
 
     this.categoryService.getAll().subscribe(res => {
       this.categories = res;
       this.updateActiveCategory(this.route.snapshot.queryParams['categoryId']);
-    })
-    this.locationService.getAll().subscribe({
-      next: (locs) => this.locations = locs,
-      error: () => {
-        console.error('Greska pri ucitavanju lokacija.');
-      }
     });
-    this.adsPage$ = this.route.queryParams.pipe(
+    this.locationService.getAll().subscribe({
+      next: locs => this.locations = locs,
+      error: () => console.error('Greška pri učitavanju lokacija.'),
+    });
+
+    // Uvek aktivna pretplata — ne zavisi od *ngIf u template-u
+    this.route.queryParams.pipe(
+      takeUntil(this.destroy$),
       switchMap(params => {
-          this.isLoading = true;
-          const categoryId = params['categoryId'] ? Number(params['categoryId']) : undefined;
-          this.updateActiveCategory(categoryId);
+        const categoryId = params['categoryId'] ? Number(params['categoryId']) : undefined;
+        this.updateActiveCategory(categoryId);
+        this.currentKeyword  = params['keyword'] || '';
+        this.isSearchMode    = this.isSearchModeFromParams(params);
+        this.homeMode        = !this.isSearchMode;
 
-          this.currentKeyword = params['keyword'] || "";
-          this.isSearchMode = this.isSearchModeFromParams(params);
-          this.homeMode = !this.isSearchMode;
+        this.currentCriteria = {
+          keyword:       params['keyword']       || undefined,
+          categoryId,
+          minPrice:      params['minPrice']      ? Number(params['minPrice'])   : undefined,
+          maxPrice:      params['maxPrice']      ? Number(params['maxPrice'])   : undefined,
+          locationId:    params['locationId']    ? Number(params['locationId']) : undefined,
+          city:          params['city']          || undefined,
+          priceInterval: params['priceInterval'] || undefined,
+        };
 
-          if (this.homeMode) {
-            this.loadHomeData();
-            this.isLoading = false;
-            return of({ content: [] as AdPreview[], totalElements: 0, totalPages: 0, number: 0, first: true, last: true, size: 0 });
-          }
-
-          const criteria: AdSearchCriteria = {
-            keyword:       this.currentKeyword,
-            categoryId:    categoryId,
-            minPrice:      params['minPrice']      ? Number(params['minPrice'])   : undefined,
-            maxPrice:      params['maxPrice']      ? Number(params['maxPrice'])   : undefined,
-            locationId:    params['locationId']    ? Number(params['locationId']) : undefined,
-            city:          params['city']          || undefined,
-            priceInterval: params['priceInterval'] || undefined,
-            page:          params['page'] !== undefined ? Number(params['page'])  : undefined,
-            size:          params['size']          ? Number(params['size'])       : undefined,
-            sort:          params['sort']
-          };
-
-          this.currentCriteria = {
-            keyword:       criteria.keyword,
-            categoryId:    criteria.categoryId,
-            minPrice:      criteria.minPrice,
-            maxPrice:      criteria.maxPrice,
-            locationId:    criteria.locationId,
-            city:          criteria.city,
-            priceInterval: criteria.priceInterval,
-          };
-
-          return this.adService.search(criteria).pipe(
-            tap(res => this.totalResults = res.totalElements),
-            finalize(() => this.isLoading = false)
-          );
-
+        if (this.homeMode) {
+          this.loadHomeData();
+          this.isLoading = false;
+          return of(null);
         }
-      )
-    )
+
+        this.isLoading = true;
+        const criteria: AdSearchCriteria = {
+          ...this.currentCriteria,
+          page: params['page'] !== undefined ? Number(params['page']) : undefined,
+          size: params['size']  ? Number(params['size'])  : undefined,
+          sort: params['sort'],
+        };
+
+        return this.adService.search(criteria).pipe(
+          tap(res => this.totalResults = res.totalElements),
+          finalize(() => this.isLoading = false)
+        );
+      })
+    ).subscribe(page => {
+      this.adsPage = page;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private loadHomeData(): void {
+    this.adsPage = null;
     this.latestAds = [];
     this.homeCategories = this.HOME_CATEGORIES.map(c => ({ ...c, ads: [], total: 0, loaded: false }));
 
@@ -152,44 +149,36 @@ export class AdListComponent implements OnInit {
       this.adService.search({ categoryId: cat.id, sort: 'id,desc', size: 6 }).subscribe(page => {
         this.homeCategories[index] = {
           ...this.homeCategories[index],
-          ads: page.content,
+          ads:   page.content,
           total: page.totalElements,
-          loaded: true
+          loaded: true,
         };
       });
     });
   }
 
   onCategoryFiltered(categoryId: number): void {
-    this.router.navigate([],
-      {
-        relativeTo: this.route,
-        queryParams: {categoryId: categoryId},
-        queryParamsHandling: 'merge'
-      })
-  };
-
-  private updateActiveCategory(categoryId: number | undefined): void {
-    if (!categoryId) {
-      this.activeCategory = "Svi oglasi";
-      return;
-    }
-    const foundCategory = this.categories.find(c => c.id === categoryId);
-    if (foundCategory) {
-      this.activeCategory = foundCategory.name;
-    } else {
-      this.activeCategory = "Učitavanje";
-    }
-  }
-  onSortChange(event: any) {
-    const sortValue = event.target.value;
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: {sort: sortValue},
-      queryParamsHandling: 'merge'
-    })
+      queryParams: { categoryId },
+    });
   }
-  onApplyFilters(criteria: Partial<AdSearchCriteria>){
+
+  private updateActiveCategory(categoryId: number | undefined): void {
+    if (!categoryId) { this.activeCategory = 'Svi oglasi'; return; }
+    const found = this.categories.find(c => c.id === categoryId);
+    this.activeCategory = found ? found.name : 'Učitavanje...';
+  }
+
+  onSortChange(event: any): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { sort: event.target.value },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  onApplyFilters(criteria: Partial<AdSearchCriteria>): void {
     const currentSort = this.route.snapshot.queryParams['sort'] || null;
     this.router.navigate([], {
       relativeTo: this.route,
@@ -203,15 +192,15 @@ export class AdListComponent implements OnInit {
         priceInterval: criteria.priceInterval || null,
         sort:          currentSort,
         page:          0,
-      }
-    })
+      },
+    });
   }
 
-  goToPage(pageIndex: number) {
+  goToPage(pageIndex: number): void {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: {page: pageIndex},
-      queryParamsHandling: 'merge'
+      queryParams: { page: pageIndex },
+      queryParamsHandling: 'merge',
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

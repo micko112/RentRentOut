@@ -88,7 +88,7 @@
 
         <h1 class="page-title" *ngIf="!isSearchMode">{{ activeCategory }}</h1>
 
-        <ng-container *ngIf="adsPage$ | async as adsPage">
+        <ng-container *ngIf="adsPage">
           <div [ngClass]="isSearchMode ? 'list-layout' : 'grid-layout'">
             <app-ad-card
               *ngFor="let ad of adsPage.content"
