@@ -2,7 +2,19 @@
 
   <!-- Banner -->
   <div class="profile-banner">
-    <img class="banner-avatar" [src]="user.avatarUrl || 'assets/default-avatar.png'" alt="Avatar" />
+    <div class="avatar-wrapper">
+      <img class="banner-avatar"
+           [src]="bannerAvatarPreview || user.avatarUrl || 'assets/default-avatar.png'"
+           alt="Avatar" />
+      <label class="avatar-cam-overlay" for="bannerAvatarInput" title="Promeni sliku">
+        <span class="material-icons">photo_camera</span>
+      </label>
+      <input id="bannerAvatarInput" type="file" accept="image/*"
+             (change)="onBannerAvatarSelected($event)" hidden />
+      <div class="avatar-uploading" *ngIf="isUploadingAvatar">
+        <span class="upload-spinner"></span>
+      </div>
+    </div>
     <div class="banner-info">
       <h2>{{ user.firstname }} {{ user.lastname }}</h2>
       <span class="banner-email">{{ user.email }}</span>
@@ -12,6 +24,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Body -->
   <div class="profile-body">

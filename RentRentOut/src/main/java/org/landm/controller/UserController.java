@@ -60,8 +60,44 @@ public class UserController {
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginUserRequestDto req){
     	User user = userService.login(req);
     	String token = jwtUtil.generateToken(user);
-    	
+
     	Map<String, Object> response = new HashMap<>();
+        response.put("user", userMapper.toDto(user));
+        response.put("token", token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<Map<String, Object>> googleLogin(@RequestBody Map<String, String> body) {
+        String idToken = body.get("idToken");
+        User user = userService.googleLogin(idToken);
+        String token = jwtUtil.generateToken(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", userMapper.toDto(user));
+        response.put("token", token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/facebook-login")
+    public ResponseEntity<Map<String, Object>> facebookLogin(@RequestBody Map<String, String> body) {
+        String accessToken = body.get("accessToken");
+        User user = userService.facebookLogin(accessToken);
+        String token = jwtUtil.generateToken(user);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", userMapper.toDto(user));
+        response.put("token", token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/apple-login")
+    public ResponseEntity<Map<String, Object>> appleLogin(@RequestBody Map<String, String> body) {
+        String identityToken = body.get("identityToken");
+        User user = userService.appleLogin(identityToken);
+        String token = jwtUtil.generateToken(user);
+
+        Map<String, Object> response = new HashMap<>();
         response.put("user", userMapper.toDto(user));
         response.put("token", token);
         return new ResponseEntity<>(response, HttpStatus.OK);

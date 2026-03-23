@@ -37,6 +37,7 @@
     <include file="/db/changelog/db.changelog-17-add-created-at-to-ad.xml"/>
     <include file="/db/changelog/db.changelog-18-add-tiered-pricing-to-ad.xml"/>
     <include file="/db/changelog/db.changelog-19-add-unique-constraint-ad-view.xml"/>
+    <include file="/db/changelog/db.changelog-20-add-social-ids-to-user.xml"/>
 
     <include file="/db/changelog/db.changelog-seed-location.xml"/>
     <include file="/db/changelog/db.changelog-seed-categories-full.xml"/>

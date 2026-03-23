@@ -37,6 +37,13 @@ export class ContractCardComponent {
         }})
   }
 
+  get isExpiredRequest(): boolean {
+    if (!this.contract || this.contract.contractStatus !== 'REQUESTED') return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(this.contract.endDate) < today;
+  }
+
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = {
       REQUESTED: 'Na čekanju',

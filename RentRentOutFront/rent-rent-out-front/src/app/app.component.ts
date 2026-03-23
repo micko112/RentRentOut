@@ -26,8 +26,13 @@ export class AppComponent {
     startWith(this.router.url)
   );
 
+  private readonly NO_SIDEBAR_ROUTES = ['/login', '/register', '/verify-email', '/forgot-password', '/reset-password'];
+
   showSidebar$ = this.route$.pipe(
-    map(url => !url.startsWith('/admin'))
+    map(url => {
+      if (url.startsWith('/admin')) return false;
+      return !this.NO_SIDEBAR_ROUTES.some(r => url.startsWith(r));
+    })
   );
 
   isAdmin$ = this.route$.pipe(

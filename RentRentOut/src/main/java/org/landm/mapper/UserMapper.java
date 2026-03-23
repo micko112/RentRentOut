@@ -59,9 +59,12 @@ public class UserMapper {
         dto.setAvatarUrl(user.getAvatarUrl() != null ? user.getAvatarUrl() : "assets/default-avatar.png");
 
         if (user.getLocation() != null) {
-            dto.setLocationDisplay(user.getLocation().getCity() + ", " + user.getLocation().getMunicipality());
+            String city = user.getLocation().getCity();
+            String muni = user.getLocation().getMunicipality();
+            boolean showMuni = muni != null && !muni.isBlank() && !muni.equals(city);
+            dto.setLocationDisplay(showMuni ? city + ", " + muni : city);
         } else {
-            dto.setLocationDisplay("Nepoznata lokacija");
+            dto.setLocationDisplay(null);
         }
 
         dto.setCreatedAt(user.getCreatedAt());
@@ -85,9 +88,12 @@ public class UserMapper {
         dto.setIdentified(user.isIdentified());
 
         if (user.getLocation() != null) {
-            dto.setLocationDisplay(user.getLocation().getCity() + ", " + user.getLocation().getMunicipality());
+            String city = user.getLocation().getCity();
+            String muni = user.getLocation().getMunicipality();
+            boolean showMuni = muni != null && !muni.isBlank() && !muni.equals(city);
+            dto.setLocationDisplay(showMuni ? city + ", " + muni : city);
         } else {
-            dto.setLocationDisplay("Nepoznata lokacija");
+            dto.setLocationDisplay(null);
         }
         dto.setCreatedAt(user.getCreatedAt());
         dto.setPhoneNumber(user.getPhoneNumber());

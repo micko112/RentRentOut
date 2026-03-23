@@ -1,26 +1,34 @@
-<!-- contract-card.component.html -->
-<div class="contract-card">
+<div class="contract-card" [class.expired-card]="isExpiredRequest">
 
   <div class="card-body">
-    <div class="card-title">{{ contract.adDto.title }}</div>
+    <a class="card-title" [routerLink]="['/ads', contract.adDto.id]">{{ contract.adDto.title }}</a>
 
     <div class="card-meta">
       <div class="meta-item">
-        <span class="meta-label">Period</span>
-        <span class="meta-value">{{ contract.startDate }} &ndash; {{ contract.endDate }}</span>
+        <span class="meta-label"><span class="material-icons mi">date_range</span> Period</span>
+        <span class="meta-value">
+          {{ contract.startDate | date:'dd.MM.yyyy' }} – {{ contract.endDate | date:'dd.MM.yyyy' }}
+        </span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Cena</span>
-        <span class="meta-value price">{{ contract.agreedPrice | number:'1.0-0' }} RSD</span>
+        <span class="meta-label"><span class="material-icons mi">payments</span> Cena</span>
+        <span class="meta-value price">
+          {{ contract.agreedPrice | number:'1.0-0' }} {{ contract.currency === 'EUR' ? '€' : 'din' }}
+        </span>
       </div>
       <div class="meta-item" *ngIf="isOwnerView">
-        <span class="meta-label">Zakupac</span>
+        <span class="meta-label"><span class="material-icons mi">person</span> Zakupac</span>
         <span class="meta-value">{{ contract.lesseeDto.firstname }} {{ contract.lesseeDto.lastname }}</span>
       </div>
       <div class="meta-item" *ngIf="!isOwnerView">
-        <span class="meta-label">Vlasnik</span>
+        <span class="meta-label"><span class="material-icons mi">store</span> Vlasnik</span>
         <span class="meta-value">{{ contract.adDto.owner.displayName }}</span>
       </div>
+    </div>
+
+    <div class="expired-notice" *ngIf="isExpiredRequest">
+      <span class="material-icons">schedule</span>
+      Traženi period je istekao — zahtev ne može biti prihvaćen
     </div>
   </div>
 
@@ -33,23 +41,45 @@
 
       <!-- REQUESTED -->
       <ng-container *ngIf="contract.contractStatus === 'REQUESTED'">
-        <ng-container *ngIf="isOwnerView">
-          <button class="btn btn-accept" (click)="updateStatus('ACCEPTED')">Prihvati</button>
-          <button class="btn btn-reject" (click)="updateStatus('REJECTED')">Odbij</button>
+        <ng-container *ngIf="!isExpiredRequest">
+          <ng-container *ngIf="isOwnerView">
+            <button class="btn btn-accept" (click)="updateStatus('ACCEPTED')">
+              <span class="material-icons">check</span> Prihvati
+            </button>
+            <button class="btn btn-reject" (click)="updateStatus('REJECTED')">
+              <span class="material-icons">close</span> Odbij
+            </button>
+          </ng-container>
+          <button *ngIf="!isOwnerView" class="btn btn-cancel" (click)="updateStatus('CANCELLED')">
+            <span class="material-icons">cancel</span> Otkaži zahtev
+          </button>
         </ng-container>
-        <button *ngIf="!isOwnerView" class="btn btn-cancel" (click)="updateStatus('CANCELLED')">Otkaži zahtev</button>
+        <!-- Expired: lessee može samo da ukloni -->
+        <ng-container *ngIf="isExpiredRequest && !isOwnerView">
+          <button class="btn btn-cancel" (click)="updateStatus('CANCELLED')">
+            <span class="material-icons">delete_outline</span> Ukloni
+          </button>
+        </ng-container>
       </ng-container>
 
       <!-- ACCEPTED -->
       <ng-container *ngIf="contract.contractStatus === 'ACCEPTED'">
-        <button *ngIf="isOwnerView" class="btn btn-primary" (click)="updateStatus('ACTIVE')">Preda predmet</button>
-        <button class="btn btn-cancel" (click)="updateStatus('CANCELLED_AFTER_ACCEPT')">Otkaži ugovor</button>
+        <button *ngIf="isOwnerView" class="btn btn-primary" (click)="updateStatus('ACTIVE')">
+          <span class="material-icons">handshake</span> Predao predmet
+        </button>
+        <button class="btn btn-cancel" (click)="updateStatus('CANCELLED_AFTER_ACCEPT')">
+          <span class="material-icons">cancel</span> Otkaži ugovor
+        </button>
       </ng-container>
 
       <!-- ACTIVE -->
       <ng-container *ngIf="contract.contractStatus === 'ACTIVE'">
-        <button *ngIf="isOwnerView" class="btn btn-primary" (click)="updateStatus('FINISHED')">Potvrdi vraćanje</button>
-        <button class="btn btn-cancel" (click)="updateStatus('CANCELLED_AFTER_ACCEPT')">Raskini ugovor</button>
+        <button *ngIf="isOwnerView" class="btn btn-primary" (click)="updateStatus('FINISHED')">
+          <span class="material-icons">task_alt</span> Potvrdi vraćanje
+        </button>
+        <button class="btn btn-cancel" (click)="updateStatus('CANCELLED_AFTER_ACCEPT')">
+          <span class="material-icons">cancel</span> Raskini ugovor
+        </button>
       </ng-container>
 
       <!-- FINISHED -->
@@ -57,26 +87,26 @@
         <button *ngIf="isOwnerView" class="btn btn-review"
                 [routerLink]="['/user', contract.lesseeDto.id, 'reviews']"
                 [queryParams]="{ contractId: contract.id }">
-          Oceni zakupca
+          <span class="material-icons">star</span> Oceni zakupca
         </button>
         <button *ngIf="!isOwnerView" class="btn btn-review"
                 [routerLink]="['/user', contract.adDto.owner.id, 'reviews']"
                 [queryParams]="{ contractId: contract.id }">
-          Oceni vlasnika
+          <span class="material-icons">star</span> Oceni vlasnika
         </button>
       </ng-container>
 
-      <!-- CANCELLED_AFTER_ACCEPT — obe strane mogu da ocene -->
+      <!-- CANCELLED_AFTER_ACCEPT -->
       <ng-container *ngIf="contract.contractStatus === 'CANCELLED_AFTER_ACCEPT'">
         <button *ngIf="isOwnerView" class="btn btn-review"
                 [routerLink]="['/user', contract.lesseeDto.id, 'reviews']"
                 [queryParams]="{ contractId: contract.id }">
-          Oceni zakupca
+          <span class="material-icons">star</span> Oceni zakupca
         </button>
         <button *ngIf="!isOwnerView" class="btn btn-review"
                 [routerLink]="['/user', contract.adDto.owner.id, 'reviews']"
                 [queryParams]="{ contractId: contract.id }">
-          Oceni vlasnika
+          <span class="material-icons">star</span> Oceni vlasnika
         </button>
       </ng-container>
 

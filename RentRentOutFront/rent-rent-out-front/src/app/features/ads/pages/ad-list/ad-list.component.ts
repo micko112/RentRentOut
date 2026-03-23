@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AdCardComponent} from '../../components/ad-card/ad-card.component';
 import {CommonModule} from '@angular/common';
 import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
-import {finalize, Observable, switchMap, tap} from 'rxjs';
+import {finalize, Observable, of, switchMap, tap} from 'rxjs';
 
 import {AdService} from '../../services/ad.service';
 import {CategoryService} from '../../services/category.service';
@@ -15,13 +15,13 @@ import {
   CategoriesSidebarComponent
 } from '../../components/categories-sidebar/categories-sidebar/categories-sidebar.component';
 import {Location} from '../../../../shared/models/location.model';
-import {SkeletonCardComponent} from '../../../../shared/components/skeleton-card/skeleton-card.component';
+
 
 
 @Component({
   selector: 'app-ad-list',
   standalone: true,
-  imports: [CommonModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent, SkeletonCardComponent],
+  imports: [CommonModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent],
   templateUrl: './ad-list.component.html',
   styleUrl: './ad-list.component.css'
 })
@@ -31,10 +31,29 @@ export class AdListComponent implements OnInit {
   categories: Category[] = [];
   locations: Location[] = [];
   isSearchMode = false;
+  homeMode = false;
   currentKeyword: string = "";
   activeCategory: string = "Svi oglasi";
   totalResults: number = 0;
   isLoading = true;
+
+  latestAds: AdPreview[] = [];
+  homeCategories: Array<{
+    id: number;
+    displayName: string;
+    icon: string;
+    ads: AdPreview[];
+    total: number;
+    loaded: boolean;
+  }> = [];
+
+  private readonly HOME_CATEGORIES = [
+    { id: 200, displayName: 'Tehnologija i uređaji',        icon: 'devices'       },
+    { id: 300, displayName: 'Oprema za film i fotografiju', icon: 'photo_camera'  },
+    { id: 100, displayName: 'Alati i oruđa',                icon: 'construction'  },
+    { id: 600, displayName: 'Događaji i zurke',             icon: 'celebration'   },
+    { id: 700, displayName: 'Prevoz i oprema za prirodu',   icon: 'explore'       },
+  ];
 
   constructor(private adService: AdService,
               private categoryService: CategoryService,
@@ -43,7 +62,24 @@ export class AdListComponent implements OnInit {
               private router: Router) {
   }
 
+  private isSearchModeFromParams(params: Record<string, string>): boolean {
+    return !!(
+      params['keyword'] || params['categoryId'] || params['locationId'] ||
+      params['city'] || params['minPrice'] || params['maxPrice'] ||
+      params['priceInterval'] || params['sort']
+    );
+  }
+
   ngOnInit(): void {
+    // Postavljamo inicijalne vrednosti iz snapshot-a SINHRONO pre prvog CD ciklusa
+    // (sprečava NG0100 koji nastaje kad async pipe detektuje promenu tokom prvog check-a)
+    const initialParams = this.route.snapshot.queryParams;
+    this.isSearchMode = this.isSearchModeFromParams(initialParams);
+    this.homeMode = !this.isSearchMode;
+    if (this.homeMode) {
+      this.loadHomeData();
+    }
+
     this.categoryService.getAll().subscribe(res => {
       this.categories = res;
       this.updateActiveCategory(this.route.snapshot.queryParams['categoryId']);
@@ -61,15 +97,14 @@ export class AdListComponent implements OnInit {
           this.updateActiveCategory(categoryId);
 
           this.currentKeyword = params['keyword'] || "";
-          this.isSearchMode = !!(
-            this.currentKeyword ||
-            categoryId ||
-            params['locationId'] ||
-            params['city'] ||
-            params['minPrice'] ||
-            params['maxPrice'] ||
-            params['priceInterval']
-          );
+          this.isSearchMode = this.isSearchModeFromParams(params);
+          this.homeMode = !this.isSearchMode;
+
+          if (this.homeMode) {
+            this.loadHomeData();
+            this.isLoading = false;
+            return of({ content: [] as AdPreview[], totalElements: 0, totalPages: 0, number: 0, first: true, last: true, size: 0 });
+          }
 
           const criteria: AdSearchCriteria = {
             keyword: this.currentKeyword,
@@ -92,6 +127,26 @@ export class AdListComponent implements OnInit {
         }
       )
     )
+  }
+
+  private loadHomeData(): void {
+    this.latestAds = [];
+    this.homeCategories = this.HOME_CATEGORIES.map(c => ({ ...c, ads: [], total: 0, loaded: false }));
+
+    this.adService.search({ sort: 'id,desc', size: 9 }).subscribe(page => {
+      this.latestAds = page.content;
+    });
+
+    this.HOME_CATEGORIES.forEach((cat, index) => {
+      this.adService.search({ categoryId: cat.id, sort: 'id,desc', size: 6 }).subscribe(page => {
+        this.homeCategories[index] = {
+          ...this.homeCategories[index],
+          ads: page.content,
+          total: page.totalElements,
+          loaded: true
+        };
+      });
+    });
   }
 
   onCategoryFiltered(categoryId: number): void {

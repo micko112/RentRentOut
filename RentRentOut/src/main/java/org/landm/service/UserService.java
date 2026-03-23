@@ -26,4 +26,10 @@ public interface UserService {
     public PublicProfileDto getUser(Pageable pageable, Long userId);
 
     String getRealPhoneNumber(Long userId);
+
+    User googleLogin(String idToken);
+
+    User facebookLogin(String accessToken);
+
+    User appleLogin(String identityToken);
 }

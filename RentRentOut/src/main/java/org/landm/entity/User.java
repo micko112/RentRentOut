@@ -74,6 +74,12 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "facebook_id")
+    private String facebookId;
+
+    @Column(name = "apple_id")
+    private String appleId;
+
     @PrePersist
     protected void onCreate(){
         this.createdAt = LocalDateTime.now();
@@ -244,6 +250,22 @@ public class User {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    public String getAppleId() {
+        return appleId;
+    }
+
+    public void setAppleId(String appleId) {
+        this.appleId = appleId;
     }
 
     public List<String> getStringRoles() {

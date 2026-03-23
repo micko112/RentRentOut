@@ -40,6 +40,7 @@
         </div>
       </div>
       <div class="info">
+
         <div class="title-row">
           <h1>{{ ad.title }}</h1>
           <button
@@ -49,37 +50,50 @@
             [disabled]="isTogglingS"
             (click)="toggleSave()">
             <span class="material-icons">{{ isSaved ? 'bookmark' : 'bookmark_border' }}</span>
-            <span>{{ isSaved ? 'Sačuvano' : 'Sačuvaj oglas' }}</span>
+            <span>{{ isSaved ? 'Sačuvano' : 'Sačuvaj' }}</span>
           </button>
         </div>
 
         <div class="ad-stats" *ngIf="ad.viewCount && ad.viewCount > 0">
           <span class="stat-item">
-            <span class="material-icons stat-icon">visibility</span>
+            <span class="material-icons-outlined stat-icon">visibility</span>
             {{ ad.viewCount }} pregleda
           </span>
         </div>
 
-        <div class="price-currency">
-          <div class="price">{{ ad.price | number }}</div>
-          <span class="currency" *ngIf="ad.currency === 'EUR'">€</span>
-          <span class="currency" *ngIf="ad.currency === 'RSD'">din</span>
+        <div class="price-block">
+          <span class="price-value">{{ ad.price | number:'1.0-0' }}</span>
+          <span class="price-curr">{{ ad.currency === 'EUR' ? '€' : 'din' }}</span>
+          <span class="price-sep">/</span>
+          <span class="price-unit">
+            <ng-container [ngSwitch]="ad.priceInterval">
+              <ng-container *ngSwitchCase="'PER_HOUR'">sat</ng-container>
+              <ng-container *ngSwitchCase="'PER_DAY'">dan</ng-container>
+              <ng-container *ngSwitchCase="'PER_MONTH'">mesec</ng-container>
+            </ng-container>
+          </span>
         </div>
 
-        <h3>Detalji</h3>
-        <div class="details-grid">
-          <div class="detail-item">
-            <strong>Kategorija:</strong>
-            <span>{{ ad.category?.name || 'Nije navedeno' }}</span>
-          </div>
-          <div class="detail-item">
-            <strong>Lokacija:</strong>
-            <span>{{ ad.location?.city || 'Nije navedeno' }}</span>
-          </div>
+        <div class="meta-chips">
+          <span class="meta-chip">
+            <span class="material-icons">category</span>
+            {{ ad.category?.name || 'Nije navedeno' }}
+          </span>
+          <span class="meta-chip">
+            <span class="material-icons">location_on</span>
+            {{ ad.location?.city || 'Nije navedeno' }}<ng-container *ngIf="ad.location?.municipality && ad.location?.municipality !== ad.location?.city"> – {{ ad.location.municipality }}</ng-container>
+          </span>
+          <span class="meta-chip" *ngIf="ad.totalQuantity > 1">
+            <span class="material-icons">inventory_2</span>
+            {{ ad.totalQuantity }} kom.
+          </span>
         </div>
 
-        <h3>Opis</h3>
-        <p class="description">{{ ad.description }}</p>
+        <div class="desc-block">
+          <div class="desc-label">Opis</div>
+          <p class="description">{{ ad.description }}</p>
+        </div>
+
       </div>
       <div class="latest-reviews-section" *ngIf="latestReviews$ | async as reviews">
         <h3 *ngIf="(reviews.length > 0) && !isMyAd">Šta drugi kažu o vlasniku:</h3>
@@ -168,16 +182,20 @@
 
               <!-- LOKACIJA I ČLANSTVO -->
               <div class="meta-row">
-                <span>📍 {{ ad.owner.locationDisplay || 'Nepoznata lokacija' }}</span>
-                <span *ngIf="ad.owner.createdAt">📅 Na sajtu od {{ ad.owner.createdAt | date:'yyyy' }}.</span>
+                <span *ngIf="ad.owner.locationDisplay">
+                  <span class="material-icons meta-row-icon">location_on</span>{{ ad.owner.locationDisplay }}
+                </span>
+                <span *ngIf="ad.owner.createdAt">
+                  <span class="material-icons meta-row-icon">calendar_today</span>Na sajtu od {{ ad.owner.createdAt | date:'yyyy' }}.
+                </span>
               </div>
 
               <!-- OCENE -->
               <div class="review-action-panel">
                 <!-- Vodi na profil (ili direktno na tab sa ocenama ako si tako namestio) -->
                 <div class="rating-score" [routerLink]="['/user', ad.owner.id]">
-                  <div class="score positive"><span class="icon">👍</span> {{ ad.owner.positiveReviews || 0 }}</div>
-                  <div class="score negative"><span class="icon">👎</span> {{ ad.owner.negativeReviews || 0 }}</div>
+                  <div class="score positive"><span class="material-icons score-icon">thumb_up</span> {{ ad.owner.positiveReviews || 0 }}</div>
+                  <div class="score negative"><span class="material-icons score-icon">thumb_down</span> {{ ad.owner.negativeReviews || 0 }}</div>
                 </div>
               </div>
               <!-- OPCIONO: Broj telefona ili dugme za poruku (Priprema za Chat) -->
@@ -190,14 +208,14 @@
                   <button class="btn-reveal-phone"
                           *ngIf="!realPhoneNumber"
                           (click)="revealPhoneNumber(ad.owner.id)">
-                    <span class="icon">📞</span>
+                    <span class="material-icons">phone</span>
                     <span *ngIf="!isLoadingPhone">Prikaži broj telefona</span>
                     <span *ngIf="isLoadingPhone">Učitavam...</span>
                   </button>
 
                   <!-- STANJE 2: Posle klika (Pravi broj) -->
                   <div class="revealed-phone" *ngIf="realPhoneNumber">
-                    <span class="icon">📞</span>
+                    <span class="material-icons">phone</span>
                     <a [href]="'tel:' + realPhoneNumber">{{ realPhoneNumber }}</a>
                   </div>
                 </div>

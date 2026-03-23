@@ -6,8 +6,8 @@
 
 .main-app-wrapper:not(.has-sidebar) .page-content {
   max-width: 1180px;
-
   width: 100%;
+  margin: 0 auto;
   padding-left: 15px;
   padding-right: 15px;
 }

@@ -82,7 +82,7 @@
       <button class="btn-apply" (click)="onSubmit()">
         <span class="material-icons">search</span>
         Prikaži oglase
-        <span class="filter-badge" *ngIf="activeFilterCount > 0">{{ activeFilterCount }}</span>
+        <span class="filter-badge" *ngIf="totalResults > 0">{{ totalResults }}</span>
       </button>
     </div>
 

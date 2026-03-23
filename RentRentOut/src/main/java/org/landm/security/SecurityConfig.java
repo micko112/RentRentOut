@@ -1,5 +1,6 @@
 package org.landm.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,9 +38,19 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http.csrf(csrf -> csrf.disable())
+	            .exceptionHandling(exceptions -> exceptions
+	                .authenticationEntryPoint((request, response, authException) -> {
+	                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	                    response.setContentType("application/json");
+	                    response.getWriter().write("{\"error\": \"Unauthorized\"}");
+	                }))
 	            .authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/user/google-login").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/user/facebook-login").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/user/apple-login").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/user/me").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/ads/me/saved").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/ads/*/saved-status").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/ads/**").permitAll()
@@ -73,8 +84,6 @@ public class SecurityConfig {
 
 						.requestMatchers(HttpMethod.POST, "/api/reviews").authenticated()
 
-
-						.requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
 
 						.requestMatchers(HttpMethod.POST, "/api/images/upload").authenticated()
 

@@ -63,6 +63,10 @@ Database migrations are in `src/main/resources/db/changelog/` (Liquibase XML cha
 
 Two Spring profiles: default (local) uses `application.properties`; `docker` uses `application-docker.properties`.
 
+**Ključne zavisnosti u `pom.xml`** koje nisu managed kroz Spring Boot BOM i moraju imati eksplicitnu verziju:
+- `com.nimbusds:nimbus-jose-jwt:9.37.3` — koristi se u `UserServiceImpl.appleLogin()` za verifikaciju Apple JWT tokena
+- `com.google.api-client:google-api-client:2.2.0` — za Google OAuth verifikaciju u `UserServiceImpl.googleLogin()`
+
 ### Frontend (`RentRentOutFront/rent-rent-out-front/src/app/`)
 
 Feature-based module structure with lazy loading:
@@ -200,11 +204,27 @@ Isti dvokokračni wizard format kao Create Ad, na `features/ads/pages/edit-ad/`:
 
 ### Ad List stranica i pretraga
 
-`features/ads/pages/ad-list/` — glavna stranica sa oglasima:
-- **Grid mod**: kategorijski pregled, prikazuje se `CategoriesSidebar`
-- **Search mod**: aktivan kad ima keyword ili categoryId; prikazuje `FiltersSidebar` i kartice u list view-u
+`features/ads/pages/ad-list/` — glavna stranica sa oglasima. Tri moda:
+
+**Home mod** (`homeMode = true`) — nema query params:
+- `CategoriesSidebar` levo (uvek vidljiv u home modu)
+- Desno: sekcije jedna ispod druge — **Najnoviji oglasi** (9 oglasa, 3 reda) + 5 fiksnih kategorija (6 oglasa, 2 reda svaka)
+- Svaka sekcija: ikonica + naziv levo, `"Pogledajte sve →"` link desno, separator linija
+- 5 kategorija u home modu: Tehnologija i uređaji (ID 200), Oprema za film i fotografiju (300), Alati i oruđa (100), Događaji i zurke (600), Prevoz i oprema za prirodu (700)
+- Svaka kategorija prikazuje broj ukupnih oglasa (badge `section-count` u purple)
+- "Pogledajte sve" na Najnovijem → `/?sort=id,desc`; na kategorijama → `/?categoryId=X`
+- `loadHomeData()` radi 6 paralelnih API poziva pri svakom ulasku u home mod
+- **NG0100 prevencija**: `isSearchMode` i `homeMode` se inicijalizuju sinhrono iz `route.snapshot` na startu `ngOnInit` (pre prvog CD ciklusa), jer `of(...)` u `switchMap` emituje sinhrono
+
+**Search mod** (`isSearchMode = true`) — aktivan kad ima keyword, categoryId, locationId, city, minPrice, maxPrice, priceInterval ILI sort param:
+- `FiltersSidebar` levo, list view desno
+- Sortiranje dropdown (Najnovije / Najjeftinije / Najskuplje)
+
+**Category mod** — nije poseban mod; categoryId triggeruje search mod sa filterom
+
 - **Paginacija**: numerisana (page buttons), sa `…` za preskočene opsege; trenutna stranica purple `#813181`
 - `goToPage()` skroluje na vrh stranice
+- `isSearchModeFromParams()` — helper koji proverava sve relevantne parametre (uključujući `sort`)
 
 ### FiltersSidebar
 
@@ -214,7 +234,7 @@ Isti dvokokračni wizard format kao Create Ad, na `features/ads/pages/edit-ad/`:
 - **Grad**: select sa `location_on` ikonom; prikazuje `"Grad – Opština"` format
 - **Tip zakupa**: toggle pill dugmad (Po satu / Po danu / Po mesecu) — šalje `priceInterval` na backend
 - **Raspon cene**: Od — Do inputi
-- **Apply dugme**: purple, prikazuje badge sa brojem aktivnih filtera
+- **Apply dugme**: purple; badge prikazuje **broj rezultata** (`totalResults` @Input iz AdListComponent), ne broj filtera
 - Backend `AdServiceImpl.buildSearchSpec()` filtrira i po `priceInterval`
 
 ### AdCard komponenta
@@ -244,6 +264,115 @@ Two primary colors:
 - **Green** `#6ecf7e` — secondary accent; opacity is intentionally varied per context (e.g. `rgba(110, 207, 126, 0.X)`)
 
 **Do not replace either color with blue or other colors.**
+
+## Production Deployment Plan
+
+### Kritični blokatori (moraju biti rešeni PRE deploymenta)
+
+1. **`spring.liquibase.drop-first=true`** u `application.properties` — BRIŠE celu bazu pri svakom restartu. Mora biti `false`.
+2. **Hardkodovani sekrete** u `application.properties` — Mailtrap credentials, Facebook app-secret, VAPID private key, DB password (prazan). Mora ići u env varijable.
+3. **Lokalni upload fajlova** (`RentRentOut/uploads/`) — efemerni su u Docker kontejneru, brišu se pri rebuildu. Migrisati na Cloudinary (ili S3).
+4. **Mailtrap sandbox** — ne dostavlja mejlove pravim korisnicima. Zameniti sa Gmail SMTP ili SendGrid za produkciju.
+
+### Preporučena infrastruktura
+
+- **VPS**: Hetzner CX22 (~4€/mes) — 2 vCPU, 4GB RAM, 40GB SSD, dovoljan za start
+- **Domen**: kupiti .rs ili .com domen, pointirati A record na VPS IP
+- **Reverse proxy**: Nginx ispred svega (port 80/443 → interni Docker servisi)
+- **SSL**: Let's Encrypt (Certbot) — besplatan, auto-renewal
+
+### Redosled koraka (sprovoditi ovim redom)
+
+#### Korak 1 — Popravi `drop-first` (5 min)
+```
+application.properties: spring.liquibase.drop-first=false
+application-docker.properties: spring.liquibase.drop-first=false
+```
+
+#### Korak 2 — Izvuci sekrete u env varijable (30 min)
+Kreirati `application-prod.properties` koji čita iz env:
+```properties
+spring.datasource.password=${DB_PASSWORD}
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+facebook.app-secret=${FACEBOOK_APP_SECRET}
+vapid.private-key=${VAPID_PRIVATE_KEY}
+```
+Dodati `.env` fajl na VPS (nikad ga ne commitovati u git).
+
+#### Korak 3 — Migracija slika na Cloudinary (2-3h)
+- Registrovati Cloudinary nalog (besplatan tier: 25GB storage, 25GB bandwidth/mes)
+- U `ImageController` (backend) zameniti lokalni `Files.copy()` sa Cloudinary Java SDK upload
+- Dodate env varijable: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+- Postojeće slike iz `uploads/` folder-a uploadovati ručno jednom pre deploymenta
+
+#### Korak 4 — Pravi SMTP (15 min)
+- Opcija A: Gmail SMTP (`smtp.gmail.com:587`) — kreirati App Password u Google nalogu
+- Opcija B: SendGrid (100 mejlova/dan besplatno, bolja deliverability)
+- Promeniti `spring.mail.*` konfiguraciju u prod properties
+
+#### Korak 5 — `docker-compose.prod.yml` (1h)
+Kreirati produkcioni compose fajl sa:
+- `restart: unless-stopped` na svim servisima
+- Nginx servis (sa SSL volumenom za Certbot)
+- Backend i frontend **bez** eksponiranih portova prema van (samo Nginx na 80/443)
+- MySQL samo interno dostupan (ne eksponirati port 3306)
+- `env_file: .env` za sekrete
+- Named volume za MySQL data
+
+#### Korak 6 — Nginx konfiguracija
+```nginx
+server {
+    listen 443 ssl;
+    server_name tvoj-domen.com;
+    # SSL via Certbot
+    location /api/ { proxy_pass http://backend:8080; }
+    location /ws    { proxy_pass http://backend:8080; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; }
+    location /      { proxy_pass http://frontend:80; }
+}
+```
+WebSocket proxy zahteva `Upgrade` header — obavezno!
+
+#### Korak 7 — CORS update
+U `WebConfig.java` zameniti `http://localhost:4200` sa produkcijskim domenom.
+Čuvati dev origin za local razvoj (čitati iz env ili koristiti Spring profile).
+
+#### Korak 8 — Angular environment
+Kreirati/ažurirati `environment.prod.ts`:
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://tvoj-domen.com/api'
+};
+```
+Proveriti da `angular.json` koristi `fileReplacements` za prod build.
+
+#### Korak 9 — OAuth update
+- **Google Cloud Console**: dodati produkcijski domen u Authorized JavaScript Origins i Authorized Redirect URIs
+- **Facebook Developer**: dodati produkcijski domen u App Domains i Valid OAuth Redirect URIs
+
+#### Korak 10 — Deploy
+```bash
+# Na VPS-u
+git pull
+docker-compose -f docker-compose.prod.yml up --build -d
+# Certbot za SSL
+docker run --rm -v certbot-data:/etc/letsencrypt certbot/certbot certonly ...
+```
+
+### Šta je već urađeno (sesija 2026-03-22)
+
+- Emojiji zamenjeni Material Icons-ima u celoj aplikaciji
+- `locationDisplay` null bug popravljen u `UserMapper.java`
+- 403 na `/api/ads/{id}/view` rešen sa `sessionStorage` deduplication
+- Sidebar: "Sačuvane pretrage" i "Adresar" zakomentarisani
+- Profil stranica: klik na avatar otvara file picker i odmah čuva sliku
+- Kontrakti stranica: kompletno redizajnirana kartica, link na oglas, expired request logika, Material Icons dugmad
+- `RentalContractServiceImpl`: dodata provera `endDate.isBefore(now())` pri prihvatanju zahteva
+- Login: uklonjen Apple dugme, dodat Facebook SVG logo
+- Create/Edit Ad: uklonjen `overflow: hidden` sa `.step-panel` da se vidi city picker dropdown
+
+---
 
 ## Communication
 

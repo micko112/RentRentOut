@@ -10,14 +10,67 @@
   color: white;
 }
 
+.avatar-wrapper {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+}
+
 .banner-avatar {
   width: 96px;
   height: 96px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid rgba(255, 255, 255, 0.4);
-  flex-shrink: 0;
+  display: block;
 }
+
+.avatar-cam-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  .material-icons {
+    font-size: 26px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.45);
+    .material-icons { opacity: 1; }
+  }
+}
+
+.avatar-uploading {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .banner-avatar--sm {
   width: 72px;

@@ -61,6 +61,36 @@ export class AuthService {
     return this.http.post(`${API_BASE_URL}/auth/reset-password`, { token, newPassword }, { responseType: 'text' });
   }
 
+  googleLogin(idToken: string): Observable<{ user: User, token: string }> {
+    return this.http.post<{ user: User, token: string }>(`${API_BASE_URL}/user/google-login`, { idToken })
+      .pipe(
+        tap(response => {
+          localStorage.setItem('authToken', response.token);
+          this.currentUserSubject.next(response.user);
+        })
+      );
+  }
+
+  facebookLogin(accessToken: string): Observable<{ user: User, token: string }> {
+    return this.http.post<{ user: User, token: string }>(`${API_BASE_URL}/user/facebook-login`, { accessToken })
+      .pipe(
+        tap(response => {
+          localStorage.setItem('authToken', response.token);
+          this.currentUserSubject.next(response.user);
+        })
+      );
+  }
+
+  appleLogin(identityToken: string): Observable<{ user: User, token: string }> {
+    return this.http.post<{ user: User, token: string }>(`${API_BASE_URL}/user/apple-login`, { identityToken })
+      .pipe(
+        tap(response => {
+          localStorage.setItem('authToken', response.token);
+          this.currentUserSubject.next(response.user);
+        })
+      );
+  }
+
   private loadInitialUser() {
     const token = localStorage.getItem('authToken');
 

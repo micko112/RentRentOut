@@ -32,6 +32,7 @@ export class ProfileDetailsComponent implements OnInit {
   passwordForm!: FormGroup;
 
   avatarPreview: string | null = null;
+  bannerAvatarPreview: string | null = null;
   selectedAvatarFile: File | null = null;
   isUploadingAvatar = false;
 
@@ -91,6 +92,28 @@ export class ProfileDetailsComponent implements OnInit {
         phoneNumber: this.currentUser.phoneNumber || ''
       });
     }
+  }
+
+  onBannerAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => { this.bannerAvatarPreview = reader.result as string; };
+    reader.readAsDataURL(file);
+    this.isUploadingAvatar = true;
+    this.userService.uploadAvatar(file).subscribe({
+      next: (urls) => {
+        this.isUploadingAvatar = false;
+        this.saveProfile(urls[0]);
+        this.bannerAvatarPreview = null;
+      },
+      error: () => {
+        this.isUploadingAvatar = false;
+        this.bannerAvatarPreview = null;
+        this.toastService.showError('Greška pri otpremanju slike.');
+      }
+    });
   }
 
   onAvatarSelected(event: Event): void {

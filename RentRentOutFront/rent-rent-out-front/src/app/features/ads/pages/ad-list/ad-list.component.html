@@ -1,5 +1,6 @@
 <div class="container page-layout">
 
+  <!-- SEARCH INFO (samo u search modu) -->
   <div class="search-info" *ngIf="isSearchMode">
     <div class="breadcrumb-nav">
       <a routerLink="/">Početna</a>
@@ -12,11 +13,9 @@
     </div>
   </div>
 
-  <!-- 2. GLAVNI DEO (Sidebar + Sadržaj) -->
   <div class="main-content-wrapper">
 
     <aside class="sidebar-area">
-      <!-- Menjamo sidebare zavisno od moda -->
       <app-categories-sidebar
         *ngIf="!isSearchMode"
         (categorySelected)="onCategoryFiltered($event)">
@@ -26,60 +25,104 @@
         *ngIf="isSearchMode"
         [categories]="categories"
         [locations]="locations"
+        [totalResults]="totalResults"
         (applyFilters)="onApplyFilters($event)">
       </app-filters-sidebar>
     </aside>
 
     <main class="ads-display-area">
-      <!-- Sortiranje u Search Modu -->
-      <div class="list-controls" *ngIf="isSearchMode">
-        <div class="sort-select">
-          <label>Sortiraj:</label>
-          <select (change)="onSortChange($event)">
-            <option value="id,desc">Najnovije</option>
-            <option value="price,asc">Najjeftinije</option>
-            <option value="price,desc">Najskuplje</option>
-          </select>
+
+      <!-- HOME MODE: sekcije po kategorijama -->
+      <div class="home-sections" *ngIf="homeMode">
+
+        <!-- Najnoviji oglasi -->
+        <div class="home-section">
+          <div class="section-header">
+            <div class="section-left">
+              <span class="material-icons section-icon">schedule</span>
+              <h2 class="section-title">Najnoviji oglasi</h2>
+            </div>
+            <a routerLink="/" [queryParams]="{sort: 'id,desc'}" class="section-see-all">
+              Pogledajte sve <span class="material-icons">arrow_forward</span>
+            </a>
+          </div>
+          <div class="grid-layout">
+            <app-ad-card *ngFor="let ad of latestAds" [ad]="ad" [viewMode]="'grid'"></app-ad-card>
+          </div>
         </div>
+
+        <!-- Kategorije -->
+        <div class="home-section" *ngFor="let cat of homeCategories">
+          <div class="section-header">
+            <div class="section-left">
+              <span class="material-icons section-icon">{{ cat.icon }}</span>
+              <h2 class="section-title">{{ cat.displayName }}</h2>
+              <span class="section-count" *ngIf="cat.total > 0">{{ cat.total }} oglasa</span>
+            </div>
+            <a routerLink="/" [queryParams]="{categoryId: cat.id}" class="section-see-all">
+              Pogledajte sve <span class="material-icons">arrow_forward</span>
+            </a>
+          </div>
+          <div class="grid-layout" *ngIf="cat.ads.length > 0">
+            <app-ad-card *ngFor="let ad of cat.ads" [ad]="ad" [viewMode]="'grid'"></app-ad-card>
+          </div>
+          <div class="section-empty" *ngIf="cat.loaded && cat.ads.length === 0">
+            Trenutno nema oglasa u ovoj kategoriji.
+          </div>
+        </div>
+
       </div>
 
-      <h1 class="page-title" *ngIf="!isSearchMode">{{ activeCategory }}</h1>
-
-      <ng-container *ngIf="adsPage$ | async as adsPage">
-        <!-- Ovde se menja Grid ili Lista -->
-        <div [ngClass]="isSearchMode ? 'list-layout' : 'grid-layout'">
-          <app-ad-card
-            *ngFor="let ad of adsPage.content"
-            [ad]="ad"
-            [viewMode]="isSearchMode ? 'list' : 'grid'">
-          </app-ad-card>
+      <!-- SEARCH / CATEGORY MODE -->
+      <ng-container *ngIf="!homeMode">
+        <div class="list-controls" *ngIf="isSearchMode">
+          <div class="sort-select">
+            <label>Sortiraj:</label>
+            <select (change)="onSortChange($event)">
+              <option value="id,desc">Najnovije</option>
+              <option value="price,asc">Najjeftinije</option>
+              <option value="price,desc">Najskuplje</option>
+            </select>
+          </div>
         </div>
 
-        <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
-          <button class="page-nav-btn"
-                  [disabled]="adsPage.first"
-                  (click)="goToPage(adsPage.number - 1)"
-                  title="Prethodna">
-            <span class="material-icons">chevron_left</span>
-          </button>
+        <h1 class="page-title" *ngIf="!isSearchMode">{{ activeCategory }}</h1>
 
-          <ng-container *ngFor="let p of getPageRange(adsPage.number, adsPage.totalPages)">
-            <span *ngIf="p === '...'" class="page-ellipsis">…</span>
-            <button *ngIf="p !== '...'"
-                    class="page-num-btn"
-                    [class.active]="asNumber(p) === adsPage.number"
-                    (click)="goToPage(asNumber(p))">
-              {{ asNumber(p) + 1 }}
+        <ng-container *ngIf="adsPage$ | async as adsPage">
+          <div [ngClass]="isSearchMode ? 'list-layout' : 'grid-layout'">
+            <app-ad-card
+              *ngFor="let ad of adsPage.content"
+              [ad]="ad"
+              [viewMode]="isSearchMode ? 'list' : 'grid'">
+            </app-ad-card>
+          </div>
+
+          <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
+            <button class="page-nav-btn"
+                    [disabled]="adsPage.first"
+                    (click)="goToPage(adsPage.number - 1)"
+                    title="Prethodna">
+              <span class="material-icons">chevron_left</span>
             </button>
-          </ng-container>
 
-          <button class="page-nav-btn"
-                  [disabled]="adsPage.last"
-                  (click)="goToPage(adsPage.number + 1)"
-                  title="Sledeća">
-            <span class="material-icons">chevron_right</span>
-          </button>
-        </div>
+            <ng-container *ngFor="let p of getPageRange(adsPage.number, adsPage.totalPages)">
+              <span *ngIf="p === '...'" class="page-ellipsis">…</span>
+              <button *ngIf="p !== '...'"
+                      class="page-num-btn"
+                      [class.active]="asNumber(p) === adsPage.number"
+                      (click)="goToPage(asNumber(p))">
+                {{ asNumber(p) + 1 }}
+              </button>
+            </ng-container>
+
+            <button class="page-nav-btn"
+                    [disabled]="adsPage.last"
+                    (click)="goToPage(adsPage.number + 1)"
+                    title="Sledeća">
+              <span class="material-icons">chevron_right</span>
+            </button>
+          </div>
+        </ng-container>
       </ng-container>
 
     </main>

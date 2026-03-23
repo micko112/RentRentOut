@@ -1,5 +1,15 @@
 package org.landm.service.impl;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import org.landm.dto.ad.AdPreviewDto;
@@ -20,8 +30,11 @@ import org.landm.service.AdService;
 import org.landm.service.EmailVerificationService;
 import org.landm.service.ReviewService;
 import org.landm.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -29,6 +42,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URL;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,6 +59,18 @@ public class UserServiceImpl implements UserService {
     private final EmailVerificationService emailVerificationService;
 	private final AdService adService;
 	private final ReviewService reviewService;
+
+	@Value("${google.client-id}")
+	private String googleClientId;
+
+	@Value("${facebook.app-id}")
+	private String facebookAppId;
+
+	@Value("${facebook.app-secret}")
+	private String facebookAppSecret;
+
+	@Value("${apple.client-id}")
+	private String appleClientId;
 
 	public UserServiceImpl(UserRepository userRepository,
 						   PasswordEncoder passwordEncoder, UserMapper userMapper,
@@ -238,5 +268,198 @@ public class UserServiceImpl implements UserService {
     public UserDto recover(OptimisticLockException e) {
     	throw new RuntimeException("Your request could not be processed due to concurrent update. Please try again.");
     }
-    
+
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public User facebookLogin(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Validate token against our app via debug_token
+        URI debugUri = UriComponentsBuilder
+                .fromHttpUrl("https://graph.facebook.com/debug_token")
+                .queryParam("input_token", accessToken)
+                .queryParam("access_token", facebookAppId + "|" + facebookAppSecret)
+                .build().toUri();
+
+        Map<String, Object> debugResponse;
+        try {
+            debugResponse = restTemplate.getForObject(debugUri, Map.class);
+        } catch (Exception e) {
+            throw new WrongCredentialsException("Greška pri validaciji Facebook tokena.");
+        }
+
+        if (debugResponse == null) throw new WrongCredentialsException("Nevažeći Facebook token.");
+
+        Map<String, Object> data = (Map<String, Object>) debugResponse.get("data");
+        if (data == null || !Boolean.TRUE.equals(data.get("is_valid"))) {
+            throw new WrongCredentialsException("Facebook token nije validan.");
+        }
+        if (!facebookAppId.equals(String.valueOf(data.get("app_id")))) {
+            throw new WrongCredentialsException("Facebook token nije za ovu aplikaciju.");
+        }
+
+        String facebookUserId = (String) data.get("user_id");
+
+        // Fetch user profile data
+        URI meUri = UriComponentsBuilder
+                .fromHttpUrl("https://graph.facebook.com/me")
+                .queryParam("fields", "id,email,first_name,last_name")
+                .queryParam("access_token", accessToken)
+                .build().toUri();
+
+        Map<String, String> fbUser;
+        try {
+            fbUser = restTemplate.getForObject(meUri, Map.class);
+        } catch (Exception e) {
+            throw new WrongCredentialsException("Greška pri dohvatanju Facebook korisnika.");
+        }
+
+        if (fbUser == null) throw new WrongCredentialsException("Nije moguće dohvatiti Facebook korisnika.");
+
+        String email = fbUser.get("email");
+        String firstName = fbUser.getOrDefault("first_name", "Facebook");
+        String lastName = fbUser.getOrDefault("last_name", "Korisnik");
+
+        // Find or create user
+        User user = null;
+        if (email != null) {
+            user = userRepository.findByEmail(email);
+        }
+        if (user == null) {
+            user = userRepository.findByFacebookId(facebookUserId);
+        }
+
+        if (user == null) {
+            String userEmail = email != null ? email : (facebookUserId + "@facebook.placeholder");
+            Role role = roleRepository.findByName("ROLE_USER");
+            user = new User(userEmail, "", firstName, lastName, role);
+            user.setEnabled(true);
+            user.setIdentified(false);
+            user.setPositiveReviews(0);
+            user.setNegativeReviews(0);
+            user.setCurrency(Currency.RSD);
+            user.setFacebookId(facebookUserId);
+            user = userRepository.save(user);
+        } else if (!user.isEnabled()) {
+            throw new WrongCredentialsException("Nalog je deaktiviran.");
+        } else if (user.getFacebookId() == null) {
+            user.setFacebookId(facebookUserId);
+            user = userRepository.save(user);
+        }
+
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public User appleLogin(String identityToken) {
+        try {
+            JWKSet jwkSet = JWKSet.load(new URL("https://appleid.apple.com/auth/keys"));
+
+            SignedJWT signedJWT = SignedJWT.parse(identityToken);
+
+            String kid = signedJWT.getHeader().getKeyID();
+            com.nimbusds.jose.jwk.JWK jwk = jwkSet.getKeyByKeyId(kid);
+            if (jwk == null) throw new WrongCredentialsException("Nevažeći Apple token — ključ nije pronađen.");
+
+            JWSVerifier verifier = new RSASSAVerifier(((RSAKey) jwk).toRSAPublicKey());
+            if (!signedJWT.verify(verifier)) {
+                throw new WrongCredentialsException("Nevažeći Apple token — potpis nije validan.");
+            }
+
+            JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
+
+            if (!"https://appleid.apple.com".equals(claims.getIssuer())) {
+                throw new WrongCredentialsException("Nevažeći Apple token — nepoznat izdavaoc.");
+            }
+            if (!claims.getAudience().contains(appleClientId)) {
+                throw new WrongCredentialsException("Nevažeći Apple token — pogrešna aplikacija.");
+            }
+            if (claims.getExpirationTime().before(new Date())) {
+                throw new WrongCredentialsException("Apple token je istekao.");
+            }
+
+            String appleUserId = claims.getSubject();
+            String email = claims.getStringClaim("email");
+
+            // Find or create user
+            User user = userRepository.findByAppleId(appleUserId);
+            if (user == null && email != null) {
+                user = userRepository.findByEmail(email);
+            }
+
+            if (user == null) {
+                String userEmail = email != null ? email : (appleUserId + "@apple.placeholder");
+                Role role = roleRepository.findByName("ROLE_USER");
+                user = new User(userEmail, "", "Apple", "Korisnik", role);
+                user.setEnabled(true);
+                user.setIdentified(false);
+                user.setPositiveReviews(0);
+                user.setNegativeReviews(0);
+                user.setCurrency(Currency.RSD);
+                user.setAppleId(appleUserId);
+                user = userRepository.save(user);
+            } else if (!user.isEnabled()) {
+                throw new WrongCredentialsException("Nalog je deaktiviran.");
+            } else if (user.getAppleId() == null) {
+                user.setAppleId(appleUserId);
+                user = userRepository.save(user);
+            }
+
+            return user;
+        } catch (WrongCredentialsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Greška pri Apple prijavi: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public User googleLogin(String idToken) {
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(), new GsonFactory())
+                    .setAudience(List.of(googleClientId))
+                    .build();
+
+            GoogleIdToken googleToken = verifier.verify(idToken);
+            if (googleToken == null) {
+                throw new WrongCredentialsException("Nevažeći Google token.");
+            }
+
+            GoogleIdToken.Payload payload = googleToken.getPayload();
+            if (!payload.getEmailVerified()) {
+                throw new WrongCredentialsException("Google email nije verifikovan.");
+            }
+
+            String email = payload.getEmail();
+            String firstName = (String) payload.get("given_name");
+            String lastName = (String) payload.get("family_name");
+            if (firstName == null) firstName = email.split("@")[0];
+            if (lastName == null) lastName = "";
+
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                Role role = roleRepository.findByName("ROLE_USER");
+                user = new User(email, "", firstName, lastName, role);
+                user.setEnabled(true);
+                user.setIdentified(false);
+                user.setPositiveReviews(0);
+                user.setNegativeReviews(0);
+                user.setCurrency(Currency.RSD);
+                user = userRepository.save(user);
+            } else if (!user.isEnabled()) {
+                throw new WrongCredentialsException("Nalog je deaktiviran.");
+            }
+
+            return user;
+        } catch (WrongCredentialsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Greška pri Google prijavi: " + e.getMessage(), e);
+        }
+    }
+
 }

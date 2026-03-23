@@ -60,16 +60,16 @@ export class CreateAdComponent implements OnInit {
   ];
 
   private readonly catIconMap: Record<string, string> = {
-    alat: '🔧', bušil: '🔧', mašin: '⚙️',
-    vozil: '🚗', automobil: '🚗', motor: '🏍️', bicikl: '🚲',
-    elektron: '💻', kompjuter: '💻', telefon: '📱',
-    sport: '⚽', fitnes: '🏋️', ski: '⛷️',
-    muzik: '🎸', instrument: '🎸',
-    knjig: '📚',
-    kuhin: '🍳',
-    namešt: '🛋️',
-    kamp: '⛺', planin: '🏔️',
-    foto: '📷', kamera: '📷', video: '🎥',
+    alat: 'build', bušil: 'build', mašin: 'settings',
+    vozil: 'directions_car', automobil: 'directions_car', motor: 'two_wheeler', bicikl: 'pedal_bike',
+    elektron: 'laptop', kompjuter: 'laptop', telefon: 'smartphone',
+    sport: 'sports_soccer', fitnes: 'fitness_center', ski: 'downhill_skiing',
+    muzik: 'music_note', instrument: 'music_note',
+    knjig: 'menu_book',
+    kuhin: 'kitchen',
+    namešt: 'chair',
+    kamp: 'landscape', planin: 'landscape',
+    foto: 'photo_camera', kamera: 'photo_camera', video: 'videocam',
   };
 
   constructor(
@@ -170,7 +170,7 @@ export class CreateAdComponent implements OnInit {
     for (const [key, icon] of Object.entries(this.catIconMap)) {
       if (lower.includes(key)) return icon;
     }
-    return '📦';
+    return 'inventory_2';
   }
 
   selectParentCategory(cat: Category): void {

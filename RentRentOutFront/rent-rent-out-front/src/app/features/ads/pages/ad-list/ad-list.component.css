@@ -3,6 +3,94 @@
 }
 
 /* =========================================
+   HOME SECTIONS
+   ========================================= */
+.home-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-bottom: 40px;
+}
+
+.home-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0e8f0;
+}
+
+.section-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon {
+  color: #813181;
+  font-size: 26px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #283859;
+  margin: 0;
+}
+
+.section-count {
+  font-size: 12px;
+  color: #813181;
+  background: #f5ecff;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.section-see-all {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #813181;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: gap 0.2s ease;
+  white-space: nowrap;
+
+  .material-icons {
+    font-size: 18px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    gap: 8px;
+
+    .material-icons {
+      transform: translateX(2px);
+    }
+  }
+}
+
+.section-empty {
+  font-size: 14px;
+  color: #aaa;
+  padding: 12px 0;
+}
+
+@media (max-width: 900px) {
+  .home-sections {
+    gap: 28px;
+  }
+}
+
+/* =========================================
    BREADCRUMBS & INFO (Search Mode)
    ========================================= */
 .search-info {

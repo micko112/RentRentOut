@@ -17,6 +17,7 @@ export class FiltersSidebarComponent {
 
   @Input() categories: Category[] = [];
   @Input() locations: Location[] = [];
+  @Input() totalResults = 0;
 
   @Output() applyFilters = new EventEmitter<Partial<AdSearchCriteria>>();
 

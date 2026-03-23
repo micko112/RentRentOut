@@ -7,6 +7,11 @@
        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
 
     <changeSet id="19-add-unique-constraint-ad-view" author="system">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="uq_ad_view_user_ad"/>
+            </not>
+        </preConditions>
         <addUniqueConstraint
                 tableName="ad_view"
                 columnNames="user_id, ad_id"

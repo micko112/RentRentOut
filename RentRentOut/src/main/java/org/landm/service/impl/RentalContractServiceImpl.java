@@ -240,7 +240,11 @@ public class RentalContractServiceImpl implements RentalContractService {
         Ad ad = contract.getAd();
         ContractStatus oldStatus = contract.getContractStatus();
 
-        if(oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.ACCEPTED){ // ovde treba logika za prihvatanje - provera i  
+        if(oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.ACCEPTED){
+
+            if (contract.getEndDate().isBefore(LocalDate.now())) {
+                throw new RuntimeException("Ne možete prihvatiti zahtev čiji period je već istekao.");
+            }
 
 			Ad contrAd = adRepository.findByIdForUpdate(ad.getId());
 

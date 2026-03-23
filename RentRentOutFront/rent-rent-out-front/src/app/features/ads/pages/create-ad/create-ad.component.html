@@ -58,7 +58,7 @@
                     class="cat-card"
                     [class.selected]="isParentSelected(cat)"
                     (click)="selectParentCategory(cat)">
-              <span class="cat-icon">{{ getCategoryIcon(cat.name) }}</span>
+              <span class="cat-icon material-icons">{{ getCategoryIcon(cat.name) }}</span>
               <span class="cat-name">{{ cat.name }}</span>
               <div class="cat-check" *ngIf="isParentSelected(cat)">✓</div>
             </button>
@@ -155,7 +155,7 @@
                  (dragleave)="onDragLeave($event)"
                  (drop)="onDrop($event)">
             <div class="dz-inner">
-              <span class="dz-icon">{{ isDragging ? '📂' : '🖼️' }}</span>
+              <span class="dz-icon material-icons">{{ isDragging ? 'folder_open' : 'add_photo_alternate' }}</span>
               <span class="dz-title">{{ isDragging ? 'Ispusti slike ovde' : 'Prevuci slike ili klikni za odabir' }}</span>
               <span class="dz-sub">PNG · JPG · WEBP &nbsp;·&nbsp; max 10MB po slici</span>
               <span class="dz-badge" *ngIf="selectedFiles.length > 0">{{ selectedFiles.length }}/{{ MAX_IMAGES }} odabrano</span>
@@ -166,12 +166,12 @@
             <div class="img-cell" *ngFor="let url of previewUrls; let i = index">
               <div class="img-inner">
                 <img [src]="url" [alt]="'Slika ' + (i + 1)">
-                <div class="cover-badge" *ngIf="i === 0">⭐ Naslovna</div>
+                <div class="cover-badge" *ngIf="i === 0"><span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> Naslovna</div>
                 <div class="img-overlay">
                   <button type="button" class="img-btn cover-btn" *ngIf="i !== 0"
-                          (click)="setCoverImage(i)" title="Postavi kao naslovnu">⭐</button>
+                          (click)="setCoverImage(i)" title="Postavi kao naslovnu"><span class="material-icons" style="font-size:17px">star</span></button>
                   <button type="button" class="img-btn remove-btn"
-                          (click)="removeImage(i)" title="Ukloni">✕</button>
+                          (click)="removeImage(i)" title="Ukloni"><span class="material-icons" style="font-size:17px">close</span></button>
                 </div>
               </div>
               <div class="img-num">{{ i + 1 }}</div>
@@ -248,7 +248,7 @@
             <div class="tier-hint">Popust za duži period iznajmljivanja (opcionalno)</div>
             <div class="tier-row">
               <div class="tier-label">
-                <span class="tier-icon">📅</span>
+                <span class="tier-icon material-icons">event</span>
                 <div>
                   <div class="tier-name">Po sedmici</div>
                   <div class="tier-sub">7 dana</div>
@@ -261,7 +261,7 @@
             </div>
             <div class="tier-row">
               <div class="tier-label">
-                <span class="tier-icon">📆</span>
+                <span class="tier-icon material-icons">calendar_month</span>
                 <div>
                   <div class="tier-name">Po mesecu</div>
                   <div class="tier-sub">30 dana</div>

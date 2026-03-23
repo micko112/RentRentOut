@@ -16,6 +16,10 @@ public interface UserRepository extends JpaRepository<User, Long>{
     boolean existsByEmail(String email);
 
     User findByEmail(String email);
+
+    User findByFacebookId(String facebookId);
+
+    User findByAppleId(String appleId);
     
     @Lock(LockModeType.OPTIMISTIC)
     @Query("""

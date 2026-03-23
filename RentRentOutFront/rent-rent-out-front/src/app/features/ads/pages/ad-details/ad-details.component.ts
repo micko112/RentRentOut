@@ -60,7 +60,11 @@ export class AdDetailsComponent implements OnInit {
         const id = Number(params.get('id'));
 
         if (this.isLoggedIn) {
-          this.adService.trackView(id).subscribe({ error: () => {} });
+          const viewKey = `viewed_ad_${id}`;
+          if (!sessionStorage.getItem(viewKey)) {
+            sessionStorage.setItem(viewKey, '1');
+            this.adService.trackView(id).subscribe({ error: () => {} });
+          }
         }
 
         return this.adService.getAdById(id);
