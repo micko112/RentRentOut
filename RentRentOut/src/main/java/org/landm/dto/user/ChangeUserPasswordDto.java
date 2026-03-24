@@ -8,7 +8,7 @@ public class ChangeUserPasswordDto {
 	@NotBlank
 	private String oldPassword;
 	@NotBlank
-	@Size(min = 6)
+	@Size(min = 8)
 	private String newPassword;
 	
 	public ChangeUserPasswordDto() {

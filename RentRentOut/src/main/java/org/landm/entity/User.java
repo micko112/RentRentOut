@@ -3,6 +3,7 @@ package org.landm.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.landm.entity.Enums.Currency;
+import org.landm.security.PhoneNumberConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -56,6 +57,7 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+    @Convert(converter = PhoneNumberConverter.class)
     @Column(name = "phone_number")
     private String phoneNumber;
 

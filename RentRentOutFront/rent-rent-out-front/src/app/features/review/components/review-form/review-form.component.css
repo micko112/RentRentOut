@@ -108,3 +108,18 @@
   color: #333;
   line-height: 1.8;
 }
+
+@media (max-width: 600px) {
+  .review-form .question {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .review-form .question .question-text {
+    width: 100%;
+  }
+
+  .review-form .question .radio-group {
+    flex-wrap: wrap;
+  }
+}

@@ -36,9 +36,9 @@
   }
 }
 .left-column {
-  /* Fiksiramo širinu leve kolone na 750px */
   width: 750px;
-  flex-shrink: 0;
+  max-width: 100%;
+  flex-shrink: 1;
   display: flex;
   flex-direction: column;
 }
@@ -167,8 +167,7 @@
 .right-column {
   flex: 1;
   position: sticky;
-
-  min-width: 380px;
+  min-width: 320px;
 }
 .right-column-container {
   border: 0 solid #e0e0e0;
@@ -716,4 +715,87 @@ border-radius: 4px;
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ─── Responsive ─────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .left-column {
+    width: 100%;
+    flex-shrink: 1;
+  }
+
+  .right-column {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 100%;
+    position: static;
+  }
+
+  .main-layout {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery {
+    height: 300px;
+    gap: 8px;
+  }
+
+  .thumbnail-list {
+    width: 64px;
+  }
+
+  .thumbnail-list .thumbnail {
+    width: 64px;
+    height: 64px;
+  }
+
+  .info {
+    padding: 20px 16px;
+  }
+
+  .info .price-value {
+    font-size: 28px;
+  }
+
+  .info h1 {
+    font-size: 20px;
+  }
+
+  .user-info-card {
+    padding: 16px;
+  }
+
+  .right-column-container {
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery {
+    height: 220px;
+  }
+
+  .thumbnail-column {
+    display: none;
+  }
+
+  .info {
+    padding: 16px 12px;
+  }
+
+  .info h1 {
+    font-size: 18px;
+  }
+
+  .info .price-value {
+    font-size: 24px;
+  }
+
+  .btn-save-details {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
 }

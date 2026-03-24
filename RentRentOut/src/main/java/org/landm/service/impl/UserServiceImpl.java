@@ -30,6 +30,7 @@ import org.landm.service.AdService;
 import org.landm.service.EmailVerificationService;
 import org.landm.service.ReviewService;
 import org.landm.service.UserService;
+import org.landm.util.HtmlSanitizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -91,13 +92,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto register(RegisterUserRequestDto req) {
 
-		String roleName = req.getRole();
-		if (roleName == null || roleName.isBlank()) {
-			roleName = "ROLE_USER";
-		}
-		Role role = roleRepository.findByName(roleName);
+		Role role = roleRepository.findByName("ROLE_USER");
 		if (role == null) {
-			throw new RuntimeException("Role not found in database: " + roleName);
+			throw new RuntimeException("Role not found in database: ROLE_USER");
 		}
             if (userRepository.existsByEmail(req.getEmail())) {
 //                throw new RuntimeException("Email already exists!");
@@ -213,7 +210,7 @@ public class UserServiceImpl implements UserService {
 			EmailVerificationToken verificationToken = emailVerificationService.createAndSaveToken(user);
 			emailVerificationService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
 		}
-		if (editUserDto.getDescription() != null) user.setDescription(editUserDto.getDescription());
+		if (editUserDto.getDescription() != null) user.setDescription(HtmlSanitizer.sanitize(editUserDto.getDescription()));
 		if (editUserDto.getPhoneNumber() != null) user.setPhoneNumber(editUserDto.getPhoneNumber());
 		if (editUserDto.getAvatarUrl() != null) user.setAvatarUrl(editUserDto.getAvatarUrl());
     	user = userRepository.save(user);

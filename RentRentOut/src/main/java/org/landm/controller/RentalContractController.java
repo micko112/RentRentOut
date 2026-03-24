@@ -39,8 +39,9 @@ public class RentalContractController {
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping("/{id}")
-	public ResponseEntity<RentalContractDto> getRentalContractById(@PathVariable("id") Long rentalId){
-		return new ResponseEntity<>(service.getRentalContractById(rentalId), HttpStatus.OK);
+	public ResponseEntity<RentalContractDto> getRentalContractById(@PathVariable("id") Long rentalId, Authentication auth){
+		Long userId = Long.parseLong(auth.getName());
+		return new ResponseEntity<>(service.getRentalContractById(rentalId, userId), HttpStatus.OK);
 	}
 	
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

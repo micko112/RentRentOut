@@ -176,34 +176,32 @@ public class RentalContractServiceImpl implements RentalContractService {
     		LocalDate endDate, int totalAmount) {
     	List<Event> events = new ArrayList<>();
     	
-    	int avaliableAmountForDates = totalAmount;
-    	
+    	long avaliableAmountForDates = totalAmount;
+
     	for(RentalContract rc : contracts) {
     		events.add(new Event(rc.getStartDate(), rc.getAmount()));
-    		
     		events.add(new Event(rc.getEndDate().plusDays(1), -rc.getAmount()));
     	}
-    	
+
     	events.sort(Comparator.comparing(e -> e.date));
-    	
-    	int currUsed = 0;
-    	int availableItems = totalAmount;
-    	
+
+    	long currUsed = 0;
+    	long availableItems = totalAmount;
+
     	for (Event e : events) {
     		if(e.date.isAfter(endDate)) break;
-    		
+
     		if(e.date.isBefore(startDate)) {
     			currUsed += e.itemCount;
     			continue;
     		}
-    		
+
     		currUsed += e.itemCount;
-    		int availableNow = availableItems - currUsed;
+    		long availableNow = availableItems - currUsed;
     		avaliableAmountForDates = Math.min(availableNow, avaliableAmountForDates);
-    		
     	}
-    	
-    	return avaliableAmountForDates;
+
+    	return (int) avaliableAmountForDates;
     } 
     
     private boolean isValidTransition(ContractStatus from, ContractStatus to) {
@@ -433,9 +431,10 @@ public class RentalContractServiceImpl implements RentalContractService {
     }
 
 	@Override
-	public RentalContractDto getRentalContractById(Long rentalId) {
+	public RentalContractDto getRentalContractById(Long rentalId, Long requestingUserId) {
 		RentalContract contract = rentalContractRepository.findById(rentalId)
 				.orElseThrow(() -> new RuntimeException("No rental contract found!"));
+		checkPermissions(requestingUserId, contract);
 		return rentalContractMapper.toDto(contract);
 	}
 
@@ -484,17 +483,17 @@ public class RentalContractServiceImpl implements RentalContractService {
 				.orElseThrow(() -> new RuntimeException("Error deleting contract - contract not found"));
 		
 		if(!currContr.getLessee().getId().equals(userId)) {
-			throw new RuntimeException("Deleting someone's contract - not allowed!");
+			throw new AccessDeniedException("Nemate dozvolu za brisanje ovog ugovora.");
 		}
-		
+
 		if(isActiveOrAccepted(currContr.getContractStatus())) {
-			throw new RuntimeException("Trying to delete ongoing contract - not allowed!");
+			throw new IllegalStateException("Ne možete obrisati aktivan ugovor.");
 		}
-		
+
 		if(currContr.getContractStatus() != ContractStatus.DELETED) {
 			currContr.setContractStatus(ContractStatus.DELETED);
 		}else {
-			throw new RuntimeException("Contract already deleted!");
+			throw new IllegalStateException("Ugovor je već obrisan.");
 		}
 		rentalContractRepository.save(currContr);
 		

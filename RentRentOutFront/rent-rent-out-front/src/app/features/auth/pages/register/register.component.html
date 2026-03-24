@@ -34,7 +34,7 @@
       <input id="password" type="password" formControlName="password">
       <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-message">
         <small *ngIf="password?.errors?.['required']">Lozinka je obavezna.</small>
-        <small *ngIf="password?.errors?.['minlength']">Lozinka mora imati bar 6 karaktera.</small>
+        <small *ngIf="password?.errors?.['minlength']">Lozinka mora imati bar 8 karaktera.</small>
       </div>
     </div>
 

@@ -46,6 +46,8 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             return;
         }
 
+        tokenRepository.deleteAllByUserId(user.getId());
+
         PasswordResetToken resetToken = new PasswordResetToken();
         resetToken.setToken(UUID.randomUUID().toString());
         resetToken.setUser(user);

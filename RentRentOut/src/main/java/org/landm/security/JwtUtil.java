@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.landm.entity.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -18,21 +19,41 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
 
-    private final String secret = "mySecretJWT123456789012345678901";
+    @Value("${jwt.secret}")
+    private String secret;
 
-    //Generates JWT token for remembering logged user
-    public String generateToken(User user){
-    	Map<String, Object> claims = new HashMap<>();
-    	claims.put("roles", user.getStringRoles());
-    	Long userId = user.getId();
-    	
+    @Value("${jwt.access-expiration:900000}")
+    private long accessExpiration;
+
+    @Value("${jwt.refresh-expiration:604800000}")
+    private long refreshExpiration;
+
+    // Access token — 15 min, nosi roles
+    public String generateAccessToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", user.getStringRoles());
         return Jwts.builder()
-        		.setClaims(claims)
-                .setSubject(String.valueOf(userId))
+                .setClaims(claims)
+                .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
+    }
+
+    // Refresh token — 7 dana, samo userId
+    public String generateRefreshToken(User user) {
+        return Jwts.builder()
+                .setSubject(String.valueOf(user.getId()))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .compact();
+    }
+
+    // Alias — zadržano radi kompatibilnosti (WebSocket interceptor)
+    public String generateToken(User user) {
+        return generateAccessToken(user);
     }
 
     //Extracts userId from generated JWT token

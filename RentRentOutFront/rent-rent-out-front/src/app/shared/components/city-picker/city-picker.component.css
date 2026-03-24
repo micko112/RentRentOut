@@ -129,3 +129,18 @@
   color: #999;
   font-size: 13px;
 }
+
+@media (max-width: 600px) {
+  .city-dropdown {
+    width: calc(100vw - 24px);
+    left: 0;
+    right: 0;
+  }
+
+  .city-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .city-chip:nth-child(4n) { border-right: 1px solid #f0f0f0; }
+  .city-chip:nth-child(2n) { border-right: none; }
+}

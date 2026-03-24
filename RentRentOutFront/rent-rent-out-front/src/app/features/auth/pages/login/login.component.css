@@ -2,19 +2,34 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content:  center;
+  justify-content: center;
   width: 100%;
-
   padding: 40px 0;
   gap: 20px;
-
 }
-form{
+
+form {
   max-width: 400px;
   padding: 30px;
   width: 100%;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 20px 0;
+  }
+
+  form {
+    padding: 20px 16px;
+    box-shadow: none;
+    border: 1px solid #eee;
+  }
+
+  .btn-reg button {
+    font-size: 16px;
+  }
 }
 .title{
 margin-bottom: 20px;

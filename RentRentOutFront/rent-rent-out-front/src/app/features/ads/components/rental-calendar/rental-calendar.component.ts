@@ -231,8 +231,7 @@ export class RentalCalendarComponent implements OnChanges {
       next: () => {
         this.toastService.showSuccess('Uspesno ste poslali zahtev!');
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.toastService.showError('Zahtev nije poslat!');
       }
     });
@@ -263,12 +262,11 @@ export class RentalCalendarComponent implements OnChanges {
             }));
             this.generateCalendar();
           },
-          error: (err) => console.error('Greška pri osvežavanju:', err)
+          error: () => {}
         });
       },
-      error: (err) => {
+      error: () => {
         this.toastService.showError('Greška pri blokiranju datuma.');
-        console.error(err);
       }
     });
   }

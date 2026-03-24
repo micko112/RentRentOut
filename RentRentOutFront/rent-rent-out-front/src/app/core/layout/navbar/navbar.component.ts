@@ -16,7 +16,6 @@ export class NavbarComponent implements  OnInit {
   }
   ngOnInit(): void {
     this.categoryService.getAll().subscribe(res => {
-      console.log('Kategorije sa backenda: ', res);
       this.categories = res;
     })
   }

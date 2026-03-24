@@ -1,5 +1,7 @@
 package org.landm.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -16,6 +18,8 @@ import java.util.List;
 @Component
 public class JwtChannelInterceptor implements ChannelInterceptor {
 
+    private static final Logger log = LoggerFactory.getLogger(JwtChannelInterceptor.class);
+
     private final JwtUtil jwtUtil;
 
     public JwtChannelInterceptor(JwtUtil jwtUtil) {
@@ -27,16 +31,12 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
 
-            // Ispisujemo da vidimo da li je Angular uopšte probao da se nakači
-            System.out.println(">>> STOMP CONNECT POKUŠAJ...");
+            log.debug("STOMP CONNECT pokušaj");
 
-            // Kod WebSocketa, hederi su upakovani u liste, zato koristimo getNativeHeader
             List<String> authorization = accessor.getNativeHeader("Authorization");
 
             if (authorization != null && !authorization.isEmpty()) {
                 String authHeader = authorization.get(0);
-
-                System.out.println(">>> TOKEN STIGAO U CEV: " + authHeader.substring(0, 20) + "..."); // Štampamo samo početak da ne prljamo log
 
                 if (authHeader.startsWith("Bearer ")) {
                     String token = authHeader.substring(7);
@@ -50,17 +50,17 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
                                     new UsernamePasswordAuthenticationToken(userId, null, authorities);
 
                             accessor.setUser(authInfo);
-                            System.out.println(">>> KORISNIK ID " + userId + " USPEŠNO ZAKAČEN ZA WEBSOCKET!");
+                            log.debug("Korisnik ID {} uspešno autentifikovan za WebSocket", userId);
 
                             // KLJUČNO: Vraćamo izmenjenu poruku sa korisnikom unutra!
                             return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
                         }
                     } catch (Exception e) {
-                        System.out.println(">>> STOMP JWT GREŠKA: " + e.getMessage());
+                        log.warn("STOMP JWT greška: {}", e.getMessage());
                     }
                 }
             } else {
-                System.out.println(">>> NEMA AUTHORIZATION HEDERA U STOMP PORUCI!");
+                log.debug("Nema Authorization hedera u STOMP poruci");
             }
         }
         return message;

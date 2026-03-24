@@ -69,3 +69,23 @@
   color: #9ca3af;
   padding: 16px 0;
 }
+
+@media (max-width: 600px) {
+  .contracts-page {
+    gap: 20px;
+    padding: 16px 0;
+  }
+
+  .search-bar {
+    padding: 8px 12px;
+    margin-bottom: 16px;
+  }
+
+  .search-bar input {
+    font-size: 14px;
+  }
+
+  .section-title {
+    font-size: 14px;
+  }
+}

@@ -1,13 +1,15 @@
 import {Component, Input} from '@angular/core';
 import {Review} from '../../../../shared/models/review';
 import {DatePipe, NgClass, NgIf} from '@angular/common';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-review-card',
   imports: [
     NgClass,
     DatePipe,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   standalone: true,
   templateUrl: './review-card.component.html',

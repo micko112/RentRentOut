@@ -45,3 +45,14 @@
   text-decoration: none;
   font-weight: 600;
 }
+
+@media (max-width: 480px) {
+  .verify-container {
+    padding: 20px 12px;
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 24px 16px;
+  }
+}

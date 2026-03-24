@@ -148,7 +148,7 @@ public class RentalContract {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         RentalContract that = (RentalContract) o;
-        return id == that.id;
+        return Objects.equals(id, that.id);
     }
 
     @Override

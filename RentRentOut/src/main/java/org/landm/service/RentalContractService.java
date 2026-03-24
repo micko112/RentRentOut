@@ -19,7 +19,7 @@ public interface RentalContractService {
     public RentalContractDto updateStatus(Long contractId,
                         UpdateRentalContractStatusRequestDto req, Long userId);
     
-    public RentalContractDto getRentalContractById(Long rentalId);
+    public RentalContractDto getRentalContractById(Long rentalId, Long requestingUserId);
     
     public Page<RentalContractDto> search(Long userId, boolean isAdmin, RentalContractSearchDto searchDto);
     

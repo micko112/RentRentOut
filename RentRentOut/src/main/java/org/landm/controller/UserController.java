@@ -1,5 +1,6 @@
 package org.landm.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.landm.dto.requestDto.DepositRequestDto;
 import org.landm.dto.user.*;
@@ -7,8 +8,10 @@ import org.landm.entity.User;
 import org.landm.mapper.UserMapper;
 import org.landm.security.JwtUtil;
 import org.landm.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,11 +28,37 @@ public class UserController {
     private final JwtUtil jwtUtil;
     private final UserMapper userMapper;
 
-    public UserController(UserService userService, JwtUtil jwtUtil, 
+    @Value("${app.cookie.secure:false}")
+    private boolean cookieSecure;
+
+    @Value("${jwt.access-expiration:900000}")
+    private long accessExpiration;
+
+    @Value("${jwt.refresh-expiration:604800000}")
+    private long refreshExpiration;
+
+    public UserController(UserService userService, JwtUtil jwtUtil,
     		UserMapper userMapper) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.userMapper = userMapper;
+    }
+
+    private void setAuthCookies(HttpServletResponse response, User user) {
+        String accessToken  = jwtUtil.generateAccessToken(user);
+        String refreshToken = jwtUtil.generateRefreshToken(user);
+        response.addHeader("Set-Cookie", buildCookie("access_token",  accessToken,  accessExpiration  / 1000).toString());
+        response.addHeader("Set-Cookie", buildCookie("refresh_token", refreshToken, refreshExpiration / 1000).toString());
+    }
+
+    private ResponseCookie buildCookie(String name, String value, long maxAgeSeconds) {
+        return ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path("/")
+                .maxAge(maxAgeSeconds)
+                .sameSite("Lax")
+                .build();
     }
 
 
@@ -57,50 +86,43 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginUserRequestDto req){
-    	User user = userService.login(req);
-    	String token = jwtUtil.generateToken(user);
-
-    	Map<String, Object> response = new HashMap<>();
-        response.put("user", userMapper.toDto(user));
-        response.put("token", token);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginUserRequestDto req, HttpServletResponse response) {
+        User user = userService.login(req);
+        setAuthCookies(response, user);
+        Map<String, Object> res = new HashMap<>();
+        res.put("user", userMapper.toDto(user));
+        res.put("wsToken", jwtUtil.generateToken(user));
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/google-login")
-    public ResponseEntity<Map<String, Object>> googleLogin(@RequestBody Map<String, String> body) {
-        String idToken = body.get("idToken");
-        User user = userService.googleLogin(idToken);
-        String token = jwtUtil.generateToken(user);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", userMapper.toDto(user));
-        response.put("token", token);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> googleLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
+        User user = userService.googleLogin(body.get("idToken"));
+        setAuthCookies(response, user);
+        Map<String, Object> res = new HashMap<>();
+        res.put("user", userMapper.toDto(user));
+        res.put("wsToken", jwtUtil.generateToken(user));
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/facebook-login")
-    public ResponseEntity<Map<String, Object>> facebookLogin(@RequestBody Map<String, String> body) {
-        String accessToken = body.get("accessToken");
-        User user = userService.facebookLogin(accessToken);
-        String token = jwtUtil.generateToken(user);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", userMapper.toDto(user));
-        response.put("token", token);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> facebookLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
+        User user = userService.facebookLogin(body.get("accessToken"));
+        setAuthCookies(response, user);
+        Map<String, Object> res = new HashMap<>();
+        res.put("user", userMapper.toDto(user));
+        res.put("wsToken", jwtUtil.generateToken(user));
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/apple-login")
-    public ResponseEntity<Map<String, Object>> appleLogin(@RequestBody Map<String, String> body) {
-        String identityToken = body.get("identityToken");
-        User user = userService.appleLogin(identityToken);
-        String token = jwtUtil.generateToken(user);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", userMapper.toDto(user));
-        response.put("token", token);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> appleLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
+        User user = userService.appleLogin(body.get("identityToken"));
+        setAuthCookies(response, user);
+        Map<String, Object> res = new HashMap<>();
+        res.put("user", userMapper.toDto(user));
+        res.put("wsToken", jwtUtil.generateToken(user));
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
     
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

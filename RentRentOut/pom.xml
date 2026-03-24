@@ -151,6 +151,20 @@
             <version>1.38.0</version>
         </dependency>
 
+        <!-- XSS sanitization -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.18.1</version>
+        </dependency>
+
+        <!-- Rate limiting -->
+        <dependency>
+            <groupId>io.github.bucket4j</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>8.10.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

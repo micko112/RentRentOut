@@ -49,6 +49,7 @@ public class AdController {
         return new ResponseEntity<>(adService.create(req, userId), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<AdDto> updateAd(@PathVariable Long id,
                                           @Valid @RequestBody UpdateAdRequestDto req,

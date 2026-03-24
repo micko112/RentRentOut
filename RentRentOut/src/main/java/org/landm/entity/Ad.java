@@ -225,7 +225,7 @@ public class Ad {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Ad ad = (Ad) o;
-        return id == ad.id;
+        return Objects.equals(id, ad.id);
     }
 
     @Override

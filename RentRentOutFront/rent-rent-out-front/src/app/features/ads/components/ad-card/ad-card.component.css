@@ -278,3 +278,37 @@
     color: #bbb;
   }
 }
+
+/* ─── Responsive: list-view na mobilnim ─── */
+@media (max-width: 600px) {
+  .listing-card.list-view {
+    height: auto;
+    min-height: 110px;
+  }
+
+  .listing-card.list-view .image-wrapper {
+    width: 130px;
+    min-width: 130px;
+  }
+
+  .listing-card.list-view .listing-info {
+    flex: 1;
+    max-width: none;
+    padding: 10px 12px;
+  }
+
+  .listing-card.list-view .listing-stats {
+    display: none;
+  }
+
+  .listing-card.list-view .listing-title {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .listing-card.list-view .image-wrapper {
+    width: 100px;
+    min-width: 100px;
+  }
+}

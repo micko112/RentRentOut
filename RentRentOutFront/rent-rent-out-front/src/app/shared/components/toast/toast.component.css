@@ -49,6 +49,19 @@
   }
 }
 
+@media (max-width: 900px) {
+  .toast-container {
+    bottom: 76px; /* above mobile nav */
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast-box {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
 /* Animacija da "ukliza" na ekran */
 @keyframes slideIn {
   from {

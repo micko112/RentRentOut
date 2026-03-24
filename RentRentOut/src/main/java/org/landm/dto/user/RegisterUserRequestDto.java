@@ -18,11 +18,8 @@ public class RegisterUserRequestDto {
     private String email;
 
     @NotBlank
-    @Size(min = 6)
+    @Size(min = 8)
     private String password;
-    
-
-    private String role;
 
     public RegisterUserRequestDto() {
     }
@@ -59,13 +56,4 @@ public class RegisterUserRequestDto {
         this.password = password;
     }
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-    
-    
 }

@@ -1,5 +1,6 @@
 package org.landm.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -13,18 +14,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final JwtChannelInterceptor jwtChannelInterceptor;
 
+    @Value("${app.frontend.base-url:http://localhost:4200}")
+    private String frontendBaseUrl;
+
     public WebSocketConfig(JwtChannelInterceptor jwtChannelInterceptor) {
         this.jwtChannelInterceptor = jwtChannelInterceptor;
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // 1. OVO JE ULAZNA VRATA ZA ANGULAR (Handshake endpoint)
-        // Angular će se povezati na: ws://localhost:8080/ws
-        // setAllowedOrigins("*") dozvoljava konekciju sa localhost:4200 (CORS za WebSockets)
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*"); // Koristi AllowedOriginPatterns umesto AllowedOrigins u novijim Spring verzijama
-
+                .setAllowedOriginPatterns(frontendBaseUrl);
     }
 
     @Override

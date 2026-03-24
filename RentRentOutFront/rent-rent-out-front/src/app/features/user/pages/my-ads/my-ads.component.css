@@ -226,3 +226,31 @@
   &:hover { background: #c62828; }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
+
+/* ─── Responsive ─────────────────────────────────────── */
+@media (max-width: 600px) {
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .header-row .btn-add-new {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .modal-card {
+    padding: 20px 16px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}

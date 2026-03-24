@@ -27,7 +27,7 @@ public class ReviewMapper {
         r.setAdTitle(review.getContract().getAd().getTitle());
         r.setCreatedAt(review.getCreatedAt());
 
-        if (review.getReviewee().getId() == review.getContract().getAd().getOwner().getId()) {
+        if (review.getReviewee().getId().equals(review.getContract().getAd().getOwner().getId())) {
             r.setRevieweeRole("LESSOR");
         } else {
             r.setRevieweeRole("LESSEE");

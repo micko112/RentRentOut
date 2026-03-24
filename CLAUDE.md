@@ -40,7 +40,7 @@ docker-compose up --build     # Rebuild and start
 
 This repo uses **two worktrees**:
 - `C:/xampp/htdocs/Rent Rent Out/` — `main` branch
-- `C:/xampp/htdocs/RentRentOut-Profile/` — `features/user-profile` branch (this directory)
+- `C:/xampp/htdocs/RentRentOut-Profile/` — `features/user-profile` branch
 
 When making changes to `main`, always `cd` into `C:/xampp/htdocs/Rent Rent Out/` first.
 
@@ -51,21 +51,38 @@ When making changes to `main`, always `cd` into `C:/xampp/htdocs/Rent Rent Out/`
 Layered Spring Boot architecture: Controller → Service (interface + impl) → Repository (JPA) → Entity
 
 Key packages:
-- `controller/` — REST endpoints; `ChatWsController` handles WebSocket messaging
+- `controller/` — REST endpoints; `ChatWsController` handles WebSocket messaging; `AuthController` handles `/api/auth/refresh`, `/api/auth/logout`, `/api/auth/ws-token`
 - `service/` — Business logic; each domain has an interface and implementation
 - `entity/` — JPA entities: `User`, `Ad`, `RentalContract`, `Review`, `Conversation`, `Message`, `Notification`; `MessageType` enum (`REGULAR`, `SYSTEM`)
 - `dto/` — DTOs grouped by feature (ad, chat, review, user, contract, notification)
 - `repository/` — Spring Data JPA repositories
-- `security/` — JWT auth (`JwtUtil`, `JwtFilter`), WebSocket JWT (`JwtChannelInterceptor`), `SecurityConfig`
+- `security/` — JWT auth (`JwtUtil`, `JwtFilter`), WebSocket JWT (`JwtChannelInterceptor`), `SecurityConfig`, `PhoneNumberConverter` (AES-256 JPA converter)
 - `config/` — CORS (`WebConfig`), WebSocket (`WebSocketConfig`), mail
 
 Database migrations are in `src/main/resources/db/changelog/` (Liquibase XML changesets). **Always add new schema changes as new migration files, never edit existing ones.**
 
-Two Spring profiles: default (local) uses `application.properties`; `docker` uses `application-docker.properties`.
+Two Spring profiles: default (local) uses `application.properties`; `docker` uses `application-docker.properties`; `prod` uses `application-prod.properties`.
 
 **Ključne zavisnosti u `pom.xml`** koje nisu managed kroz Spring Boot BOM i moraju imati eksplicitnu verziju:
 - `com.nimbusds:nimbus-jose-jwt:9.37.3` — koristi se u `UserServiceImpl.appleLogin()` za verifikaciju Apple JWT tokena
 - `com.google.api-client:google-api-client:2.2.0` — za Google OAuth verifikaciju u `UserServiceImpl.googleLogin()`
+
+### Security
+
+`SecurityConfig.java` — ključne napomene:
+- Custom `authenticationEntryPoint` vraća **401 JSON** (ne 403) za neautentifikovane zahteve. Frontend `errorInterceptor` radi auto-logout na 401, ali prikazuje toast na 403.
+- `GET /api/user/me` mora biti eksplicitno pre `GET /api/user/**` (koji je `permitAll`), inače anonimni korisnici dobijaju 403 od `@PreAuthorize` umesto 401 od entrypoint-a.
+- `DELETE /api/admin/**` mora imati vodeći `/` u putanji.
+- HTTP security headers su uključeni: `X-Frame-Options: DENY`, HSTS (1 godina + subdomeni), CSP (dozvoljava Google/Facebook SDK, Cloudinary, Material Icons CDN).
+- `POST /api/auth/refresh` i `POST /api/auth/logout` su `permitAll`; `GET /api/auth/ws-token` je `authenticated`.
+
+**Phone number enkripcija**: `PhoneNumberConverter.java` (`security/`) — JPA `AttributeConverter` sa AES-256/CBC/PKCS5Padding. Random IV se prepend-uje svakom enkriptovanom vrednosti (Base64 encoded). Backward-compatible: ako dekriptovanje ne uspe, vraća raw vrednost (za postojeće plain-text brojeve u bazi). Ključ se čita iz `encryption.phone-key` property. Spring-managed komponenta (da bi `@Value` injection radilo u JPA konverteru — statičko polje sa setter injektovanjem).
+
+### DTO Sigurnost (šta se NE šalje prema frontu)
+
+- `UserShortDto` — sadrži `phoneNumber` ali **maskiran** kao `"06x / xxx-xxxx"` (null ako nema) — frontend koristi to samo da zna treba li prikazati dugme "Prikaži broj"; pravi broj se dohvata zasebnim `GET /api/user/{id}/phone` (requires auth)
+- `AdDto` — nema `email` vlasnika (PII curenje)
+- `RentalContractDto` — koristi `ContractParticipantDto` (samo id, ime, avatar) za lessee/owner, ne pun `UserDto`
 
 ### Frontend (`RentRentOutFront/rent-rent-out-front/src/app/`)
 
@@ -88,19 +105,32 @@ Feature-based module structure with lazy loading:
 
 Routes are defined in `app.routes.ts` with lazy loading for all feature modules.
 
+### Material Icons
+
+Dva fonta su učitana u `index.html`:
+- **Material Icons** (klasični, popunjeni): `class="material-icons"` — CDN `family=Material+Icons`
+- **Material Icons Outlined**: `class="material-icons-outlined"` — CDN `family=Material+Icons+Outlined`
+- **Material Symbols Outlined** (noviji, tanji, varijabilni): `class="material-symbols-outlined"` — CDN sa osama `opsz,wght,FILL,GRAD`
+
+Globalni CSS u `styles.css` za Symbols:
+```css
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 24;
+}
+```
+Symbols imaju više ikona od klasičnih Icons (npr. `tools_power_drill`). Koristiti `material-symbols-outlined` za fine/tanke ikone, `material-icons` za standardne.
+
 ### App Shell Layout (`app.component`)
 
-`app.component.css` uses flexbox with `gap: 200px` between sidebar and content. The sidebar is `185px` wide and `position: sticky`. Key CSS classes:
-- `.has-sidebar` — added when sidebar is visible (logged-in, non-admin routes); used to apply max-width centering on pages without sidebar
-- `.is-admin` — added on `/admin` routes; removes padding from page-content
+`app.component.css` uses flexbox with `gap: 185px` between sidebar and content. Key CSS classes:
+- `.has-sidebar` — applied when sidebar is visible; used to apply max-width centering on pages without sidebar
+- `.is-admin` — applied on `/admin` routes; removes padding from page-content
 
 `app.component.ts` exposes:
 - `showSidebar$` — based on **route only** (not auth state); `true` on all non-`/admin` routes
 - `isAdmin$` — `true` when URL starts with `/admin`
 
-`app.component.html` conditionally renders `<app-sidebar *ngIf="showSidebar$ | async">`.
-
-Router uses `withPreloading(PreloadAllModules)` + `withInMemoryScrolling({ scrollPositionRestoration: 'top' })` — preloads all lazy chunks in the background (eliminates FOUC on first navigation) and scrolls to top on every route change.
+Router uses `withPreloading(PreloadAllModules)` + `withInMemoryScrolling({ scrollPositionRestoration: 'top' })`.
 
 ### Sidebar (`core/layout/sidebar/`)
 
@@ -109,159 +139,131 @@ Router uses `withPreloading(PreloadAllModules)` + `withInMemoryScrolling({ scrol
 - Active link: `background: #f5ecff`, `border-left: 3px solid #813181`, `color: #813181`
 - Unread badge (red `#e53935`) shown on Poruke and Obaveštenja links
 - **Sidebar always visible** — shown on all non-admin routes regardless of login state
-- **Guest state**: shows login/register buttons + locked (greyed-out, `pointer-events: none`) nav items with Material Icons
+- **Guest state**: shows login/register buttons + locked (greyed-out, `pointer-events: none`) nav items
 - **Logged-in state**: shows user avatar (initials), full interactive nav
 - `SidebarComponent.ngOnInit()` calls both `NotificationService.initialize()` (chat unread) and `NotificationsService.loadUnreadCount()` (app notifications unread) — only when user is logged in
 
 ### Authentication Flow
 
-JWT-based: login returns a token stored client-side → sent as `Authorization: Bearer <token>` on API calls → `JwtFilter` validates on every request. WebSocket connections authenticate via `JwtChannelInterceptor`.
+**HttpOnly Cookie JWT** (XSS-safe — nema localStorage):
+- Login vraća **dva HttpOnly cookie-ja**: `access_token` (15 min) + `refresh_token` (7 dana). Browser ih automatski šalje na svaki zahtev; JavaScript ih ne može pročitati.
+- Login odgovor JSON sadrži i `wsToken` (kratkotrajan JWT) — čuva se samo **in-memory** u `AuthService.wsToken` (ne localStorage!) za STOMP `Authorization` header.
+- `JwtFilter` čita `access_token` cookie **prvo**; fallback na `Authorization: Bearer` header (za WebSocket STOMP handshake koji ne može da šalje cookie-je).
+- `AuthController` (`/api/auth/`): `POST /refresh` — validira `refresh_token` cookie, izdaje novi `access_token` cookie + vraća `{wsToken}`; `POST /logout` — briše oba cookie-ja (maxAge=0); `GET /ws-token` — vraća svež `wsToken` za WebSocket (requires auth).
+- `app.cookie.secure=false` lokalno (HTTP); mora biti `true` u produkciji (`application-prod.properties`).
+
+**Frontend token refresh flow**: `errorInterceptor` hvata 401 → ako nije auth endpoint → poziva `POST /api/auth/refresh` (refresh cookie se automatski šalje) → ponavlja originalni zahtev. Ako refresh ne uspe → redirect na `/login`.
+
+`AuthService.loadInitialUser()` — na startu app poziva `GET /api/user/me` (cookie se šalje automatski). Ako uspe → dohvata i `wsToken` sa `GET /api/auth/ws-token`. Na 401 → ne radi ništa (korisnik nije ulogovan).
+
+`authGuard` koristi `authService.currentUserValue` (ne localStorage).
+
+**Angular dev proxy** (`proxy.conf.json` u Angular project root): proxira `/api` → `localhost:8080` i `/ws` → `localhost:8080` (WebSocket). Ovo čini da browser vidi sve sa `localhost:4200` → cookie-ji su same-origin u razvoju. Proxy je aktivan samo u `serve:development` konfiguraciji (`angular.json`).
+
+Social login: Google (GIS button u `ngAfterViewInit`), Facebook (FB SDK), Apple (identity token). Svi koriste isti backend flow: verifikacija tokena → pronađi ili kreiraj korisnika → postavi HttpOnly cookie-je + vrati `{user, wsToken}`.
 
 ### Real-Time Chat
 
-WebSocket endpoint at `/ws` (STOMP protocol). Frontend uses `RxStompService` (configured in `core/config/`). Messages published to user-specific STOMP destinations.
+WebSocket endpoint at `/ws` (STOMP protocol). Frontend uses `RxStompService` (configured in `core/config/`).
 
-`InboxComponent` (`features/chat/pages/inbox/`) uses `isLoadingMessages` flag — shows a spinner while messages load on conversation switch instead of blanking the area (prevents layout flash). Polling every 5s refreshes conversation list and active messages as WebSocket fallback.
+`InboxComponent` (`features/chat/pages/inbox/`) uses `isLoadingMessages` flag — shows a spinner while messages load on conversation switch. Polling every 5s refreshes conversation list and active messages as WebSocket fallback.
 
 ### Message Types
 
 `Message` entity has a `messageType` column (`VARCHAR(20)`, default `REGULAR`). Two values:
 - `REGULAR` — normal user message
-- `SYSTEM` — auto-generated by the backend (e.g. contract accepted/rejected); rendered in the UI as a centered italic gray bubble
-
-System messages are created by `ChatServiceImpl.sendSystemMessage()` (called from `RentalContractServiceImpl` on status changes) and broadcast via `SimpMessagingTemplate` to both conversation participants.
+- `SYSTEM` — auto-generated by backend (e.g. contract accepted/rejected); rendered as centered italic gray bubble
 
 ### Global Chat Unread Badge
 
 `NotificationService` (`core/services/`) holds a `BehaviorSubject<number>` for total unread chat message count:
 - `initialize()` — fetches `GET /api/chat/unread-count`; called by `SidebarComponent.ngOnInit()`
-- `updateFromConversations()` — recomputes from conversation list (called when Inbox loads)
-- `onConversationOpened(n)` — optimistically subtracts `n` when a conversation is opened
-- `onNewMessageInBackground()` — increments by 1 when a WebSocket message arrives for a background conversation
+- `updateFromConversations()` — recomputes from conversation list
+- `onConversationOpened(n)` — optimistically subtracts `n` when conversation opened
+- `onNewMessageInBackground()` — increments by 1 when WebSocket message arrives for background conversation
 
-Backend: `MessageRepository.countUnreadForUser(userId)` uses a single JPQL query joining `participantOne`/`participantTwo` to avoid N+1.
+Backend: `MessageRepository.countUnreadForUser(userId)` uses single JPQL query joining `participantOne`/`participantTwo` to avoid N+1.
 
 ### In-App Notifications System
 
-Full notification system for contract, review, and saved-ad events.
-
-**Backend:**
-- `NotificationType` enum (`entity/Enums/`): `CONTRACT_REQUESTED`, `CONTRACT_ACCEPTED`, `CONTRACT_REJECTED`, `CONTRACT_CANCELLED`, `CONTRACT_ACTIVE`, `CONTRACT_FINISHED`, `NEW_REVIEW`, `AD_SAVED`
-- `Notification` JPA entity: `id`, `recipient` (ManyToOne User), `type` (EnumType.STRING), `title`, `message` (TEXT), `isRead` (default false), `relatedEntityId`, `relatedEntityType`, `actorName`, `createdAt`
-- `NotificationPersistenceService` interface + impl (`service/`) — CRUD; depends only on `NotificationRepository` + `UserRepository` (no circular deps)
-- `NotificationController` at `/api/notifications`:
-  - `GET /api/notifications` — all for current user
-  - `GET /api/notifications/unread-count` → `{ count: N }`
-  - `PATCH /api/notifications/{id}/read`
-  - `PATCH /api/notifications/read-all`
-- Hooks in `RentalContractServiceImpl` (fires on create, ACCEPTED, REJECTED), `ReviewServiceImpl` (fires NEW_REVIEW), `AdServiceImpl.saveAd()` (fires AD_SAVED to owner when someone saves their ad)
+- `NotificationType` enum: `CONTRACT_REQUESTED`, `CONTRACT_ACCEPTED`, `CONTRACT_REJECTED`, `CONTRACT_CANCELLED`, `CONTRACT_ACTIVE`, `CONTRACT_FINISHED`, `NEW_REVIEW`, `AD_SAVED`
+- `NotificationController` at `/api/notifications`: GET all, GET unread-count, PATCH read, PATCH read-all
+- `NotificationsService` (`features/notifications/services/`) — `unreadCount$` BehaviorSubject
 - Liquibase migration: `db.changelog-13-create-notification.xml`
-
-**Frontend:**
-- `AppNotification` interface (`shared/models/`) — named to avoid conflict with browser `Notification` API
-- `NotificationsService` (`features/notifications/services/`) — `unreadCount$` BehaviorSubject; `loadUnreadCount()`, `getAll()`, `markOneAsRead(id)`, `markAllAsRead()`
-- `NotificationsPageComponent` (`features/notifications/pages/`) — filter tabs (Sve / Nepročitana), relative time formatting (`formatTime()`), icon+color per type, "Pogledaj →" router link per notification
-- Route: `/notifications` (protected by `authGuard`)
 
 ### Save Count na oglasima
 
-`Ad` entity ima `saveCount` kolonu (INT, default 0) koja se:
-- **inkrementira** u `AdServiceImpl.saveAd()` kada korisnik sačuva oglas
-- **dekrementira** u `AdServiceImpl.unsaveAd()` (minimum 0)
-
-`AdPreviewDto` i `AdDto` oba imaju `saveCount` polje. Prikazuje se na `AdCardComponent` pored `viewCount` (ikonica `bookmark`).
+`Ad` entity ima `saveCount` kolonu (INT, default 0) — inkrementira u `AdServiceImpl.saveAd()`, dekrementira u `unsaveAd()` (minimum 0). Prikazuje se na `AdCardComponent` pored `viewCount` (ikonica `bookmark`).
 
 ### RentalCalendarComponent
 
 Standalone component at `features/ads/components/rental-calendar/`. Accepts:
-- `@Input() ad: Ad` — the ad being viewed
+- `@Input() ad: Ad`
 - `@Input() set blockedIntervals(value)` — setter that regenerates calendar when new intervals arrive
 - `@Input() isMyAd: boolean` — shows "Block dates" button instead of "Send request" when true
 
 Reused in both `AdDetailsComponent` and `InboxComponent` (third column).
-
-### Create Ad Wizard
-
-Two-step wizard at `features/ads/pages/create-ad/`:
-- Step 1: Category card grid + subcategory chips + title (char counter) + description (char counter)
-- Step 2: Drag-drop image upload (10 images max, 10MB each), cover image selection, price/currency/interval, location autocomplete, quantity stepper
-- CSS: uses `margin-left: -200px; width: calc(100% + 200px)` to cancel the app layout gap and expand to full width (reset at 900px breakpoint)
-
-### Edit Ad Wizard
-
-Isti dvokokračni wizard format kao Create Ad, na `features/ads/pages/edit-ad/`:
-- Step 1: Kategorija (select) + naslov (char counter) + opis (char counter)
-- Step 2: Drag-drop slike (postojeće + nove) + cena/valuta/interval + lokacija autocomplete + quantity stepper
-- Forma se pre-popunjava sa postojećim podacima oglasa; submit šalje PATCH zahtev
-
-### My Ads stranica
-
-`features/user/pages/my-ads/` — upravljanje sopstvenim oglasima:
-- Prikazuje listu oglasa sa `AdCardComponent` (list view)
-- **Pretraga** po naslovu (client-side filter, `searchQuery` getter `filteredAds`)
-- **Material Icons** umesto emojija (`edit`, `delete_outline`, `campaign` za empty state)
-- **Delete modal** — otvara se klikom na "Obriši"; sadrži razloge za brisanje (radio) + dugmad "Odustanite" / "Obrišite oglas"
 
 ### Ad List stranica i pretraga
 
 `features/ads/pages/ad-list/` — glavna stranica sa oglasima. Tri moda:
 
 **Home mod** (`homeMode = true`) — nema query params:
-- `CategoriesSidebar` levo (uvek vidljiv u home modu)
-- Desno: sekcije jedna ispod druge — **Najnoviji oglasi** (9 oglasa, 3 reda) + 5 fiksnih kategorija (6 oglasa, 2 reda svaka)
-- Svaka sekcija: ikonica + naziv levo, `"Pogledajte sve →"` link desno, separator linija
-- 5 kategorija u home modu: Tehnologija i uređaji (ID 200), Oprema za film i fotografiju (300), Alati i oruđa (100), Događaji i zurke (600), Prevoz i oprema za prirodu (700)
-- Svaka kategorija prikazuje broj ukupnih oglasa (badge `section-count` u purple)
-- "Pogledajte sve" na Najnovijem → `/?sort=id,desc`; na kategorijama → `/?categoryId=X`
-- `loadHomeData()` radi 6 paralelnih API poziva pri svakom ulasku u home mod
-- **NG0100 prevencija**: `isSearchMode` i `homeMode` se inicijalizuju sinhrono iz `route.snapshot` na startu `ngOnInit` (pre prvog CD ciklusa), jer `of(...)` u `switchMap` emituje sinhrono
+- `CategoriesSidebar` levo; desno: **Najnoviji oglasi** (9) + 5 fiksnih kategorija (6 svaka)
+- 5 kategorija: Tehnologija i uređaji (ID 200), Oprema za film i fotografiju (300), Alati i oruđa (100), Događaji i zurke (600), Prevoz i oprema za prirodu (700)
+- `loadHomeData()` radi 6 paralelnih API poziva; sve HTTP subscription-ovi imaju `takeUntil(destroy$)` da sprečavaju memory leak
+- **Skeleton loaders**: `latestLoaded = false` flag + `readonly skeleton9 = Array(9)` / `readonly skeleton6 = Array(6)` — `SkeletonCardComponent` shimmer placeholders se prikazuju dok podaci ne stignu; `latestLoaded = true` se postavlja tek kad latest ads API odgovori
 
 **Search mod** (`isSearchMode = true`) — aktivan kad ima keyword, categoryId, locationId, city, minPrice, maxPrice, priceInterval ILI sort param:
-- `FiltersSidebar` levo, list view desno
+- `FiltersSidebar` levo, list view desno, loading spinner tokom pretrage
 - Sortiranje dropdown (Najnovije / Najjeftinije / Najskuplje)
 
-**Category mod** — nije poseban mod; categoryId triggeruje search mod sa filterom
+**Kritična arhitekturna napomena**: `adsPage` je `Page<AdPreview> | null` (NE Observable). `route.queryParams` subscription je **uvek aktivan** (nije unutar `*ngIf`) — to je ključno jer `async` pipe unutar `*ngIf` bi se unsubscribovao kad je `homeMode=true`, što bi sprečilo detekciju prelaza u search mod bez F5.
 
-- **Paginacija**: numerisana (page buttons), sa `…` za preskočene opsege; trenutna stranica purple `#813181`
-- `goToPage()` skroluje na vrh stranice
-- `isSearchModeFromParams()` — helper koji proverava sve relevantne parametre (uključujući `sort`)
+**NG0100 prevencija**: `isSearchMode` i `homeMode` se inicijalizuju sinhrono iz `route.snapshot` na startu `ngOnInit` pre prvog CD ciklusa.
+
+Paginacija: numerisana, `…` za preskočene opsege, purple `#813181` za aktivnu stranicu.
 
 ### FiltersSidebar
 
-`features/ads/components/filters-sidebar/` — filter panel u search modu:
-- **Keyword**: search input sa ikonom i × za brisanje
-- **Kategorija**: select sa `category` ikonom
-- **Grad**: select sa `location_on` ikonom; prikazuje `"Grad – Opština"` format
-- **Tip zakupa**: toggle pill dugmad (Po satu / Po danu / Po mesecu) — šalje `priceInterval` na backend
-- **Raspon cene**: Od — Do inputi
-- **Apply dugme**: purple; badge prikazuje **broj rezultata** (`totalResults` @Input iz AdListComponent), ne broj filtera
-- Backend `AdServiceImpl.buildSearchSpec()` filtrira i po `priceInterval`
+`features/ads/components/filters-sidebar/`:
+- **`previewCount`** — interno se računa debounced (350ms) API pozivom pri svakoj promeni filtera; prikazuje se u badge-u na "Prikaži oglase" dugmetu pre klika
+- **`@Input() set initialCriteria`** — popunjava forme iz URL query params kad korisnik direktno pristupa search URL-u
+- **`@Input() set locations`** — setter koji triggeruje `trySyncCityPicker()` za sinhronizaciju lokacije iz URL-a
+- `onApplyFilters()` u parent-u eksplicitno postavlja SVE param-e (null briše iz URL-a) — bez `queryParamsHandling: 'merge'` jer bi stari param-i ostali
 
-### AdCard komponenta
+### Create/Edit Ad Wizard
 
-`features/ads/components/ad-card/`:
-- **Grid view**: slika + naslov + lokacija + cena + view/save count
-- **List view**: pored gore navedenog, prikazuje i **opis** (2 reda, ellipsis)
-- `saveCount` prikazan sa `bookmark` ikonicom pored `viewCount`
+Create Ad (`features/ads/pages/create-ad/`) i Edit Ad (`features/ads/pages/edit-ad/`):
+- Step 1: Kategorija + naslov (char counter) + opis (char counter)
+- Step 2: Drag-drop slike (10 max, 10MB), cena/valuta/interval, lokacija autocomplete, quantity stepper
+- CSS: `margin-left: -200px; width: calc(100% + 200px)` da cancela app layout gap (reset na 900px)
+- Kategorije koriste `material-symbols-outlined` sa `font-variation-settings` za thin stil
 
-### Lokacije
+### My Ads stranica
 
-Lokacije se **isključivo** dodaju kroz Liquibase seed fajlove — nema Create Location endpointa.
-- Seed fajl: `db.changelog-seed-location.xml` — sadrži 40+ lokacija Srbije (Beograd 14 opština, Novi Sad 6, Niš 4, Kragujevac 3, Subotica 2, ostali gradovi po jedan unos)
-- `db.changelog-4-create-location.xml` — sadrži **samo** kreaciju tabele, bez insert-a
-- `LocationRepository.findAllByOrderByCityAscMunicipalityAsc()` — vraća lokacije abecedno
-- Location autocomplete (create-ad, edit-ad) pretražuje po gradu I opštini
+`features/user/pages/my-ads/` — pretraga po naslovu (client-side), delete modal sa razlozima, Material Icons.
+
+### Ad Details stranica
+
+`features/ads/pages/ad-details/`:
+- `latestReviews$` se subscribuje **jednom** sa `async` pipe u `*ngIf` — unutrašnji div koristi isti `reviews` template varijablu (ne `latestReviews$ | async` drugi put)
+- Telefon vlasnika: dugme "Prikaži broj" vidljivo ako `ad.owner.phoneNumber` nije null (maskirana vrednost), pravi broj se dohvata klikom na zasebnom endpoint-u
+- Za sopstveni oglas (`isMyAd=true`): prikazuje se "Izmeni" dugme sa RouterLink na `/ads/{id}/edit`
 
 ### Contracts stranica
 
-`features/user/pages/contracts/` — prikazuje dolazne i odlazne ugovore:
-- **Pretraga** po naslovu oglasa (client-side, `filteredIncoming` / `filteredOutgoing` getteri)
+`features/user/pages/contracts/` — dolazni i odlazni ugovori, pretraga po naslovu (client-side).
+
+### Review Card
+
+`features/review/components/review-card/` — ime recenzenta je klikabilni `<a>` link (`[routerLink]="['/user', review.reviewer.id]"`) koji vodi na profil korisnika. Fallback ime: `'Korisnik'` (ne placeholder sa pravim imenom).
 
 ### Color Theme
 
 Two primary colors:
 - **Purple** `#813181` — sidebar avatar, active nav links, notification badges/pills, buttons, accents
-- **Green** `#6ecf7e` — secondary accent; opacity is intentionally varied per context (e.g. `rgba(110, 207, 126, 0.X)`)
+- **Green** `#6ecf7e` — secondary accent; opacity is intentionally varied per context
 
 **Do not replace either color with blue or other colors.**
 
@@ -298,36 +300,23 @@ Backend koristi `--spring.profiles.active=prod` → učitava `application-prod.p
 - WebSocket URL se izvodi iz `window.location` u produkciji (HTTP→WS, HTTPS→WSS)
 - `google.client-id` je u `environment.ts` / `environment.prod.ts`, ne hardkodovan
 
----
+### Šta treba ručno dodati na serveru (nije u gitu)
 
-## Šta je urađeno (sesija 2026-03-22)
+U `/opt/app/RentRentOut/src/main/resources/application-prod.properties` dodati:
+```properties
+app.cookie.secure=true
+encryption.phone-key=<32-char-random-key>
+```
 
-- Emojiji zamenjeni Material Icons-ima u celoj aplikaciji
-- `locationDisplay` null bug popravljen u `UserMapper.java`
-- 403 na `/api/ads/{id}/view` rešen sa `sessionStorage` deduplication
-- Sidebar: "Sačuvane pretrage" i "Adresar" zakomentarisani
-- Profil stranica: klik na avatar otvara file picker i odmah čuva sliku
-- Kontrakti stranica: kompletno redizajnirana kartica, link na oglas, expired request logika, Material Icons dugmad
-- `RentalContractServiceImpl`: dodata provera `endDate.isBefore(now())` pri prihvatanju zahteva
-- Login: uklonjen Apple dugme, dodat Facebook SVG logo
-- Create/Edit Ad: uklonjen `overflow: hidden` sa `.step-panel` da se vidi city picker dropdown
+Ili ekvivalentno u `.env` kao env varijable (Spring Boot relaxed binding):
+```
+APP_COOKIE_SECURE=true
+ENCRYPTION_PHONE_KEY=<32-char-random-key>
+```
 
-## Šta je urađeno (sesija 2026-03-23)
+**Generisanje ključa na serveru**: `python3 -c "import secrets, string; print(''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32)))"`
 
-### Production deployment
-- **Cloudinary**: `ImageController` migriran sa lokalnog diska na Cloudinary SDK; `CloudinaryConfig.java` bean; `/uploads/**` static serving uklonjen iz `WebConfig` i `SecurityConfig`
-- **Sekreti**: kreiran `application-prod.properties` sa `${ENV_VAR}` placeholderima; `application.properties` untrackovan iz git-a; `.env.example` u root-u
-- **Docker**: `docker-compose.prod.yml` sa `restart: unless-stopped`, Nginx, Certbot; `nginx.prod.conf` sa HTTP→HTTPS redirect, ACME challenge, `/api/` i `/ws` proxy
-- **CORS**: `WebConfig.java` čita `app.frontend.base-url` iz properties
-- **Angular environments**: `src/environments/environment.ts` i `environment.prod.ts`; `angular.json` `fileReplacements`; `api.config.ts` i `rx-stomp.config.ts` koriste environment; `category.service.ts` popravljen
-
-### API hardening
-- **`GlobalExceptionHandler`**: dodat catch-all za `RuntimeException` (loguje, vraća "Interna serverska greška"); fix pogrešnog importa `AccessDeniedException` (bio `java.nio.file`, sad `Spring Security`); dodat handler za `MethodArgumentNotValidException`
-- **`AdDto`**: uklonjen `email` field vlasnika (curenje PII)
-- **`UserShortDto`**: uklonjen `phoneNumber` (telefon više nije u javnim DTO-ovima — reviews, chat preview)
-- **`RentalContractDto`**: `UserDto lesseeDto` zamenjeno sa `ContractParticipantDto` (samo id, ime, prezime, avatar — nema credit, role, enabled, email)
-- **`NotificationController`**: dodat `@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")` na nivou klase
-- **Frontend modeli**: `userShort.ts` bez `phoneNumber`; `ad.model.ts` bez `email`; `rental-contract.model.ts` koristi novi `ContractParticipant` interface
+**VAŽNO**: `APP.COOKIE.SECURE` sa tačkama je **nevalidan** env var naziv na Linux/Docker-u. Koristiti `APP_COOKIE_SECURE` (sa underscoreom).
 
 ---
 

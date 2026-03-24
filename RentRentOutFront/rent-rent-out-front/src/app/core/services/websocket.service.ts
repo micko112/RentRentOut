@@ -1,23 +1,22 @@
 ﻿import { Injectable } from '@angular/core';
 import { RxStomp } from '@stomp/rx-stomp';
 import { WS_BASE_URL } from '../config/api.config';
+import { AuthService } from '../../features/auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebsocketService {
 
-  // Instanca RxStomp klijenta
   public rxStomp: RxStomp;
   private lastToken: string | null = null;
 
-  constructor() {
+  constructor(private authService: AuthService) {
     this.rxStomp = new RxStomp();
   }
 
   public connect() {
-    // 1. Citamo najsveziji token iz browsera bas u trenutku konekcije
-    const token = localStorage.getItem('authToken');
+    const token = this.authService.wsToken;
     if (!token) {
       return;
     }

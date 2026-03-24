@@ -8,6 +8,30 @@
   </main>
 </div>
 
+<nav class="mobile-nav" *ngIf="showSidebar$ | async">
+  <a class="mobile-nav-item" routerLink="/ads" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <span class="material-icons">home</span>
+    <span class="mobile-nav-label">Početna</span>
+  </a>
+  <a class="mobile-nav-item" routerLink="/user/saved-ads" routerLinkActive="active">
+    <span class="material-icons">bookmark_border</span>
+    <span class="mobile-nav-label">Sačuvano</span>
+  </a>
+  <a class="mobile-nav-item mobile-nav-create" routerLink="/ads/create">
+    <span class="material-icons">add</span>
+  </a>
+  <a class="mobile-nav-item" routerLink="/messages" routerLinkActive="active">
+    <span class="mobile-nav-icon-wrap">
+      <span class="material-icons">forum</span>
+      <span class="mobile-nav-badge" *ngIf="(chatUnread$ | async) as n">{{ n > 99 ? '99+' : n }}</span>
+    </span>
+    <span class="mobile-nav-label">Poruke</span>
+  </a>
+  <a class="mobile-nav-item" routerLink="/user/me" routerLinkActive="active">
+    <span class="material-icons">person</span>
+    <span class="mobile-nav-label">Nalog</span>
+  </a>
+</nav>
 
 <app-toast></app-toast>
 <app-footer></app-footer>

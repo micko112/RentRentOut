@@ -78,7 +78,8 @@
               "buildTarget": "rent-rent-out-front:build:production"
             },
             "development": {
-              "buildTarget": "rent-rent-out-front:build:development"
+              "buildTarget": "rent-rent-out-front:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

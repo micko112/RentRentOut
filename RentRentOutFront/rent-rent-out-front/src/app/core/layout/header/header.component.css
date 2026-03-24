@@ -239,18 +239,83 @@
   }
 }
 
+@media (max-width: 900px) {
+  .site-header {
+    padding: 10px 14px;
+  }
+
+  .logo .logo-img {
+    width: 160px;
+    height: 48px;
+  }
+
+  .user-actions {
+    display: none; /* hidden on mobile — use bottom nav instead */
+  }
+
+  .header-content {
+    flex-wrap: nowrap;
+  }
+
+  .search-bar {
+    height: 42px;
+  }
+}
+
 @media (max-width: 768px) {
   .site-header {
-    padding: 16px 0;
+    padding: 8px 12px;
   }
-  .user-actions .auth-button,
-  .user-actions .btn-post-ad {
-    padding: 8px 18px;
+
+  .logo .logo-img {
+    width: 140px;
+    height: 42px;
+  }
+
+  .search-bar {
+    height: 38px;
+    border-radius: 20px;
+  }
+
+  .search-bar input {
+    font-size: 13px;
+    line-height: 38px;
+  }
+
+  .search-bar .search-btn {
+    padding: 6px 14px;
     font-size: 13px;
   }
 
-  .user-actions .btn-post-ad {
-    margin-left: 6px;
+  .search-bar .search-icon {
+    width: 20px;
+    height: 20px;
+    margin: 4px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    padding: 8px 10px;
+  }
+
+  .logo .logo-img {
+    width: 120px;
+    height: 36px;
+  }
+
+  .header-content {
+    gap: 8px;
+  }
+
+  .search-bar {
+    height: 38px;
+  }
+
+  .search-bar .search-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 20px;
   }
 }
 

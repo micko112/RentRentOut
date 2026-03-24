@@ -3,6 +3,7 @@ import { AdCardComponent } from '../../components/ad-card/ad-card.component';
 import { CommonModule } from '@angular/common';
 import { AdPreview, Page } from '../../../../shared/models/adPreview.model';
 import { finalize, Subject, switchMap, takeUntil, tap, of } from 'rxjs';
+import { SkeletonCardComponent } from '../../../../shared/components/skeleton-card/skeleton-card.component';
 
 import { AdService } from '../../services/ad.service';
 import { CategoryService } from '../../services/category.service';
@@ -18,7 +19,7 @@ import { Location } from '../../../../shared/models/location.model';
 @Component({
   selector: 'app-ad-list',
   standalone: true,
-  imports: [CommonModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent],
+  imports: [CommonModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent, SkeletonCardComponent],
   templateUrl: './ad-list.component.html',
   styleUrl: './ad-list.component.css'
 })
@@ -34,6 +35,10 @@ export class AdListComponent implements OnInit, OnDestroy {
   totalResults = 0;
   isLoading = true;
   currentCriteria: Partial<AdSearchCriteria> = {};
+
+  latestLoaded = false;
+  readonly skeleton9 = Array(9);
+  readonly skeleton6 = Array(6);
 
   latestAds: AdPreview[] = [];
   homeCategories: Array<{
@@ -83,7 +88,6 @@ export class AdListComponent implements OnInit, OnDestroy {
     });
     this.locationService.getAll().subscribe({
       next: locs => this.locations = locs,
-      error: () => console.error('Greška pri učitavanju lokacija.'),
     });
 
     // Uvek aktivna pretplata — ne zavisi od *ngIf u template-u
@@ -138,14 +142,16 @@ export class AdListComponent implements OnInit, OnDestroy {
   private loadHomeData(): void {
     this.adsPage = null;
     this.latestAds = [];
+    this.latestLoaded = false;
     this.homeCategories = this.HOME_CATEGORIES.map(c => ({ ...c, ads: [], total: 0, loaded: false }));
 
-    this.adService.search({ sort: 'id,desc', size: 9 }).subscribe(page => {
+    this.adService.search({ sort: 'id,desc', size: 9 }).pipe(takeUntil(this.destroy$)).subscribe(page => {
       this.latestAds = page.content;
+      this.latestLoaded = true;
     });
 
     this.HOME_CATEGORIES.forEach((cat, index) => {
-      this.adService.search({ categoryId: cat.id, sort: 'id,desc', size: 6 }).subscribe(page => {
+      this.adService.search({ categoryId: cat.id, sort: 'id,desc', size: 6 }).pipe(takeUntil(this.destroy$)).subscribe(page => {
         this.homeCategories[index] = {
           ...this.homeCategories[index],
           ads:   page.content,
@@ -169,10 +175,10 @@ export class AdListComponent implements OnInit, OnDestroy {
     this.activeCategory = found ? found.name : 'Učitavanje...';
   }
 
-  onSortChange(event: any): void {
+  onSortChange(event: Event): void {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { sort: event.target.value },
+      queryParams: { sort: (event.target as HTMLSelectElement).value },
       queryParamsHandling: 'merge',
     });
   }

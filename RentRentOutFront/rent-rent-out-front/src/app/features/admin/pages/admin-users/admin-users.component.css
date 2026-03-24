@@ -110,3 +110,13 @@
 }
 
 .loading { color: #777; }
+
+@media (max-width: 768px) {
+  .admin-users {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    min-width: 560px;
+  }
+}

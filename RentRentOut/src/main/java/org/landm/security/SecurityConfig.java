@@ -16,9 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 	private JwtFilter jwtFilter;
-	
-	public SecurityConfig(JwtFilter jwtFilter) {
+	private RateLimitFilter rateLimitFilter;
+
+	public SecurityConfig(JwtFilter jwtFilter, RateLimitFilter rateLimitFilter) {
 		this.jwtFilter = jwtFilter;
+		this.rateLimitFilter = rateLimitFilter;
 	}
 	
     @Bean
@@ -26,18 +28,24 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/user/register").permitAll()
-//                        .anyRequest().authenticated());
-//
-//        return http.build();
-//    }
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http.csrf(csrf -> csrf.disable())
+	            .headers(headers -> headers
+	                .frameOptions(frame -> frame.deny())
+	                .contentTypeOptions(cto -> {})
+	                .httpStrictTransportSecurity(hsts -> hsts
+	                    .includeSubDomains(true)
+	                    .maxAgeInSeconds(31536000))
+	                .contentSecurityPolicy(csp -> csp.policyDirectives(
+	                    "default-src 'self'; " +
+	                    "script-src 'self' 'unsafe-inline' accounts.google.com apis.google.com connect.facebook.net; " +
+	                    "style-src 'self' 'unsafe-inline' fonts.googleapis.com; " +
+	                    "font-src 'self' fonts.gstatic.com data:; " +
+	                    "img-src 'self' data: blob: https:; " +
+	                    "connect-src 'self' ws: wss:; " +
+	                    "frame-src 'self' accounts.google.com;"
+	                )))
 	            .exceptionHandling(exceptions -> exceptions
 	                .authenticationEntryPoint((request, response, authException) -> {
 	                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -90,6 +98,9 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/auth/validate-email").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
+					.requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
+					.requestMatchers(HttpMethod.GET,  "/api/auth/ws-token").authenticated()
 
 
 						.requestMatchers("/api/chat/**").authenticated()
@@ -99,7 +110,9 @@ public class SecurityConfig {
 
 
 						.anyRequest().authenticated()
-	            ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+	            )
+	            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+	            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	
 	    return http.build();
 	}

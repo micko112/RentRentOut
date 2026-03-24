@@ -68,3 +68,15 @@ h2{
   margin-top: 20px;
   font-size: 14px;
 }
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 20px 0;
+  }
+
+  form {
+    padding: 20px 16px;
+    box-shadow: none;
+    border: 1px solid #eee;
+  }
+}

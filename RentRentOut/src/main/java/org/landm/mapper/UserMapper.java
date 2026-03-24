@@ -81,6 +81,7 @@ public class UserMapper {
 
 
     public UserShortDto toUserShortDto(User user){
+        if (user == null) return null;
         UserShortDto dto = new UserShortDto();
         dto.setId(user.getId());
         dto.setDisplayName(user.getFirstname() + " " + user.getLastname());

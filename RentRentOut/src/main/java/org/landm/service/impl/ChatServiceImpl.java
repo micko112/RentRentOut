@@ -17,6 +17,8 @@ import org.landm.repository.MessageRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.ChatService;
 import org.landm.service.NotificationService;
+import org.landm.util.HtmlSanitizer;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -64,7 +66,7 @@ public class ChatServiceImpl implements ChatService {
             conv = new Conversation(ad, sender, receiver);
             conv = conversationRepository.save(conv);
         }
-        Message message = new Message(conv, sender, request.getContent());
+        Message message = new Message(conv, sender, HtmlSanitizer.sanitize(request.getContent()));
         messageRepository.save(message);
 
         conv.setUpdatedAt(LocalDateTime.now());
@@ -164,7 +166,7 @@ public class ChatServiceImpl implements ChatService {
                 .orElseThrow(() -> new RuntimeException("Conversation not found"));
 
         if(!conversation.getParticipantOne().getId().equals(myUserId) && !conversation.getParticipantTwo().getId().equals(myUserId)){
-            throw new RuntimeException("Nemate pristup ovoj konverzacviji");
+            throw new AccessDeniedException("Nemate pristup ovoj konverzaciji.");
         }
 
         messageRepository.markMessageAsRead(conversationId, myUserId);

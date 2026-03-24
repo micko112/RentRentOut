@@ -1,8 +1,13 @@
 package org.landm.dto.push;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class SavePushSubscriptionDto {
+    @NotBlank
     private String endpoint;
+    @NotBlank
     private String p256dh;
+    @NotBlank
     private String auth;
 
     public String getEndpoint() { return endpoint; }

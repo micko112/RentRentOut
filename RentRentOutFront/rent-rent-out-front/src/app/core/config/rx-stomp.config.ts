@@ -16,16 +16,4 @@ export const myRxStompConfig: RxStompConfig = {
   // 3. Automatsko ponovno povezivanje ako server pukne pa se podigne
   reconnectDelay: 200,
 
-  // 4. KLJUČNO: OVO JE NAŠ TOKEN!
-  // beforeConnect se izvršava mili-sekundu pre nego što Angular otvori cev.
-  // Ovde dinamički vadimo token iz localStorage-a.
-  beforeConnect: (client: any) => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      // Ubacujemo token u STOMP heder koji Java očekuje
-      client.connectHeaders = {
-        Authorization: `Bearer ${token}`
-      };
-    }
-  }
 };

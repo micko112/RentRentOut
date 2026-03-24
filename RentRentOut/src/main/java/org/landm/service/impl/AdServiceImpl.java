@@ -13,6 +13,7 @@ import org.landm.mapper.LocationMapper;
 import org.landm.repository.*;
 import org.landm.security.JwtUtil;
 import org.landm.entity.Enums.NotificationType;
+import org.landm.util.HtmlSanitizer;
 import org.landm.service.AdService;
 import org.landm.service.CategoryService;
 import org.landm.service.NotificationPersistenceService;
@@ -20,6 +21,8 @@ import org.landm.service.RentalContractService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,6 +35,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class AdServiceImpl implements AdService {
+
+    private static final String CLOUDINARY_PREFIX = "https://res.cloudinary.com/drwxucq4m/";
 
     private final UserRepository userRepository;
     private final AdRepository adRepository;
@@ -77,8 +82,18 @@ public class AdServiceImpl implements AdService {
 //
 //    }
 
+    private void validateImageUrls(List<String> images) {
+        if (images == null) return;
+        for (String url : images) {
+            if (url == null || !url.startsWith(CLOUDINARY_PREFIX)) {
+                throw new IllegalArgumentException("Nevažeći URL slike.");
+            }
+        }
+    }
+
     @Override
     public AdDto create(CreateAdRequestDto req, Long userId) {
+        validateImageUrls(req.getImages());
         User owner = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         Category category = categoryRepository.findById(req.getCategoryId())
@@ -86,8 +101,8 @@ public class AdServiceImpl implements AdService {
         Location location = locationRepository.findById(req.getLocationId())
                 .orElseThrow(() -> new RuntimeException("Location not found with id: " + req.getLocationId()));
         Ad adToCreate = new Ad(
-                req.getTitle(),
-                req.getDescription(),
+                HtmlSanitizer.sanitize(req.getTitle()),
+                HtmlSanitizer.sanitize(req.getDescription()),
                 req.getPrice(),
                 req.getCurrency(),
                 req.getPriceInterval(),
@@ -231,7 +246,7 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public AdDto updateAd(UpdateAdRequestDto req, Long id, Long userId) {
-
+        validateImageUrls(req.getImages());
         Ad adToUpdate = adRepository.findById(id).orElseThrow(() -> new RuntimeException("There is no ad"));
         if (!adToUpdate.getOwner().getId().equals(userId)) {
             throw new RuntimeException("You are not the owner of this ad");
@@ -248,8 +263,8 @@ public class AdServiceImpl implements AdService {
             location = locationRepository.findById(req.getLocationId()).orElseThrow(() ->
                     new RuntimeException("Location not found with id: " + req.getLocationId()));
         }
-        adToUpdate.setTitle(req.getTitle());
-        adToUpdate.setDescription(req.getDescription());
+        adToUpdate.setTitle(HtmlSanitizer.sanitize(req.getTitle()));
+        adToUpdate.setDescription(HtmlSanitizer.sanitize(req.getDescription()));
         adToUpdate.setPrice(req.getPrice());
         adToUpdate.setPricePerWeek(req.getPricePerWeek());
         adToUpdate.setPricePerMonth(req.getPricePerMonth());
@@ -273,18 +288,18 @@ public class AdServiceImpl implements AdService {
 				.orElseThrow(() -> new RuntimeException("Error deleting ad - ad not found"));
 		
 		if(!currAd.getOwner().getId().equals(userId)) {
-			throw new RuntimeException("Deleting someone's ad - not allowed!");
+			throw new AccessDeniedException("Nemate dozvolu za brisanje ovog oglasa.");
 		}
-		
+
 		if(rentalContractRepository.hasActiveOrFutureContracts(adId)) {
-			throw new RuntimeException("Trying to delete Ad contained in ongoing contract - not allowed!");
+			throw new IllegalStateException("Ne možete obrisati oglas koji ima aktivne ugovore.");
 		}
-		
+
 		if(currAd.getAdStatus() != AdStatus.DELETED) {
 			currAd.setAdStatus(AdStatus.DELETED);
 			rentalContractService.markToAdDeleted(currAd.getId());
 		}else {
-			throw new RuntimeException("Ad already deleted!");
+			throw new IllegalStateException("Oglas je već obrisan.");
 		}
 		
 		return "Successfully deleted your Ad!";

@@ -184,3 +184,29 @@
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 900px) {
+  .footer {
+    margin-bottom: 60px; /* room for mobile nav */
+  }
+
+  .footer-inner {
+    padding: 28px 16px 20px;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-col {
+    min-width: 100%;
+  }
+
+  .brand-name {
+    font-size: 22px;
+  }
+
+  .footer-store-badges {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

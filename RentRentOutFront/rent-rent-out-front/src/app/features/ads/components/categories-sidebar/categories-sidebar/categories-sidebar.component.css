@@ -1,14 +1,21 @@
 .filters-container {
   display: flex;
   flex-direction: column;
-  width: 280px; /* Malo uže, izgleda elegantnije */
+  width: 280px;
   flex-shrink: 0;
   background-color: #ffffff;
   border: 1px solid #eaeaea;
-  border-radius: 12px; /* Hygglo stil: mekše ivice */
-  padding: 24px 20px; /* Malo više unutrašnjeg prostora da "diše" */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); /* Veoma suptilna senka */
+  border-radius: 12px;
+  padding: 24px 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   height: fit-content;
+}
+
+@media (max-width: 900px) {
+  .filters-container {
+    width: 100%;
+    padding: 16px;
+  }
 }
 
 .filter-section {

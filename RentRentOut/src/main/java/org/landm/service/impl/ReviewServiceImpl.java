@@ -134,6 +134,12 @@ public class ReviewServiceImpl implements ReviewService {
 
         User reviewer = userRepository.findById(reviewerId).orElseThrow();
 
+        boolean isParty = rc.getLessee().getId().equals(reviewerId)
+                || rc.getAd().getOwner().getId().equals(reviewerId);
+        if (!isParty) {
+            return new ReviewEligibilityDto(false, "Niste učesnik u ovom ugovoru.");
+        }
+
         /*
         if (reviewer.getCreatedAt().isAfter(LocalDateTime.now().minusDays(3))) {
            return new ReviewEligibilityDto(false, "Ne možete ocenjivati jer ste se nedavno registrovali.");

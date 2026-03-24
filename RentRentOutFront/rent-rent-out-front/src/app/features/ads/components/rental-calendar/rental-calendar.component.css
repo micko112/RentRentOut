@@ -225,3 +225,38 @@
     }
   }
 }
+
+/* ─── Responsive ─────────────────────────────────────── */
+@media (max-width: 480px) {
+  .pickup-dropoff-wrapper {
+    margin: 0 16px 4px;
+    height: 60px;
+  }
+
+  .day-cell {
+    height: 36px;
+  }
+
+  .day-cell .day-number {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .weekday {
+    font-size: 12px;
+  }
+
+  .payment-section .choose-dates {
+    font-size: 24px;
+  }
+
+  .payment-section .price-calculation .total-price {
+    font-size: 26px;
+  }
+
+  .payment-section .request-btn {
+    padding: 14px 32px;
+    font-size: 15px;
+  }
+}
