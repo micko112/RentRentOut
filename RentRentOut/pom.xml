@@ -129,8 +129,8 @@
 
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.70</version>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.78.1</version>
         </dependency>
 
         <dependency>
@@ -160,9 +160,9 @@
 
         <!-- Rate limiting -->
         <dependency>
-            <groupId>io.github.bucket4j</groupId>
+            <groupId>com.bucket4j</groupId>
             <artifactId>bucket4j-core</artifactId>
-            <version>8.10.0</version>
+            <version>8.10.1</version>
         </dependency>
 
     </dependencies>
