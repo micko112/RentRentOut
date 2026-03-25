@@ -27,5 +27,5 @@ public interface SavedAdRepository extends JpaRepository<SavedAd, Long> {
 
     @Modifying
     @Query("DELETE FROM SavedAd s WHERE s.user.id = :userId AND s.ad.id = :adId")
-    void deleteByUserIdAndAdId(Long userId, Long adId);
+    int deleteByUserIdAndAdId(Long userId, Long adId);
 }

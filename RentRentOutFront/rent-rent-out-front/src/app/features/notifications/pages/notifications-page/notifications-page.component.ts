@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NotificationsService } from '../../services/notifications.service';
 import { AppNotification } from '../../../../shared/models/notification.model';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 type Filter = 'all' | 'unread';
 
@@ -14,11 +16,13 @@ type Filter = 'all' | 'unread';
   templateUrl: './notifications-page.component.html',
   styleUrl: './notifications-page.component.css'
 })
-export class NotificationsPageComponent implements OnInit {
+export class NotificationsPageComponent implements OnInit, OnDestroy {
 
   notifications: AppNotification[] = [];
   isLoading = true;
   activeFilter: Filter = 'all';
+
+  private destroy$ = new Subject<void>();
 
   private readonly typeConfig: Record<string, { icon: string; color: string }> = {
     CONTRACT_REQUESTED: { icon: '📋', color: 'blue'   },
@@ -40,9 +44,14 @@ export class NotificationsPageComponent implements OnInit {
     this.load();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   load(): void {
     this.isLoading = true;
-    this.notificationsService.getAll().subscribe({
+    this.notificationsService.getAll().pipe(takeUntil(this.destroy$)).subscribe({
       next: data => { this.notifications = data; this.isLoading = false; },
       error: ()   => { this.isLoading = false; this.toastService.showError('Greška pri učitavanju obaveštenja.'); }
     });

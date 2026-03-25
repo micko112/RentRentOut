@@ -1,9 +1,11 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
 import {CommonModule} from '@angular/common';
 import {ContractService} from '../../../contracts/services/contract.service';
 import {RouterLink} from '@angular/router';
 import {ToastService} from '../../../../shared/services/toast.service';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-contract-card',
@@ -11,18 +13,26 @@ import {ToastService} from '../../../../shared/services/toast.service';
   templateUrl: './contract-card.component.html',
   styleUrl: './contract-card.component.css'
 })
-export class ContractCardComponent {
+export class ContractCardComponent implements OnDestroy {
     @Input() contract!: RentalContract;
     @Input() isOwnerView: boolean = false;
     @Output() statusUpdated = new EventEmitter<void>();
     isUpdating = false;
 
+    private destroy$ = new Subject<void>();
+
     constructor(private contractService: ContractService,
                 private toastService: ToastService) {}
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   updateStatus(newStatus: string) {
       if (this.isUpdating) return;
       this.isUpdating = true;
-      this.contractService.updateStatus(this.contract.id, newStatus).subscribe({
+      this.contractService.updateStatus(this.contract.id, newStatus).pipe(takeUntil(this.destroy$)).subscribe({
         next: () => {
           this.isUpdating = false;
           if (newStatus === 'ACCEPTED') this.toastService.showSuccess('Uspešno ste prihvatili zahtev.');
@@ -36,7 +46,7 @@ export class ContractCardComponent {
         error: (err) => {
           this.isUpdating = false;
           this.toastService.showError('Greška: ' + (err.error?.message || err.error || 'Pokušajte ponovo.'));
-        }})
+        }});
   }
 
   get isExpiredRequest(): boolean {

@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ReviewFormComponent} from '../../components/review-form/review-form.component';
 import {ReviewService} from '../../services/review.service';
 import {UserService} from '../../../user/services/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ReviewCardComponent} from '../../components/review-card/review-card.component';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 import {Review} from '../../../../shared/models/review';
 import {UserShort} from '../../../../shared/models/userShort';
@@ -22,7 +24,7 @@ import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
   styleUrl: './review.component.css'
 })
 
-export class ReviewComponent implements OnInit {
+export class ReviewComponent implements OnInit, OnDestroy {
 
   activeTab: 'ALL' | 'LESSOR' | 'LESSEE' = 'ALL';
   activeTypeTab: 'ALL' | 'POSITIVE' | 'NEGATIVE' = 'ALL';
@@ -48,6 +50,8 @@ export class ReviewComponent implements OnInit {
 
   reviews: Review[] = [];
 
+  private destroy$ = new Subject<void>();
+
   constructor(private userService: UserService,
               private reviewService: ReviewService,
               private route: ActivatedRoute,
@@ -63,33 +67,43 @@ export class ReviewComponent implements OnInit {
     }
     this.loadReviews();
 
-    this.userService.getUserProfile(this.targetUserId).subscribe(userData => {
-      this.user = userData;
-    })
+    this.userService.getUserProfile(this.targetUserId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: userData => { this.user = userData; },
+      error: () => {}
+    });
+  }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private loadReviews() {
-    this.reviewService.getReviewsForUser(this.targetUserId).subscribe(reviews => {
-      this.reviews = reviews.content;
-      this.applyFilter();
+    this.reviewService.getReviewsForUser(this.targetUserId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: reviews => {
+        this.reviews = reviews.content;
+        this.applyFilter();
+      },
+      error: () => {}
     });
   }
 
   onReviewSubmitted() {
-    this.toggleForm() // Sakrij formu
+    this.toggleForm();
     this.contractIdToReview = null;
-    this.loadReviews(); // Osveži listu da se pojavi nova ocena
-    this.userService.getUserProfile(this.targetUserId).subscribe(userData => {
-      this.user = userData;
+    this.loadReviews();
+    this.userService.getUserProfile(this.targetUserId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: userData => { this.user = userData; },
+      error: () => {}
     });
 
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {contractId: null},
       queryParamsHandling: 'merge'
-    })
+    });
   }
+
   applyFilter(): void {
     this.filteredReviews = this.reviews.filter(review => {
       const roleMatch = this.activeTab === 'ALL' || review.revieweeRole === this.activeTab;
@@ -101,6 +115,4 @@ export class ReviewComponent implements OnInit {
   toggleForm(): void {
     this.showForm = !this.showForm;
   }
-
-
 }

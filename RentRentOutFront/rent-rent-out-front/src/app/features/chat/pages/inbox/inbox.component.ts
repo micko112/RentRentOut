@@ -6,8 +6,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { InitialsPipe } from '../../../../shared/pipes/initials.pipe';
 import {Message, MessageGroup} from '../../../../shared/models/message.model';
 import {ConversationPreview} from '../../../../shared/models/conversation-preview.model';
-import {Subject, Subscription, interval} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {Subject, Subscription, interval, forkJoin, of} from 'rxjs';
+import {takeUntil, exhaustMap, catchError} from 'rxjs/operators';
 import {WebsocketService} from '../../../../core/services/websocket.service';
 import {NotificationService} from '../../../../core/services/notification.service';
 import {AdService} from '../../../ads/services/ad.service';
@@ -327,27 +327,33 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   private startPolling(): void {
-    this.pollSub = interval(5000).subscribe(() => {
-      if (!this.websocketService.isConnected()) {
-        this.websocketService.connect();
+    this.pollSub = interval(5000).pipe(
+      exhaustMap(() => {
+        if (!this.websocketService.isConnected()) {
+          this.websocketService.connect();
+        }
+        const convs$ = this.chatService.getMyConversations().pipe(catchError(() => of(null)));
+        const needsMsgs = this.activeConversation &&
+          this.activeConversation.id !== 0 &&
+          !this.messages.some(m => (m as any)._temp);
+        const msgs$ = needsMsgs
+          ? this.chatService.getMessages(this.activeConversation!.id).pipe(catchError(() => of(null)))
+          : of(null);
+        return forkJoin([convs$, msgs$]);
+      })
+    ).subscribe(([convRes, msgRes]) => {
+      if (convRes) {
+        this.conversations = convRes.content;
+        this.notificationService.updateFromConversations(this.conversations);
+        this.conversationsLoaded = true;
       }
-      this.loadConversations();
-      this.refreshActiveMessages();
-    });
-  }
-
-  private refreshActiveMessages(): void {
-    if (!this.activeConversation || this.activeConversation.id === 0) return;
-    if (this.messages.some(m => (m as any)._temp)) return;
-    this.chatService.getMessages(this.activeConversation.id).subscribe({
-      next: res => {
-        this.messages = res.content;
+      if (msgRes) {
+        this.messages = msgRes.content;
         this.updateGroupedMessages();
         if (this.isScrolledToBottom()) {
           this.scrollToBottomNeeded = true;
         }
-      },
-      error: () => {}
+      }
     });
   }
 

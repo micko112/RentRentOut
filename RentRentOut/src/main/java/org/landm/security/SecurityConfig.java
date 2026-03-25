@@ -33,17 +33,19 @@ public class SecurityConfig {
 	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	            .headers(headers -> headers
 	                .frameOptions(frame -> frame.deny())
-	                .contentTypeOptions(cto -> {})
+	                .contentTypeOptions(cto -> cto.noSniff())
 	                .httpStrictTransportSecurity(hsts -> hsts
 	                    .includeSubDomains(true)
 	                    .maxAgeInSeconds(31536000))
+	                .referrerPolicy(referrer -> referrer
+	                    .policy(org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
 	                .contentSecurityPolicy(csp -> csp.policyDirectives(
 	                    "default-src 'self'; " +
 	                    "script-src 'self' 'unsafe-inline' accounts.google.com apis.google.com connect.facebook.net; " +
 	                    "style-src 'self' 'unsafe-inline' fonts.googleapis.com; " +
 	                    "font-src 'self' fonts.gstatic.com data:; " +
 	                    "img-src 'self' data: blob: https:; " +
-	                    "connect-src 'self' ws: wss:; " +
+	                    "connect-src 'self' wss: https://accounts.google.com https://graph.facebook.com; " +
 	                    "frame-src 'self' accounts.google.com;"
 	                )))
 	            .exceptionHandling(exceptions -> exceptions

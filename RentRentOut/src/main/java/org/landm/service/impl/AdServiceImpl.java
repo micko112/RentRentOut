@@ -438,13 +438,13 @@ public class AdServiceImpl implements AdService {
     @Override
     @Transactional
     public void unsaveAd(Long adId, Long userId) {
-        if (savedAdRepository.existsByUserIdAndAdId(userId, adId)) {
-            Ad ad = adRepository.findById(adId)
-                    .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
-            ad.setSaveCount(Math.max(0, ad.getSaveCount() - 1));
-            adRepository.save(ad);
+        int deleted = savedAdRepository.deleteByUserIdAndAdId(userId, adId);
+        if (deleted > 0) {
+            adRepository.findById(adId).ifPresent(ad -> {
+                ad.setSaveCount(Math.max(0, ad.getSaveCount() - 1));
+                adRepository.save(ad);
+            });
         }
-        savedAdRepository.deleteByUserIdAndAdId(userId, adId);
     }
 
     @Override
