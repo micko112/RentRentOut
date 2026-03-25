@@ -14,7 +14,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PasswordResetServiceImpl implements PasswordResetService {
@@ -58,10 +58,9 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(email);
-        msg.setFrom("rentrentout@gmail.com");
-        msg.setSubject("Reset Your Password");
-        msg.setText("Click the link below to reset your password.\n\n"
-                + link + "\n\nThe link expires in 24 hours.\n\nSincerely,\nRentRentOut team");
+        msg.setSubject("Resetovanje lozinke");
+        msg.setText("Koristite link ispod da resetujete vašu lozinku.\n\n"
+                + link + "\n\nLink važi do kraja sutrašnjeg dana.\n\nSrdačno,\nIzdajemiZnajmljujem tim");
 
         mailSender.send(msg);
     }
@@ -70,14 +69,14 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Transactional
     public void resetPassword(String token, String newPassword) {
         PasswordResetToken resetToken = tokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token is not valid."));
+                .orElseThrow(() -> new IllegalArgumentException("Token is not valid."));
 
         if (resetToken.isUsed()) {
-            throw new RuntimeException("Token already used.");
+            throw new IllegalStateException("Token already used.");
         }
 
         if (resetToken.getExpiresAt().isBefore(LocalDate.now())) {
-            throw new RuntimeException("Token is expired.");
+            throw new IllegalStateException("Token is expired.");
         }
 
         resetToken.setUsed(true);

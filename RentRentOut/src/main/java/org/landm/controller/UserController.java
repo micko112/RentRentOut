@@ -97,7 +97,9 @@ public class UserController {
 
     @PostMapping("/google-login")
     public ResponseEntity<Map<String, Object>> googleLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
-        User user = userService.googleLogin(body.get("idToken"));
+        String idToken = body.get("idToken");
+        if (idToken == null || idToken.isBlank()) return ResponseEntity.badRequest().build();
+        User user = userService.googleLogin(idToken);
         setAuthCookies(response, user);
         Map<String, Object> res = new HashMap<>();
         res.put("user", userMapper.toDto(user));
@@ -107,7 +109,9 @@ public class UserController {
 
     @PostMapping("/facebook-login")
     public ResponseEntity<Map<String, Object>> facebookLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
-        User user = userService.facebookLogin(body.get("accessToken"));
+        String accessToken = body.get("accessToken");
+        if (accessToken == null || accessToken.isBlank()) return ResponseEntity.badRequest().build();
+        User user = userService.facebookLogin(accessToken);
         setAuthCookies(response, user);
         Map<String, Object> res = new HashMap<>();
         res.put("user", userMapper.toDto(user));
@@ -117,7 +121,9 @@ public class UserController {
 
     @PostMapping("/apple-login")
     public ResponseEntity<Map<String, Object>> appleLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
-        User user = userService.appleLogin(body.get("identityToken"));
+        String identityToken = body.get("identityToken");
+        if (identityToken == null || identityToken.isBlank()) return ResponseEntity.badRequest().build();
+        User user = userService.appleLogin(identityToken);
         setAuthCookies(response, user);
         Map<String, Object> res = new HashMap<>();
         res.put("user", userMapper.toDto(user));
@@ -169,12 +175,7 @@ public class UserController {
     public ResponseEntity<Map<String, String>> getUserPhone(@PathVariable("id") Long userId) {
         String phone = userService.getRealPhoneNumber(userId);
         Map<String, String> response = new HashMap<>();
-        if (phone != null && !phone.isBlank()) {
-            response.put("phone", phone);
-        } else {
-            response.put("phone", "Korisnik nema telefon");
-        }
-
+        response.put("phone", (phone != null && !phone.isBlank()) ? phone : null);
         return ResponseEntity.ok(response);
     }
 }

@@ -31,8 +31,13 @@ public class ImageController {
         this.cloudinary = cloudinary;
     }
 
+    private static final int MAX_FILES = 10;
+
     @PostMapping("/upload")
     public ResponseEntity<List<String>> uploadImages(@RequestParam("files") MultipartFile[] files) {
+        if (files.length > MAX_FILES) {
+            return ResponseEntity.badRequest().build();
+        }
         for (MultipartFile file : files) {
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().build();

@@ -3,10 +3,7 @@ package org.landm.dto.ad;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.landm.dto.CategoryDto;
-import org.landm.dto.LocationDto;
-import org.landm.dto.user.UserDto;
-import org.landm.entity.Enums.AdStatus;
+import jakarta.validation.constraints.Positive;
 import org.landm.entity.Enums.Currency;
 import org.landm.entity.Enums.PriceInterval;
 
@@ -19,6 +16,7 @@ public class UpdateAdRequestDto {
     private String title;
     private String description;
     @NotNull
+    @Positive
     private BigDecimal price;
     private BigDecimal pricePerWeek;
     private BigDecimal pricePerMonth;
@@ -26,12 +24,10 @@ public class UpdateAdRequestDto {
     private Currency currency;
     @NotNull
     private PriceInterval priceInterval;
-    // ad status se automatski menja
     @NotNull
     private int totalQuantity;
     @NotEmpty
     private List<String> images;
-    // email znaci username
     @NotNull
     private Long categoryId;
     @NotNull

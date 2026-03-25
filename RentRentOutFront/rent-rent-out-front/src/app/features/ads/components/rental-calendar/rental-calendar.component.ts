@@ -1,4 +1,5 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {Subject, switchMap, tap, takeUntil} from 'rxjs';
 import {CommonModule, DatePipe} from '@angular/common';
 import {Ad} from '../../../../shared/models/ad.model';
 import {CalendarDay} from '../../../../shared/models/day.model';
@@ -17,7 +18,9 @@ import {AuthService} from '../../../auth/services/auth.service';
   templateUrl: './rental-calendar.component.html',
   styleUrl: './rental-calendar.component.css'
 })
-export class RentalCalendarComponent implements OnChanges {
+export class RentalCalendarComponent implements OnChanges, OnDestroy {
+
+  private destroy$ = new Subject<void>();
 
   @Input() ad!: Ad;
   @Input() isMyAd: boolean = false;
@@ -39,6 +42,8 @@ export class RentalCalendarComponent implements OnChanges {
   numberOfDays: number = 0;
   totalPrice: number = 0;
   calendarHeight: number = 0;
+  isSendingRequest = false;
+  isBlockingDates = false;
 
   constructor(
     private contractService: ContractService,
@@ -148,13 +153,13 @@ export class RentalCalendarComponent implements OnChanges {
   private calculateTieredPrice(days: number): number {
     if (!this.ad) return 0;
     const interval = this.ad.priceInterval;
-    if (interval === 'PER_MONTH' || interval === 'MONTHLY') {
+    if (interval === 'PER_MONTH') {
       const months = days / 30;
       if (this.ad.pricePerMonth && months >= 1) {
         return Math.round(months * this.ad.pricePerMonth);
       }
     }
-    if (interval === 'PER_DAY' || interval === 'DAILY') {
+    if (interval === 'PER_DAY') {
       if (this.ad.pricePerMonth && days >= 30) {
         const months = Math.floor(days / 30);
         const remainingDays = days % 30;
@@ -211,13 +216,14 @@ export class RentalCalendarComponent implements OnChanges {
   }
 
   sendRequest(): void {
-    if (!this.startDate || !this.endDate || !this.ad) return;
+    if (this.isSendingRequest || !this.startDate || !this.endDate || !this.ad) return;
 
     if (!this.authService.currentUserValue) {
       this.router.navigate(['/login']);
       return;
     }
 
+    this.isSendingRequest = true;
     const request: CreateRentalContractRequest = {
       adId: this.ad.id,
       startDate: this.datePipe.transform(this.startDate, 'yyyy-MM-dd')!,
@@ -229,17 +235,20 @@ export class RentalCalendarComponent implements OnChanges {
 
     this.contractService.createRentalContract(request).subscribe({
       next: () => {
+        this.isSendingRequest = false;
         this.toastService.showSuccess('Uspesno ste poslali zahtev!');
       },
       error: () => {
+        this.isSendingRequest = false;
         this.toastService.showError('Zahtev nije poslat!');
       }
     });
   }
 
   blockDates(): void {
-    if (!this.startDate || !this.endDate || !this.ad) return;
+    if (this.isBlockingDates || !this.startDate || !this.endDate || !this.ad) return;
 
+    this.isBlockingDates = true;
     const request: CreateRentalContractRequest = {
       adId: this.ad.id,
       startDate: this.datePipe.transform(this.startDate, 'yyyy-MM-dd')!,
@@ -249,25 +258,29 @@ export class RentalCalendarComponent implements OnChanges {
       currency: this.ad.currency
     };
 
-    this.contractService.blockDates(request).subscribe({
-      next: () => {
-        this.toastService.showSuccess('Datumi su uspesno blokirani!');
+    this.contractService.blockDates(request).pipe(
+      switchMap(() => this.adService.getAdById(this.ad.id)),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (updatedAd) => {
+        this.isBlockingDates = false;
+        this._blockedIntervals = (updatedAd.blockedIntervals || []).map(interval => ({
+          start: new Date(interval.from),
+          end: new Date(interval.to),
+        }));
         this.clearDates();
-
-        this.adService.getAdById(this.ad.id).subscribe({
-          next: (updatedAd) => {
-            this._blockedIntervals = (updatedAd.blockedIntervals || []).map(interval => ({
-              start: new Date(interval.from),
-              end: new Date(interval.to),
-            }));
-            this.generateCalendar();
-          },
-          error: () => {}
-        });
+        this.generateCalendar();
+        this.toastService.showSuccess('Datumi su uspešno blokirani!');
       },
       error: () => {
+        this.isBlockingDates = false;
         this.toastService.showError('Greška pri blokiranju datuma.');
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

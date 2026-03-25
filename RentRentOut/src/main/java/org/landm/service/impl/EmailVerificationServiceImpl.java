@@ -15,15 +15,15 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class EmailVerificationServiceImpl implements  EmailVerificationService{
-	
+public class EmailVerificationServiceImpl implements EmailVerificationService {
+
 	@Value("${app.frontend.url:http://localhost:4200/verify-email}")
 	private String frontendUrl;
-	private EmailVerificationRepository tokenRepository;
-	private UserRepository userRepository;
+	private final EmailVerificationRepository tokenRepository;
+	private final UserRepository userRepository;
 	private final JavaMailSender javaMailSender;
 	private final UserMapper userMapper;
 	
@@ -57,10 +57,9 @@ public class EmailVerificationServiceImpl implements  EmailVerificationService{
 		
 		SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setTo(email);
-		msg.setFrom("rentrentout@gmail.com");
-		msg.setSubject("Please confirm Your e-mail address");
-		msg.setText("Use link provided below to confirm Your e-mail address.\n\n"
-		+ link + "\n\nThank You for choosing us! \n\nSincerely, \nRentRentOut team");
+		msg.setSubject("Potvrdite vašu email adresu");
+		msg.setText("Koristite link ispod da potvrdite vašu email adresu.\n\n"
+		+ link + "\n\nHvala što koristite našu platformu!\n\nSrdačno,\nIzdajemiZnajmljujem tim");
 		
 		javaMailSender.send(msg);
 		
@@ -71,14 +70,14 @@ public class EmailVerificationServiceImpl implements  EmailVerificationService{
 	public UserDto verifyEmail(String token) {
 		
 		EmailVerificationToken verificationToken = tokenRepository.findByToken(token)
-				.orElseThrow(() -> new RuntimeException("Token is not valid.")); 
+				.orElseThrow(() -> new IllegalArgumentException("Token is not valid."));
 		
 		if(verificationToken.isUsed()) {
-			throw new RuntimeException("Token already used.");
+			throw new IllegalStateException("Token already used.");
 		}
-		
+
 		if(verificationToken.getExpiresAt().isBefore(LocalDate.now())) {
-			throw new RuntimeException("Token is expired.");
+			throw new IllegalStateException("Token is expired.");
 		}
 		
 		verificationToken.setUsed(true);
@@ -90,10 +89,5 @@ public class EmailVerificationServiceImpl implements  EmailVerificationService{
 		userRepository.save(user);
 		
 		return userMapper.toDto(user);
-		
 	}
-	
-	
-
-		
 }

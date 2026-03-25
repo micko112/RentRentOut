@@ -6,7 +6,7 @@ import org.landm.dto.requestDto.CreateCategoryRequestDto;
 import java.util.List;
 
 public interface CategoryService {
-    public CategoryDto create(CreateCategoryRequestDto req, Long userId);
+    public CategoryDto create(CreateCategoryRequestDto req);
     public CategoryDto get(Long id);
     public List<Long> findAllSubCategoryId(Long parentId);
     public List<CategoryDto> getAll();

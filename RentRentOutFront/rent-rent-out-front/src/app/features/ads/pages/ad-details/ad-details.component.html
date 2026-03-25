@@ -198,7 +198,7 @@
               <div class="contact-actions">
 
                 <!-- Prikazuje se SAMO ako korisnik u bazi ima unet telefon (što smo maskirali u DTO) -->
-                <div class="phone-section" *ngIf="ad.owner.phoneNumber">
+                <div class="phone-section" *ngIf="ad.owner.phoneNumber && isLoggedIn">
 
 
                   <!-- STANJE 1: Pre klika (Dugme) -->

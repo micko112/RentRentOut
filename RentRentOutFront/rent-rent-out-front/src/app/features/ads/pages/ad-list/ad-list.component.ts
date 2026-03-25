@@ -59,6 +59,7 @@ export class AdListComponent implements OnInit, OnDestroy {
   ];
 
   private destroy$ = new Subject<void>();
+  private homeDataDestroy$ = new Subject<void>();
 
   constructor(
     private adService: AdService,
@@ -82,12 +83,16 @@ export class AdListComponent implements OnInit, OnDestroy {
     this.isSearchMode = this.isSearchModeFromParams(snap);
     this.homeMode = !this.isSearchMode;
 
-    this.categoryService.getAll().subscribe(res => {
-      this.categories = res;
-      this.updateActiveCategory(this.route.snapshot.queryParams['categoryId']);
+    this.categoryService.getAll().pipe(takeUntil(this.destroy$)).subscribe({
+      next: res => {
+        this.categories = res;
+        this.updateActiveCategory(this.route.snapshot.queryParams['categoryId']);
+      },
+      error: () => {},
     });
-    this.locationService.getAll().subscribe({
+    this.locationService.getAll().pipe(takeUntil(this.destroy$)).subscribe({
       next: locs => this.locations = locs,
+      error: () => {},
     });
 
     // Uvek aktivna pretplata — ne zavisi od *ngIf u template-u
@@ -129,35 +134,53 @@ export class AdListComponent implements OnInit, OnDestroy {
           finalize(() => this.isLoading = false)
         );
       })
-    ).subscribe(page => {
-      this.adsPage = page;
+    ).subscribe({
+      next: page => { this.adsPage = page; },
+      error: () => { this.isLoading = false; },
     });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.homeDataDestroy$.next();
+    this.homeDataDestroy$.complete();
   }
 
   private loadHomeData(): void {
+    this.homeDataDestroy$.next(); // Otkazuje prethodne nedovršene home zahteve
     this.adsPage = null;
     this.latestAds = [];
     this.latestLoaded = false;
     this.homeCategories = this.HOME_CATEGORIES.map(c => ({ ...c, ads: [], total: 0, loaded: false }));
 
-    this.adService.search({ sort: 'id,desc', size: 9 }).pipe(takeUntil(this.destroy$)).subscribe(page => {
-      this.latestAds = page.content;
-      this.latestLoaded = true;
+    this.adService.search({ sort: 'id,desc', size: 9 }).pipe(
+      takeUntil(this.homeDataDestroy$),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: page => {
+        this.latestAds = page.content;
+        this.latestLoaded = true;
+      },
+      error: () => { this.latestLoaded = true; },
     });
 
     this.HOME_CATEGORIES.forEach((cat, index) => {
-      this.adService.search({ categoryId: cat.id, sort: 'id,desc', size: 6 }).pipe(takeUntil(this.destroy$)).subscribe(page => {
-        this.homeCategories[index] = {
-          ...this.homeCategories[index],
-          ads:   page.content,
-          total: page.totalElements,
-          loaded: true,
-        };
+      this.adService.search({ categoryId: cat.id, sort: 'id,desc', size: 6 }).pipe(
+        takeUntil(this.homeDataDestroy$),
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: page => {
+          this.homeCategories[index] = {
+            ...this.homeCategories[index],
+            ads:   page.content,
+            total: page.totalElements,
+            loaded: true,
+          };
+        },
+        error: () => {
+          this.homeCategories[index] = { ...this.homeCategories[index], loaded: true };
+        },
       });
     });
   }

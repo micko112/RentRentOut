@@ -10,6 +10,7 @@ import org.landm.entity.RentalContract;
 import org.landm.entity.User;
 import org.landm.mapper.AdMapper;
 import org.landm.mapper.RentalContractMapper;
+import org.landm.exception.UserNotFoundException;
 import org.landm.mapper.UserMapper;
 import org.landm.repository.AdRepository;
 import org.landm.repository.RentalContractRepository;
@@ -53,10 +54,10 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public String suspendAd(Long adId) {
         Ad adToSuspend = adRepository.findById(adId)
-                .orElseThrow(() -> new RuntimeException("Ad not found by id"));
+                .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 
         if (adToSuspend.getAdStatus() == AdStatus.SUSPENDED_BY_ADMIN) {
-            throw new RuntimeException("Ad already suspended");
+            throw new IllegalStateException("Oglas je već suspendovan.");
         }
         List<ContractStatus> activeStatuses = List.of(ContractStatus.ACTIVE, ContractStatus.ACCEPTED);
         List<RentalContract> rentalContracts = rentalContractRepository.findActiveContractForAd(adId, activeStatuses);
@@ -93,7 +94,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public String toggleUserEnabled(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         boolean newState = !user.isEnabled();
         user.setEnabled(newState);
@@ -107,10 +108,10 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public String unsuspendAd(Long adId) {
         Ad ad = adRepository.findById(adId)
-                .orElseThrow(() -> new RuntimeException("Ad not found with id: " + adId));
+                .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 
         if (ad.getAdStatus() != AdStatus.SUSPENDED_BY_ADMIN) {
-            throw new RuntimeException("Ad with ID " + adId + " is not suspended by admin.");
+            throw new IllegalStateException("Oglas nije suspendovan od strane admina.");
         }
 
         ad.setAdStatus(AdStatus.ACTIVE);

@@ -1,7 +1,6 @@
 package org.landm.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import org.landm.entity.Enums.Currency;
 import org.landm.security.PhoneNumberConverter;
 
@@ -9,13 +8,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
 public class User {
 
-    // ovde bi trebalo username da se vidi umesto first i last name
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +28,6 @@ public class User {
     private String lastname;
     @Column(name="credit")
     private BigDecimal credit = BigDecimal.ZERO;
-//    @OneToMany(mappedBy = "roles")
-//    private List<String> roles;
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -48,7 +44,6 @@ public class User {
     private Role role;
     
     @Column(name="enabled")
-    @NotNull
     private boolean enabled = false;
 
     @Column(nullable = false)
@@ -62,12 +57,10 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "positive_reviews")
-    @NotNull
-    private int positiveReviews =0;
+    private int positiveReviews = 0;
 
     @Column(name = "negative_reviews")
-    @NotNull
-    private int negativeReviews =0;
+    private int negativeReviews = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
@@ -271,9 +264,18 @@ public class User {
     }
 
     public List<String> getStringRoles() {
-        List<String> roles = Arrays.stream(role.getName().split(" "))
-                .collect(Collectors.toList());
+        return Arrays.stream(role.getName().split(" ")).toList();
+    }
 
-        return roles;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

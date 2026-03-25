@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router, RouterModule} from '@angular/router';
@@ -14,9 +14,10 @@ import {ToastService} from '../../../../shared/services/toast.service';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
     registerForm!: FormGroup;
     errorMessage: string | null = null;
+    isSubmitting = false;
 
     constructor(private fb: FormBuilder,
                 private authService: AuthService,
@@ -38,21 +39,22 @@ export class RegisterComponent {
   get password() { return this.registerForm.get('password'); }
 
   onSubmit(): void {
-
+    if (this.isSubmitting) return;
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
-
+    this.isSubmitting = true;
     this.authService.register(this.registerForm.value).subscribe({
       next: () => {
         this.router.navigate(['/login']);
-        this.toastService.showSuccess("Uspesno ste se registrovali!");
+        this.toastService.showSuccess("Uspesno ste se registrovali! Proverite email za potvrdu naloga.");
       },
       error: (err) => {
-        this.errorMessage = err.error.message || 'Došlo je do greške. Molimo pokušajte ponovo.';
-        this.toastService.showError(err);
+        this.isSubmitting = false;
+        this.errorMessage = err.error?.message || err.error || 'Došlo je do greške. Molimo pokušajte ponovo.';
+        this.toastService.showError(this.errorMessage!);
       }
     });
   }

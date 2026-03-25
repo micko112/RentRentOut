@@ -6,8 +6,6 @@ import org.landm.dto.ad.AdDto;
 import org.landm.dto.ad.AdPreviewDto;
 import org.landm.dto.ad.CreateAdRequestDto;
 import org.landm.entity.Ad;
-import org.landm.entity.Enums.AdStatus;
-import org.landm.entity.Enums.PriceInterval;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +15,6 @@ public class AdMapper {
     private final CategoryMapper categoryMapper;
     private final LocationMapper locationMapper;
 
-    // Injektujemo druge mappere koji su nam potrebni
     public AdMapper(UserMapper userMapper, CategoryMapper categoryMapper, LocationMapper locationMapper) {
         this.userMapper = userMapper;
         this.categoryMapper = categoryMapper;
@@ -31,9 +28,9 @@ public class AdMapper {
         dto.setPrice(ad.getPrice());
         dto.setPricePerWeek(ad.getPricePerWeek());
         dto.setPricePerMonth(ad.getPricePerMonth());
-        dto.setPriceInterval(PriceInterval.valueOf(ad.getPriceInterval().name()));
+        dto.setPriceInterval(ad.getPriceInterval());
         dto.setCurrency(ad.getCurrency().toString());
-        dto.setAdStatus(AdStatus.valueOf(ad.getAdStatus().name()));
+        dto.setAdStatus(ad.getAdStatus());
         dto.setTotalQuantity(ad.getTotalQuantity());
         dto.setImages(ad.getImages());
 
@@ -54,13 +51,15 @@ public class AdMapper {
         dto.setPricePerWeek(ad.getPricePerWeek());
         dto.setPricePerMonth(ad.getPricePerMonth());
         dto.setCurrency(ad.getCurrency().toString());
-        dto.setPriceInterval(PriceInterval.valueOf(ad.getPriceInterval().name()));
+        dto.setPriceInterval(ad.getPriceInterval());
 
         if (ad.getImages() != null && !ad.getImages().isEmpty()) {
             dto.setThumbnail(ad.getImages().get(0));
         }
-        dto.setCity(ad.getLocation().getCity());
-        dto.setMunicipality(ad.getLocation().getMunicipality());
+        if (ad.getLocation() != null) {
+            dto.setCity(ad.getLocation().getCity());
+            dto.setMunicipality(ad.getLocation().getMunicipality());
+        }
         dto.setAdStatus(ad.getAdStatus());
         dto.setViewCount(ad.getViewCount());
         dto.setSaveCount(ad.getSaveCount());

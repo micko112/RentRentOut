@@ -1,7 +1,7 @@
 package org.landm.service.impl;
 
 import jakarta.persistence.OptimisticLockException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.rentalContract.RentalContractSearchDto;
@@ -15,7 +15,6 @@ import org.landm.mapper.RentalContractMapper;
 import org.landm.repository.AdRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
-import org.landm.security.JwtUtil;
 import org.landm.entity.Enums.NotificationType;
 import org.landm.service.ChatService;
 import org.landm.service.NotificationPersistenceService;
@@ -41,7 +40,6 @@ import java.util.List;
 @Service
 public class RentalContractServiceImpl implements RentalContractService {
 
-    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final AdRepository adRepository;
     private final RentalContractMapper rentalContractMapper;
@@ -50,11 +48,10 @@ public class RentalContractServiceImpl implements RentalContractService {
     private final NotificationService notificationService;
     private final NotificationPersistenceService notifPersistenceService;
 
-    public RentalContractServiceImpl(JwtUtil jwtUtil, UserRepository userRepository, AdRepository adRepository,
+    public RentalContractServiceImpl(UserRepository userRepository, AdRepository adRepository,
                                      RentalContractMapper rentalContractMapper, RentalContractRepository rentalContractRepository,
                                      ChatService chatService, NotificationService notificationService,
                                      NotificationPersistenceService notifPersistenceService) {
-        this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.adRepository = adRepository;
         this.rentalContractMapper = rentalContractMapper;
@@ -66,7 +63,7 @@ public class RentalContractServiceImpl implements RentalContractService {
     
     @Override
     @Retryable(
-    		value = OptimisticLockException.class,
+    		retryFor = OptimisticLockException.class,
     		maxAttempts = 3,
     		backoff = @Backoff(delay = 100)
     		)
@@ -74,17 +71,20 @@ public class RentalContractServiceImpl implements RentalContractService {
     public RentalContractDto create(CreateRentalContractRequestDto req, Long userId) {
     	
         User lessee = userRepository.findByIdForCheck(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         
 
 
-				Ad ad = adRepository.findById(req.getAdId())
-                .orElseThrow(() -> new RuntimeException("Ad not found"));
+		        if (req.getEndDate().isBefore(req.getStartDate())) {
+            throw new IllegalArgumentException("Datum završetka mora biti posle datuma početka.");
+        }
+
+		Ad ad = adRepository.findById(req.getAdId())
+                .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 
 		if (ad.getOwner().getId().equals(userId)) {
-			throw new RuntimeException("Ne možete iznajmiti predmet od samog sebe!");
+			throw new IllegalArgumentException("Ne možete iznajmiti predmet od samog sebe!");
 		}
-    	// Should check for amount of available items and allow sending offer only if there are some
         List<RentalContract> contractsInInterval = rentalContractRepository.
         		findContractsInDateIntervalIncludingBlocked(req.getAdId(),
         				req.getStartDate(),
@@ -94,7 +94,7 @@ public class RentalContractServiceImpl implements RentalContractService {
         				ad.getTotalQuantity());
         
         if(req.getAmount() > availableAmountForAd) {
-        	throw new RuntimeException("No enough available items for this Ad.");
+        	throw new IllegalStateException("Nema dovoljno dostupnih predmeta za traženi period.");
         }
         
         //If these checks are passed app creates and saves offer
@@ -129,12 +129,9 @@ public class RentalContractServiceImpl implements RentalContractService {
     public RentalContractDto updateStatus(Long contractId, UpdateRentalContractStatusRequestDto req, 
     		Long userId) {
 
-		// Ugovor mora da se zakljuca - moze optimistic_force_increment? ili pessimistic_write
-    	
-    	// Korisnik takodje mora da se zakljuca, skidanje para 
-    	
+
         RentalContract contract = rentalContractRepository.findByIdPessWriteLock(contractId);
-        if(contract == null) throw new RuntimeException("Error searching contract!");
+        if(contract == null) throw new IllegalArgumentException("Contract not found.");
 
         checkPermissions(userId, contract);
 
@@ -144,7 +141,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 
 
         if (!isValidTransition(oldStatus, newStatus)) {
-            throw new RuntimeException("Invalid status transition");
+            throw new IllegalStateException("Promena statusa nije dozvoljena.");
         }
 
         if (newStatus == ContractStatus.ACCEPTED || newStatus == ContractStatus.FINISHED
@@ -157,6 +154,27 @@ public class RentalContractServiceImpl implements RentalContractService {
         if (newStatus == ContractStatus.REQUESTED) {
             handleCounterOffer(contract, req, userId);
             contract.setContractStatus(newStatus);
+
+            // Obavesti drugu stranu o kontra-ponudi
+            User counterOfferSender = userRepository.findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
+            User owner = contract.getAd().getOwner();
+            User lessee = contract.getLessee();
+            Long otherId = userId.equals(owner.getId()) ? lessee.getId() : owner.getId();
+            String senderFullName = counterOfferSender.getFirstname() + " " + counterOfferSender.getLastname();
+            chatService.sendSystemMessage(
+                contract.getAd().getId(),
+                lessee.getId(),
+                owner.getId(),
+                counterOfferSender.getFirstname() + " je poslao/la kontra-ponudu za predmet \"" + contract.getAd().getTitle() + "\".",
+                userId
+            );
+            notifPersistenceService.create(
+                otherId, NotificationType.CONTRACT_REQUESTED,
+                "Nova kontra-ponuda",
+                senderFullName + " je poslao/la kontra-ponudu za predmet \"" + contract.getAd().getTitle() + "\".",
+                contract.getId(), "CONTRACT", senderFullName
+            );
         }
 
 		return rentalContractMapper.toDto(rentalContractRepository.save(contract)); //bolje je da se sacuva
@@ -187,6 +205,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 
     	long currUsed = 0;
     	long availableItems = totalAmount;
+    	boolean firstInRange = true;
 
     	for (Event e : events) {
     		if(e.date.isAfter(endDate)) break;
@@ -196,13 +215,24 @@ public class RentalContractServiceImpl implements RentalContractService {
     			continue;
     		}
 
+    		// Pre prvog in-range eventa: proveri stanje na osnovu pre-range rezervacija
+    		if (firstInRange) {
+    			avaliableAmountForDates = Math.min(availableItems - currUsed, avaliableAmountForDates);
+    			firstInRange = false;
+    		}
+
     		currUsed += e.itemCount;
     		long availableNow = availableItems - currUsed;
     		avaliableAmountForDates = Math.min(availableNow, avaliableAmountForDates);
     	}
 
+    	// Ako nema in-range eventa, proveri stanje na osnovu pre-range rezervacija
+    	if (firstInRange) {
+    		avaliableAmountForDates = Math.min(availableItems - currUsed, avaliableAmountForDates);
+    	}
+
     	return (int) avaliableAmountForDates;
-    } 
+    }
     
     private boolean isValidTransition(ContractStatus from, ContractStatus to) {
 
@@ -241,16 +271,17 @@ public class RentalContractServiceImpl implements RentalContractService {
         if(oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.ACCEPTED){
 
             if (contract.getEndDate().isBefore(LocalDate.now())) {
-                throw new RuntimeException("Ne možete prihvatiti zahtev čiji period je već istekao.");
+                throw new IllegalStateException("Ne možete prihvatiti zahtev čiji period je već istekao.");
             }
 
-			Ad contrAd = adRepository.findByIdForUpdate(ad.getId());
+			Ad contrAd = adRepository.findByIdForUpdate(ad.getId())
+				.orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 
         	User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())// lessee - zakljucan
-        			.orElseThrow(() -> new RuntimeException("No user found!"));
+        			.orElseThrow(() -> new UserNotFoundException("User not found"));
         	
         	User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId()) // owner - zakljucan
-        			.orElseThrow(() -> new RuntimeException("No user found!"));
+        			.orElseThrow(() -> new UserNotFoundException("User not found"));
 
         	LocalDate startDate = contract.getStartDate();
         	LocalDate endDate = contract.getEndDate();
@@ -261,8 +292,8 @@ public class RentalContractServiceImpl implements RentalContractService {
         	
         	int availableQuantity = getAvailableAmountForInterval(contracts, startDate, endDate, contrAd.getTotalQuantity());
         	
-        	if(availableQuantity < contract.getAmount()){ // smanjivanje qntity i logika za proveru i smanjivanje para korisniku
-                throw new RuntimeException("Not enough items."); // i povecavanje para korisniku koji je vlasnik
+        	if(availableQuantity < contract.getAmount()){
+                throw new IllegalStateException("Nema dovoljno dostupnih predmeta za ovaj period.");
             }
         	
         	//sve provere su prosle, promena statusa i cuvanje ugovora
@@ -289,16 +320,50 @@ public class RentalContractServiceImpl implements RentalContractService {
 		if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.ACTIVE) {
 			contract.setContractStatus(ContractStatus.ACTIVE);
 			rentalContractRepository.save(contract);
+			User owner = contract.getAd().getOwner();
+			User lessee = contract.getLessee();
+			String actorName = userId.equals(owner.getId())
+					? owner.getFirstname() + " " + owner.getLastname()
+					: lessee.getFirstname() + " " + lessee.getLastname();
+			notifPersistenceService.create(
+				lessee.getId(), NotificationType.CONTRACT_ACTIVE,
+				"Iznajmljivanje počelo",
+				"Iznajmljivanje predmeta \"" + contract.getAd().getTitle() + "\" je označeno kao aktivno.",
+				contract.getId(), "CONTRACT", actorName
+			);
+			notifPersistenceService.create(
+				owner.getId(), NotificationType.CONTRACT_ACTIVE,
+				"Iznajmljivanje počelo",
+				"Iznajmljivanje predmeta \"" + contract.getAd().getTitle() + "\" je označeno kao aktivno.",
+				contract.getId(), "CONTRACT", actorName
+			);
 		}
         if (oldStatus == ContractStatus.ACTIVE &&  newStatus == ContractStatus.FINISHED) {
             contract.setContractStatus(newStatus);
             rentalContractRepository.save(contract);
+            User owner = contract.getAd().getOwner();
+            User lessee = contract.getLessee();
+            String actorName = userId.equals(owner.getId())
+                    ? owner.getFirstname() + " " + owner.getLastname()
+                    : lessee.getFirstname() + " " + lessee.getLastname();
+            notifPersistenceService.create(
+                lessee.getId(), NotificationType.CONTRACT_FINISHED,
+                "Iznajmljivanje završeno",
+                "Iznajmljivanje predmeta \"" + contract.getAd().getTitle() + "\" je označeno kao završeno.",
+                contract.getId(), "CONTRACT", actorName
+            );
+            notifPersistenceService.create(
+                owner.getId(), NotificationType.CONTRACT_FINISHED,
+                "Iznajmljivanje završeno",
+                "Iznajmljivanje predmeta \"" + contract.getAd().getTitle() + "\" je označeno kao završeno.",
+                contract.getId(), "CONTRACT", actorName
+            );
         }
 
 
         if (oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.REJECTED) {
             User lessor = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found!"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
             User contractLessee = contract.getLessee();
             contract.setContractStatus(ContractStatus.REJECTED);
             rentalContractRepository.save(contract);
@@ -319,13 +384,40 @@ public class RentalContractServiceImpl implements RentalContractService {
             );
         }
 
+        if (oldStatus == ContractStatus.REQUESTED && newStatus == ContractStatus.CANCELLED) {
+            User lessee = contract.getLessee();
+            if (!lessee.getId().equals(userId)) {
+                throw new AccessDeniedException("Samo zakupac može povući zahtev za iznajmljivanje.");
+            }
+            User owner = contract.getAd().getOwner();
+            contract.setContractStatus(ContractStatus.CANCELLED);
+            rentalContractRepository.save(contract);
+            chatService.sendSystemMessage(
+                contract.getAd().getId(),
+                lessee.getId(),
+                owner.getId(),
+                lessee.getFirstname() + " je povukao/la zahtev za iznajmljivanje.",
+                userId
+            );
+            notifPersistenceService.create(
+                owner.getId(), NotificationType.CONTRACT_CANCELLED,
+                "Zahtev povučen",
+                lessee.getFirstname() + " " + lessee.getLastname() + " je povukao/la zahtev za iznajmljivanje predmeta \"" + contract.getAd().getTitle() + "\".",
+                contract.getId(), "CONTRACT", lessee.getFirstname() + " " + lessee.getLastname()
+            );
+        }
+
         if (oldStatus == ContractStatus.ACCEPTED && newStatus == ContractStatus.CANCELLED_AFTER_ACCEPT) {
             User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId())
-                    .orElseThrow(() -> new RuntimeException("User not found!"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
             User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())
-                    .orElseThrow(() -> new RuntimeException("User not found!"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
 
             String cancellerName = userId.equals(owner.getId()) ? owner.getFirstname() : lessee.getFirstname();
+            String cancellerFullName = userId.equals(owner.getId())
+                    ? owner.getFirstname() + " " + owner.getLastname()
+                    : lessee.getFirstname() + " " + lessee.getLastname();
+            Long otherId = userId.equals(owner.getId()) ? lessee.getId() : owner.getId();
             contract.setContractStatus(ContractStatus.CANCELLED_AFTER_ACCEPT);
             rentalContractRepository.save(contract);
 
@@ -337,15 +429,25 @@ public class RentalContractServiceImpl implements RentalContractService {
                 cancellerName + " je otkazao/la prihvaćeni ugovor. Obe strane mogu da ostave ocenu.",
                 userId
             );
+            notifPersistenceService.create(
+                otherId, NotificationType.CONTRACT_CANCELLED,
+                "Ugovor otkazan",
+                cancellerFullName + " je otkazao/la prihvaćeni ugovor za predmet \"" + contract.getAd().getTitle() + "\".",
+                contract.getId(), "CONTRACT", cancellerFullName
+            );
         }
 
         if (oldStatus == ContractStatus.ACTIVE && newStatus == ContractStatus.CANCELLED_AFTER_ACCEPT) {
             User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId())
-                    .orElseThrow(() -> new RuntimeException("User not found!"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
             User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())
-                    .orElseThrow(() -> new RuntimeException("User not found!"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
 
             String cancellerName = userId.equals(owner.getId()) ? owner.getFirstname() : lessee.getFirstname();
+            String cancellerFullName = userId.equals(owner.getId())
+                    ? owner.getFirstname() + " " + owner.getLastname()
+                    : lessee.getFirstname() + " " + lessee.getLastname();
+            Long otherId = userId.equals(owner.getId()) ? lessee.getId() : owner.getId();
             contract.setContractStatus(ContractStatus.CANCELLED_AFTER_ACCEPT);
             rentalContractRepository.save(contract);
 
@@ -356,43 +458,14 @@ public class RentalContractServiceImpl implements RentalContractService {
                 cancellerName + " je raskinuo/la aktivan ugovor. Obe strane mogu da ostave ocenu.",
                 userId
             );
+            notifPersistenceService.create(
+                otherId, NotificationType.CONTRACT_CANCELLED,
+                "Ugovor raskinut",
+                cancellerFullName + " je raskinuo/la aktivan ugovor za predmet \"" + contract.getAd().getTitle() + "\".",
+                contract.getId(), "CONTRACT", cancellerFullName
+            );
         }
 
-        if (oldStatus == ContractStatus.ACTIVE && newStatus == ContractStatus.CANCELLED) {
-        	// stari blok — ne moze se vise triggerovati jer ACTIVE->CANCELLED nije validan prelaz
-        	// ostavljeno radi kompajlabilnosti, mrtav kod
-        	if(userId.equals(contract.getLessee().getId())) {
-                contract.setContractStatus(newStatus);
-                rentalContractRepository.save(contract);
-        	}
-        	/*else {
-            	//Ako je raskinuo vlasnik onda korisniku refund proporcionalan broju dana
-
-            	// Prvo izracunati ukupan broj dana ugovora kao i broj preostalih dana
-            	LocalDate currDate = LocalDate.now();
-            	Long totaldays = ChronoUnit.DAYS.between(contract.getStartDate(), contract.getEndDate()) + 1;
-            	Long usedDays = ChronoUnit.DAYS.between(contract.getEndDate(), currDate);
-
-            	//Na osnovu toga odrediti cenu po danu i vratiti kolicinu u skladu sa brojem
-            	//preostalih dana
-            	BigDecimal pricePerDay = contract.getAgreedPrice().divide(BigDecimal.valueOf(totaldays), 2, RoundingMode.HALF_UP);
-            	BigDecimal refund = pricePerDay.multiply(BigDecimal.valueOf(totaldays - usedDays));
-
-            	User owner = userRepository.findByIdForUpdate(contract.getAd().getOwner().getId())
-            			.orElseThrow(() -> new RuntimeException("User not found!"));
-
-            	User lessee = userRepository.findByIdForUpdate(contract.getLessee().getId())
-            			.orElseThrow(() -> new RuntimeException("User not found!"));
-
-
-            	userRepository.save(lessee);
-            	userRepository.save(owner);
-
-                contract.setContractStatus(newStatus);
-                rentalContractRepository.save(contract);
-        	}*/
-        }
-        
     }
 
     private void handleCounterOffer(RentalContract contract, UpdateRentalContractStatusRequestDto req, Long userId) {
@@ -409,6 +482,9 @@ public class RentalContractServiceImpl implements RentalContractService {
 
         // Ako su novi datumi prosleđeni, proveri dostupnost i ažuriraj
         if (req.getNewStartDate() != null && req.getNewEndDate() != null) {
+            if (req.getNewEndDate().isBefore(req.getNewStartDate())) {
+                throw new IllegalArgumentException("Datum završetka mora biti posle datuma početka.");
+            }
             List<ContractStatus> activeStatuses = List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE);
             List<RentalContract> activeContracts = rentalContractRepository
                     .findActiveContractForAd(contract.getAd().getId(), activeStatuses);
@@ -418,14 +494,14 @@ public class RentalContractServiceImpl implements RentalContractService {
                     contract.getAd().getTotalQuantity());
 
             if (contract.getAmount() > available) {
-                throw new RuntimeException("Nema dovoljno dostupnih predmeta za tražene datume.");
+                throw new IllegalStateException("Nema dovoljno dostupnih predmeta za tražene datume.");
             }
             contract.setStartDate(req.getNewStartDate());
             contract.setEndDate(req.getNewEndDate());
         }
 
         if (req.getNewPrice() == null) {
-            throw new RuntimeException("Morate ponuditi novu cenu u kontra-ponudi!");
+            throw new IllegalArgumentException("Morate ponuditi novu cenu u kontra-ponudi!");
         }
         contract.setAgreedPrice(req.getNewPrice());
     }
@@ -433,7 +509,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 	@Override
 	public RentalContractDto getRentalContractById(Long rentalId, Long requestingUserId) {
 		RentalContract contract = rentalContractRepository.findById(rentalId)
-				.orElseThrow(() -> new RuntimeException("No rental contract found!"));
+				.orElseThrow(() -> new IllegalArgumentException("Contract not found"));
 		checkPermissions(requestingUserId, contract);
 		return rentalContractMapper.toDto(contract);
 	}
@@ -463,11 +539,15 @@ public class RentalContractServiceImpl implements RentalContractService {
 				;
 	}
 	
+	private static final java.util.Set<String> ALLOWED_SORT_FIELDS = java.util.Set.of(
+		"startDate", "endDate", "agreedPrice", "contractStatus", "id"
+	);
+
 	public String mapSortField(String frontendField) {
 		return switch(frontendField) {
 		case "adTitle" -> "ad.title";
 		case "firstname" -> "ad.owner.firstname";
-		default -> frontendField;
+		default -> ALLOWED_SORT_FIELDS.contains(frontendField) ? frontendField : "startDate";
 		};
 	}
 
@@ -480,7 +560,7 @@ public class RentalContractServiceImpl implements RentalContractService {
 	public String delete(Long userId, Long rentalId) {
 		
 		RentalContract currContr = rentalContractRepository.findById(rentalId)
-				.orElseThrow(() -> new RuntimeException("Error deleting contract - contract not found"));
+				.orElseThrow(() -> new IllegalArgumentException("Contract not found"));
 		
 		if(!currContr.getLessee().getId().equals(userId)) {
 			throw new AccessDeniedException("Nemate dozvolu za brisanje ovog ugovora.");
@@ -506,10 +586,14 @@ public class RentalContractServiceImpl implements RentalContractService {
 		
 	}
 
+	@Transactional
 	@Override
 	public RentalContractDto blockDates(CreateRentalContractRequestDto req, Long userId) {
-		User owner = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("Error in getting user"));
-		Ad ad = adRepository.findById(req.getAdId()).orElseThrow(()-> new RuntimeException("Error in getting ad"));
+		if (req.getEndDate().isBefore(req.getStartDate())) {
+			throw new IllegalArgumentException("Datum završetka mora biti posle datuma početka.");
+		}
+		User owner = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
+		Ad ad = adRepository.findById(req.getAdId()).orElseThrow(()-> new IllegalArgumentException("Ad not found"));
 		if (!ad.getOwner().getId().equals(userId)) {
 			throw new AccessDeniedException("Samo vlasnik može blokirati datume.");
 		}
@@ -525,9 +609,9 @@ public class RentalContractServiceImpl implements RentalContractService {
 		return rentalContractMapper.toDto(rentalContractRepository.save(blockRecord));
 	}
 
-	@Recover 
-	public void recover(OptimisticLockException e) {
-		throw new RuntimeException("Another operation modified Your account, please try again.");
+	@Recover
+	public RentalContractDto recover(OptimisticLockException e) {
+		throw new IllegalStateException("Vaš zahtev nije mogao biti obrađen zbog paralelnih izmena. Pokušajte ponovo.");
 	}
 	
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -11,11 +11,13 @@ import {AuthService} from '../../services/auth.service';
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
-export class ResetPasswordComponent implements OnInit {
+export class ResetPasswordComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   token = '';
   successMessage = '';
   errorMessage = '';
+  isSubmitting = false;
+  private redirectTimeout?: ReturnType<typeof setTimeout>;
 
   constructor(private fb: FormBuilder,
               private route: ActivatedRoute,
@@ -41,20 +43,27 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid || !this.token) {
+    if (this.isSubmitting || this.form.invalid || !this.token) {
       this.form.markAllAsTouched();
       return;
     }
 
+    this.isSubmitting = true;
     this.authService.resetPassword(this.token, this.form.value.newPassword).subscribe({
       next: () => {
+        this.isSubmitting = false;
         this.successMessage = 'Lozinka je uspesno promenjena. Mozete se prijaviti.';
         this.errorMessage = '';
-        setTimeout(() => this.router.navigate(['/login']), 2500);
+        this.redirectTimeout = setTimeout(() => this.router.navigate(['/login']), 2500);
       },
       error: (err) => {
+        this.isSubmitting = false;
         this.errorMessage = err?.error || 'Token je istekao ili vec iskoriscen.';
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.redirectTimeout);
   }
 }

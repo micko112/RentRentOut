@@ -23,6 +23,7 @@ declare const FB: any;
 export class LoginComponent implements OnInit, AfterViewInit {
   form!: FormGroup;
   submitted = false;
+  isLoggingIn = false;
   returnUrl: string = '/';
 
   constructor(
@@ -70,17 +71,20 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   login() {
     this.submitted = true;
-    if (this.form.invalid) {
+    if (this.isLoggingIn || this.form.invalid) {
       return;
     }
+    this.isLoggingIn = true;
     const credentials = this.form.value;
 
     this.authService.login(credentials).subscribe({
       next: () => {
+        this.isLoggingIn = false;
         this.toastService.showSuccess('Uspešno ste se ulogovali!');
         this.router.navigateByUrl(this.returnUrl);
       },
       error: () => {
+        this.isLoggingIn = false;
         this.toastService.showError('Pogrešan email ili lozinka.');
       }
     });

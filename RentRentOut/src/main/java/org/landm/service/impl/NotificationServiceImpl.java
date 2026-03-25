@@ -1,6 +1,5 @@
 package org.landm.service.impl;
 
-import jakarta.transaction.Transactional;
 import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushService;
 import nl.martijndwars.webpush.Subscription;
@@ -8,13 +7,17 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.landm.entity.Ad;
 import org.landm.entity.PushSubscription;
 import org.landm.entity.User;
+import org.landm.exception.UserNotFoundException;
 import org.landm.repository.PushSubscriptionRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.NotificationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Security;
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.List;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+    private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
     private static final String FROM_EMAIL = "rentrentout@gmail.com";
 
     private final JavaMailSender mailSender;
@@ -65,7 +69,7 @@ public class NotificationServiceImpl implements NotificationService {
             );
             mailSender.send(msg);
         } catch (Exception e) {
-            System.err.println("Failed to send contract request email: " + e.getMessage());
+            log.warn("Failed to send contract request email: {}", e.getMessage());
         }
 
         sendPushNotification(
@@ -90,7 +94,7 @@ public class NotificationServiceImpl implements NotificationService {
             );
             mailSender.send(msg);
         } catch (Exception e) {
-            System.err.println("Failed to send contract accepted email: " + e.getMessage());
+            log.warn("Failed to send contract accepted email: {}", e.getMessage());
         }
 
         sendPushNotification(
@@ -115,7 +119,7 @@ public class NotificationServiceImpl implements NotificationService {
             );
             mailSender.send(msg);
         } catch (Exception e) {
-            System.err.println("Failed to send contract rejected email: " + e.getMessage());
+            log.warn("Failed to send contract rejected email: {}", e.getMessage());
         }
 
         sendPushNotification(
@@ -129,7 +133,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void savePushSubscription(String endpoint, String p256dh, String auth, Long userId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // Briše postojeću pretplatu za isti endpoint (upsert — nema duplikata)
+        pushSubscriptionRepository.deleteByEndpointAndUserId(endpoint, userId);
 
         PushSubscription sub = new PushSubscription();
         sub.setUser(user);
@@ -159,13 +166,18 @@ public class NotificationServiceImpl implements NotificationService {
                 Notification notification = new Notification(subscription, payload);
                 pushService.send(notification);
             } catch (Exception e) {
-                System.err.println("Failed to send push notification to endpoint " + sub.getEndpoint() + ": " + e.getMessage());
+                log.warn("Failed to send push notification to endpoint {}: {}", sub.getEndpoint(), e.getMessage());
             }
         }
     }
 
     private String escapeJson(String value) {
         if (value == null) return "";
-        return value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\r", "\\r")
+                .replace("\n", "\\n")
+                .replace("\t", "\\t");
     }
 }

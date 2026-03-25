@@ -34,15 +34,6 @@ public class EmailVerificationToken {
 	private boolean used = false;
 
 	public EmailVerificationToken() {}
-	
-//	public EmailVerificationToken(Long id, String token, LocalDate expiresAt, User user, boolean used) {
-//		super();
-//		this.id = id;
-//		this.token = token;
-//		this.expiresAt = expiresAt;
-//		this.user = user;
-//		this.used = used;
-//	}
 
 	public Long getId() {
 		return id;

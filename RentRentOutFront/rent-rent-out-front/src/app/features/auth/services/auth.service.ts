@@ -108,9 +108,11 @@ export class AuthService {
         // Dohvati wsToken za WebSocket konekciju
         this.http.get<{ wsToken: string }>(`${API_BASE_URL}/auth/ws-token`, { withCredentials: true }).subscribe({
           next: res => { this.wsToken = res.wsToken; },
+          error: () => {},
         });
       },
       // 401 = nije ulogovan, to je OK — ignorišemo grešku
+      error: () => {},
     });
   }
 }

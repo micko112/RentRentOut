@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CommonModule, NgForOf} from "@angular/common";
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {ReviewFormComponent} from '../../components/review-form/review-form.component';
 import {ReviewService} from '../../services/review.service';
 import {UserService} from '../../../user/services/user.service';
@@ -14,7 +14,6 @@ import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
   selector: 'app-review',
   imports: [
     CommonModule,
-    NgForOf,
     ReviewFormComponent,
     ReviewCardComponent,
     InitialsPipe
@@ -47,7 +46,7 @@ export class ReviewComponent implements OnInit {
   targetUserId!: number;
   contractIdToReview: number | null = null;
 
-  reviews: any[] = [];
+  reviews: Review[] = [];
 
   constructor(private userService: UserService,
               private reviewService: ReviewService,
@@ -55,12 +54,8 @@ export class ReviewComponent implements OnInit {
               private router: Router) {}
 
   ngOnInit() {
-    // ISPRAVKA 1: ID korisnika je u samoj putanji (/user/5/reviews),
-    // Zato koristimo paramMap (bez 'query')
     this.targetUserId = Number(this.route.snapshot.paramMap.get('id'));
 
-    // ISPRAVKA 2: ID ugovora je posle upitnika (?contractId=12),
-    // Zato koristimo queryParamMap
     const contractParam = this.route.snapshot.queryParamMap.get('contractId');
 
     if(contractParam) {

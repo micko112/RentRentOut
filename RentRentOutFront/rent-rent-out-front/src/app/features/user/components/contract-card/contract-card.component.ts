@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
 import {CommonModule} from '@angular/common';
-import {UserService} from '../../services/user.service';
 import {ContractService} from '../../../contracts/services/contract.service';
-import {Router, RouterLink} from '@angular/router';
+import {RouterLink} from '@angular/router';
 import {ToastService} from '../../../../shared/services/toast.service';
 
 @Component({
@@ -16,14 +15,16 @@ export class ContractCardComponent {
     @Input() contract!: RentalContract;
     @Input() isOwnerView: boolean = false;
     @Output() statusUpdated = new EventEmitter<void>();
+    isUpdating = false;
 
-    constructor(private userService: UserService,
-                private contractService: ContractService,
-                private router: Router,
+    constructor(private contractService: ContractService,
                 private toastService: ToastService) {}
   updateStatus(newStatus: string) {
+      if (this.isUpdating) return;
+      this.isUpdating = true;
       this.contractService.updateStatus(this.contract.id, newStatus).subscribe({
         next: () => {
+          this.isUpdating = false;
           if (newStatus === 'ACCEPTED') this.toastService.showSuccess('Uspešno ste prihvatili zahtev.');
           else if (newStatus === 'REJECTED') this.toastService.showSuccess('Zahtev je odbijen.');
           else if (newStatus === 'ACTIVE') this.toastService.showSuccess('Predmet je uspešno predat!');
@@ -33,7 +34,8 @@ export class ContractCardComponent {
           this.statusUpdated.emit();
         },
         error: (err) => {
-          this.toastService.showError('Greška: ' + (err.error?.message || 'Pokušajte ponovo.'));
+          this.isUpdating = false;
+          this.toastService.showError('Greška: ' + (err.error?.message || err.error || 'Pokušajte ponovo.'));
         }})
   }
 

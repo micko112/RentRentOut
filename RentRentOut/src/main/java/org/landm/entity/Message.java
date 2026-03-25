@@ -120,12 +120,12 @@ public class Message {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return isRead == message.isRead && Objects.equals(id, message.id) && Objects.equals(conversation, message.conversation) && Objects.equals(sender, message.sender) && Objects.equals(content, message.content) && Objects.equals(createdAt, message.createdAt);
+        return Objects.equals(id, message.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, conversation, sender, content, isRead, createdAt);
+        return Objects.hashCode(id);
     }
 
     @Override

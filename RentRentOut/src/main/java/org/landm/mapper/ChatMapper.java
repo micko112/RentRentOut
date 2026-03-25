@@ -12,7 +12,6 @@ import org.landm.repository.MessageRepository;
 import org.landm.repository.RentalContractRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -70,8 +69,7 @@ public class ChatMapper {
 
         dto.setOtherParticipant(userMapper.toUserShortDto(otherParticipant));
         dto.setUpdatedAt(c.getUpdatedAt());
-        List<Message> messages = new ArrayList<>();
-        messages= c.getMessages();
+        List<Message> messages = c.getMessages();
         if(!messages.isEmpty()) {
             Message lastMessage = messages.get(messages.size() - 1);
             dto.setLastMessagePreview(lastMessage.getContent());

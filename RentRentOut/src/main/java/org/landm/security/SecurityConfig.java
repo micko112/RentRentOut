@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,12 +16,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-	private JwtFilter jwtFilter;
-	private RateLimitFilter rateLimitFilter;
+	private final JwtFilter jwtFilter;
 
-	public SecurityConfig(JwtFilter jwtFilter, RateLimitFilter rateLimitFilter) {
+	public SecurityConfig(JwtFilter jwtFilter) {
 		this.jwtFilter = jwtFilter;
-		this.rateLimitFilter = rateLimitFilter;
 	}
 	
     @Bean
@@ -31,6 +30,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http.csrf(csrf -> csrf.disable())
+	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	            .headers(headers -> headers
 	                .frameOptions(frame -> frame.deny())
 	                .contentTypeOptions(cto -> {})
@@ -78,7 +78,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.DELETE, "/api/rental-contract/**").authenticated()
 
 						.requestMatchers(HttpMethod.DELETE, "/api/ads/**").authenticated()
-						.requestMatchers(HttpMethod.DELETE, "/api/admin/**").hasRole("ADMIN")
+						.requestMatchers("/api/admin/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/locations").permitAll()
@@ -111,7 +111,6 @@ public class SecurityConfig {
 
 						.anyRequest().authenticated()
 	            )
-	            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
 	            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	
 	    return http.build();

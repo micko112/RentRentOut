@@ -39,7 +39,7 @@ export class AdminAdsComponent implements OnInit {
     });
   }
 
-  suspendAd(ad: any) {
+  suspendAd(ad: AdPreview) {
     this.adminService.suspendAd(ad.id).subscribe({
       next: () => {
         this.toastService.showSuccess('Oglas je suspendovan.');
@@ -49,7 +49,7 @@ export class AdminAdsComponent implements OnInit {
     });
   }
 
-  unsuspendAd(ad: any) {
+  unsuspendAd(ad: AdPreview) {
     this.adminService.unsuspendAd(ad.id).subscribe({
       next: () => {
         this.toastService.showSuccess('Oglas je reaktiviran.');

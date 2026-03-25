@@ -2,6 +2,7 @@ package org.landm.dto.ad;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.landm.entity.Enums.Currency;
@@ -32,7 +33,7 @@ public class CreateAdRequestDto {
     @Min(1)
     private int totalQuantity = 1;
 
-    // ovde moze not null posle
+    @NotEmpty
     private List<String> images;
 
     public String getTitle() {

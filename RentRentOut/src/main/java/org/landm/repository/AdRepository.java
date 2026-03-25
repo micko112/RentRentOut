@@ -12,18 +12,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.LockModeType;
+import java.util.Optional;
 
 @Repository
 public interface AdRepository extends JpaRepository<Ad, Long> , JpaSpecificationExecutor<Ad> {
     Page<Ad> findAllByAdStatus(AdStatus adStatus, Pageable pageable);
-    
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
-    		SELECT a 
+    		SELECT a
     		FROM Ad a
     		WHERE a.id = :adId
     		""")
-    public Ad findByIdForUpdate(Long adId);
+    Optional<Ad> findByIdForUpdate(Long adId);
 
     Page<Ad> findAllByOwnerId(Long userId, Pageable pageable);
+
+    Page<Ad> findAllByOwnerIdAndAdStatus(Long userId, AdStatus adStatus, Pageable pageable);
 }

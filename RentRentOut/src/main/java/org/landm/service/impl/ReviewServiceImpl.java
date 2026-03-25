@@ -9,6 +9,7 @@ import org.landm.entity.Enums.ReviewType;
 import org.landm.entity.RentalContract;
 import org.landm.entity.Review;
 import org.landm.entity.User;
+import org.landm.exception.UserNotFoundException;
 import org.landm.mapper.ReviewMapper;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.ReviewRepository;
@@ -16,6 +17,8 @@ import org.landm.repository.UserRepository;
 import org.landm.entity.Enums.NotificationType;
 import org.landm.service.NotificationPersistenceService;
 import org.landm.service.ReviewService;
+import org.landm.util.HtmlSanitizer;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -66,24 +69,24 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public ReviewDto createReview(CreateReviewRequestDto dto, Long reviewerId) {
 
-        // validacije sve
-//        Korisnika ne možete oceniti:
-//
-
 
         ReviewType type = calculateReviewType(dto.getPaymentOk(), dto.getCommunicationOk(), dto.getAgreementOk());
 
-        User reviewer = userRepository.findById(reviewerId).orElseThrow(() -> new RuntimeException("Ne postoji osoba koja je ostavila recenziju"));
+        User reviewer = userRepository.findById(reviewerId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        RentalContract rc = rentalContractRepository.findById(dto.getContractId()).orElseThrow(() -> new RuntimeException("Ne postoji ugovor za koji je ostavljena recenzija"));
+        RentalContract rc = rentalContractRepository.findById(dto.getContractId()).orElseThrow(() -> new IllegalArgumentException("Contract not found"));
 
         if(reviewRepository.existsByContractIdAndReviewerId(rc.getId(), reviewerId)){
-            throw new RuntimeException("Vec ste stavili ocenu!");
+            throw new IllegalStateException("Već ste ostavili ocenu za ovaj ugovor.");
         }
 
         if (rc.getContractStatus() != ContractStatus.FINISHED
                 && rc.getContractStatus() != ContractStatus.CANCELLED_AFTER_ACCEPT) {
-            throw new RuntimeException("Ugovor nije završen ili otkazan nakon prihvatanja.");
+            throw new IllegalStateException("Ugovor nije završen ili otkazan nakon prihvatanja.");
+        }
+
+        if (rc.getEndDate().isBefore(LocalDate.now().minusDays(30))) {
+            throw new IllegalStateException("Rok za ocenjivanje (30 dana) je istekao.");
         }
 
         User reviewee;
@@ -91,10 +94,10 @@ public class ReviewServiceImpl implements ReviewService {
             reviewee = rc.getAd().getOwner();
         }else if(rc.getAd().getOwner().getId().equals(reviewerId)){
             reviewee = rc.getLessee();
-        }else throw new RuntimeException("Niste ucestvovali u ovom ugovoru, ne mozete da ocenite");
+        }else throw new AccessDeniedException("Niste učesnik u ovom ugovoru.");
 
         if(reviewerId.equals(reviewee.getId())){
-            throw new RuntimeException("Ne mozete sami sebi da ostavite ocenu");
+            throw new IllegalArgumentException("Ne možete sami sebi ostaviti ocenu.");
         }
 
         Review review = new Review(
@@ -105,7 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
                 dto.getCommunicationOk(),
                 dto.getAgreementOk(),
                 type,
-                dto.getComment(),
+                HtmlSanitizer.sanitize(dto.getComment()),
                 LocalDateTime.now()
         );
 
@@ -130,9 +133,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewEligibilityDto checkEligibility(Long contractId, Long reviewerId) {
-        RentalContract rc = rentalContractRepository.findById(contractId).orElseThrow(() -> new RuntimeException("Ne postoji ugovor!"));
-
-        User reviewer = userRepository.findById(reviewerId).orElseThrow();
+        RentalContract rc = rentalContractRepository.findById(contractId).orElseThrow(() -> new IllegalArgumentException("Contract not found"));
 
         boolean isParty = rc.getLessee().getId().equals(reviewerId)
                 || rc.getAd().getOwner().getId().equals(reviewerId);
@@ -140,11 +141,6 @@ public class ReviewServiceImpl implements ReviewService {
             return new ReviewEligibilityDto(false, "Niste učesnik u ovom ugovoru.");
         }
 
-        /*
-        if (reviewer.getCreatedAt().isAfter(LocalDateTime.now().minusDays(3))) {
-           return new ReviewEligibilityDto(false, "Ne možete ocenjivati jer ste se nedavno registrovali.");
-                }
-        */
         if (rc.getContractStatus() != ContractStatus.FINISHED
                 && rc.getContractStatus() != ContractStatus.CANCELLED_AFTER_ACCEPT) {
             return new ReviewEligibilityDto(false, "Ne može se utvrditi da je do iznajmljivanja došlo.");
@@ -164,13 +160,5 @@ public class ReviewServiceImpl implements ReviewService {
         return page.map(reviewMapper::toDto);
 
     }
-//        Korisnika ne možete oceniti:
-//
-//        1     ako ste se nedavno registrovali,
-//        2     ako se iz Vaše konverzacije KP Porukama ne može utvrditi da je do kupoprodaje došlo,
-//        3     ako ste ga već ocenili pre manje od 7 dana,
-//        4     ako je konverzacija starija od 30 dana,
-//        5     ako ste korisnika već ocenili iz iste konverzacije.
-
 
 }

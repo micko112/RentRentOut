@@ -42,7 +42,9 @@
       {{ errorMessage }}
     </div>
 
-    <button type="submit" class="submit-btn" [disabled]="registerForm.invalid">Registruj se</button>
+    <button type="submit" class="submit-btn" [disabled]="registerForm.invalid || isSubmitting">
+      {{ isSubmitting ? 'Registracija...' : 'Registruj se' }}
+    </button>
 
     <div class="login-link">
       Već imate nalog? <a routerLink="/login">Ulogujte se</a>

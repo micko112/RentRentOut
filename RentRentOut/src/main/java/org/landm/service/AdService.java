@@ -24,6 +24,7 @@ public interface AdService {
     public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable, Long userId);
     public Page<AdPreviewDto> findAll(Pageable pageable);
     public Page<AdPreviewDto> findAllByUser(Pageable pageable, Long userId);
+    public Page<AdPreviewDto> findAllActiveByUser(Pageable pageable, Long userId);
 
     // Ad Views
     void recordView(Long adId, Long userId);

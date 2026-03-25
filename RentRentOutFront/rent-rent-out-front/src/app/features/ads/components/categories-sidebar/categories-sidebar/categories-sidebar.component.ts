@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Output} from '@angular/core';
-import {CommonModule, NgForOf} from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {Category} from '../../../../../shared/models/category.model';
 import {CategoryService} from '../../../services/category.service';
 

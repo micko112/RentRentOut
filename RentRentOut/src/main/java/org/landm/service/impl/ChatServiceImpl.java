@@ -1,7 +1,6 @@
 package org.landm.service.impl;
 
 
-import jakarta.transaction.Transactional;
 import org.landm.dto.chat.ConversationPreviewDto;
 import org.landm.dto.chat.MessageDto;
 import org.landm.dto.chat.SendMessageRequestDto;
@@ -9,12 +8,14 @@ import org.landm.entity.Ad;
 import org.landm.entity.Conversation;
 import org.landm.entity.Enums.MessageType;
 import org.landm.entity.Message;
+import org.landm.entity.RentalContract;
 import org.landm.entity.User;
 import org.landm.mapper.ChatMapper;
 import org.landm.repository.AdRepository;
 import org.landm.repository.ConversationRepository;
 import org.landm.repository.MessageRepository;
 import org.landm.repository.UserRepository;
+import org.landm.exception.UserNotFoundException;
 import org.landm.service.ChatService;
 import org.landm.service.NotificationService;
 import org.landm.util.HtmlSanitizer;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.time.LocalDateTime;
@@ -50,11 +52,22 @@ public class ChatServiceImpl implements ChatService {
 
 
     @Override
+    @Transactional
     public MessageDto sendMessage(SendMessageRequestDto request, Long senderId) {
-        User sender = userRepository.findById(senderId).orElseThrow(() -> new RuntimeException("Nije pronadjen user"));
-        User receiver = userRepository.findById(request.getReceiverId()).orElseThrow(() -> new RuntimeException("Nije pronadjen user"));
+        if (request.getContent() == null || request.getContent().isBlank()) {
+            throw new IllegalArgumentException("Poruka ne sme biti prazna.");
+        }
+        if (request.getContent().length() > 5000) {
+            throw new IllegalArgumentException("Poruka ne sme biti duža od 5000 karaktera.");
+        }
+        if (request.getReceiverId() == null || request.getAdId() == null) {
+            throw new IllegalArgumentException("receiverId i adId su obavezni.");
+        }
 
-        Ad ad = adRepository.findById(request.getAdId()).orElseThrow(() -> new RuntimeException("Nije pronadjen ad"));
+        User sender = userRepository.findById(senderId).orElseThrow(() -> new UserNotFoundException("User not found"));
+        User receiver = userRepository.findById(request.getReceiverId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Ad ad = adRepository.findById(request.getAdId()).orElseThrow(() -> new IllegalArgumentException("Ad not found"));
         if (senderId.equals(request.getReceiverId())) {
             throw new IllegalArgumentException("Ne možete poslati poruku samom sebi.");
         }
@@ -66,7 +79,8 @@ public class ChatServiceImpl implements ChatService {
             conv = new Conversation(ad, sender, receiver);
             conv = conversationRepository.save(conv);
         }
-        Message message = new Message(conv, sender, HtmlSanitizer.sanitize(request.getContent()));
+        String sanitizedContent = HtmlSanitizer.sanitize(request.getContent());
+        Message message = new Message(conv, sender, sanitizedContent);
         messageRepository.save(message);
 
         conv.setUpdatedAt(LocalDateTime.now());
@@ -74,10 +88,10 @@ public class ChatServiceImpl implements ChatService {
 
         notificationService.sendPushNotification(
             receiver.getId(),
-            "New message from " + sender.getFirstname(),
-            request.getContent().length() > 80
-                ? request.getContent().substring(0, 80) + "..."
-                : request.getContent()
+            "Nova poruka od " + sender.getFirstname(),
+            sanitizedContent.length() > 80
+                ? sanitizedContent.substring(0, 80) + "..."
+                : sanitizedContent
         );
 
         return chatMapper.toMessageDto(message);
@@ -85,8 +99,6 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Page<ConversationPreviewDto> getMyConversations(Long myUserId, Pageable pageable) {
-
-        User me =userRepository.findById(myUserId).orElseThrow(() -> new RuntimeException("Nije pronadjen user"));
         Page<Conversation> conversations = conversationRepository.findAllByUserId(myUserId, pageable);
         return conversations.map(conversation -> chatMapper.toDto(conversation, myUserId));
     }
@@ -115,14 +127,14 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public void sendContractRequestMessage(org.landm.entity.RentalContract contract) {
+    public void sendContractRequestMessage(RentalContract contract) {
         Long adId = contract.getAd().getId();
         Long lesseeId = contract.getLessee().getId();
         Long lessorId = contract.getAd().getOwner().getId();
 
         Ad ad = contract.getAd();
         User lessee = contract.getLessee();
-        User lessor = userRepository.findById(lessorId).orElseThrow(() -> new RuntimeException("User not found"));
+        User lessor = userRepository.findById(lessorId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Optional<Conversation> convOpt = conversationRepository.findExistingConversation(adId, lesseeId, lessorId);
         Conversation conv;
@@ -162,8 +174,8 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public Page<MessageDto> getMessagesForConversation(Long conversationId, Long myUserId, Pageable pageable) {
 
-        Conversation conversation =  conversationRepository.findById(conversationId)
-                .orElseThrow(() -> new RuntimeException("Conversation not found"));
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
 
         if(!conversation.getParticipantOne().getId().equals(myUserId) && !conversation.getParticipantTwo().getId().equals(myUserId)){
             throw new AccessDeniedException("Nemate pristup ovoj konverzaciji.");

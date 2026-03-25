@@ -3,6 +3,11 @@
 *.iml
 *.iws
 
+# Eclipse
+.project
+.classpath
+.settings/
+
 # Maven build output
 target/
 

@@ -1,18 +1,16 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
-import {CommonModule, NgForOf, NgIf, NgIfContext} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
-import {Observable} from 'rxjs';
 import {UserService} from '../../services/user.service';
 import {ContractCardComponent} from '../../components/contract-card/contract-card.component';
 import {AuthService} from '../../../auth/services/auth.service';
 import {ActivatedRoute} from '@angular/router';
+import {ToastService} from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-contracts',
   imports: [
-    NgForOf,
-    NgIf,
     CommonModule,
     FormsModule,
     ContractCardComponent
@@ -45,7 +43,8 @@ export class ContractsComponent implements OnInit {
 
   constructor(private userService: UserService,
               private authService: AuthService,
-              private route: ActivatedRoute) {}
+              private route: ActivatedRoute,
+              private toastService: ToastService) {}
 
   ngOnInit() {
     this.scrollToContractId = this.route.snapshot.queryParamMap.get('contractId');
@@ -56,20 +55,25 @@ export class ContractsComponent implements OnInit {
     const currentUser = this.authService.currentUserValue;
     if(!currentUser) return;
 
-    this.userService.getAllContract().subscribe(allContracts => {
-      this.outgoingRequests = allContracts.filter(c=> c.lesseeDto.id === currentUser.id);
-      this.incomingRequests = allContracts.filter(c=> c.adDto.owner.id === currentUser.id);
+    this.userService.getAllContract().subscribe({
+      next: allContracts => {
+        this.outgoingRequests = allContracts.filter(c => c.lesseeDto?.id === currentUser.id);
+        this.incomingRequests = allContracts.filter(c => c.adDto?.owner?.id === currentUser.id);
 
-      if (this.scrollToContractId) {
-        const targetId = this.scrollToContractId;
-        setTimeout(() => {
-          const el = document.getElementById('contract-' + targetId);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.classList.add('contract-highlighted');
-            setTimeout(() => el.classList.remove('contract-highlighted'), 2000);
-          }
-        }, 150);
+        if (this.scrollToContractId) {
+          const targetId = this.scrollToContractId;
+          setTimeout(() => {
+            const el = document.getElementById('contract-' + targetId);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              el.classList.add('contract-highlighted');
+              setTimeout(() => el.classList.remove('contract-highlighted'), 2000);
+            }
+          }, 150);
+        }
+      },
+      error: () => {
+        this.toastService.showError('Greška pri učitavanju ugovora.');
       }
     });
   }

@@ -14,6 +14,7 @@ import {AuthService} from '../../services/auth.service';
 export class ForgotPasswordComponent {
   form!: FormGroup;
   submitted = false;
+  isSubmitting = false;
   successMessage = '';
   errorMessage = '';
 
@@ -24,17 +25,20 @@ export class ForgotPasswordComponent {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
+    if (this.isSubmitting || this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
+    this.isSubmitting = true;
     this.authService.forgotPassword(this.form.value.email).subscribe({
       next: () => {
+        this.isSubmitting = false;
         this.submitted = true;
         this.successMessage = 'Ukoliko nalog postoji, link za resetovanje lozinke je poslat na Vas email.';
         this.errorMessage = '';
       },
       error: () => {
+        this.isSubmitting = false;
         this.errorMessage = 'Doslo je do greske. Pokusajte ponovo.';
       }
     });

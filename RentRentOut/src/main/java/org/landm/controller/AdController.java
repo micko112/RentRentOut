@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class AdController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AdDto> getAdById(@PathVariable Long id, Authentication auth) {
-        if (auth != null && auth.isAuthenticated()) {
+        if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
             Long userId = Long.parseLong(auth.getName());
             return ResponseEntity.ok(adService.getAdById(id, userId));
         }
@@ -34,14 +35,14 @@ public class AdController {
 
     @GetMapping()
     public ResponseEntity<Page<AdPreviewDto>> getAllAds(Pageable pageable, Authentication auth) {
-        if (auth != null && auth.isAuthenticated()) {
+        if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
             Long userId = Long.parseLong(auth.getName());
             return ResponseEntity.ok(adService.getAllActiveAds(pageable, userId));
         }
         return ResponseEntity.ok(adService.getAllActiveAds(pageable));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<AdDto> createAd(@Valid @RequestBody CreateAdRequestDto req,
                                           Authentication auth) {
@@ -69,7 +70,7 @@ public class AdController {
     @GetMapping("/search")
     public ResponseEntity<Page<AdPreviewDto>> searchAd(AdSearchCriteriaDto criteria, Pageable pageable,
                                                         Authentication auth) {
-        if (auth != null && auth.isAuthenticated()) {
+        if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {
             Long userId = Long.parseLong(auth.getName());
             return ResponseEntity.ok(adService.search(criteria, pageable, userId));
         }
@@ -86,7 +87,7 @@ public class AdController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<AdPreviewDto>> getAdsByUser(@PathVariable Long userId, Pageable pageable) {
-        Page<AdPreviewDto> results = adService.findAllByUser(pageable, userId);
+        Page<AdPreviewDto> results = adService.findAllActiveByUser(pageable, userId);
         return ResponseEntity.ok(results);
     }
 

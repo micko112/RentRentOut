@@ -1,5 +1,6 @@
 package org.landm.dto.rentalContract;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -15,8 +16,10 @@ public class UpdateRentalContractStatusRequestDto {
     @Positive
     private BigDecimal newPrice;
 
+    @FutureOrPresent
     private LocalDate newStartDate;
 
+    @FutureOrPresent
     private LocalDate newEndDate;
 
     public ContractStatus getNewStatus() {

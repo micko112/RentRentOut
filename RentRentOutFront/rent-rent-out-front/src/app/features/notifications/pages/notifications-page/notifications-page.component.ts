@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NotificationsService } from '../../services/notifications.service';
 import { AppNotification } from '../../../../shared/models/notification.model';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 type Filter = 'all' | 'unread';
 
@@ -27,10 +28,13 @@ export class NotificationsPageComponent implements OnInit {
     CONTRACT_ACTIVE:    { icon: '🔑', color: 'purple' },
     CONTRACT_FINISHED:  { icon: '🏁', color: 'gray'   },
     NEW_REVIEW:         { icon: '⭐', color: 'yellow' },
-    AD_SAVED:           { icon: 'bookmark', color: '#813181' },
+    AD_SAVED:           { icon: '🔖', color: '#813181' },
   };
 
-  constructor(private notificationsService: NotificationsService) {}
+  constructor(
+    private notificationsService: NotificationsService,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -40,7 +44,7 @@ export class NotificationsPageComponent implements OnInit {
     this.isLoading = true;
     this.notificationsService.getAll().subscribe({
       next: data => { this.notifications = data; this.isLoading = false; },
-      error: ()   => { this.isLoading = false; }
+      error: ()   => { this.isLoading = false; this.toastService.showError('Greška pri učitavanju obaveštenja.'); }
     });
   }
 
@@ -61,12 +65,16 @@ export class NotificationsPageComponent implements OnInit {
 
   markAsRead(n: AppNotification): void {
     if (n.isRead) return;
-    this.notificationsService.markOneAsRead(n.id).subscribe(() => { n.isRead = true; });
+    n.isRead = true;
+    this.notificationsService.markOneAsRead(n.id).subscribe({
+      error: () => { n.isRead = false; }
+    });
   }
 
   markAllAsRead(): void {
-    this.notificationsService.markAllAsRead().subscribe(() => {
-      this.notifications.forEach(n => n.isRead = true);
+    this.notificationsService.markAllAsRead().subscribe({
+      next: () => { this.notifications.forEach(n => n.isRead = true); },
+      error: () => { this.toastService.showError('Greška pri označavanju obaveštenja.'); }
     });
   }
 

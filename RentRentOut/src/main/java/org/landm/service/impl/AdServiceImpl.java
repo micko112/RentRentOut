@@ -1,7 +1,7 @@
 package org.landm.service.impl;
 
 import jakarta.persistence.criteria.Predicate;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.landm.dto.ad.*;
 import org.landm.entity.*;
@@ -11,9 +11,9 @@ import org.landm.helper.DateInterval;
 import org.landm.mapper.AdMapper;
 import org.landm.mapper.LocationMapper;
 import org.landm.repository.*;
-import org.landm.security.JwtUtil;
 import org.landm.entity.Enums.NotificationType;
 import org.landm.util.HtmlSanitizer;
+import org.landm.exception.UserNotFoundException;
 import org.landm.service.AdService;
 import org.landm.service.CategoryService;
 import org.landm.service.NotificationPersistenceService;
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -43,7 +42,6 @@ public class AdServiceImpl implements AdService {
     private final AdMapper adMapper;
     private final LocationMapper locationMapper;
     private final CategoryService categoryService;
-    private final JwtUtil jwtUtil;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final RentalContractRepository rentalContractRepository;
@@ -55,7 +53,7 @@ public class AdServiceImpl implements AdService {
     public AdServiceImpl(AdRepository adRepository, UserRepository userRepository,
                          AdMapper adMapper, LocationMapper locationMapper,
                          CategoryRepository categoryRepository, LocationRepository locationRepository,
-                         JwtUtil jwtUtil, RentalContractRepository rentalContractRepository,
+                         RentalContractRepository rentalContractRepository,
                          RentalContractService rentalContractService, CategoryService categoryService,
                          AdViewRepository adViewRepository, SavedAdRepository savedAdRepository,
                          NotificationPersistenceService notificationPersistenceService) {
@@ -65,7 +63,6 @@ public class AdServiceImpl implements AdService {
         this.categoryRepository = categoryRepository;
         this.locationMapper = locationMapper;
         this.locationRepository = locationRepository;
-        this.jwtUtil = jwtUtil;
         this.rentalContractRepository = rentalContractRepository;
         this.rentalContractService = rentalContractService;
         this.categoryService = categoryService;
@@ -73,14 +70,6 @@ public class AdServiceImpl implements AdService {
         this.savedAdRepository = savedAdRepository;
         this.notificationPersistenceService = notificationPersistenceService;
     }
-
-//    @Override
-//    public ItemDto create(CreateItemRequestDto req, Long userId) {
-
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String email = auth.getName();
-//
-//    }
 
     private void validateImageUrls(List<String> images) {
         if (images == null) return;
@@ -92,14 +81,15 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @Transactional
     public AdDto create(CreateAdRequestDto req, Long userId) {
         validateImageUrls(req.getImages());
-        User owner = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Category category = categoryRepository.findById(req.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + req.getCategoryId()));
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
         Location location = locationRepository.findById(req.getLocationId())
-                .orElseThrow(() -> new RuntimeException("Location not found with id: " + req.getLocationId()));
+                .orElseThrow(() -> new IllegalArgumentException("Location not found"));
         Ad adToCreate = new Ad(
                 HtmlSanitizer.sanitize(req.getTitle()),
                 HtmlSanitizer.sanitize(req.getDescription()),
@@ -120,7 +110,7 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public AdDto getAdById(Long id) {
-        Ad ad = adRepository.findById(id).orElseThrow(() -> new RuntimeException("Ad not found with id: " + id));
+        Ad ad = adRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 
         List<RentalContract> contracts = rentalContractService
                 .findByAdIdAndContractStatusIn(ad.getId(), List.of(ContractStatus.ACCEPTED, ContractStatus.ACTIVE, ContractStatus.BLOCKED_BY_OWNER));
@@ -208,24 +198,36 @@ public class AdServiceImpl implements AdService {
     	
     	int currUsed = 0;
     	int availableItems = totalAmount;
-    	
+    	boolean firstInRange = true;
+
     	for (Event e : events) {
     		if(e.date.isAfter(endDate)) break;
-    		
+
     		if(e.date.isBefore(startDate)) {
     			currUsed += e.itemCount;
     			continue;
     		}
-    		
+
+    		// Pre prvog in-range eventa: proveri stanje na osnovu pre-range rezervacija
+    		if (firstInRange) {
+    			avaliableAmountForDates = Math.min(availableItems - currUsed, avaliableAmountForDates);
+    			firstInRange = false;
+    		}
+
     		currUsed += e.itemCount;
     		int availableNow = availableItems - currUsed;
     		avaliableAmountForDates = Math.min(availableNow, avaliableAmountForDates);
-    		
+
     	}
-    	
+
+    	// Ako nema in-range eventa, provjeri stanje na osnovu pre-range rezervacija
+    	if (firstInRange) {
+    		avaliableAmountForDates = Math.min(availableItems - currUsed, avaliableAmountForDates);
+    	}
+
     	return avaliableAmountForDates;
-    	
-    } 
+
+    }
 
     @Override
     public Page<AdPreviewDto> getAllActiveAds(Pageable pageable) {
@@ -245,24 +247,22 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    @Transactional
     public AdDto updateAd(UpdateAdRequestDto req, Long id, Long userId) {
         validateImageUrls(req.getImages());
-        Ad adToUpdate = adRepository.findById(id).orElseThrow(() -> new RuntimeException("There is no ad"));
+        Ad adToUpdate = adRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ad not found"));
         if (!adToUpdate.getOwner().getId().equals(userId)) {
-            throw new RuntimeException("You are not the owner of this ad");
+            throw new AccessDeniedException("Nemate dozvolu za izmenu ovog oglasa.");
         }
 
         if (adToUpdate.getAdStatus() == AdStatus.DELETED) {
-            throw new IllegalStateException("Cannot update ad with status: " + adToUpdate.getAdStatus());
+            throw new IllegalStateException("Ne možete izmeniti obrisan oglas.");
         }
         Category category = categoryRepository.findById(req.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + req.getCategoryId()));
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
-        Location location = null;
-        if(req.getLocationId() != null){
-            location = locationRepository.findById(req.getLocationId()).orElseThrow(() ->
-                    new RuntimeException("Location not found with id: " + req.getLocationId()));
-        }
+        Location location = locationRepository.findById(req.getLocationId())
+                .orElseThrow(() -> new IllegalArgumentException("Location not found"));
         adToUpdate.setTitle(HtmlSanitizer.sanitize(req.getTitle()));
         adToUpdate.setDescription(HtmlSanitizer.sanitize(req.getDescription()));
         adToUpdate.setPrice(req.getPrice());
@@ -285,7 +285,7 @@ public class AdServiceImpl implements AdService {
 	public String deleteAd(Long adId, Long userId) {
 		
 		Ad currAd = adRepository.findById(adId)
-				.orElseThrow(() -> new RuntimeException("Error deleting ad - ad not found"));
+				.orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 		
 		if(!currAd.getOwner().getId().equals(userId)) {
 			throw new AccessDeniedException("Nemate dozvolu za brisanje ovog oglasa.");
@@ -309,9 +309,13 @@ public class AdServiceImpl implements AdService {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (criteria.getKeyword() != null && !criteria.getKeyword().isBlank()) {
-                String keywordPattern = "%" + criteria.getKeyword().toLowerCase() + "%";
-                Predicate titleLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), keywordPattern);
-                Predicate descriptionLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), keywordPattern);
+                String escaped = criteria.getKeyword().toLowerCase()
+                        .replace("!", "!!")
+                        .replace("%", "!%")
+                        .replace("_", "!_");
+                String keywordPattern = "%" + escaped + "%";
+                Predicate titleLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), keywordPattern, '!');
+                Predicate descriptionLike = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), keywordPattern, '!');
                 predicates.add(criteriaBuilder.or(titleLike, descriptionLike));
             }
             if (criteria.getCategoryId() != null) {
@@ -361,7 +365,7 @@ public class AdServiceImpl implements AdService {
         if (userId == null) {
             return Set.of();
         }
-        List<Long> adIds = adPage.getContent().stream().map(Ad::getId).collect(Collectors.toList());
+        List<Long> adIds = adPage.getContent().stream().map(Ad::getId).toList();
         if (adIds.isEmpty()) return Set.of();
         return savedAdRepository.findSavedAdIdsByUserIdAndAdIdIn(userId, adIds);
     }
@@ -379,30 +383,38 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
+    public Page<AdPreviewDto> findAllActiveByUser(Pageable pageable, Long userId) {
+        Page<Ad> adPage = adRepository.findAllByOwnerIdAndAdStatus(userId, AdStatus.ACTIVE, pageable);
+        return adPage.map(adMapper::toPreviewDto);
+    }
+
+    @Override
     @Transactional
     public void recordView(Long adId, Long userId) {
+        if (adViewRepository.existsByUserIdAndAdId(userId, adId)) return;
         try {
             Ad ad = adRepository.findById(adId)
-                    .orElseThrow(() -> new RuntimeException("Ad not found with id: " + adId));
+                    .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
             AdView adView = new AdView(user, ad);
             adViewRepository.save(adView);
             ad.setViewCount(ad.getViewCount() + 1);
             adRepository.save(ad);
         } catch (DataIntegrityViolationException e) {
-            // Unique constraint — korisnik je već pogledao ovaj oglas (race condition zaštita)
+            // Prava race condition — dva paralelna zahteva, pre-check je prošao za oba
         }
     }
 
     @Override
     @Transactional
     public void saveAd(Long adId, Long userId) {
-        if (!savedAdRepository.existsByUserIdAndAdId(userId, adId)) {
+        if (savedAdRepository.existsByUserIdAndAdId(userId, adId)) return;
+        try {
             Ad ad = adRepository.findById(adId)
-                    .orElseThrow(() -> new RuntimeException("Ad not found with id: " + adId));
+                    .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
             SavedAd savedAd = new SavedAd(user, ad);
             savedAdRepository.save(savedAd);
             ad.setSaveCount(ad.getSaveCount() + 1);
@@ -418,6 +430,8 @@ public class AdServiceImpl implements AdService {
                     user.getFirstname() + " " + user.getLastname()
                 );
             }
+        } catch (DataIntegrityViolationException e) {
+            // Prava race condition — dva paralelna zahteva, pre-check je prošao za oba
         }
     }
 
@@ -426,7 +440,7 @@ public class AdServiceImpl implements AdService {
     public void unsaveAd(Long adId, Long userId) {
         if (savedAdRepository.existsByUserIdAndAdId(userId, adId)) {
             Ad ad = adRepository.findById(adId)
-                    .orElseThrow(() -> new RuntimeException("Ad not found with id: " + adId));
+                    .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
             ad.setSaveCount(Math.max(0, ad.getSaveCount() - 1));
             adRepository.save(ad);
         }

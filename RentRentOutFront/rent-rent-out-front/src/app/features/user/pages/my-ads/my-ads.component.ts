@@ -1,11 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NgIf, CommonModule} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {User} from '../../../../shared/models/user.model';
-import {Observable, Subscription} from 'rxjs';
-import {UserService} from '../../services/user.service';
+import {Subscription} from 'rxjs';
 import {AdService} from '../../../ads/services/ad.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {AdPreview} from '../../../../shared/models/adPreview.model';
 import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component';
 import {ToastService} from '../../../../shared/services/toast.service';
@@ -13,17 +11,14 @@ import {ToastService} from '../../../../shared/services/toast.service';
 @Component({
   selector: 'app-my-ads',
   imports: [
-    NgIf,
-    AdCardComponent,
     CommonModule,
+    AdCardComponent,
     FormsModule
   ],
   templateUrl: './my-ads.component.html',
   styleUrl: './my-ads.component.css'
 })
 export class MyAdsComponent implements OnInit, OnDestroy {
-  user$!: Observable<User>;
-
   currentAds: AdPreview[] = [];
   totalElements = 0;
   private adsSub?: Subscription;
@@ -44,15 +39,12 @@ export class MyAdsComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private userService: UserService,
     private adService: AdService,
-    private route: ActivatedRoute,
     private router: Router,
     private toastService: ToastService
   ) {}
 
   ngOnInit() {
-    this.user$ = this.userService.getMe();
     this.loadAds();
   }
 

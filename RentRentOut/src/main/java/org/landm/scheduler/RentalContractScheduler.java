@@ -1,9 +1,11 @@
 package org.landm.scheduler;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.landm.entity.Enums.ContractStatus;
 import org.landm.entity.RentalContract;
 import org.landm.repository.RentalContractRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Component
 public class RentalContractScheduler {
+
+    private static final Logger log = LoggerFactory.getLogger(RentalContractScheduler.class);
 
     private final RentalContractRepository rentalContractRepository;
 
@@ -41,7 +45,7 @@ public class RentalContractScheduler {
         rentalContractRepository.saveAll(overdueContracts);
 
         if (!overdueContracts.isEmpty()) {
-            System.out.println("[Scheduler] Expired " + overdueContracts.size() + " overdue contract(s) on " + today);
+            log.info("Expired {} overdue contract(s) on {}", overdueContracts.size(), today);
         }
     }
 }

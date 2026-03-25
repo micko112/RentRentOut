@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RentalContractMapper {
-    public final AdMapper adMapper;
-    public final UserMapper userMapper;
+    private final AdMapper adMapper;
+    private final UserMapper userMapper;
 
     public RentalContractMapper(AdMapper adMapper, UserMapper userMapper) {
         this.adMapper = adMapper;

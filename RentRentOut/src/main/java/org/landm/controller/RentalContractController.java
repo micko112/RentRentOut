@@ -59,8 +59,8 @@ public class RentalContractController {
 		boolean isAdmin = auth.getAuthorities()
 				.stream()
 				.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-		Map res = new HashMap<>();
-		res.put("Contracts: ", service.search(userId, isAdmin, searchDto));
+		Map<String, Page<RentalContractDto>> res = new HashMap<>();
+		res.put("contracts", service.search(userId, isAdmin, searchDto));
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	} 
 	

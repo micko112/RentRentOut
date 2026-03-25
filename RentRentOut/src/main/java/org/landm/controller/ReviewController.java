@@ -22,12 +22,9 @@ public class ReviewController {
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
-    //@PathVariable služi za čitanje varijabli direktno iz URL-a (npr. /api/review/{id}). On ne može da čita ceo JSON objekat
-    //@RequestBody služi za čitanje JSON tela (body) HTTP zahteva i njegovo pretvaranje u Java objekat (DTO).
     @PostMapping("reviews")
     public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody CreateReviewRequestDto req,
                                                   Authentication auth){
-        // onaj ko kreira ocenu
         Long reviewerId = Long.parseLong(auth.getName());
 
         return new ResponseEntity<>(reviewService.createReview(req, reviewerId), HttpStatus.CREATED);

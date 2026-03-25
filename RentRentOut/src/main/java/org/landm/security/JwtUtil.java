@@ -10,11 +10,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PostConstruct;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -28,6 +30,13 @@ public class JwtUtil {
     @Value("${jwt.refresh-expiration:604800000}")
     private long refreshExpiration;
 
+    private SecretKey signingKey;
+
+    @PostConstruct
+    private void init() {
+        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    }
+
     // Access token — 15 min, nosi roles
     public String generateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
@@ -37,7 +46,7 @@ public class JwtUtil {
                 .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .signWith(signingKey)
                 .compact();
     }
 
@@ -47,7 +56,7 @@ public class JwtUtil {
                 .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .signWith(signingKey)
                 .compact();
     }
 
@@ -59,7 +68,7 @@ public class JwtUtil {
     //Extracts userId from generated JWT token
     public Long extractUserId(String token){
         String subj = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+                .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -69,27 +78,21 @@ public class JwtUtil {
     
     public List<GrantedAuthority> extractRoles(String token) {
     	Claims claims = Jwts.parserBuilder()
-    	        .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+    	        .setSigningKey(signingKey)
     	        .build()
     	        .parseClaimsJws(token)
     	        .getBody();
 
-//        String rolesString = (String) claims.get("roles");
-//        
-//        List<String> roles = Arrays.stream(rolesString.split(" "))
-//        		.filter(r -> r.isBlank())
-//        		.collect(Collectors.toList());
-
     	List<String> roles = (List<String>) claims.get("roles");
-    	
+    	if (roles == null) return List.of();
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .toList();
     }
     
     public Date extractExpiration(String token) {
     	return Jwts.parserBuilder()
-    			.setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+    			.setSigningKey(signingKey)
     			.build()
     			.parseClaimsJws(token)
     			.getBody()
@@ -99,7 +102,7 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+                    .setSigningKey(signingKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody()

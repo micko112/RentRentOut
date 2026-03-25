@@ -31,7 +31,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public LocationDto getById(Long id) {
         Location location = locationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Location not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Location not found"));
         return locationMapper.toDto(location);
     }
 }

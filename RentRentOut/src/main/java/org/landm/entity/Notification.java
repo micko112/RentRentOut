@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.landm.entity.Enums.NotificationType;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "notification")
@@ -67,4 +68,16 @@ public class Notification {
     public String getActorName() { return actorName; }
     public void setActorName(String actorName) { this.actorName = actorName; }
     public LocalDateTime getCreatedAt() { return createdAt; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Notification that = (Notification) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

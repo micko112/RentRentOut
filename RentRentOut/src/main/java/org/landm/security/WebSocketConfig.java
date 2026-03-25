@@ -29,15 +29,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // 2. KANALI ZA SLUŠANJE (Gde Angular "čeka" poruke sa servera)
-        // Ako server hoće nešto da pošalje korisniku, slaće na putanje koje počinju sa /topic (za sve) ili /user (privatno)
         registry.enableSimpleBroker("/topic", "/user");
-
-        // Da bi /user/... rute radile ispravno za privatne poruke
         registry.setUserDestinationPrefix("/user");
-
-        // 3. KANALI ZA SLANJE (Gde Angular "šalje" poruke ka serveru)
-        // Ako Angular pošalje poruku na /app/chat.sendMessage, Spring će tražiti metodu sa @MessageMapping("/chat.sendMessage")
         registry.setApplicationDestinationPrefixes("/app");
     }
 

@@ -4,6 +4,7 @@ import {RouterLink} from '@angular/router';
 import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
 import {AdService} from '../../../ads/services/ad.service';
 import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component';
+import {ToastService} from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-saved-ads',
@@ -18,7 +19,7 @@ export class SavedAdsComponent implements OnInit {
   currentPage: number = 0;
   pageSize: number = 12;
 
-  constructor(private adService: AdService) {}
+  constructor(private adService: AdService, private toastService: ToastService) {}
 
   ngOnInit(): void {
     this.loadSavedAds(0);
@@ -34,6 +35,7 @@ export class SavedAdsComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
+        this.toastService.showError('Greška pri učitavanju sačuvanih oglasa.');
       }
     });
   }

@@ -4,6 +4,7 @@ import org.landm.dto.notification.NotificationDto;
 import org.landm.entity.Enums.NotificationType;
 import org.landm.entity.Notification;
 import org.landm.entity.User;
+import org.landm.exception.UserNotFoundException;
 import org.landm.repository.NotificationRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.NotificationPersistenceService;
@@ -29,7 +30,7 @@ public class NotificationPersistenceServiceImpl implements NotificationPersisten
     public void create(Long recipientId, NotificationType type, String title, String message,
                        Long relatedEntityId, String relatedEntityType, String actorName) {
         User recipient = userRepository.findById(recipientId)
-                .orElseThrow(() -> new RuntimeException("User not found: " + recipientId));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Notification n = new Notification();
         n.setRecipient(recipient);

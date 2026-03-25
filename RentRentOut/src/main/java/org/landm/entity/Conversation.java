@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
 @Entity
 @Table(name = "conversation")
 public class Conversation {
@@ -117,12 +118,12 @@ public class Conversation {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Conversation that = (Conversation) o;
-        return Objects.equals(id, that.id) && Objects.equals(ad, that.ad) && Objects.equals(participantOne, that.participantOne) && Objects.equals(participantTwo, that.participantTwo) && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt) && Objects.equals(messages, that.messages);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, ad, participantOne, participantTwo, createdAt, updatedAt, messages);
+        return Objects.hashCode(id);
     }
 
 }

@@ -25,10 +25,4 @@ export class ReviewCardComponent {
     'COULD_BE_BETTER': 'Može bolje'
   };
 
-  // MAPA 2: Prevod za glavni tip ocene (Ovo je opciono, ali korisno)
-  typeMap: { [key: string]: string } = {
-    'POSITIVE': 'Pozitivna',
-    'NEGATIVE': 'Negativna'
-  };
-
 }

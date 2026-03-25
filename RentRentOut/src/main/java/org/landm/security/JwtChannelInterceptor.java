@@ -29,39 +29,39 @@ public class JwtChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+        if (accessor == null || !StompCommand.CONNECT.equals(accessor.getCommand())) {
+            return message;
+        }
 
-            log.debug("STOMP CONNECT pokušaj");
+        log.debug("STOMP CONNECT pokušaj");
 
-            List<String> authorization = accessor.getNativeHeader("Authorization");
+        List<String> authorization = accessor.getNativeHeader("Authorization");
 
-            if (authorization != null && !authorization.isEmpty()) {
-                String authHeader = authorization.get(0);
+        if (authorization != null && !authorization.isEmpty()) {
+            String authHeader = authorization.get(0);
 
-                if (authHeader.startsWith("Bearer ")) {
-                    String token = authHeader.substring(7);
+            if (authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
 
-                    try {
-                        if (jwtUtil.validateToken(token)) {
-                            long userId = jwtUtil.extractUserId(token);
-                            List<GrantedAuthority> authorities = jwtUtil.extractRoles(token);
+                try {
+                    if (jwtUtil.validateToken(token)) {
+                        long userId = jwtUtil.extractUserId(token);
+                        List<GrantedAuthority> authorities = jwtUtil.extractRoles(token);
 
-                            UsernamePasswordAuthenticationToken authInfo =
-                                    new UsernamePasswordAuthenticationToken(userId, null, authorities);
+                        UsernamePasswordAuthenticationToken authInfo =
+                                new UsernamePasswordAuthenticationToken(userId, null, authorities);
 
-                            accessor.setUser(authInfo);
-                            log.debug("Korisnik ID {} uspešno autentifikovan za WebSocket", userId);
+                        accessor.setUser(authInfo);
+                        log.debug("Korisnik ID {} uspešno autentifikovan za WebSocket", userId);
 
-                            // KLJUČNO: Vraćamo izmenjenu poruku sa korisnikom unutra!
-                            return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
-                        }
-                    } catch (Exception e) {
-                        log.warn("STOMP JWT greška: {}", e.getMessage());
+                        return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
                     }
+                } catch (Exception e) {
+                    log.warn("STOMP JWT greška: {}", e.getMessage());
                 }
-            } else {
-                log.debug("Nema Authorization hedera u STOMP poruci");
             }
+        } else {
+            log.debug("Nema Authorization hedera u STOMP poruci");
         }
         return message;
     }

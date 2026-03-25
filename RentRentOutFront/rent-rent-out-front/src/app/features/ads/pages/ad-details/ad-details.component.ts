@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Ad} from '../../../../shared/models/ad.model';
 import {CommonModule} from '@angular/common';
 import {map, Observable, switchMap, tap} from 'rxjs';
@@ -20,7 +20,7 @@ import {RentalCalendarComponent} from '../../components/rental-calendar/rental-c
   templateUrl: './ad-details.component.html',
   styleUrl: './ad-details.component.css'
 })
-export class AdDetailsComponent implements OnInit {
+export class AdDetailsComponent implements OnInit, OnDestroy {
   ad$!: Observable<Ad>;
   selectedImageUrl: string | null = null;
 
@@ -99,8 +99,8 @@ export class AdDetailsComponent implements OnInit {
     this.selectedImageUrl = imageUrl;
   }
 
-  handleImageError(event: any) {
-    event.target.src = 'assets/images/placeholder.png';
+  handleImageError(event: Event) {
+    (event.target as HTMLImageElement).src = 'assets/images/placeholder.png';
   }
 
   openOverlay() {
@@ -130,7 +130,13 @@ export class AdDetailsComponent implements OnInit {
 
   closeOverlay() {
     this.isOverlayOpen = false;
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = '';
+  }
+
+  ngOnDestroy(): void {
+    if (this.isOverlayOpen) {
+      document.body.style.overflow = '';
+    }
   }
 
   scrollThumbnails(amount: number) {
@@ -151,8 +157,8 @@ export class AdDetailsComponent implements OnInit {
         this.isLoadingPhone = false;
       },
       error: () => {
-        this.realPhoneNumber = 'Greška pri učitavanju';
         this.isLoadingPhone = false;
+        this.toastService.showError('Greška pri učitavanju broja telefona.');
       }
     });
   }

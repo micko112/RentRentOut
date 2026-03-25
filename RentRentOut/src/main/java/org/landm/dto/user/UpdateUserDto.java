@@ -1,18 +1,11 @@
 package org.landm.dto.user;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 
-@Component
 public class UpdateUserDto {
 
-	@NotBlank
     private String firstname;
-	@NotBlank
     private String lastname;
-	@NotBlank
 	@Email
     private String email;
 	private String currency;

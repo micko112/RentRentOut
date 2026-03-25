@@ -22,13 +22,6 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 	@Query(" SELECT rc FROM RentalContract rc WHERE rc.lessee.id = :userId OR rc.ad.owner.id = :userId ")
 	public List<RentalContract> findAllByUser(Long userId);
 	
-	@Query("""
-			SELECT rc 
-			FROM RentalContract rc
-			WHERE rc.id = :contractId
-			""")
-	public RentalContract findByIdForUpdate(Long contractId);
-	
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("""
 			SELECT rc 

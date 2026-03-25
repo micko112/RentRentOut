@@ -28,10 +28,10 @@ public class Ad {
     @Column(nullable = false, name="price")
     private BigDecimal price;
 
-    @Column(name = "price_per_week", nullable = true)
+    @Column(name = "price_per_week")
     private BigDecimal pricePerWeek;
 
-    @Column(name = "price_per_month", nullable = true)
+    @Column(name = "price_per_month")
     private BigDecimal pricePerMonth;
 
     @Enumerated(EnumType.STRING)
@@ -50,7 +50,6 @@ public class Ad {
     @JoinColumn(name="category_id")
     private Category category;
 
-//    treba dodati nullable = false kad svaki Ad ima lokaciju!!!!
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;

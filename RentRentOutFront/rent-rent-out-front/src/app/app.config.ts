@@ -29,16 +29,23 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError(err => {
       if (err.status === 401) {
+        // Startup auth check — silently ignore, user is not logged in
+        if (req.url.includes('/user/me')) {
+          return throwError(() => err);
+        }
+
         // Ne pokušavaj refresh na auth endpointima — izbegava petlju
         const isAuthEndpoint =
           req.url.includes('/auth/refresh') ||
           req.url.includes('/auth/logout')  ||
-          req.url.includes('/user/me')       ||
           req.url.includes('/user/login');
 
-        if (!isAuthEndpoint) {
+        if (!isAuthEndpoint && !req.headers.has('X-Is-Retry')) {
           return http.post('/api/auth/refresh', {}, { withCredentials: true }).pipe(
-            switchMap(() => next(req.clone({ withCredentials: true }))),
+            switchMap(() => next(req.clone({
+              withCredentials: true,
+              headers: req.headers.set('X-Is-Retry', 'true')
+            }))),
             catchError(() => {
               router.navigate(['/login']);
               return throwError(() => err);

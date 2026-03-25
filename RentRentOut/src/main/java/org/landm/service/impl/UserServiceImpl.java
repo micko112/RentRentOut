@@ -11,7 +11,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.persistence.OptimisticLockException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.landm.dto.ad.AdPreviewDto;
 import org.landm.dto.requestDto.DepositRequestDto;
 import org.landm.dto.review.ReviewDto;
@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
     private final EmailVerificationService emailVerificationService;
 	private final AdService adService;
 	private final ReviewService reviewService;
+	private final RestTemplate restTemplate = new RestTemplate();
 
 	@Value("${google.client-id}")
 	private String googleClientId;
@@ -97,7 +98,6 @@ public class UserServiceImpl implements UserService {
 			throw new RuntimeException("Role not found in database: ROLE_USER");
 		}
             if (userRepository.existsByEmail(req.getEmail())) {
-//                throw new RuntimeException("Email already exists!");
                 throw new WrongCredentialsException("Email already exists!");
             } else {
                 User userToSave = new User(
@@ -112,16 +112,14 @@ public class UserServiceImpl implements UserService {
 				userToSave.setNegativeReviews(0);
 				userToSave.setCurrency(Currency.RSD);
                 User savedUser = userRepository.save(userToSave);
-                
-                EmailVerificationToken verificationToken = 
+
+                EmailVerificationToken verificationToken =
                 		emailVerificationService.createAndSaveToken(savedUser);
-                
-                emailVerificationService.sendVerificationEmail(savedUser.getEmail(), 
+
+                emailVerificationService.sendVerificationEmail(savedUser.getEmail(),
                 		verificationToken.getToken());
-                
+
                 return userMapper.toDto(savedUser);
-                //return new UserDto(req.getFirstname(), req.getLastname(),
-                  //      req.getEmail(), BigDecimal.ZERO);
             }
     }
     
@@ -131,7 +129,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(req.getEmail());
 
         if (user == null) {
-            throw new UserNotFoundException("User not found!");
+            throw new WrongCredentialsException("Wrong email or password!");
         }
         if (!user.isEnabled()) {
             throw new WrongCredentialsException("Email nije verifikovan. Proverite svoju poštu.");
@@ -152,16 +150,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getMe(Long userId) {
     	User userToReturn = userRepository.findById(userId)
-    			.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
+    			.orElseThrow(() -> new UserNotFoundException("User not found"));
     	return userMapper.toDto(userToReturn);
     }
 
 	@Override
 	public PublicProfileDto getUser(Pageable pageable, Long userId){
 		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		UserProfileDto userProfile = userMapper.toUserProfileDto(user);
-		Page<AdPreviewDto> adsPage = adService.findAllByUser(pageable, userId);
+		Page<AdPreviewDto> adsPage = adService.findAllActiveByUser(pageable, userId);
 		Page<ReviewDto> reviewsPage = reviewService.getAllForUser(pageable, userId);
 
 		return new PublicProfileDto(userProfile, adsPage, reviewsPage);
@@ -169,7 +167,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String getRealPhoneNumber(Long userId) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
         return user.getPhoneNumber();
 	}
 
@@ -185,7 +183,7 @@ public class UserServiceImpl implements UserService {
     	BigDecimal amount = req.getAmount();
     	
     	User user = userRepository.findByIdForCheck(userId)
-    			.orElseThrow(() -> new RuntimeException("User not found!"));
+    			.orElseThrow(() -> new UserNotFoundException("User not found"));
     	
     	BigDecimal userMoney = user.getCredit();
     	user.setCredit(userMoney.add(amount));
@@ -198,12 +196,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UpdateUserDto update(UpdateUserDto editUserDto, Long userId) {
 		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException("Error with updating user data!"));
-    	if(editUserDto.getFirstname() != null) user.setFirstname(editUserDto.getFirstname());
-    	if(editUserDto.getLastname() != null) user.setLastname(editUserDto.getLastname());
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
+    	if (editUserDto.getFirstname() != null && !editUserDto.getFirstname().isBlank()) user.setFirstname(editUserDto.getFirstname());
+    	if (editUserDto.getLastname() != null && !editUserDto.getLastname().isBlank()) user.setLastname(editUserDto.getLastname());
     	if(editUserDto.getEmail() != null && !editUserDto.getEmail().equals(user.getEmail())){
 			if (userRepository.existsByEmail(editUserDto.getEmail())) {
-				throw new RuntimeException("Taj email je već zauzet!");
+				throw new IllegalArgumentException("Taj email je već zauzet!");
 			}
 			user.setEmail(editUserDto.getEmail());
 			user.setEnabled(false);
@@ -211,8 +209,17 @@ public class UserServiceImpl implements UserService {
 			emailVerificationService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
 		}
 		if (editUserDto.getDescription() != null) user.setDescription(HtmlSanitizer.sanitize(editUserDto.getDescription()));
-		if (editUserDto.getPhoneNumber() != null) user.setPhoneNumber(editUserDto.getPhoneNumber());
+		if (editUserDto.getPhoneNumber() != null) {
+			user.setPhoneNumber(editUserDto.getPhoneNumber().isBlank() ? null : editUserDto.getPhoneNumber());
+		}
 		if (editUserDto.getAvatarUrl() != null) user.setAvatarUrl(editUserDto.getAvatarUrl());
+		if (editUserDto.getCurrency() != null) {
+			try {
+				user.setCurrency(Currency.valueOf(editUserDto.getCurrency()));
+			} catch (IllegalArgumentException e) {
+				throw new IllegalArgumentException("Nepoznata valuta: " + editUserDto.getCurrency());
+			}
+		}
     	user = userRepository.save(user);
     	return userMapper.toEditDto(user);
 	}
@@ -221,7 +228,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String updatePassword(ChangeUserPasswordDto data, Long userId) {
     	User user = userRepository.findById(userId)
-    			.orElseThrow(() -> new UserNotFoundException("Error while changing password!"));
+    			.orElseThrow(() -> new UserNotFoundException("User not found"));
     	if(passwordEncoder.matches(data.getOldPassword(), user.getPassword())) {
     		user.setPassword(passwordEncoder.encode(data.getNewPassword()));
     		return "Successfully changed password!";
@@ -246,15 +253,13 @@ public class UserServiceImpl implements UserService {
     
     @Recover
     public UserDto recover(OptimisticLockException e) {
-    	throw new RuntimeException("Your request could not be processed due to concurrent update. Please try again.");
+    	throw new IllegalStateException("Vaš zahtev nije mogao biti obrađen zbog paralelnih izmena. Pokušajte ponovo.");
     }
 
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
     public User facebookLogin(String accessToken) {
-        RestTemplate restTemplate = new RestTemplate();
-
         // Validate token against our app via debug_token
         URI debugUri = UriComponentsBuilder
                 .fromHttpUrl("https://graph.facebook.com/debug_token")

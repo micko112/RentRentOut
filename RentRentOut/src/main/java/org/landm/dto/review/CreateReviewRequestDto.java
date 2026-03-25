@@ -1,13 +1,7 @@
 package org.landm.dto.review;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.landm.entity.Enums.ReviewOption;
-import org.landm.entity.Enums.ReviewType;
-import org.landm.entity.RentalContract;
-import org.landm.entity.User;
-
-import java.time.LocalDateTime;
 
 public class CreateReviewRequestDto {
 

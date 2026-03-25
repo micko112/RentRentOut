@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {AsyncPipe, CommonModule, DecimalPipe, NgIf} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {Observable, Subscription} from 'rxjs';
 import {User} from '../../../../shared/models/user.model';
 import {UserService} from '../../services/user.service';
 import {AuthService} from '../../../auth/services/auth.service';
-import {RouterModule, RouterOutlet} from '@angular/router';
+import {RouterModule} from '@angular/router';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ToastService} from '../../../../shared/services/toast.service';
 
@@ -12,11 +12,7 @@ import {ToastService} from '../../../../shared/services/toast.service';
   selector: 'app-profile-details',
   standalone: true,
   imports: [
-    DecimalPipe,
-    NgIf,
-    AsyncPipe,
     CommonModule,
-    RouterOutlet,
     RouterModule,
     ReactiveFormsModule
   ],
@@ -28,6 +24,8 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
 
   isEditing = false;
+  isSaving = false;
+  isChangingPassword = false;
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
 
@@ -133,12 +131,14 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   }
 
   onSaveProfile(): void {
+    if (this.isSaving) return;
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
       this.toastService.showError('Molimo popunite sva polja ispravno.');
       return;
     }
 
+    this.isSaving = true;
     if (this.selectedAvatarFile) {
       this.isUploadingAvatar = true;
       this.userService.uploadAvatar(this.selectedAvatarFile).subscribe({
@@ -147,6 +147,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
           this.saveProfile(urls[0]);
         },
         error: () => {
+          this.isSaving = false;
           this.isUploadingAvatar = false;
           this.toastService.showError('Greska pri otpremanju slike.');
         }
@@ -164,6 +165,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
 
     this.userService.updateMe(payload).subscribe({
       next: (updatedUser) => {
+        this.isSaving = false;
         this.authService.setCurrentUser(updatedUser);
         this.isEditing = false;
         this.avatarPreview = null;
@@ -171,24 +173,29 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
         this.toastService.showSuccess('Profil je uspesno azuriran.');
       },
       error: (err) => {
+        this.isSaving = false;
         this.toastService.showError(err?.error?.message || 'Greska pri cuvanju profila.');
       }
     });
   }
 
   onChangePassword(): void {
+    if (this.isChangingPassword) return;
     if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched();
       this.toastService.showError('Unesite ispravne podatke za lozinku.');
       return;
     }
 
+    this.isChangingPassword = true;
     this.userService.changePassword(this.passwordForm.value).subscribe({
       next: () => {
+        this.isChangingPassword = false;
         this.toastService.showSuccess('Lozinka je promenjena.');
         this.passwordForm.reset();
       },
       error: (err) => {
+        this.isChangingPassword = false;
         this.toastService.showError(err?.error?.message || 'Greska pri promeni lozinke.');
       }
     });

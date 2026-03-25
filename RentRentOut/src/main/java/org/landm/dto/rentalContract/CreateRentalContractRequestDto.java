@@ -17,13 +17,15 @@ public class CreateRentalContractRequestDto {
     @FutureOrPresent
     private LocalDate startDate;
     @NotNull
+    @FutureOrPresent
     private LocalDate endDate;
     @NotNull(message = "Agreed price is required")
-    @PositiveOrZero(message = "Price must be positive or zero") // <-- ISPRAVKA
+    @PositiveOrZero(message = "Price must be positive or zero")
     private BigDecimal agreedPrice;
     @NotNull
     private Currency currency;
-    @Positive 
+    @NotNull
+    @Positive
     private Long amount;
 
     public Long getAdId() {

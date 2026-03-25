@@ -34,9 +34,10 @@ export class AdCardComponent implements OnInit {
     return 'assets/images/placeholder.png';
   }
 
-  handleImageError(event: any) {
-    event.target.src = 'assets/images/placeholder.png';
-    event.target.onerror = null;
+  handleImageError(event: Event) {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/placeholder.png';
+    img.onerror = null;
   }
 
   intervalMap: {[key: string]: string} = {

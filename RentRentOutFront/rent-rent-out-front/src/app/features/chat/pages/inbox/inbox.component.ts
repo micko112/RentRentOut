@@ -6,7 +6,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { InitialsPipe } from '../../../../shared/pipes/initials.pipe';
 import {Message, MessageGroup} from '../../../../shared/models/message.model';
 import {ConversationPreview} from '../../../../shared/models/conversation-preview.model';
-import {Subscription, interval} from 'rxjs';
+import {Subject, Subscription, interval} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {WebsocketService} from '../../../../core/services/websocket.service';
 import {NotificationService} from '../../../../core/services/notification.service';
 import {AdService} from '../../../ads/services/ad.service';
@@ -45,6 +46,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   private queryParamSub!: Subscription;
   private conversationsLoaded = false;
   private pendingChatCheck = false;
+  private adFetchCancel$ = new Subject<void>();
 
   // Auto-scroll to bottom
   @ViewChild('chatScroll') private chatScrollContainer!: ElementRef;
@@ -132,19 +134,20 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
 
   loadConversations() {
-    this.chatService.getMyConversations().subscribe(res => {
-      this.conversations = res.content;
-      this.notificationService.updateFromConversations(this.conversations);
-      this.conversationsLoaded = true;
-      if (this.pendingChatCheck) {
+    this.chatService.getMyConversations().subscribe({
+      next: res => {
+        this.conversations = res.content;
+        this.notificationService.updateFromConversations(this.conversations);
+        this.conversationsLoaded = true;
+        if (this.pendingChatCheck) {
+          this.pendingChatCheck = false;
+          this.checkForNewChatRequest();
+        }
+      },
+      error: () => {
+        this.conversationsLoaded = true;
         this.pendingChatCheck = false;
-        this.checkForNewChatRequest();
       }
-      /*
-      if (this.conversations.length > 0 && !this.activeConversation) {
-        this.openConversation(this.conversations[0]);
-      }
-      */
     });
   }
 
@@ -165,16 +168,22 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.scrollToBottomNeeded = true;
     } else {
       this.isLoadingMessages = true;
-      this.chatService.getMessages(conv.id).subscribe(res => {
-        this.messages = res.content;
-        this.updateGroupedMessages();
-        this.isLoadingMessages = false;
-        this.scrollToBottomNeeded = true;
+      this.chatService.getMessages(conv.id).subscribe({
+        next: (res) => {
+          this.messages = res.content;
+          this.updateGroupedMessages();
+          this.isLoadingMessages = false;
+          this.scrollToBottomNeeded = true;
+        },
+        error: () => {
+          this.isLoadingMessages = false;
+        }
       });
     }
 
-    // Učitaj detalje oglasa za prikaz kalendara
-    this.adService.getAdById(conv.adId).subscribe({
+    // Učitaj detalje oglasa za prikaz kalendara (otkaži prethodni zahtev)
+    this.adFetchCancel$.next();
+    this.adService.getAdById(conv.adId).pipe(takeUntil(this.adFetchCancel$)).subscribe({
       next: (ad) => {
         this.currentAdFullDetails = ad;
         this.calendarBlockedIntervals = (ad.blockedIntervals || []).map(interval => ({
@@ -216,7 +225,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   private scrollToBottom(): void {
     try {
       this.chatScrollContainer.nativeElement.scrollTop = this.chatScrollContainer.nativeElement.scrollHeight;
-    } catch(err) { }
+    } catch { }
   }
 
   ngOnDestroy(): void {
@@ -224,6 +233,8 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     if (this.pollSub) this.pollSub.unsubscribe();
     if (this.userSub) this.userSub.unsubscribe();
     if (this.queryParamSub) this.queryParamSub.unsubscribe();
+    this.adFetchCancel$.next();
+    this.adFetchCancel$.complete();
   }
 
   checkForNewChatRequest() {
@@ -328,13 +339,15 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   private refreshActiveMessages(): void {
     if (!this.activeConversation || this.activeConversation.id === 0) return;
     if (this.messages.some(m => (m as any)._temp)) return;
-    this.chatService.getMessages(this.activeConversation.id).subscribe(res => {
-      this.messages = res.content;
-      this.updateGroupedMessages();
-      // Skroluj na dno samo ako je korisnik vec bio na dnu
-      if (this.isScrolledToBottom()) {
-        this.scrollToBottomNeeded = true;
-      }
+    this.chatService.getMessages(this.activeConversation.id).subscribe({
+      next: res => {
+        this.messages = res.content;
+        this.updateGroupedMessages();
+        if (this.isScrolledToBottom()) {
+          this.scrollToBottomNeeded = true;
+        }
+      },
+      error: () => {}
     });
   }
 
@@ -390,7 +403,6 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     }));
   }
 
-  // Pomoćna funkcija za poređenje datuma (bez vremena)
   goToContract(contractId?: number): void {
     if (!contractId) return;
     this.router.navigate(['/user/me/contracts'], { queryParams: { contractId } });

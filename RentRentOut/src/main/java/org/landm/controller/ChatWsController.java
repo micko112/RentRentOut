@@ -28,12 +28,11 @@ public class ChatWsController {
 
     @MessageMapping("/chat.send")
     public void sendMessage(@Payload SendMessageRequestDto request, Principal principal){
-        Long senderId = Long.parseLong(principal.getName());
-
         if (principal == null) {
             log.warn("GREŠKA U CHATU: Principal je NULL!");
             return;
         }
+        Long senderId = Long.parseLong(principal.getName());
         MessageDto savedMessage = chatService.sendMessage(request, senderId);
         log.debug("Poruka primljena od korisnika ID: {}", senderId);
         messagingTemplate.convertAndSendToUser(

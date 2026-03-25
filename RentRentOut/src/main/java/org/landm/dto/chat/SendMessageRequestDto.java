@@ -2,6 +2,7 @@ package org.landm.dto.chat;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +15,6 @@ public class SendMessageRequestDto {
     @NotNull
     private Long receiverId; // Kome šaljemo
     @NotBlank
+    @Size(max = 5000)
     private String content;
 }

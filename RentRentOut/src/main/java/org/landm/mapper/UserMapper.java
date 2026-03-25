@@ -56,7 +56,7 @@ public class UserMapper {
         dto.setId(user.getId());
         dto.setDisplayName(user.getFirstname() + " " + user.getLastname());
         dto.setDescription(user.getDescription());
-        dto.setAvatarUrl(user.getAvatarUrl() != null ? user.getAvatarUrl() : "assets/default-avatar.png");
+        dto.setAvatarUrl(user.getAvatarUrl());
 
         if (user.getLocation() != null) {
             String city = user.getLocation().getCity();

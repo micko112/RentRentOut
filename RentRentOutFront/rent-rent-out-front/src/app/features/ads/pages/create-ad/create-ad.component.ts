@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdService } from '../../services/ad.service';
 import { Category } from '../../../../shared/models/category.model';
@@ -20,7 +20,7 @@ import { AuthService } from '../../../auth/services/auth.service';
   templateUrl: './create-ad.component.html',
   styleUrl: './create-ad.component.css'
 })
-export class CreateAdComponent implements OnInit {
+export class CreateAdComponent implements OnInit, OnDestroy {
 
   // ── Step state ──────────────────────────────────────────────────────────
   currentStep = 1;
@@ -87,9 +87,12 @@ export class CreateAdComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.categoryService.getAll().subscribe(cats => {
-      this.categories = cats;
-      this.parentCategories = cats.filter(c => !c.parentId);
+    this.categoryService.getAll().subscribe({
+      next: cats => {
+        this.categories = cats;
+        this.parentCategories = cats.filter(c => !c.parentId);
+      },
+      error: () => this.toastService.showError('Greška pri učitavanju kategorija.'),
     });
 
     this.locationService.getAll().subscribe({
@@ -329,4 +332,8 @@ export class CreateAdComponent implements OnInit {
   get quantity(): number        { return this.form.get('totalQuantity')?.value ?? 1; }
   get selectedCurrency(): string { return this.form.get('currency')?.value ?? 'RSD'; }
   get selectedInterval(): string { return this.form.get('priceInterval')?.value ?? PriceInterval.PER_DAY; }
+
+  ngOnDestroy(): void {
+    this.previewUrls.forEach(url => URL.revokeObjectURL(url));
+  }
 }

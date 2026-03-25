@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -24,12 +23,12 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public CategoryDto create(CreateCategoryRequestDto req, Long userId) {
+    public CategoryDto create(CreateCategoryRequestDto req) {
         Category categoryToCreate = new Category();
         categoryToCreate.setName(req.getName());
 
         if(req.getParentId() != null){
-            Category parent = categoryRepository.findById(req.getParentId()).orElseThrow(() -> new RuntimeException("Parent category not found"));
+            Category parent = categoryRepository.findById(req.getParentId()).orElseThrow(() -> new IllegalArgumentException("Parent category not found"));
             categoryToCreate.setParent(parent);
         }
 
@@ -42,23 +41,23 @@ public class CategoryServiceImpl implements CategoryService{
         return categoryRepository.findAll()
                 .stream()
                 .map(categoryMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
     @Override
     public CategoryDto get(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Category not found"));
         return categoryMapper.toDto(category);
     }
 
     @Override
     public List<Long> findAllSubCategoryId(Long parentId) {
-        Category parent = categoryRepository.findById(parentId).orElseThrow(() -> new RuntimeException("Category not found"));
+        Category parent = categoryRepository.findById(parentId).orElseThrow(() -> new IllegalArgumentException("Category not found"));
         List<Long> allIds = new ArrayList<>();
         collectAllChildIds(parent, allIds);
         return allIds;
 
     }
-    public void collectAllChildIds(Category category, List<Long> allIds){
+    private void collectAllChildIds(Category category, List<Long> allIds){
         allIds.add(category.getId());
         List<Category> children = categoryRepository.findByParentId(category.getId());
 

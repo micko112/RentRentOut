@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -19,7 +19,7 @@ import {Location} from '../../../../shared/models/location.model';
   templateUrl: './edit-ad.component.html',
   styleUrl: './edit-ad.component.css'
 })
-export class EditAdComponent implements OnInit {
+export class EditAdComponent implements OnInit, OnDestroy {
 
   // ── Step state ──────────────────────────────────────────────────────────
   currentStep = 1;
@@ -60,6 +60,7 @@ export class EditAdComponent implements OnInit {
   adId!: number;
   currentAd!: Ad;
   isLoading = true;
+  isSubmitting = false;
 
   readonly stepConfig = [
     { label: 'Kategorija i opis' },
@@ -198,7 +199,7 @@ export class EditAdComponent implements OnInit {
   //  IMAGES (drag-drop)
   // ════════════════════════════════════════════════════════
 
-  onFileSelected(event: any) {
+  onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) this.addFiles(input.files);
     input.value = '';
@@ -364,12 +365,18 @@ export class EditAdComponent implements OnInit {
   //  SUBMIT
   // ════════════════════════════════════════════════════════
 
+  ngOnDestroy(): void {
+    this.previewUrl.forEach(url => URL.revokeObjectURL(url));
+  }
+
   onSubmit(): void {
+    if (this.isSubmitting) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.toastService.showError('Molimo popunite sva polja.');
       return;
     }
+    this.isSubmitting = true;
 
     const basePayload: Omit<UpdateAdRequest, 'images'> = {
       title: this.form.value.title,
@@ -386,6 +393,7 @@ export class EditAdComponent implements OnInit {
 
     const finalizeUpdate = (images: string[]) => {
       if (images.length === 0) {
+        this.isSubmitting = false;
         this.toastService.showError('Morate ostaviti bar jednu sliku.');
         return;
       }
@@ -401,6 +409,7 @@ export class EditAdComponent implements OnInit {
           this.router.navigate(['/ads', updatedAd.id]);
         },
         error: () => {
+          this.isSubmitting = false;
           this.toastService.showError('Greska pri izmeni oglasa.');
         }
       });
@@ -412,6 +421,7 @@ export class EditAdComponent implements OnInit {
           finalizeUpdate([...this.existingImages, ...uploadedUrls]);
         },
         error: () => {
+          this.isSubmitting = false;
           this.toastService.showError('Greska pri upload-u slika.');
         }
       });
