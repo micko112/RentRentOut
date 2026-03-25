@@ -220,7 +220,11 @@ public class UserServiceImpl implements UserService {
 				throw new IllegalArgumentException("Nepoznata valuta: " + editUserDto.getCurrency());
 			}
 		}
-    	user = userRepository.save(user);
+		try {
+    		user = userRepository.save(user);
+		} catch (org.springframework.dao.DataIntegrityViolationException e) {
+			throw new IllegalArgumentException("Taj email je već zauzet!");
+		}
     	return userMapper.toEditDto(user);
 	}
 

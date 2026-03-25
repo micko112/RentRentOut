@@ -117,7 +117,11 @@ public class ReviewServiceImpl implements ReviewService {
         }else {
             reviewee.setNegativeReviews(reviewee.getNegativeReviews() + 1);
         }
-        reviewRepository.save(review);
+        try {
+            reviewRepository.save(review);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            throw new IllegalStateException("Već ste ostavili ocenu za ovaj ugovor.");
+        }
         userRepository.save(reviewee);
         String reviewerName = reviewer.getFirstname() + " " + reviewer.getLastname();
         String sentiment = review.getReviewType() == ReviewType.POSITIVE ? "pozitivnu" : "negativnu";

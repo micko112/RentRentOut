@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
 import {AdService} from '../../../ads/services/ad.service';
 import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component';
 import {ToastService} from '../../../../shared/services/toast.service';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'app-saved-ads',
@@ -13,11 +14,12 @@ import {ToastService} from '../../../../shared/services/toast.service';
   templateUrl: './saved-ads.component.html',
   styleUrl: './saved-ads.component.css'
 })
-export class SavedAdsComponent implements OnInit {
+export class SavedAdsComponent implements OnInit, OnDestroy {
   adsPage: Page<AdPreview> | null = null;
   isLoading: boolean = true;
   currentPage: number = 0;
   pageSize: number = 12;
+  private destroy$ = new Subject<void>();
 
   constructor(private adService: AdService, private toastService: ToastService) {}
 
@@ -25,9 +27,14 @@ export class SavedAdsComponent implements OnInit {
     this.loadSavedAds(0);
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   loadSavedAds(page: number): void {
     this.isLoading = true;
-    this.adService.getSavedAds(page, this.pageSize).subscribe({
+    this.adService.getSavedAds(page, this.pageSize).pipe(takeUntil(this.destroy$)).subscribe({
       next: (result) => {
         this.adsPage = result;
         this.currentPage = page;

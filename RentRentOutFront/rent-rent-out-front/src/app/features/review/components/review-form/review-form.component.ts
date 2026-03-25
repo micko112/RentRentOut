@@ -54,7 +54,7 @@ export class ReviewFormComponent {
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.toastService.showError(err?.error?.message || 'Greška pri čuvanju ocene.');
+        this.toastService.showError(err?.error || 'Greška pri čuvanju ocene.');
       }
     });
   }

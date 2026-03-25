@@ -174,7 +174,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isSaving = false;
-        this.toastService.showError(err?.error?.message || 'Greska pri cuvanju profila.');
+        this.toastService.showError(err?.error || 'Greska pri cuvanju profila.');
       }
     });
   }
@@ -196,7 +196,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isChangingPassword = false;
-        this.toastService.showError(err?.error?.message || 'Greska pri promeni lozinke.');
+        this.toastService.showError(err?.error || 'Greska pri promeni lozinke.');
       }
     });
   }

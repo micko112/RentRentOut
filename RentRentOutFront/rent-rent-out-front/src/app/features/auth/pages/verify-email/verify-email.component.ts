@@ -33,7 +33,7 @@ export class VerifyEmailComponent implements OnInit {
       },
       error: (err) => {
         this.status = 'error';
-        this.message = err?.error?.message || 'Verifikacija nije uspela. Pokusajte ponovo.';
+        this.message = err?.error || 'Verifikacija nije uspela. Pokusajte ponovo.';
       }
     });
   }

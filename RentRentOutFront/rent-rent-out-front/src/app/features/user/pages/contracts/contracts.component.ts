@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
@@ -7,6 +7,7 @@ import {ContractCardComponent} from '../../components/contract-card/contract-car
 import {AuthService} from '../../../auth/services/auth.service';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '../../../../shared/services/toast.service';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'app-contracts',
@@ -18,10 +19,11 @@ import {ToastService} from '../../../../shared/services/toast.service';
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.css'
 })
-export class ContractsComponent implements OnInit {
+export class ContractsComponent implements OnInit, OnDestroy {
   incomingRequests: RentalContract[] = [];
   outgoingRequests: RentalContract[] = [];
   searchQuery = '';
+  private destroy$ = new Subject<void>();
 
   get filteredIncoming(): RentalContract[] {
     const q = this.searchQuery.toLowerCase().trim();
@@ -55,7 +57,7 @@ export class ContractsComponent implements OnInit {
     const currentUser = this.authService.currentUserValue;
     if(!currentUser) return;
 
-    this.userService.getAllContract().subscribe({
+    this.userService.getAllContract().pipe(takeUntil(this.destroy$)).subscribe({
       next: allContracts => {
         this.outgoingRequests = allContracts.filter(c => c.lesseeDto?.id === currentUser.id);
         this.incomingRequests = allContracts.filter(c => c.adDto?.owner?.id === currentUser.id);
@@ -76,6 +78,11 @@ export class ContractsComponent implements OnInit {
         this.toastService.showError('Greška pri učitavanju ugovora.');
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   refreshData(){
