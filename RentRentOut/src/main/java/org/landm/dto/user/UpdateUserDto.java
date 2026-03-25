@@ -1,16 +1,22 @@
 package org.landm.dto.user;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 
 public class UpdateUserDto {
 
+    @Size(min = 1, max = 100)
     private String firstname;
+    @Size(min = 1, max = 100)
     private String lastname;
 	@Email
     private String email;
 	private String currency;
+	@Size(max = 5000)
 	private String description;
+	@Size(max = 30)
 	private String phoneNumber;
+	@Size(max = 2000)
 	private String avatarUrl;
 
     public UpdateUserDto() {}

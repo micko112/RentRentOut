@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import org.landm.entity.Enums.Currency;
 import org.landm.entity.Enums.PriceInterval;
 
@@ -14,8 +15,10 @@ import java.util.List;
 
 public class CreateAdRequestDto {
     @NotBlank
+    @Size(max = 200)
     private String title;
     @NotBlank
+    @Size(max = 10000)
     private String description;
     @NotNull
     @Positive

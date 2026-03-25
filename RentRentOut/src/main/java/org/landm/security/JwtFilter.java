@@ -47,12 +47,16 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (jwtUtil.validateToken(token)) {
-                Long userId = jwtUtil.extractUserId(token);
-                List<GrantedAuthority> authorities = jwtUtil.extractRoles(token);
-                UsernamePasswordAuthenticationToken authInfo =
-                        new UsernamePasswordAuthenticationToken(userId, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(authInfo);
+            try {
+                if (jwtUtil.validateToken(token)) {
+                    Long userId = jwtUtil.extractUserId(token);
+                    List<GrantedAuthority> authorities = jwtUtil.extractRoles(token);
+                    UsernamePasswordAuthenticationToken authInfo =
+                            new UsernamePasswordAuthenticationToken(userId, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(authInfo);
+                }
+            } catch (Exception ignored) {
+                // Corrupted/tampered token — treat as unauthenticated
             }
         }
 

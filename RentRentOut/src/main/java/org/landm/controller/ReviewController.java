@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class ReviewController {
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("reviews")
     public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody CreateReviewRequestDto req,
                                                   Authentication auth){
@@ -35,6 +37,7 @@ public class ReviewController {
         Page<ReviewDto> reviewDtoPage = reviewService.getAllForUser(pageable, revieweeId);
         return ResponseEntity.ok(reviewDtoPage);
     }
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("reviews/check/{contractId}")
     public ResponseEntity<ReviewEligibilityDto> checkReview(@PathVariable Long contractId, Authentication auth){
         Long reviewerId = Long.parseLong(auth.getName());

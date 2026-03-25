@@ -1,6 +1,7 @@
 package org.landm.dto.review;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.landm.entity.Enums.ReviewOption;
 
 public class CreateReviewRequestDto {
@@ -17,6 +18,7 @@ public class CreateReviewRequestDto {
     @NotNull
     private ReviewOption agreementOk;
 
+    @Size(max = 2000)
     private String comment;
 
     public Long getContractId() {
