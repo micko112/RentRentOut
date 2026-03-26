@@ -5,7 +5,7 @@ export type ConsentStatus = 'accepted' | 'declined' | null;
 
 // ─── Zameni sa tvojim GA4 Measurement ID ─────────────────────────────────────
 // Nađi ga na: analytics.google.com → Admin → Data Streams → tvoj stream → Measurement ID
-const GA_MEASUREMENT_ID = 'G-XRJYGLB25D';
+const GA_MEASUREMENT_ID = 'G-GYYJSDLKLB';
 // ─────────────────────────────────────────────────────────────────────────────
 
 const STORAGE_KEY = 'cookie_consent';
@@ -46,7 +46,7 @@ export class CookieConsentService {
   }
 
   private loadGoogleAnalytics(): void {
-    if (GA_MEASUREMENT_ID === 'G-XXXXXXXXXX') return; // placeholder — ne učitavaj
+    if (GA_MEASUREMENT_ID === 'G-GYYJSDLKLB') return; // placeholder — ne učitavaj
 
     if (document.getElementById('ga-script')) return; // već učitan
 
