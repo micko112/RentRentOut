@@ -379,23 +379,47 @@ Prihod platforme dolazi od korisnika koji plaćaju promociju svojih oglasa. **Ne
 | GET | `/api/promotions/credit/history` | auth | Istorija transakcija |
 | POST | `/api/promotions/admin/credit` | admin | Dodaj kredit korisniku |
 
-### Frontend (TODO — naredna sesija)
+### Frontend (IMPLEMENTIRANO)
 
-Sledeća sesija treba da implementira frontend deo:
+Svi frontend delovi sistema promocija su implementirani:
 
-1. **`AdCardComponent`** — badge "Na vrhu" / "Prioritetni" / "Istaknut" na kartici oglasa (zlatna/zelena boja, na osnovu `promotionType` u `AdPreviewDto`)
-2. **"Moji oglasi"** — pored svakog oglasa: status isteka (`expiresAt`), dugme "Obnovi" (besplatno), dugme "Promoviši" (otvara modal)
-3. **Modal za promociju** — prikazuje 3 paketa, stanje kredita, dugme "Aktiviraj"
-4. **Sidebar** — widget sa stanjem kredita ispod korisničkih informacija (samo za ulogovanog)
-5. **Stranica "Kredit"** (`/credit`) — dopuna kredita (opis procesa — ručna uplata adminu), istorija transakcija
-6. **Admin panel** — input polje za dodavanje kredita korisniku (`POST /api/promotions/admin/credit`)
+1. **`AdPreview` model** (`shared/models/adPreview.model.ts`) — dodata `expiresAt?: string` i `promotionType?: PromotionType | null`; `PromotionType = 'FEATURED' | 'PRIORITY' | 'HIGHLIGHTED'` eksportovan odavde
+2. **`PromotionService`** (`features/ads/services/promotion.service.ts`) — `getPackages()`, `activate()`, `getActivePromotions()`, `renewAd()`, `getCreditBalance()`, `getCreditHistory()`, `addCredit()` (admin)
+3. **`AdCardComponent`** — badge `<span class="promo-badge badge-featured/priority/highlighted">` dodat na `.image-wrapper`, pozicioniran `top:8px; left:8px`
+4. **"Moji oglasi"** (`features/user/pages/my-ads/`) — `ad-management-actions` prikazuje: expiry info (crveno/narandžasto kad ≤5 dana), promo badge ako aktivan, dugmad "Obnovi" (besplatno, blokira dupli klik) + "Promoviši" (otvara modal) + Izmeni + Obriši
+5. **`PromotionModalComponent`** (`features/ads/components/promotion-modal/`) — modalni prozor sa 3 paketa, stanjem kredita, disabled paket ako nema dovoljno kredita, link "Dopuni" ka `/credit`
+6. **Stranica "Kredit"** (`features/user/pages/credit/`) — ruta `/credit` (auth guard), prikazuje: balance card, uputstvo za dopunu, tabelu paketa, istoriju transakcija
+7. **Admin panel** (`features/admin/pages/admin-users/`) — kolona "Kredit" sa dugmetom "+ Kredit"; modal sa iznosom i napomenom; poziva `POST /api/promotions/admin/credit`
 
-**Stil za promotion badge (na kartici oglasa):**
+**Stil za promotion badge:**
 ```css
 .badge-featured  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
 .badge-priority  { background: var(--color-primary); color: #fff; }
 .badge-highlighted { background: var(--color-primary-light); color: var(--color-primary); border: 1px solid var(--color-primary-border); }
 ```
+
+### Cookie Banner + Legal Stranice (IMPLEMENTIRANO)
+
+- **`CookieConsentService`** (`shared/services/cookie-consent.service.ts`) — `localStorage` key `cookie_consent`; GA4 se učitava dinamički samo na prihvat; GA4 placeholder: `G-XXXXXXXXXX` (zameniti pravim ID)
+- **`CookieBannerComponent`** (`shared/components/cookie-banner/`) — fixed bottom banner, `*ngIf="(status$ | async) === null"`, slide-up animacija
+- **`/privacy-policy`** — potpun ZZPL/GDPR tekst na srpskom (10 sekcija)
+- **`/terms-of-service`** — potpun tekst uslova korišćenja (9 sekcija), uključuje opis kredit sistema i cene paketa
+- Footer linkovi ažurirani na `/privacy-policy` i `/terms-of-service`
+
+### Sentry (IMPLEMENTIRANO)
+
+Backend: `sentry-spring-boot-starter-jakarta`. Frontend: `@sentry/angular^10.46.0`, `Sentry.init()` pre `bootstrapApplication()` u `main.ts`.
+
+Za produkciju, dodati u `/opt/app/RentRentOut/.env`:
+```
+SENTRY_DSN=https://...@sentry.io/...
+SENTRY_TRACES_SAMPLE_RATE=0.1
+SENTRY_ENVIRONMENT=production
+```
+
+### Google Analytics (OSTALO)
+
+Zameniti `G-XXXXXXXXXX` u `shared/services/cookie-consent.service.ts` sa pravim GA4 Measurement ID iz analytics.google.com. Korisnik već ima nalog kreiran.
 
 ---
 

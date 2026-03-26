@@ -17,6 +17,45 @@
   border-color: var(--color-danger-border);
 }
 
+.contract-select-section {
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+}
+
+.contract-select-label {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.contract-select-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contract-select-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text);
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.contract-select-item:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
 /* ===============================
    PROFIL HEADER KARTICA
    =============================== */

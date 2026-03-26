@@ -8,4 +8,5 @@ export interface UserShort {
   positiveReviews:  number;
   negativeReviews:   number;
   phoneNumber?: string;
+  description?: string | null;
 }

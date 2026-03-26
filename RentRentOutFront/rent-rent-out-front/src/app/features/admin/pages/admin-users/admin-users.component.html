@@ -13,6 +13,7 @@
           <th>Uloga</th>
           <th>Status</th>
           <th>Akcija</th>
+          <th>Kredit</th>
         </tr>
       </thead>
       <tbody>
@@ -39,6 +40,9 @@
               {{ user.enabled ? 'Deaktiviraj' : 'Aktiviraj' }}
             </button>
           </td>
+          <td>
+            <button class="btn-credit" (click)="openCreditModal(user)">+ Kredit</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -47,6 +51,27 @@
       <button class="page-btn" (click)="prevPage()" [disabled]="usersPage.first">Prethodna</button>
       <span>Strana {{ usersPage.number + 1 }} od {{ usersPage.totalPages }}</span>
       <button class="page-btn" (click)="nextPage()" [disabled]="usersPage.last">Sledeća</button>
+    </div>
+  </div>
+</div>
+
+<!-- Credit Modal -->
+<div class="modal-overlay" *ngIf="showCreditModal" (click)="closeCreditModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <h3>Dodaj kredit</h3>
+    <p class="modal-user">{{ creditUser?.firstname }} {{ creditUser?.lastname }} ({{ creditUser?.email }})</p>
+
+    <label class="field-label">Iznos (RSD)</label>
+    <input type="number" class="field-input" [(ngModel)]="creditAmount" min="1" placeholder="npr. 500">
+
+    <label class="field-label">Napomena (opciono)</label>
+    <input type="text" class="field-input" [(ngModel)]="creditDescription" placeholder="npr. Uplata bankovnim transferom">
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeCreditModal()">Odustani</button>
+      <button class="btn-confirm" (click)="confirmAddCredit()" [disabled]="!creditAmount || creditAmount <= 0 || addingCredit">
+        {{ addingCredit ? 'Dodavanje...' : 'Dodaj kredit' }}
+      </button>
     </div>
   </div>
 </div>

@@ -12,6 +12,7 @@ public class UserShortDto {
     private int positiveReviews;
     private int negativeReviews;
     private String phoneNumber;
+    private String description;
 
     public Long getId() {
         return id;
@@ -83,5 +84,13 @@ public class UserShortDto {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -14,6 +14,9 @@ import {DatePipe, registerLocaleData} from '@angular/common';
 import {catchError, switchMap, throwError} from 'rxjs';
 import {ToastService} from './shared/services/toast.service';
 
+import { ErrorHandler } from '@angular/core'; // <-- DODAJ IMPORT
+import * as Sentry from "@sentry/angular";    // <-- DODAJ IMPORT
+
 registerLocaleData(localeSr);
 
 // Dodaje withCredentials na sve zahteve — browser automatski šalje HttpOnly cookie
@@ -70,5 +73,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     {provide: LOCALE_ID, useValue: 'sr-Latn'},
     DatePipe,
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: false, // Ako staviš 'true', korisniku će iskočiti prozor da opiše šta je radio kad je puklo
+      }),
+    }
   ]
 };

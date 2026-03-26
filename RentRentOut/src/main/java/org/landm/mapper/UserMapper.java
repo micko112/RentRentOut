@@ -101,6 +101,7 @@ public class UserMapper {
         dto.setNegativeReviews(user.getNegativeReviews());
         dto.setPhoneNumber(user.getPhoneNumber() != null && !user.getPhoneNumber().isBlank()
                 ? "06x / xxx-xxxx" : null);
+        dto.setDescription(user.getDescription());
 
         return dto;
     }

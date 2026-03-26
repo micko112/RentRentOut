@@ -1,3 +1,5 @@
+export type PromotionType = 'FEATURED' | 'PRIORITY' | 'HIGHLIGHTED';
+
 export interface AdPreview {
   id: number;
   title: string;
@@ -15,6 +17,8 @@ export interface AdPreview {
   createdAt?: string;
   pricePerWeek?: number;
   pricePerMonth?: number;
+  expiresAt?: string;
+  promotionType?: PromotionType | null;
 }
 
 export interface Page<T>{

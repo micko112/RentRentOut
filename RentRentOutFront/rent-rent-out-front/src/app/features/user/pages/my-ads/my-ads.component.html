@@ -22,12 +22,37 @@
 
       <!-- AKCIJE ZA VLASNIKA -->
       <div class="ad-management-actions">
-        <button class="btn-edit" (click)="onEdit(ad.id)">
-          <span class="material-icons">edit</span> Izmeni
-        </button>
-        <button class="btn-delete" (click)="openDeleteModal(ad)">
-          <span class="material-icons">delete_outline</span> Obriši
-        </button>
+        <!-- Expiry info -->
+        <div class="expiry-info" *ngIf="ad.expiresAt">
+          <span class="material-icons expiry-icon" [class.expired]="isExpired(ad.expiresAt)">schedule</span>
+          <span *ngIf="!isExpired(ad.expiresAt)" class="expiry-text" [class.expiry-soon]="(daysUntilExpiry(ad.expiresAt) ?? 99) <= 5">
+            Ističe za {{ daysUntilExpiry(ad.expiresAt) }} {{ (daysUntilExpiry(ad.expiresAt) ?? 0) === 1 ? 'dan' : 'dana' }}
+          </span>
+          <span *ngIf="isExpired(ad.expiresAt)" class="expiry-text expired">Istekao</span>
+        </div>
+
+        <!-- Promotion badge if active -->
+        <div class="active-promo-badge" *ngIf="ad.promotionType">
+          <span *ngIf="ad.promotionType === 'FEATURED'" class="promo-label badge-featured">Na vrhu</span>
+          <span *ngIf="ad.promotionType === 'PRIORITY'" class="promo-label badge-priority">Prioritetni</span>
+          <span *ngIf="ad.promotionType === 'HIGHLIGHTED'" class="promo-label badge-highlighted">Istaknut</span>
+        </div>
+
+        <div class="action-btns">
+          <button class="btn-renew" (click)="renewAd(ad)" [disabled]="renewingIds.has(ad.id)" title="Besplatna obnova">
+            <span class="material-icons">refresh</span>
+            {{ renewingIds.has(ad.id) ? 'Obnavljanje...' : 'Obnovi' }}
+          </button>
+          <button class="btn-promote" (click)="openPromoModal(ad)">
+            <span class="material-icons">campaign</span> Promoviši
+          </button>
+          <button class="btn-edit" (click)="onEdit(ad.id)">
+            <span class="material-icons">edit</span> Izmeni
+          </button>
+          <button class="btn-delete" (click)="openDeleteModal(ad)">
+            <span class="material-icons">delete_outline</span> Obriši
+          </button>
+        </div>
       </div>
     </div>
 
@@ -50,6 +75,15 @@
     </div>
   </ng-template>
 </div>
+
+<!-- Promotion Modal -->
+<app-promotion-modal
+  *ngIf="showPromoModal && promoAd"
+  [adId]="promoAd!.id"
+  [adTitle]="promoAd!.title"
+  (closed)="closePromoModal()"
+  (activated)="onPromoActivated()">
+</app-promotion-modal>
 
 <!-- Delete Modal -->
 <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">

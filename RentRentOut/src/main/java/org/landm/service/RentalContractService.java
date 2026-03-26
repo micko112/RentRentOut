@@ -32,4 +32,6 @@ public interface RentalContractService {
     public void markToAdDeleted(Long adId);
 
     public RentalContractDto blockDates(CreateRentalContractRequestDto req, Long userId);
+
+    public List<RentalContractDto> getFinishedWithUser(Long myId, Long otherId);
 }

@@ -1,6 +1,7 @@
 package org.landm.service.impl;
 
 import jakarta.persistence.OptimisticLockException;
+import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.RentalContractDto;
@@ -609,9 +610,17 @@ public class RentalContractServiceImpl implements RentalContractService {
 		return rentalContractMapper.toDto(rentalContractRepository.save(blockRecord));
 	}
 
+	@Override
+	public List<RentalContractDto> getFinishedWithUser(Long myId, Long otherId) {
+		return rentalContractRepository.findFinishedBetweenUsers(myId, otherId)
+				.stream()
+				.map(rentalContractMapper::toDto)
+				.collect(Collectors.toList());
+	}
+
 	@Recover
 	public RentalContractDto recover(OptimisticLockException e) {
 		throw new IllegalStateException("Vaš zahtev nije mogao biti obrađen zbog paralelnih izmena. Pokušajte ponovo.");
 	}
-	
+
 }

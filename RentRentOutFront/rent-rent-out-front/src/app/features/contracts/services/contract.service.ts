@@ -23,4 +23,8 @@ export class ContractService {
   blockDates(request: CreateRentalContractRequest): Observable<RentalContract> {
     return this.http.post<RentalContract>(`${this.url}/block`, request);
   }
+
+  getFinishedWithUser(otherId: number): Observable<RentalContract[]> {
+    return this.http.get<RentalContract[]>(`${this.url}/finished-with/${otherId}`);
+  }
 }

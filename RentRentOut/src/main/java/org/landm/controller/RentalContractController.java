@@ -88,5 +88,12 @@ public class RentalContractController {
 			return new ResponseEntity<>(service.blockDates(req, userId), HttpStatus.CREATED);
 	}
 
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	@GetMapping("/finished-with/{otherId}")
+	public ResponseEntity<List<RentalContractDto>> getFinishedWithUser(@PathVariable Long otherId,
+																	   Authentication auth) {
+		Long myId = Long.parseLong(auth.getName());
+		return ResponseEntity.ok(service.getFinishedWithUser(myId, otherId));
+	}
 
 }

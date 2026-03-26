@@ -23,7 +23,6 @@ public class AdController {
     public AdController(AdService adService) {
         this.adService = adService;
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<AdDto> getAdById(@PathVariable Long id, Authentication auth) {
         if (auth != null && !(auth instanceof AnonymousAuthenticationToken)) {

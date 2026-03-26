@@ -86,7 +86,7 @@ export class AdListComponent implements OnInit, OnDestroy {
     this.categoryService.getAll().pipe(takeUntil(this.destroy$)).subscribe({
       next: res => {
         this.categories = res;
-        this.updateActiveCategory(this.route.snapshot.queryParams['categoryId']);
+        this.updateActiveCategory(this.route.snapshot.queryParams['categoryId'], this.route.snapshot.queryParams['sort']);
       },
       error: () => {},
     });
@@ -100,7 +100,7 @@ export class AdListComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
       switchMap(params => {
         const categoryId = params['categoryId'] ? Number(params['categoryId']) : undefined;
-        this.updateActiveCategory(categoryId);
+        this.updateActiveCategory(categoryId, params['sort']);
         this.currentKeyword  = params['keyword'] || '';
         this.isSearchMode    = this.isSearchModeFromParams(params);
         this.homeMode        = !this.isSearchMode;
@@ -192,8 +192,11 @@ export class AdListComponent implements OnInit, OnDestroy {
     });
   }
 
-  private updateActiveCategory(categoryId: number | undefined): void {
-    if (!categoryId) { this.activeCategory = 'Svi oglasi'; return; }
+  private updateActiveCategory(categoryId: number | undefined, sort?: string): void {
+    if (!categoryId) {
+      this.activeCategory = sort === 'id,desc' ? 'Najnoviji oglasi' : 'Svi oglasi';
+      return;
+    }
     const found = this.categories.find(c => c.id === categoryId);
     this.activeCategory = found ? found.name : 'Učitavanje...';
   }

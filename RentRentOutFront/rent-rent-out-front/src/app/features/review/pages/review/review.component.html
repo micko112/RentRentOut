@@ -3,45 +3,58 @@
   <!-- ZAGLAVLJE PROFILA -->
   <div class="profile-header-card">
 
-    <!-- Informacije o korisniku (Levo) -->
-    <div class="user-info-section">
-      <div class="avatar-large">
-        <!-- Inicijali korisnika -->
-        {{ user?.displayName | initials }}
+    <div class="profile-header-top">
+
+      <!-- Levo: info o korisniku -->
+      <div class="user-info-section">
+        <div class="avatar-large">
+          {{ user?.displayName | initials }}
+        </div>
+        <div class="details">
+          <h1>{{ user?.displayName }}</h1>
+          <p class="meta-info">
+            <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ user?.locationDisplay || 'Nepoznata lokacija' }}</span>
+            <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>Član od: {{ user?.createdAt | date:'dd.MM.yyyy' }}.</span>
+          </p>
+          <p class="user-description" *ngIf="user?.description">{{ user?.description }}</p>
+        </div>
       </div>
-      <div class="details">
-        <h1>{{ user?.displayName }}</h1>
-        <p class="meta-info">
-                    <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ user?.locationDisplay || 'Nepoznata lokacija' }}</span>
-                    <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>Član od: {{ user?.createdAt | date:'dd.MM.yyyy' }}.</span>
-        </p>
+
+      <!-- Desno: ocene + dugme -->
+      <div class="review-action-panel">
+        <div class="rating-score">
+          <div class="score positive"><span class="icon material-symbols-outlined">thumb_up</span> {{ user?.positiveReviews || 0 }}</div>
+          <div class="score negative"><span class="icon material-symbols-outlined">thumb_down</span> {{ user?.negativeReviews || 0 }}</div>
+        </div>
+        <button class="btn-review"
+                *ngIf="!showForm && !showContractSelect && !isOwnProfile"
+                (click)="onOceniClick()">Ocenite
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Select za ugovor — prikazuje se posle klika na "Ocenite" ako ima završenih ugovora -->
+    <div class="contract-select-section" *ngIf="showContractSelect">
+      <p class="contract-select-label">Izaberi ugovor za koji ocenjuješ:</p>
+      <div class="contract-select-list">
+        <button class="contract-select-item"
+                *ngFor="let c of finishedContracts"
+                (click)="onContractSelected(c.id)">
+          <span class="material-symbols-outlined" style="font-size:16px">description</span>
+          {{ c.adDto?.title ?? 'Oglas' }} &nbsp;·&nbsp; {{ c.startDate | date:'dd.MM.yyyy' }} – {{ c.endDate | date:'dd.MM.yyyy' }}
+        </button>
       </div>
     </div>
 
-    <!-- Ocene i akcije (Desno) -->
-    <div class="review-action-panel">
-      <div class="rating-score">
-        <div class="score positive"><span class="icon material-symbols-outlined">thumb_up</span> {{ user?.positiveReviews || 0 }}</div>
-        <div class="score negative"><span class="icon material-symbols-outlined">thumb_down</span> {{ user?.negativeReviews || 0 }}</div>
-      </div>
-
-      <!-- Prikazujemo dugme Ocenite SAMO ako NEMA contractId u URL-u -->
-      <!--      <button class="btn-review" *ngIf="!contractIdToReview">Ocenite</button>-->
-      <button class="btn-review"
-              *ngIf="!showForm"
-              (click)="toggleForm()">Ocenite
-      </button>
-      <!--      <button class="btn-review"-->
-      <!--              (click)="createReview()">Ocenite</button>-->
-    </div>
-    <!-- FORMA ZA OCENJIVANJE  -->
-    <div class="review-form-section">
+    <!-- Forma za ocenjivanje — ispod, full width -->
+    <div class="review-form-section" *ngIf="showForm">
       <app-review-form
-        *ngIf="showForm"
         [contractId]="contractIdToReview"
         (reviewSaved)="onReviewSubmitted()">
       </app-review-form>
     </div>
+
   </div>
 
 
@@ -64,15 +77,14 @@
     </button>
   </div>
 
-  <!-- Ovde ispod će ići ngFor petlja za prikaz samih kartica sa ocenama -->
   <div class="reviews">
     <app-review-card
       *ngFor="let review of filteredReviews"
-      [review]="review"
-    ></app-review-card>
+      [review]="review">
+    </app-review-card>
     <p *ngIf="filteredReviews.length === 0" style="text-align: center; color: #666; margin-top: 20px;">
       Nema ocena u ovoj kategoriji.
     </p>
   </div>
-</div>
 
+</div>

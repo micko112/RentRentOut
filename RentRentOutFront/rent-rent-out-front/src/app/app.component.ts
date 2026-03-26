@@ -6,13 +6,14 @@ import { FooterComponent } from './core/layout/footer/footer.component';
 import { HeaderComponent } from './core/layout/header/header.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
+import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
 import { NotificationService } from './core/services/notification.service';
 import { map, filter, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, NavbarComponent, FooterComponent, HeaderComponent, ToastComponent, SidebarComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, NavbarComponent, FooterComponent, HeaderComponent, ToastComponent, SidebarComponent, CookieBannerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

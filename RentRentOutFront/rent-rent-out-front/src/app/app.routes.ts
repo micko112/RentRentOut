@@ -12,6 +12,9 @@ import {ResetPasswordComponent} from './features/auth/pages/reset-password/reset
 import {InboxComponent} from './features/chat/pages/inbox/inbox.component';
 import {NotificationsPageComponent} from './features/notifications/pages/notifications-page/notifications-page.component';
 import {authGuard} from './features/auth/auth.guard';
+import {PrivacyPolicyComponent} from './features/legal/pages/privacy-policy/privacy-policy.component';
+import {TermsOfServiceComponent} from './features/legal/pages/terms-of-service/terms-of-service.component';
+import {CreditComponent} from './features/user/pages/credit/credit.component';
 
 export const routes: Routes = [
   {path:'ads',
@@ -33,6 +36,9 @@ export const routes: Routes = [
   {path: 'verify-email', component: VerifyEmailComponent},
   {path: 'forgot-password', component: ForgotPasswordComponent},
   {path: 'reset-password', component: ResetPasswordComponent},
+  {path: 'privacy-policy', component: PrivacyPolicyComponent},
+  {path: 'terms-of-service', component: TermsOfServiceComponent},
+  {path: 'credit', component: CreditComponent, canActivate: [authGuard]},
 
   {
     path: '**',

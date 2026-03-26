@@ -5,6 +5,10 @@
          (error)="handleImageError($event)"
          alt="{{ ad.title }}" style="">
 
+    <span *ngIf="ad.promotionType === 'FEATURED'" class="promo-badge badge-featured">Na vrhu</span>
+    <span *ngIf="ad.promotionType === 'PRIORITY'" class="promo-badge badge-priority">Prioritetni</span>
+    <span *ngIf="ad.promotionType === 'HIGHLIGHTED'" class="promo-badge badge-highlighted">Istaknut</span>
+
     <button
       *ngIf="isLoggedIn && viewMode === 'grid'"
       class="save-btn"

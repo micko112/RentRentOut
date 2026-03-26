@@ -78,6 +78,18 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 
 	long countByContractStatusIn(List<ContractStatus> statuses);
 
+	@Query("""
+        SELECT rc FROM RentalContract rc
+        WHERE rc.contractStatus = 'FINISHED'
+          AND (
+            (rc.lessee.id = :myId AND rc.ad.owner.id = :otherId)
+            OR
+            (rc.lessee.id = :otherId AND rc.ad.owner.id = :myId)
+          )
+        ORDER BY rc.endDate DESC
+        """)
+	List<RentalContract> findFinishedBetweenUsers(@Param("myId") Long myId, @Param("otherId") Long otherId);
+
 	@Query("SELECT rc FROM RentalContract rc WHERE rc.contractStatus IN :statuses AND rc.startDate < :today")
 	List<RentalContract> findByStatusInAndStartDateBefore(
 			@Param("statuses") List<ContractStatus> statuses,
