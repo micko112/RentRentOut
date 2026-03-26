@@ -1,0 +1,28 @@
+# Node modules (na bilo kom nivou)
+**/node_modules/
+
+# Build output
+**/dist/
+**/out-tsc/
+**/bazel-out/
+
+# Misplaced npm files u RentRentOutFront/ (pravi projekat je u rent-rent-out-front/)
+RentRentOutFront/package.json
+RentRentOutFront/package-lock.json
+
+# Spring Boot build
+**/target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Environment / secrets
+**/.env
+**/application.properties
+**/application-prod.properties
+
+# OS
+.DS_Store
+Thumbs.db
