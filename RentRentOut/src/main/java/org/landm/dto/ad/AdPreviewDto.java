@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.landm.dto.LocationDto;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PriceInterval;
+import org.landm.entity.Enums.PromotionType;
 import org.landm.entity.Location;
 
 import java.math.BigDecimal;
@@ -28,6 +29,9 @@ public class AdPreviewDto {
     private boolean saved;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime expiresAt;
+    private PromotionType promotionType;
 
     public AdStatus getAdStatus() {
         return adStatus;
@@ -156,5 +160,21 @@ public class AdPreviewDto {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
+    public PromotionType getPromotionType() {
+        return promotionType;
+    }
+
+    public void setPromotionType(PromotionType promotionType) {
+        this.promotionType = promotionType;
     }
 }

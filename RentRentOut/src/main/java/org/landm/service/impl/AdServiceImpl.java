@@ -19,7 +19,9 @@ import org.landm.service.CategoryService;
 import org.landm.service.NotificationPersistenceService;
 import org.landm.service.RentalContractService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
@@ -344,15 +346,24 @@ public class AdServiceImpl implements AdService {
         };
     }
 
+    /** Prepend promotionRank DESC sort before the user's chosen sort */
+    private Pageable withPromotionSort(Pageable pageable) {
+        Sort promotionFirst = Sort.by(Sort.Direction.DESC, "promotionRank");
+        Sort combined = pageable.getSort().isSorted()
+                ? promotionFirst.and(pageable.getSort())
+                : promotionFirst.and(Sort.by(Sort.Direction.DESC, "createdAt"));
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), combined);
+    }
+
     @Override
     public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable) {
-        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), pageable);
+        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), withPromotionSort(pageable));
         return adPage.map(adMapper::toPreviewDto);
     }
 
     @Override
     public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable, Long userId) {
-        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), pageable);
+        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), withPromotionSort(pageable));
         Set<Long> savedAdIds = getSavedAdIds(userId, adPage);
         return adPage.map(ad -> {
             AdPreviewDto dto = adMapper.toPreviewDto(ad);

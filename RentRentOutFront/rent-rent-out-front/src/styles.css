@@ -27,7 +27,7 @@
 * {
   box-sizing: border-box;
 }
-html{
+html {
   font-family: 'Lato', Arial, sans-serif;
 }
 button,
@@ -44,21 +44,115 @@ body {
   max-width: 1180px;
   margin: 0;
   padding: 0 15px;
-
 }
 .separator {
   margin: 8px 26px;
-  border-bottom:  1px solid #dfdede;
+  border-bottom: 1px solid var(--color-separator);
 }
+
+/* ══════════════════════════════════════════════════════════
+   PALETA BOJA — RENT RENT OUT
+   ══════════════════════════════════════════════════════════
+   Promeniti vrednost promenljive ovde da biste promenili
+   boju na SVIM mestima u aplikaciji odjednom.             */
 :root {
-  --primary-color: #813181;
-  --secondary-color: #6ecf7e;
-  --accent-color: #283859;
-  --bg-color: #ffffff;
-  --card-bg: #ffffff;
-  --text-main: #212529;
-  --text-muted: #666666;
-  --border-color: #e0e0e0;
+
+  /* ── Primary (ljubičasta) ────────────────────────────────
+     Koristi se: dugmad, aktivne veze, sidebar avatar, unread
+     badge, paginacija, fokus inputa, akcenti                */
+  --color-primary:              #813181;
+  --color-primary-hover:        #6a2769;      /* hover stanje primary dugmadi */
+  --color-primary-light:        #f5ecff;      /* svetla pozadina — hover kartice, chipovi */
+  --color-primary-xlight:       #faf5ff;      /* veoma svetla — meta chip, dropdown opcije */
+  --color-primary-border:       #e9d8f5;      /* granica primary elemenata */
+  --color-primary-border-pill:  #d8a8e0;      /* granica pill/badge elemenata */
+
+  /* Primary providne varijante (fokus senka, overlay) */
+  --color-primary-bg:           rgba(129, 49, 129, 0.04);  /* aktivni razgovor u chatu */
+  --color-primary-glow:         rgba(129, 49, 129, 0.10);  /* fokus senka inputa */
+  --color-primary-shadow:       rgba(129, 49, 129, 0.25);  /* senka dugmadi, kartica */
+  --color-primary-shadow-hover: rgba(129, 49, 129, 0.40);  /* jača senka na hover */
+
+  /* ── Secondary (zelena) ─────────────────────────────────
+     Koristi se: search dugme, "Objavi oglas", save, submit,
+     footer akcent, kalendar dana                           */
+  --color-secondary:              #6ecf7e;
+  --color-secondary-hover:        #4baf5c;    /* hover stanje secondary dugmadi */
+  --color-secondary-light:        #f0fdf4;    /* svetla zelena pozadina — dropzone */
+  --color-secondary-xlight:       #dcfce7;    /* hover na add sliku */
+  --color-secondary-border:       #a7f3d0;    /* granica — done pill, dropzone has-files */
+
+  /* Secondary providne varijante */
+  --color-secondary-calendar:     rgba(110, 207, 126, 0.21); /* hover na danima u kalendaru */
+  --color-secondary-message:      rgba(110, 207, 126, 0.70); /* boja poslatih poruka u chatu */
+  --color-secondary-shadow:       rgba(110, 207, 126, 0.35); /* senka submit dugmeta */
+  --color-secondary-shadow-hover: rgba(110, 207, 126, 0.45); /* jača senka na hover */
+
+  /* ── Akcenat (tamno plava) ───────────────────────────────
+     Koristi se: admin sidebar, naslovi sekcija, sort select,
+     profil banner, "Upravljanje" dugme u headeru            */
+  --color-accent:               #283859;
+  --color-accent-hover:         #1a253d;      /* hover stanje */
+  --color-accent-shadow:        rgba(40, 56, 89, 0.25); /* senka search bara, profil bannera */
+
+  /* ── Danger (crvena) ─────────────────────────────────────
+     Koristi se: unread badge, dugme za brisanje, error
+     poruke, negativne recenzije, required zvezdica          */
+  --color-danger:               #e53935;
+  --color-danger-hover:         #c62828;      /* hover stanje */
+  --color-danger-dark:          #b91c1c;      /* outline varijanta — cancel dugme u ugovorima */
+  --color-danger-light:         #ffebee;      /* svetla crvena pozadina — error box */
+  --color-danger-border:        #ef4444;      /* granica error elemenata, negative review okvir */
+
+  /* ── Success (zelena — status/toast) ────────────────────
+     Koristi se: toast uspeh, pozitivne ocene, accepted
+     status, verified badge, progress bar done korak         */
+  --color-success:              #22c55e;
+  --color-success-dark:         #16a34a;      /* tekst pozitivnih ocena */
+  --color-success-light:        #e6f4ea;      /* verified badge pozadina */
+
+  /* ── Warning (narandžasta) ───────────────────────────────
+     Koristi se: char counter "near limit", expired ugovor  */
+  --color-warning:              #f59e0b;
+  --color-warning-light:        #fff7ed;      /* svetla pozadina — requested/warned stanje */
+
+  /* ── KP plava (recenzije) ────────────────────────────────
+     Koristi se: dugme "Ostavi recenziju", aktivni tabovi
+     na stranici recenzija (KP stil)                        */
+  --color-kp:                   #0071bd;
+  --color-kp-hover:             #005a9e;
+
+  /* ── Spoljni servisi ─────────────────────────────────────*/
+  --color-facebook:             #1877F2;      /* Facebook OAuth dugme */
+
+  /* ── Neutralne ───────────────────────────────────────────*/
+  --color-white:                #ffffff;
+  --color-surface:              #f9f9f9;      /* sidebar header, panel header pozadina */
+  --color-surface-alt:          #f5f5f5;      /* admin content, search bar pozadina */
+  --color-surface-input:        #f8f8f8;      /* search input pozadina */
+  --color-border:               #e0e0e0;      /* standardna granica kartica i inputa */
+  --color-border-light:         #f0f0f0;      /* svetla granica separatora */
+  --color-border-medium:        #d1d5db;      /* granica inputa u wizard-u, dugmadi */
+  --color-separator:            #dfdede;      /* separator linija u sidebar-u */
+
+  /* Tekst */
+  --color-text:                 #111827;      /* primarni tekst — naslovi, sadržaj */
+  --color-text-body:            #374151;      /* tekst tela — opisi */
+  --color-text-secondary:       #6b7280;      /* sekundarni — labele, hint tekst */
+  --color-text-muted:           #9ca3af;      /* prigušeni — placeholder, meta, subtitle */
+  --color-text-light:           #888;         /* svetli — vremenski pečat, view count */
+  --color-text-xlight:          #aaa;         /* veoma svetli — ikone, stat */
+  --color-text-dark:            #222;         /* tamni — korisničko ime, naslovi */
+
+  /* ── Disabled ────────────────────────────────────────────
+     JEDAN opacity za SVA disabled dugmad i elemente.
+     Promeni ovu vrednost da bi se primenilo svuda.         */
+  --disabled-opacity:           0.4;
+
+  /* ── Overlay ─────────────────────────────────────────────*/
+  --overlay-dark:               rgba(0, 0, 0, 0.45);      /* modalni overlay */
+  --overlay-image:              rgba(0, 0, 0, 0.90);      /* fullscreen pregled slike */
+  --overlay-light:              rgba(255, 255, 255, 0.85); /* save dugme na thumbnail slici */
 }
 
 .list-layout {
@@ -78,16 +172,22 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ----------------REVIEWS ------------------------------------------*/
+/* ─── REVIEWS ─────────────────────────────────────────── */
 .profile-header-card {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 24px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 20px;
   margin-bottom: 24px;
+}
+
+.profile-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 20px;
 }
@@ -100,8 +200,8 @@ body {
   .avatar-large {
     width: 64px;
     height: 64px;
-    background-color: #0071bd;
-    color: #ffffff;
+    background-color: var(--color-kp);
+    color: var(--color-white);
     font-size: 24px;
     font-weight: bold;
     border-radius: 50%;
@@ -115,15 +215,23 @@ body {
     h1 {
       margin: 0 0 8px 0;
       font-size: 22px;
-      color: #111827;
+      color: var(--color-text);
     }
 
     .meta-info {
       margin: 0;
       font-size: 14px;
-      color: #9ca3af; /* Sivkasta kao na KP */
+      color: var(--color-text-muted);
       display: flex;
       gap: 16px;
+    }
+
+    .user-description {
+      margin: 10px 0 0 0;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+      max-width: 600px;
     }
   }
 }
@@ -146,21 +254,20 @@ body {
       font-weight: 600;
       font-size: 15px;
 
-      /* KP STIL OCENA */
       &.positive {
-        border: 1px solid #22c55e;
-        color: #16a34a;
+        border: 1px solid var(--color-success);
+        color: var(--color-success-dark);
       }
       &.negative {
-        border: 1px solid #ef4444;
-        color: #dc2626;
+        border: 1px solid var(--color-danger-border);
+        color: var(--color-danger-hover);
       }
     }
   }
 
   .btn-review {
-    background-color: #0071bd; /* KP Plava */
-    color: white;
+    background-color: var(--color-kp);
+    color: var(--color-white);
     border: none;
     padding: 10px 20px;
     border-radius: 6px;
@@ -169,13 +276,11 @@ body {
     cursor: pointer;
     transition: background-color 0.2s;
 
-    &:hover { background-color: #005a9e; }
+    &:hover { background-color: var(--color-kp-hover); }
   }
 }
 
-/* ===============================
-   TABOVI (Sve ocene / Prodavac)
-   =============================== */
+/* ── TABOVI (Sve ocene / Prodavac) ── */
 .review-tabs {
   display: flex;
   border-bottom: 1px solid #e5e7eb;
@@ -188,16 +293,15 @@ body {
     padding: 12px 4px;
     font-size: 15px;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     cursor: pointer;
     position: relative;
     transition: color 0.2s;
 
-    &:hover { color: #111827; }
+    &:hover { color: var(--color-text); }
 
-    /* AKTIVNI TAB (Kao na KP slici) */
     &.active {
-      color: #0071bd;
+      color: var(--color-kp);
       font-weight: 600;
 
       &::after {
@@ -207,7 +311,7 @@ body {
         left: 0;
         width: 100%;
         height: 2px;
-        background-color: #0071bd;
+        background-color: var(--color-kp);
       }
     }
   }
@@ -216,21 +320,19 @@ body {
 .reviews {
   display: flex;
   flex-direction: column;
-  gap: 16px; /* Razmak izmedju kartica */
+  gap: 16px;
 }
 
 @media (max-width: 600px) {
-  .profile-header-card {
+  .profile-header-top {
     flex-direction: column;
     align-items: flex-start;
-    gap: 14px;
   }
 
   .review-action-panel {
     width: 100%;
     justify-content: space-between;
   }
-
 
   .review-tabs button {
     padding: 11px 14px;

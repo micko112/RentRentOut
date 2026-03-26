@@ -26,6 +26,18 @@
   display: block;
 }
 
+.avatar-placeholder {
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-placeholder .material-icons {
+  font-size: 54px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
 .avatar-cam-overlay {
   position: absolute;
   inset: 0;

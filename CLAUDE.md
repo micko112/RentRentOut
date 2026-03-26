@@ -320,6 +320,85 @@ ENCRYPTION_PHONE_KEY=<32-char-random-key>
 
 ---
 
+## Sistem Promocija (Monetizacija)
+
+Prihod platforme dolazi od korisnika koji plaćaju promociju svojih oglasa. **Nema P2P plaćanja** — korisnici se međusobno dogovaraju za plaćanje.
+
+### Model
+
+- Svaki oglas traje **30 dana** od kreiranja (`expires_at` na `Ad` entity). Besplatno obnavljanje uvek (`POST /api/promotions/renew/{adId}`).
+- Oglas po isteku dobija `adStatus = ARCHIVED` (scheduled job svakog jutra u 03:00).
+- Kredit korisnika: `User.credit` (BigDecimal, već postoji). Admin dodaje kredit kroz admin panel.
+
+### Paketi promocija (PromotionType enum)
+
+| Tip | displayName | Cena | Trajanje | Efekt |
+|---|---|---|---|---|
+| `FEATURED` | Na vrhu | 500 RSD | 7 dana | `promotionRank=3` — uvek prvi u pretrazi |
+| `PRIORITY` | Prioritetni | 250 RSD | 3 dana | `promotionRank=2` — ispred standardnih |
+| `HIGHLIGHTED` | Istaknut oglas | 100 RSD | 30 dana | `promotionRank=0` — samo vizuelno (boja kartice) |
+
+### Backend arhitektura (implementirano)
+
+**Novi fajlovi:**
+- `entity/Enums/PromotionType.java` — enum sa rank/price/duration
+- `entity/Enums/TransactionType.java` — TOPUP_ADMIN, PROMOTION_PURCHASE, ADMIN_ADJUSTMENT
+- `entity/AdPromotion.java` — istorija aktiviranih promocija (tabela `ad_promotion`)
+- `entity/CreditTransaction.java` — istorija transakcija (tabela `credit_transaction`)
+- `repository/AdPromotionRepository.java`
+- `repository/CreditTransactionRepository.java`
+- `dto/promotion/` — PromotionPackageDto, ActivatePromotionRequest, ActivePromotionDto, CreditBalanceDto, CreditTransactionDto
+- `service/PromotionService.java` + `impl/PromotionServiceImpl.java`
+- `controller/PromotionController.java`
+
+**Modifikacije:**
+- `entity/Ad.java` — dodato: `expiresAt`, `promotionType`, `promotionExpiresAt`, `promotionRank` (int, default 0)
+- `dto/ad/AdPreviewDto.java` — dodato: `expiresAt`, `promotionType`
+- `mapper/AdMapper.java` — mapira nova polja u `toPreviewDto()`
+- `service/impl/AdServiceImpl.java` — `withPromotionSort()` metoda prependa `promotionRank DESC` sort
+- `security/SecurityConfig.java` — dodati `/api/promotions/**` endpointi
+- `db/changelog/db.changelog-master.xml` — include 21 i 22
+
+**Migracije:**
+- `db.changelog-21-add-ad-expiry-and-promotion.xml` — `expires_at`, `promotion_type`, `promotion_expires_at`, `promotion_rank` na `ad` tabeli
+- `db.changelog-22-create-promotion-system.xml` — `ad_promotion` i `credit_transaction` tabele
+
+**Scheduled jobs (u PromotionServiceImpl):**
+- `expirePromotions()` — svakih sat (fixedDelay=3600000): resetuje `promotionType/promotionRank` na oglasima čija promocija je istekla
+- `expireAds()` — svako jutro u 03:00 (cron): postavlja `adStatus=ARCHIVED` za istekle oglase
+
+### API Endpointi
+
+| Method | URL | Auth | Opis |
+|---|---|---|---|
+| GET | `/api/promotions/packages` | public | Lista paketa sa cenama |
+| POST | `/api/promotions/activate` | auth | Aktivira promociju (skida kredit) |
+| GET | `/api/promotions/ad/{adId}` | public | Aktivne promocije za oglas |
+| POST | `/api/promotions/renew/{adId}` | auth | Besplatna obnova oglasa |
+| GET | `/api/promotions/credit` | auth | Stanje kredita korisnika |
+| GET | `/api/promotions/credit/history` | auth | Istorija transakcija |
+| POST | `/api/promotions/admin/credit` | admin | Dodaj kredit korisniku |
+
+### Frontend (TODO — naredna sesija)
+
+Sledeća sesija treba da implementira frontend deo:
+
+1. **`AdCardComponent`** — badge "Na vrhu" / "Prioritetni" / "Istaknut" na kartici oglasa (zlatna/zelena boja, na osnovu `promotionType` u `AdPreviewDto`)
+2. **"Moji oglasi"** — pored svakog oglasa: status isteka (`expiresAt`), dugme "Obnovi" (besplatno), dugme "Promoviši" (otvara modal)
+3. **Modal za promociju** — prikazuje 3 paketa, stanje kredita, dugme "Aktiviraj"
+4. **Sidebar** — widget sa stanjem kredita ispod korisničkih informacija (samo za ulogovanog)
+5. **Stranica "Kredit"** (`/credit`) — dopuna kredita (opis procesa — ručna uplata adminu), istorija transakcija
+6. **Admin panel** — input polje za dodavanje kredita korisniku (`POST /api/promotions/admin/credit`)
+
+**Stil za promotion badge (na kartici oglasa):**
+```css
+.badge-featured  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+.badge-priority  { background: var(--color-primary); color: #fff; }
+.badge-highlighted { background: var(--color-primary-light); color: var(--color-primary); border: 1px solid var(--color-primary-border); }
+```
+
+---
+
 ## Communication
 
 Uvek odgovaraj na srpskom jeziku (latinica). Korisnik je iz Srbije.

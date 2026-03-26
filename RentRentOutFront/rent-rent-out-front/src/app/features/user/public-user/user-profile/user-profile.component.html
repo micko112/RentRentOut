@@ -1,48 +1,45 @@
 <div class="profile-container" *ngIf="profile$ | async as data">
 
-  <!-- 1. HEADER (Tvoj onaj lepi CSS) -->
-
+  <!-- 1. HEADER -->
   <div class="profile-header-card">
 
-    <!-- Informacije o korisniku (Levo) -->
-    <div class="user-info-section">
-      <div class="avatar-large">
-        <!-- Inicijali korisnika -->
-        {{ data.userInfo?.displayName | initials }}
+    <div class="profile-header-top">
+      <!-- Levo: info o korisniku -->
+      <div class="user-info-section">
+        <div class="avatar-large">
+          {{ data.userInfo?.displayName | initials }}
+        </div>
+        <div class="details">
+          <h1>{{ data.userInfo?.displayName }}</h1>
+          <p class="meta-info">
+            <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ data.userInfo?.locationDisplay || 'Nepoznata lokacija' }}</span>
+            <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>Član od: {{ data.userInfo?.createdAt | date:'dd.MM.yyyy' }}.</span>
+          </p>
+          <p class="user-description" *ngIf="data.userInfo?.description">{{ data.userInfo?.description }}</p>
+        </div>
       </div>
-      <div class="details">
-        <h1>{{ data.userInfo?.displayName }}</h1>
-        <p class="meta-info">
-          <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ data.userInfo?.locationDisplay || 'Nepoznata lokacija' }}</span>
-          <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>Član od: {{ data.userInfo?.createdAt | date:'dd.MM.yyyy' }}.</span>
-        </p>
+
+      <!-- Desno: ocene + dugme -->
+      <div class="review-action-panel">
+        <div class="rating-score">
+          <div class="score positive"><span class="icon material-symbols-outlined">thumb_up</span> {{ data.userInfo?.positiveReviews || 0 }}</div>
+          <div class="score negative"><span class="icon material-symbols-outlined">thumb_down</span> {{ data.userInfo?.negativeReviews || 0 }}</div>
+        </div>
+        <button class="btn-review"
+                *ngIf="!showForm && !isOwnProfile"
+                (click)="toggleForm()">Ocenite
+        </button>
       </div>
     </div>
 
-    <!-- Ocene i akcije (Desno) -->
-    <div class="review-action-panel">
-      <div class="rating-score">
-        <div class="score positive"><span class="icon material-symbols-outlined">thumb_up</span> {{ data.userInfo?.positiveReviews || 0 }}</div>
-        <div class="score negative"><span class="icon material-symbols-outlined">thumb_down</span> {{ data.userInfo?.negativeReviews || 0 }}</div>
-      </div>
-
-      <!-- Prikazujemo dugme Ocenite SAMO ako NEMA contractId u URL-u -->
-      <!--      <button class="btn-review" *ngIf="!contractIdToReview">Ocenite</button>-->
-      <button class="btn-review"
-              *ngIf="!showForm"
-              (click)="toggleForm()">Ocenite
-      </button>
-      <!--      <button class="btn-review"-->
-      <!--              (click)="createReview()">Ocenite</button>-->
+    <!-- Forma ispod, full width -->
+    <div class="review-form-section">
+      <app-review-form
+        *ngIf="showForm"
+        [contractId]="null">
+      </app-review-form>
     </div>
-    <!-- FORMA ZA OCENJIVANJE  Treba URADITI DA AKO JE CONTRACTID NULL DA
-     PRIKAZE ONAJ TEKST KOJI SE NALAZI NA BACKU U SERVISU-->
-      <div class="review-form-section" >
-        <app-review-form
-          *ngIf="showForm"
-          [contractId]="null">
-        </app-review-form>
-      </div>
+
   </div>
 
 
@@ -56,17 +53,17 @@
     </button>
   </nav>
 
-  <!-- 3. SADRŽAJ (Dynamic Switch) -->
+  <!-- 3. SADRŽAJ -->
   <div class="content">
 
-    <!-- OGLASI (List layout) -->
+    <!-- OGLASI -->
     <div *ngIf="activeTab === 'ads'" class="list-layout">
       <app-ad-card *ngFor="let ad of data.ads.content"
                    [ad]="ad"
                    [viewMode]="'list'"></app-ad-card>
     </div>
 
-    <!-- OCENE (Lista layout - isti kao review stranica) -->
+    <!-- OCENE -->
     <div *ngIf="activeTab === 'reviews'" class="reviews">
       <div class="review-tabs">
         <button [class.active]="activeReviewTab === 'ALL'" (click)="setReviewTab('ALL')">

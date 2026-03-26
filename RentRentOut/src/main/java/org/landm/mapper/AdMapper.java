@@ -64,6 +64,8 @@ public class AdMapper {
         dto.setViewCount(ad.getViewCount());
         dto.setSaveCount(ad.getSaveCount());
         dto.setCreatedAt(ad.getCreatedAt());
+        dto.setExpiresAt(ad.getExpiresAt());
+        dto.setPromotionType(ad.getPromotionType());
 
         return dto;
     }

@@ -110,6 +110,10 @@ public class SecurityConfig {
 						.requestMatchers("/api/notifications/**").authenticated()
 						.requestMatchers("/api/push/**").authenticated()
 						.requestMatchers("/ws/**").permitAll()
+						.requestMatchers(org.springframework.http.HttpMethod.GET, "/api/promotions/packages").permitAll()
+						.requestMatchers(org.springframework.http.HttpMethod.GET, "/api/promotions/ad/**").permitAll()
+						.requestMatchers("/api/promotions/admin/**").hasRole("ADMIN")
+						.requestMatchers("/api/promotions/**").authenticated()
 
 
 						.anyRequest().authenticated()

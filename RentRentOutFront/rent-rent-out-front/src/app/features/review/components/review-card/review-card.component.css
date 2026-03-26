@@ -1,6 +1,6 @@
 .review-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb; /* Svetlo sivi okvir */
+  background: var(--color-white);
+  border: 1px solid var(--color-border-medium); /* Svetlo sivi okvir */
   border-radius: 12px; /* Oblie ivice */
   padding: 20px 24px;
   display: flex;
@@ -13,12 +13,12 @@
   }
 }
 .review-card.positive-card {
-  border: 1px solid #6ecf7e;
-  box-shadow: 0 0 10px rgba(110, 207, 126, 0.45);
+  border: 1px solid var(--color-secondary);
+  box-shadow: 0 0 10px var(--color-secondary-shadow);
 }
 
 .review-card.negative-card {
-  border: 0.5px solid #ef4444;
+  border: 0.5px solid var(--color-danger-border);
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.45);
 }
 
@@ -31,34 +31,37 @@
 
   .reviewer-name {
     font-size: 14px;
-    color: #9ca3af; /* Svetlo sivo ime */
+    color: var(--color-text-muted);
     cursor: pointer;
   }
 
   .date {
     font-size: 13px;
-    color: #9ca3af;
+    color: var(--color-text-muted);
   }
 }
 
 /* Thumbs up i Naslov oglasa */
 .card-title-section {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 16px;
 
   .icon {
     font-size: 20px;
-    &.icon-green { color: #16a34a; }
-    &.icon-red { color: #dc2626; }
+    flex-shrink: 0;
+    &.icon-green { color: var(--color-success-dark); }
+    &.icon-red { color: var(--color-danger-hover); }
   }
 
   .ad-title {
     margin: 0;
     font-size: 15px;
     font-weight: 700;
-    color: #111827; /* Crna boja naslova */
+    color: var(--color-text);
   }
 }
 
@@ -76,12 +79,12 @@
 
     .question {
       font-size: 13px;
-      color: #6b7280; /* Sivkasta slova za pitanje */
+      color: var(--color-text-secondary);
     }
 
     .answer {
       font-size: 14px;
-      color: #111827; /* Crna slova za odgovor */
+      color: var(--color-text);
     }
   }
 }
@@ -92,7 +95,7 @@
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
-  color: #374151;
+  color: var(--color-text-body);
   display: inline-block; /* Da kutija bude velika samo koliko i tekst */
   width: fit-content;
   max-width: 100%;
@@ -100,7 +103,7 @@
 
   &.empty {
     background-color: transparent;
-    color: #9ca3af;
+    color: var(--color-text-muted);
     font-style: italic;
     padding: 0;
   }

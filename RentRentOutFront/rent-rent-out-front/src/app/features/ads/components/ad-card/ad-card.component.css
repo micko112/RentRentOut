@@ -1,13 +1,13 @@
 .listing-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   width: 100%;
 
   cursor: pointer;
   overflow: hidden;
-  background-color: white;
+  background-color: var(--color-white);
   transition: transform 0.2s, box-shadow 0.2s;
 
   &:hover {
@@ -28,7 +28,7 @@
   .image-wrapper {
     width: 100%;
     height: 182px;
-    background-color: #f5f5f5;
+    background-color: var(--color-surface-alt);
     position: relative;
   }
 }
@@ -80,27 +80,27 @@
   }
 
   .listing-price {
-    color: #813181;
+    color: var(--color-primary);
     font-weight: 700;
     margin: 0;
     font-size: 16px;
   }
 
   .listing-price-range {
-    color: #813181;
+    color: var(--color-primary);
     font-weight: 700;
     font-size: 15px;
     white-space: nowrap;
   }
 
   .currency {
-    color: #813181;
+    color: var(--color-primary);
     font-size: 15px;
     font-weight: 700;
   }
 
   .interval {
-    color: #813181;
+    color: var(--color-primary);
     font-weight: 700;
     font-size: 15px;
     white-space: nowrap;
@@ -117,7 +117,7 @@
   height: 32px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--overlay-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,25 +129,25 @@
 
   .material-icons {
     font-size: 18px;
-    color: #888;
+    color: var(--color-text-light);
     transition: color 0.15s ease;
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 1);
+    background: var(--color-white);
     transform: scale(1.1);
 
     .material-icons {
-      color: #813181;
+      color: var(--color-primary);
     }
   }
 
   &.saved .material-icons {
-    color: #813181;
+    color: var(--color-primary);
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: var(--disabled-opacity);
     cursor: default;
     transform: none;
   }
@@ -158,12 +158,12 @@
   align-items: center;
   gap: 3px;
   margin-left: auto;
-  color: #888;
+  color: var(--color-text-light);
   font-size: 16px;
   margin-right: 8px;
   .view-icon {
     font-size: 20px;
-    color: #aaa;
+    color: var(--color-text-xlight);
   }
 }
 
@@ -171,12 +171,12 @@
   display: flex;
   align-items: center;
   gap: 3px;
-  color: #888;
+  color: var(--color-text-light);
   font-size: 16px;
   margin-right: 8px;
   .save-icon {
     font-size: 20px;
-    color: #aaa;
+    color: var(--color-text-xlight);
   }
 }
 
@@ -261,7 +261,7 @@
     align-items: flex-start;
     padding: 12px 20px 12px 12px;
     gap: 10px;
-    border-left: 1px solid #f0f0f0;
+    border-left: 1px solid var(--color-border-light);
   }
 }
 
@@ -271,7 +271,7 @@
   align-items: center;
   gap: 5px;
   font-size: 16px;
-  color: #888;
+  color: var(--color-text-light);
 
   .stat-icon {
     font-size: 20px;

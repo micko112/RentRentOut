@@ -6,8 +6,8 @@
 .admin-sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: #283859;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-white);
   padding: 20px 0;
 }
 
@@ -36,21 +36,21 @@
 
     &:hover {
       background: rgba(255,255,255,0.1);
-      color: white;
+      color: var(--color-white);
     }
 
     &.active {
-      background: rgba(110, 207, 126, 0.25);
-      color: #6ecf7e;
+      background: var(--color-secondary-calendar);
+      color: var(--color-secondary);
       font-weight: 600;
-      border-left: 3px solid #6ecf7e;
+      border-left: 3px solid var(--color-secondary);
     }
   }
 }
 
 .admin-content {
   flex-grow: 1;
-  background: #f5f5f5;
+  background: var(--color-surface-alt);
   padding: 30px;
   min-width: 0;
 }

@@ -11,6 +11,7 @@ import {PublicProfile} from '../../../../shared/models/public-profile';
 import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
 import {ReviewFormComponent} from '../../../review/components/review-form/review-form.component';
 import {Review} from '../../../../shared/models/review';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -31,9 +32,11 @@ import {Review} from '../../../../shared/models/review';
 export class UserProfileComponent implements OnInit {
 
   constructor(private userService: UserService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private authService: AuthService) {
   }
   userId!: number;
+  isOwnProfile = false;
 
   profile$!: Observable<PublicProfile>;
 
@@ -61,6 +64,7 @@ export class UserProfileComponent implements OnInit {
   }
   ngOnInit() {
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
+    this.isOwnProfile = this.authService.currentUserValue?.id === this.userId;
     this.profile$ = this.userService.getPublicProfile(this.userId).pipe(
       tap(data => {
         this.reviews = data.reviews.content;

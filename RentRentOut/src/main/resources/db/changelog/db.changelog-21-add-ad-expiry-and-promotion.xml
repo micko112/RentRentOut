@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
+
+    <!-- Istek oglasa: svaki oglas traje 30 dana, besplatno obnavljanje -->
+    <changeSet id="21-1" author="landm">
+        <addColumn tableName="ad">
+            <column name="expires_at" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Promocija na oglasu (denormalizovano za brzo sortiranje) -->
+    <changeSet id="21-2" author="landm">
+        <addColumn tableName="ad">
+            <column name="promotion_type" type="VARCHAR(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="promotion_expires_at" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+            <!-- 0=standard, 2=PRIORITY, 3=FEATURED (HIGHLIGHTED=0, samo vizuelno) -->
+            <column name="promotion_rank" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Index za sortiranje po promociji -->
+    <changeSet id="21-3" author="landm">
+        <createIndex tableName="ad" indexName="idx_ad_promotion_rank">
+            <column name="promotion_rank" descending="true"/>
+        </createIndex>
+        <createIndex tableName="ad" indexName="idx_ad_expires_at">
+            <column name="expires_at"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Postavi expires_at za sve postojeće aktivne oglase (30 dana od createdAt) -->
+    <changeSet id="21-4" author="landm">
+        <sql>
+            UPDATE ad SET expires_at = DATE_ADD(COALESCE(created_at, NOW()), INTERVAL 30 DAY)
+            WHERE expires_at IS NULL;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

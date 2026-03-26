@@ -1,6 +1,6 @@
 .footer {
-  background: #813181;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-white);
   margin-top: 60px;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .brand-accent {
-  color: #6ecf7e;
+  color: var(--color-secondary);
 }
 
 .brand-tagline {
@@ -46,7 +46,7 @@
   font-size: 15px;
   font-weight: 700;
   margin-bottom: 4px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .footer-col a {
@@ -57,7 +57,7 @@
 }
 
 .footer-col a:hover {
-  color: #6ecf7e;
+  color: var(--color-secondary);
 }
 
 /* Company / right side */
@@ -81,7 +81,7 @@
   padding: 7px 14px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 6px;
-  color: #fff;
+  color: var(--color-white);
   text-decoration: none;
   font-size: 12px;
   font-weight: 500;
@@ -113,12 +113,12 @@
   height: 36px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  color: var(--color-white);
   transition: background 0.15s ease;
 }
 
 .social-link:hover {
-  background: #6ecf7e;
+  background: var(--color-secondary);
 }
 
 .social-link svg {
@@ -135,11 +135,11 @@
 
 .company-name {
   font-weight: 600;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .footer-email {
-  color: #6ecf7e;
+  color: var(--color-secondary);
   text-decoration: none;
 }
 

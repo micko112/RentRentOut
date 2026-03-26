@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
+
+    <!-- Istorija aktiviranih promocija -->
+    <changeSet id="22-1" author="landm">
+        <createTable tableName="ad_promotion">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ad_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_promotion_ad"
+                             references="ad(id)"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_promotion_user"
+                             references="user(id)"/>
+            </column>
+            <!-- FEATURED, PRIORITY, HIGHLIGHTED -->
+            <column name="promotion_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="starts_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expires_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_paid" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Istorija transakcija kredita korisnika -->
+    <changeSet id="22-2" author="landm">
+        <createTable tableName="credit_transaction">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_credit_tx_user"
+                             references="user(id)"/>
+            </column>
+            <!-- Pozitivan = uplata, negativan = trošenje -->
+            <column name="amount" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- TOPUP_ADMIN, PROMOTION_PURCHASE, ADMIN_ADJUSTMENT -->
+            <column name="transaction_type" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <!-- Referenca na oglas ili promociju (opcionalno) -->
+            <column name="reference_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="22-3" author="landm">
+        <createIndex tableName="ad_promotion" indexName="idx_ad_promotion_ad_id">
+            <column name="ad_id"/>
+        </createIndex>
+        <createIndex tableName="credit_transaction" indexName="idx_credit_tx_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -67,7 +67,7 @@
   }
 
   &:hover:not(.past):not(.blocked):not(.start-date):not(.end-date):not(.in-range) {
-    background-color: rgba(110, 207, 126, 0.21);
+    background-color: var(--color-secondary-calendar);
     border: 1px solid rgba(239, 239, 239, 0.84);
     border-radius: 36px;
   }
@@ -82,7 +82,7 @@
   &.start-date,
   &.end-date {
     .day-number {
-      color: white;
+      color: var(--color-white);
       font-weight: 600;
     }
   }
@@ -95,7 +95,7 @@
     top: 50%;
     transform: translateY(-50%);
     height: 34px;
-    background-color: #6ecf7e;
+    background-color: var(--color-secondary);
     z-index: 1;
   }
 
@@ -131,7 +131,7 @@
     font-size: 12px;
     margin: 12px;
     cursor: pointer;
-    color: #813181;
+    color: var(--color-primary);
   }
 }
 
@@ -147,7 +147,7 @@
   justify-content: space-evenly;
   margin: 0 48px 4px 48px;
   height: 70px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border);
   border-radius: 36px;
   align-items: center;
 
@@ -206,22 +206,22 @@
   .request-btn {
     align-self: center;
     padding: 18px 44px;
-    color: white;
+    color: var(--color-white);
     border: none;
     border-radius: 16px;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.2s;
-    background-color: #813181;
+    background-color: var(--color-primary);
 
     &:hover:not(:disabled) {
-      background-color: #602160;
+      background-color: var(--color-primary-hover);
     }
 
     &:disabled {
       cursor: not-allowed;
-      opacity: 0.3;
+      opacity: var(--disabled-opacity);
     }
   }
 }

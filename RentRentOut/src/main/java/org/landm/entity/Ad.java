@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.Currency;
 import org.landm.entity.Enums.PriceInterval;
+import org.landm.entity.Enums.PromotionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -69,6 +70,25 @@ public class Ad {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    /** Oglas ističe 30 dana od kreiranja (besplatno obnavljanje) */
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
+
+    /** Aktivna promocija (denormalizovano za brzo sortiranje) */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "promotion_type")
+    private PromotionType promotionType;
+
+    @Column(name = "promotion_expires_at")
+    private LocalDateTime promotionExpiresAt;
+
+    /**
+     * 0=standard/HIGHLIGHTED, 2=PRIORITY, 3=FEATURED.
+     * Sortira se DESC — viši rank ide prvi u pretrazi.
+     */
+    @Column(name = "promotion_rank", nullable = false)
+    private int promotionRank = 0;
 
     @ElementCollection
     @CollectionTable(name = "ad_image", joinColumns = @JoinColumn(name = "ad_id"))
@@ -213,10 +233,45 @@ public class Ad {
         this.createdAt = createdAt;
     }
 
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(LocalDateTime expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
+    public PromotionType getPromotionType() {
+        return promotionType;
+    }
+
+    public void setPromotionType(PromotionType promotionType) {
+        this.promotionType = promotionType;
+    }
+
+    public LocalDateTime getPromotionExpiresAt() {
+        return promotionExpiresAt;
+    }
+
+    public void setPromotionExpiresAt(LocalDateTime promotionExpiresAt) {
+        this.promotionExpiresAt = promotionExpiresAt;
+    }
+
+    public int getPromotionRank() {
+        return promotionRank;
+    }
+
+    public void setPromotionRank(int promotionRank) {
+        this.promotionRank = promotionRank;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
+        }
+        if (this.expiresAt == null) {
+            this.expiresAt = this.createdAt.plusDays(30);
         }
     }
 

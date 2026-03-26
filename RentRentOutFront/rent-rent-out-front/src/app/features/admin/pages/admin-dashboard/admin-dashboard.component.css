@@ -2,7 +2,7 @@
   margin-top: 0;
   margin-bottom: 24px;
   font-size: 22px;
-  color: #283859;
+  color: var(--color-accent);
 }
 
 .stats-grid {
@@ -12,8 +12,8 @@
 }
 
 .stat-card {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 24px;
   text-align: center;
@@ -21,7 +21,7 @@
   .stat-value {
     font-size: 40px;
     font-weight: 700;
-    color: #283859;
+    color: var(--color-accent);
   }
 
   .stat-label {
@@ -31,7 +31,7 @@
   }
 
   &.highlight {
-    border-color: #6ecf7e;
+    border-color: var(--color-secondary);
 
     .stat-value {
       color: #2e7d32;

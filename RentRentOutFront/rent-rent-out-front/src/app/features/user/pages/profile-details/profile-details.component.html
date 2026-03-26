@@ -3,9 +3,15 @@
   <!-- Banner -->
   <div class="profile-banner">
     <div class="avatar-wrapper">
-      <img class="banner-avatar"
-           [src]="bannerAvatarPreview || user.avatarUrl || 'assets/default-avatar.png'"
+      <img *ngIf="bannerAvatarPreview || user.avatarUrl; else noAvatar"
+           class="banner-avatar"
+           [src]="bannerAvatarPreview || user.avatarUrl"
            alt="Avatar" />
+      <ng-template #noAvatar>
+        <div class="banner-avatar avatar-placeholder">
+          <span class="material-icons">person</span>
+        </div>
+      </ng-template>
       <label class="avatar-cam-overlay" for="bannerAvatarInput" title="Promeni sliku">
         <span class="material-icons">photo_camera</span>
       </label>
@@ -67,7 +73,15 @@
       <!-- Edit mode -->
       <form class="edit-form" *ngIf="isEditing" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
         <div class="avatar-upload-row">
-          <img class="banner-avatar banner-avatar--sm" [src]="avatarPreview || user.avatarUrl || 'assets/default-avatar.png'" alt="Avatar" />
+          <img *ngIf="avatarPreview || user.avatarUrl; else noAvatarSm"
+               class="banner-avatar banner-avatar--sm"
+               [src]="avatarPreview || user.avatarUrl"
+               alt="Avatar" />
+          <ng-template #noAvatarSm>
+            <div class="banner-avatar banner-avatar--sm avatar-placeholder">
+              <span class="material-icons">person</span>
+            </div>
+          </ng-template>
           <label class="btn-avatar-upload" for="avatarInput">Promeni sliku</label>
           <input id="avatarInput" type="file" accept="image/*" (change)="onAvatarSelected($event)" hidden />
         </div>

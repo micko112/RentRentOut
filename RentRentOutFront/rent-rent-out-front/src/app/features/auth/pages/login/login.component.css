@@ -71,7 +71,7 @@ margin-bottom: 20px;
 }
 
 .forgot-link {
-  color: steelblue;
+  color: var(--color-kp);
   font-size: 14px;
   text-decoration: none;
   cursor: pointer;
@@ -88,10 +88,10 @@ margin-bottom: 20px;
     width: 100%;
     margin-top: 20px;
     padding: 10px 25px;
-    border: 1px solid cornflowerblue;
+    border: 1px solid var(--color-primary-border);
     border-radius: 7px;
-    background-color: steelblue;
-    color: white;
+    background-color: var(--color-primary);
+    color: var(--color-white);
     cursor: pointer;
     font-size: 18px;
     font-weight: 600;
@@ -137,7 +137,7 @@ hr {
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
-  color: white;
+  color: var(--color-white);
   margin-top: 8px;
   &:hover {
     opacity: 0.88;
@@ -146,7 +146,7 @@ hr {
 }
 
 .facebook-btn {
-  background-color: #1877F2;
+  background-color: var(--color-facebook);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,7 +158,3 @@ hr {
   height: 20px;
   flex-shrink: 0;
 }
-
-
-
-

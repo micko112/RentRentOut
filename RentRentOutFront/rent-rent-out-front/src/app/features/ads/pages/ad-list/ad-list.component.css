@@ -33,21 +33,21 @@
 }
 
 .section-icon {
-  color: #813181;
+  color: var(--color-primary);
   font-size: 26px;
 }
 
 .section-title {
   font-size: 20px;
   font-weight: 700;
-  color: #283859;
+  color: var(--color-accent);
   margin: 0;
 }
 
 .section-count {
   font-size: 12px;
-  color: #813181;
-  background: #f5ecff;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
   padding: 2px 10px;
   border-radius: 20px;
   font-weight: 600;
@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #813181;
+  color: var(--color-primary);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
@@ -80,7 +80,7 @@
 
 .section-empty {
   font-size: 14px;
-  color: #aaa;
+  color: var(--color-text-xlight);
   padding: 12px 0;
 }
 
@@ -94,8 +94,8 @@
    BREADCRUMBS & INFO (Search Mode)
    ========================================= */
 .search-info {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 16px 24px;
   margin-bottom: 20px;
@@ -106,17 +106,17 @@
 
   .breadcrumb-nav {
     font-size: 14px;
-    color: #888;
+    color: var(--color-text-light);
 
     a {
       text-decoration: none;
-      color: #283859;
+      color: var(--color-accent);
       font-weight: 500;
       transition: color 0.2s;
 
       &:hover {
         text-decoration: underline;
-        color: #1a253d;
+        color: var(--color-accent-hover);
       }
     }
 
@@ -129,7 +129,7 @@
     color: #333;
 
     .search-term {
-      color: #283859;
+      color: var(--color-accent);
       font-weight: 700;
     }
   }
@@ -159,7 +159,7 @@
   .page-title {
     font-size: 26px;
     font-weight: 700;
-    color: #283859;
+    color: var(--color-accent);
     margin-top: 0;
     margin-bottom: 24px;
     letter-spacing: -0.5px; /* Moderan izgled naslova */
@@ -183,7 +183,7 @@
   display: flex;
   justify-content: center;
   padding: 60px 0;
-  color: #813181;
+  color: var(--color-primary);
 
   .spin { font-size: 40px; animation: spin 0.8s linear infinite; }
 }
@@ -219,13 +219,13 @@
     display: flex;
     align-items: center;
     background-color: #f8f9fa;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     padding: 8px 16px;
     transition: all 0.2s ease;
 
     &:hover {
-      background-color: #ffffff;
+      background-color: var(--color-white);
       border-color: #ccc;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
@@ -240,7 +240,7 @@
     select {
       font-size: 14px;
       font-weight: 700;
-      color: #283859;
+      color: var(--color-accent);
       background: transparent;
       border: none;
       cursor: pointer;
@@ -281,8 +281,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
   color: #555;
@@ -291,9 +291,9 @@
   .material-icons { font-size: 20px; }
 
   &:hover:not(:disabled) {
-    background: #f5ecff;
-    border-color: #813181;
-    color: #813181;
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
 
   &:disabled {
@@ -310,8 +310,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
@@ -320,15 +320,15 @@
   transition: all 0.15s ease;
 
   &:hover:not(.active) {
-    background: #f5ecff;
-    border-color: #813181;
-    color: #813181;
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
 
   &.active {
-    background: #813181;
-    border-color: #813181;
-    color: white;
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-white);
     font-weight: 700;
     cursor: default;
   }
@@ -337,7 +337,7 @@
 .page-ellipsis {
   width: 32px;
   text-align: center;
-  color: #aaa;
+  color: var(--color-text-xlight);
   font-size: 16px;
   user-select: none;
 }
