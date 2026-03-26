@@ -7,14 +7,18 @@ import org.landm.entity.Enums.PromotionType;
 import org.landm.entity.Enums.TransactionType;
 import org.landm.repository.*;
 import org.landm.service.PromotionService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -24,15 +28,21 @@ public class PromotionServiceImpl implements PromotionService {
     private final UserRepository userRepository;
     private final AdPromotionRepository adPromotionRepository;
     private final CreditTransactionRepository creditTransactionRepository;
+    private final JavaMailSender mailSender;
+
+    @Value("${app.frontend.base-url:https://izdajemiznajmljujem.com}")
+    private String frontendBaseUrl;
 
     public PromotionServiceImpl(AdRepository adRepository,
                                 UserRepository userRepository,
                                 AdPromotionRepository adPromotionRepository,
-                                CreditTransactionRepository creditTransactionRepository) {
+                                CreditTransactionRepository creditTransactionRepository,
+                                JavaMailSender mailSender) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adPromotionRepository = adPromotionRepository;
         this.creditTransactionRepository = creditTransactionRepository;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -212,6 +222,44 @@ public class PromotionServiceImpl implements PromotionService {
         for (Ad ad : expiredAds) {
             ad.setAdStatus(AdStatus.ARCHIVED);
             adRepository.save(ad);
+        }
+    }
+
+    /**
+     * Svako jutro u 10:00 šalje email vlasnicima čiji aktivni oglasi ističu za tačno 3 dana.
+     * Prozor [now+2d, now+3d] — pokriva jedan dan, pa se svaki oglas uhvati tačno jednom.
+     */
+    @Override
+    @Scheduled(cron = "0 0 10 * * *")
+    public void sendExpiryReminders() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime from = now.plusDays(2);
+        LocalDateTime to   = now.plusDays(3);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
+
+        List<Ad> ads = adRepository.findAdsExpiringBetween(from, to);
+        for (Ad ad : ads) {
+            try {
+                String email = ad.getOwner().getEmail();
+                String expiryDate = ad.getExpiresAt().format(fmt);
+                String adUrl = frontendBaseUrl + "/ads/" + ad.getId();
+                String myAdsUrl = frontendBaseUrl + "/user/me/ads";
+
+                SimpleMailMessage msg = new SimpleMailMessage();
+                msg.setTo(email);
+                msg.setSubject("Vaš oglas ističe za 3 dana — " + ad.getTitle());
+                msg.setText(
+                    "Poštovani/a " + ad.getOwner().getFirstname() + ",\n\n" +
+                    "Vaš oglas \"" + ad.getTitle() + "\" ističe " + expiryDate + ".\n\n" +
+                    "Oglas možete besplatno obnoviti na stranici Moji oglasi:\n" +
+                    myAdsUrl + "\n\n" +
+                    "Oglas: " + adUrl + "\n\n" +
+                    "Srdačno,\nIzdajem Iznajmljujem tim"
+                );
+                mailSender.send(msg);
+            } catch (Exception e) {
+                // Nastavi sa ostalim oglasima čak i ako jedan email ne uspe
+            }
         }
     }
 }

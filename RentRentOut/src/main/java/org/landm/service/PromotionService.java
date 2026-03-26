@@ -36,4 +36,7 @@ public interface PromotionService {
 
     /** Scheduled: deaktivira oglase kojima je istekao rok (poziva se svako jutro) */
     void expireAds();
+
+    /** Scheduled: šalje email podsetnik vlasnicima čiji oglasi ističu za 3 dana */
+    void sendExpiryReminders();
 }

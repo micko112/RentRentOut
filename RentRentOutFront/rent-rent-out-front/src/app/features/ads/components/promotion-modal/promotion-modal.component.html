@@ -1,0 +1,55 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <span class="material-icons modal-icon">campaign</span>
+      <div>
+        <h3>Promoviši oglas</h3>
+        <p class="modal-subtitle">{{ adTitle }}</p>
+      </div>
+      <button class="btn-close" (click)="close()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="balance-row">
+      <span class="material-icons balance-icon">account_balance_wallet</span>
+      <span>Stanje kredita: <strong>{{ balance | number:'1.0-0' }} RSD</strong></span>
+      <a routerLink="/credit" class="top-up-link" (click)="close()">Dopuni</a>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+      <span class="material-icons spin">refresh</span> Učitavanje...
+    </div>
+
+    <div class="packages" *ngIf="!loading">
+      <div
+        *ngFor="let pkg of packages"
+        class="package-card"
+        [class.selected]="selectedType === pkg.type"
+        [class.insufficient]="balance < pkg.priceRsd"
+        (click)="select(pkg.type)">
+
+        <div class="pkg-header">
+          <span class="pkg-badge" [ngClass]="'badge-' + pkg.type.toLowerCase()">{{ pkg.displayName }}</span>
+          <span class="pkg-price">{{ pkg.priceRsd | number:'1.0-0' }} RSD</span>
+        </div>
+        <p class="pkg-desc">{{ pkg.description }}</p>
+        <p class="pkg-duration">Trajanje: {{ pkg.durationDays }} {{ pkg.durationDays === 1 ? 'dan' : pkg.durationDays <= 4 ? 'dana' : 'dana' }}</p>
+        <p class="pkg-insufficient" *ngIf="balance < pkg.priceRsd">Nedovoljno kredita</p>
+      </div>
+    </div>
+
+    <div class="modal-actions" *ngIf="!loading">
+      <button class="btn-cancel" (click)="close()">Odustani</button>
+      <button
+        class="btn-activate"
+        [disabled]="!canActivate || activating"
+        (click)="activate()">
+        <span *ngIf="!activating">Aktiviraj promociju</span>
+        <span *ngIf="activating">Aktivacija...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

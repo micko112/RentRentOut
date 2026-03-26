@@ -12,6 +12,7 @@ import {ReviewService} from '../../../review/services/review.service';
 import {UserService} from '../../../user/services/user.service';
 import {AuthService} from '../../../auth/services/auth.service';
 import {RentalCalendarComponent} from '../../components/rental-calendar/rental-calendar.component';
+import {Title, Meta} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-ad-details',
@@ -42,6 +43,9 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
 
   @ViewChild('thumbnailScroll') thumbnailScrollContainer!: ElementRef;
 
+  private readonly BASE_URL = 'https://izdajemiznajmljujem.com';
+  private readonly DEFAULT_TITLE = 'Izdajem Iznajmljujem';
+
   constructor(
     private adService: AdService,
     private route: ActivatedRoute,
@@ -50,6 +54,8 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     private reviewService: ReviewService,
     private userService: UserService,
     private authService: AuthService,
+    private titleService: Title,
+    private metaService: Meta,
   ) {}
 
   ngOnInit() {
@@ -78,6 +84,8 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
         } else {
           this.selectedImageUrl = 'assets/images/placeholder.png';
         }
+
+        this.updateMetaTags(ad);
         if (ad.owner && ad.owner.id) {
           this.latestReviews$ = this.reviewService.getLatestReviewsForUser(ad.owner.id).pipe(
             map(page => page.content)
@@ -137,6 +145,40 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     if (this.isOverlayOpen) {
       document.body.style.overflow = '';
     }
+    this.resetMetaTags();
+  }
+
+  private updateMetaTags(ad: Ad): void {
+    const title = `${ad.title} — Izdajem Iznajmljujem`;
+    const desc = ad.description
+      ? ad.description.substring(0, 155).replace(/\s+/g, ' ').trim() + '...'
+      : `Iznajmi ${ad.title} u ${ad.city}. Pogledaj oglas na Izdajem Iznajmljujem.`;
+    const image = (ad.images && ad.images.length > 0)
+      ? ad.images[0]
+      : `${this.BASE_URL}/assets/images/placeholder.png`;
+    const url = `${this.BASE_URL}/ads/${ad.id}`;
+
+    this.titleService.setTitle(title);
+    this.metaService.updateTag({ name: 'description', content: desc });
+    this.metaService.updateTag({ property: 'og:title', content: title });
+    this.metaService.updateTag({ property: 'og:description', content: desc });
+    this.metaService.updateTag({ property: 'og:image', content: image });
+    this.metaService.updateTag({ property: 'og:url', content: url });
+    this.metaService.updateTag({ property: 'og:type', content: 'product' });
+    this.metaService.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.metaService.updateTag({ name: 'twitter:title', content: title });
+    this.metaService.updateTag({ name: 'twitter:description', content: desc });
+    this.metaService.updateTag({ name: 'twitter:image', content: image });
+  }
+
+  private resetMetaTags(): void {
+    this.titleService.setTitle(this.DEFAULT_TITLE);
+    this.metaService.updateTag({ name: 'description', content: 'Iznajmi sve što ti treba — alati, tehnika, oprema. Besplatno objavi oglas.' });
+    this.metaService.updateTag({ property: 'og:title', content: this.DEFAULT_TITLE });
+    this.metaService.updateTag({ property: 'og:description', content: 'Iznajmi sve što ti treba — alati, tehnika, oprema. Besplatno objavi oglas.' });
+    this.metaService.updateTag({ property: 'og:image', content: `${this.BASE_URL}/assets/images/placeholder.png` });
+    this.metaService.updateTag({ property: 'og:url', content: this.BASE_URL });
+    this.metaService.updateTag({ property: 'og:type', content: 'website' });
   }
 
   scrollThumbnails(amount: number) {

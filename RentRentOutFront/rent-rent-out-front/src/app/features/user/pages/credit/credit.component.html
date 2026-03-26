@@ -1,0 +1,95 @@
+<div class="credit-page">
+
+  <!-- Balance card -->
+  <div class="balance-card">
+    <div class="balance-icon-wrap">
+      <span class="material-icons">account_balance_wallet</span>
+    </div>
+    <div class="balance-info">
+      <p class="balance-label">Vaš kredit</p>
+      <div class="balance-amount" *ngIf="!loading">{{ balance | number:'1.0-0' }} RSD</div>
+      <div class="balance-skeleton" *ngIf="loading"></div>
+    </div>
+  </div>
+
+  <!-- How to top up -->
+  <div class="topup-card">
+    <h3><span class="material-icons">add_circle_outline</span> Kako dopuniti kredit?</h3>
+    <p>
+      Kredit se dopunjuje ručno — pošaljite nam poruku na
+      <a href="mailto:izdajemiznajmljujem.rs@gmail.com">izdajemiznajmljujem.rs&#64;gmail.com</a>
+      sa naslovom <strong>"Dopuna kredita"</strong> i navedite iznos koji želite da dopunite.
+      Nakon potvrde uplate, kredit će biti dodat na vaš nalog.
+    </p>
+    <p class="topup-note">
+      <span class="material-icons">info_outline</span>
+      Minimalna dopuna je <strong>100 RSD</strong>. Kredit nema rok trajanja i ne može biti refundiran.
+    </p>
+  </div>
+
+  <!-- Promotion packages -->
+  <div class="packages-section">
+    <h3>Dostupni paketi promocija</h3>
+    <div class="packages-grid">
+      <div class="pkg-card featured">
+        <div class="pkg-header">
+          <span class="pkg-badge badge-featured">Na vrhu</span>
+          <span class="pkg-price">500 RSD</span>
+        </div>
+        <p>Oglas se prikazuje <strong>na prvom mestu</strong> u pretrazi, iznad svih ostalih.</p>
+        <p class="pkg-duration">Trajanje: 7 dana</p>
+      </div>
+      <div class="pkg-card priority">
+        <div class="pkg-header">
+          <span class="pkg-badge badge-priority">Prioritetni</span>
+          <span class="pkg-price">250 RSD</span>
+        </div>
+        <p>Oglas se prikazuje <strong>ispred standardnih</strong> oglasa u pretrazi.</p>
+        <p class="pkg-duration">Trajanje: 3 dana</p>
+      </div>
+      <div class="pkg-card highlighted">
+        <div class="pkg-header">
+          <span class="pkg-badge badge-highlighted">Istaknut</span>
+          <span class="pkg-price">100 RSD</span>
+        </div>
+        <p>Oglas je <strong>vizuelno istaknut</strong> u listingu sa posebnom oznakom.</p>
+        <p class="pkg-duration">Trajanje: 30 dana</p>
+      </div>
+    </div>
+    <p class="promote-cta">
+      Promocije se aktiviraju direktno sa stranice <a routerLink="/user/me/my-ads">Moji oglasi</a>
+      klikom na dugme "Promoviši" pored svakog oglasa.
+    </p>
+  </div>
+
+  <!-- Transaction history -->
+  <div class="history-section">
+    <h3>Istorija transakcija</h3>
+
+    <div class="loading-state" *ngIf="loadingHistory">
+      <span class="material-icons spin">refresh</span> Učitavanje...
+    </div>
+
+    <div class="empty-history" *ngIf="!loadingHistory && transactions.length === 0">
+      <span class="material-icons">receipt_long</span>
+      <p>Još nema transakcija na vašem nalogu.</p>
+    </div>
+
+    <div class="transactions-list" *ngIf="!loadingHistory && transactions.length > 0">
+      <div class="tx-item" *ngFor="let tx of transactions">
+        <div class="tx-icon" [class.positive]="isPositive(tx.transactionType)" [class.negative]="!isPositive(tx.transactionType)">
+          <span class="material-icons">{{ isPositive(tx.transactionType) ? 'add' : 'remove' }}</span>
+        </div>
+        <div class="tx-info">
+          <p class="tx-label">{{ transactionLabel(tx.transactionType) }}</p>
+          <p class="tx-desc" *ngIf="tx.description">{{ tx.description }}</p>
+          <p class="tx-date">{{ tx.createdAt | date:'dd.MM.yyyy. HH:mm' }}</p>
+        </div>
+        <div class="tx-amount" [class.positive]="isPositive(tx.transactionType)" [class.negative]="!isPositive(tx.transactionType)">
+          {{ isPositive(tx.transactionType) ? '+' : '' }}{{ tx.amount | number:'1.0-0' }} RSD
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

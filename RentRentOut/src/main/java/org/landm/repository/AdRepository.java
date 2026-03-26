@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.LockModeType;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,4 +31,11 @@ public interface AdRepository extends JpaRepository<Ad, Long> , JpaSpecification
     Page<Ad> findAllByOwnerId(Long userId, Pageable pageable);
 
     Page<Ad> findAllByOwnerIdAndAdStatus(Long userId, AdStatus adStatus, Pageable pageable);
+
+    @Query("""
+            SELECT a FROM Ad a
+            WHERE a.adStatus = org.landm.entity.Enums.AdStatus.ACTIVE
+              AND a.expiresAt BETWEEN :from AND :to
+            """)
+    List<Ad> findAdsExpiringBetween(LocalDateTime from, LocalDateTime to);
 }

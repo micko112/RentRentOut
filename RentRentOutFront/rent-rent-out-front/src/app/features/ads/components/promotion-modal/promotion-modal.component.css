@@ -1,0 +1,238 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+}
+
+.modal-card {
+  background: var(--color-white);
+  border-radius: 16px;
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  .modal-icon {
+    font-size: 28px;
+    color: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  h3 {
+    margin: 0 0 2px;
+    font-size: 18px;
+  }
+
+  .modal-subtitle {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 260px;
+  }
+
+  .btn-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-light);
+    padding: 2px;
+    flex-shrink: 0;
+
+    .material-icons { font-size: 20px; }
+    &:hover { color: var(--color-text); }
+  }
+}
+
+.balance-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+
+  .balance-icon {
+    font-size: 18px;
+    color: var(--color-primary);
+  }
+
+  .top-up-link {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-light);
+  font-size: 14px;
+  justify-content: center;
+  padding: 20px 0;
+
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.packages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.package-card {
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover:not(.insufficient) {
+    border-color: var(--color-primary-border);
+    background: var(--color-primary-light);
+  }
+
+  &.selected {
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
+  }
+
+  &.insufficient {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.pkg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.pkg-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.badge-featured {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+}
+
+.badge-priority {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.badge-highlighted {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary-border);
+}
+
+.pkg-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.pkg-desc {
+  font-size: 13px;
+  color: var(--color-text-body);
+  margin: 0 0 4px;
+}
+
+.pkg-duration {
+  font-size: 12px;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+.pkg-insufficient {
+  font-size: 12px;
+  color: var(--color-danger);
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 4px;
+  border-top: 1px solid var(--color-border);
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover { background: var(--color-surface-alt); }
+}
+
+.btn-activate {
+  padding: 10px 22px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+
+  &:hover:not(:disabled) { background: var(--color-primary-hover); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+@media (max-width: 520px) {
+  .modal-card {
+    padding: 20px 16px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions button {
+    width: 100%;
+    text-align: center;
+  }
+}

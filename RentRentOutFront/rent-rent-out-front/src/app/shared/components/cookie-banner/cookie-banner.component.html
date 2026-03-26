@@ -1,0 +1,14 @@
+<div class="cookie-banner" *ngIf="(status$ | async) === null">
+  <div class="cookie-content">
+    <span class="material-icons cookie-icon">cookie</span>
+    <p class="cookie-text">
+      Koristimo analitičke kolačiće (Google Analytics) da bismo razumeli kako koristite naš sajt i poboljšali korisničko iskustvo.
+      Pročitajte našu <a routerLink="/privacy-policy" class="cookie-link">Politiku privatnosti</a>
+      i <a routerLink="/terms-of-service" class="cookie-link">Uslove korišćenja</a>.
+    </p>
+  </div>
+  <div class="cookie-actions">
+    <button class="btn-decline" (click)="decline()">Odbijam</button>
+    <button class="btn-accept" (click)="accept()">Prihvatam</button>
+  </div>
+</div>
