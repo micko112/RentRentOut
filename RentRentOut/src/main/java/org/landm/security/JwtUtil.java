@@ -86,7 +86,7 @@ public class JwtUtil {
     	List<String> roles = (List<String>) claims.get("roles");
     	if (roles == null) return List.of();
         return roles.stream()
-                .map(SimpleGrantedAuthority::new)
+                .<GrantedAuthority>map(SimpleGrantedAuthority::new)
                 .toList();
     }
     

@@ -1,6 +1,7 @@
 package org.landm.security;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.config.Customizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,7 +34,7 @@ public class SecurityConfig {
 	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	            .headers(headers -> headers
 	                .frameOptions(frame -> frame.deny())
-	                .contentTypeOptions(cto -> cto.noSniff())
+	                .contentTypeOptions(Customizer.withDefaults())
 	                .httpStrictTransportSecurity(hsts -> hsts
 	                    .includeSubDomains(true)
 	                    .maxAgeInSeconds(31536000))
