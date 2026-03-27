@@ -1,0 +1,108 @@
+.reports-page h2 { margin-top: 0; font-size: 22px; color: var(--color-accent); }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.btn-filter {
+  padding: 7px 16px;
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  &:hover { border-color: var(--color-accent); color: var(--color-accent); }
+}
+
+.loading, .empty { color: #777; font-size: 15px; }
+
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    background: #f8f8f8;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 2px solid #eee;
+  }
+
+  td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: top;
+  }
+
+  tr.reviewed td { opacity: .55; }
+  tr:hover td { background: #fafafa; }
+}
+
+.ad-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+  &:hover { text-decoration: underline; }
+}
+
+.reporter { color: #555; }
+
+.note-cell { max-width: 200px; color: #777; font-size: 13px; }
+
+.date-cell { white-space: nowrap; color: #888; font-size: 13px; }
+
+.reason-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  background: #f0ecff;
+  color: var(--color-accent);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fff3cd;
+  color: #856404;
+
+  &.reviewed { background: #d4edda; color: #155724; }
+}
+
+.btn-review {
+  padding: 5px 12px;
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  &:hover { border-color: var(--color-accent); color: var(--color-accent); }
+}
+
+.pagination {
+  display: flex;
+  gap: 6px;
+  margin-top: 20px;
+
+  button {
+    width: 32px; height: 32px;
+    border: 1.5px solid #ddd;
+    background: #fff;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    &.active { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+    &:hover:not(.active) { border-color: #aaa; }
+  }
+}

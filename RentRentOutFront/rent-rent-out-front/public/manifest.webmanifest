@@ -1,0 +1,17 @@
+{
+  "name": "Izdajem Iznajmljujem",
+  "short_name": "Izdajem",
+  "description": "Iznajmi sve što ti treba — alati, tehnika, oprema.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#813181",
+  "lang": "sr",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

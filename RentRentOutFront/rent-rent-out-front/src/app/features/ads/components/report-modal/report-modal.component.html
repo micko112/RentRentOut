@@ -1,0 +1,31 @@
+<div class="modal-backdrop" (click)="close()"></div>
+
+<div class="modal">
+  <button class="close-btn" (click)="close()">&times;</button>
+  <h3 class="modal-title">Prijavi oglas</h3>
+  <p class="modal-sub">Izaberite razlog prijave:</p>
+
+  <div class="reason-list">
+    <label *ngFor="let r of reasons" class="reason-item" [class.selected]="selectedReason === r">
+      <input type="radio" name="reason" [value]="r" [(ngModel)]="selectedReason">
+      {{ r }}
+    </label>
+  </div>
+
+  <textarea
+    class="note-input"
+    rows="3"
+    maxlength="500"
+    placeholder="Dodatne napomene (opciono)..."
+    [(ngModel)]="note">
+  </textarea>
+
+  <div class="modal-actions">
+    <button class="btn-cancel" (click)="close()">Odustani</button>
+    <button class="btn-submit"
+            [disabled]="!selectedReason || submitting"
+            (click)="submit()">
+      {{ submitting ? 'Slanje...' : 'Pošalji prijavu' }}
+    </button>
+  </div>
+</div>
