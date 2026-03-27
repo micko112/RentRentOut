@@ -1,6 +1,7 @@
 package org.landm.service.impl;
 
 import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.admin.UserCreditSummaryDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.user.UserDto;
 import org.landm.entity.Ad;
@@ -13,6 +14,7 @@ import org.landm.mapper.RentalContractMapper;
 import org.landm.exception.UserNotFoundException;
 import org.landm.mapper.UserMapper;
 import org.landm.repository.AdRepository;
+import org.landm.repository.CreditTransactionRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.AdminService;
@@ -31,6 +33,7 @@ public class AdminServiceImpl implements AdminService {
     private final AdRepository adRepository;
     private final RentalContractRepository rentalContractRepository;
     private final UserRepository userRepository;
+    private final CreditTransactionRepository creditTransactionRepository;
     private final UserMapper userMapper;
     private final AdMapper adMapper;
     private final RentalContractMapper rentalContractMapper;
@@ -39,12 +42,14 @@ public class AdminServiceImpl implements AdminService {
             AdRepository adRepository,
             RentalContractRepository rentalContractRepository,
             UserRepository userRepository,
+            CreditTransactionRepository creditTransactionRepository,
             UserMapper userMapper,
             AdMapper adMapper,
             RentalContractMapper rentalContractMapper) {
         this.adRepository = adRepository;
         this.rentalContractRepository = rentalContractRepository;
         this.userRepository = userRepository;
+        this.creditTransactionRepository = creditTransactionRepository;
         this.userMapper = userMapper;
         this.adMapper = adMapper;
         this.rentalContractMapper = rentalContractMapper;
@@ -133,5 +138,11 @@ public class AdminServiceImpl implements AdminService {
         stats.put("totalContracts", totalContracts);
         stats.put("activeContracts", activeContracts);
         return stats;
+    }
+
+    @Override
+    public Page<UserCreditSummaryDto> getUserCreditSummaries(String search, Pageable pageable) {
+        String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
+        return creditTransactionRepository.findUserCreditSummaries(searchParam, pageable);
     }
 }

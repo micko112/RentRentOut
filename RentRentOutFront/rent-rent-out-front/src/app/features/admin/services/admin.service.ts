@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../core/config/api.config';
 import { User } from '../../../shared/models/user.model';
@@ -11,6 +11,16 @@ export interface AdminStats {
   totalAds: number;
   totalContracts: number;
   activeContracts: number;
+}
+
+export interface UserCreditSummary {
+  userId: number;
+  fullName: string;
+  email: string;
+  currentBalance: number;
+  totalSpent: number;
+  totalTopups: number;
+  lastTransactionAt: string | null;
 }
 
 @Injectable({
@@ -53,5 +63,13 @@ export class AdminService {
 
   unsuspendAd(adId: number): Observable<string> {
     return this.http.patch(`${this.url}/ads/${adId}/unsuspend`, {}, { responseType: 'text' });
+  }
+
+  getUserCreditSummaries(page: number = 0, size: number = 20, search: string = ''): Observable<Page<UserCreditSummary>> {
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (search && search.trim()) {
+      params = params.set('search', search.trim());
+    }
+    return this.http.get<Page<UserCreditSummary>>(`${this.url}/credits`, { params });
   }
 }

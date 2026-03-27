@@ -1,0 +1,140 @@
+<div class="admin-credits">
+  <div class="page-header">
+    <h2>Upravljanje kreditima</h2>
+    <div class="search-bar">
+      <span class="material-icons search-icon">search</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Pretraži po imenu ili emailu..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange()"
+      />
+    </div>
+  </div>
+
+  <!-- Skeleton loader -->
+  <div *ngIf="loading" class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Korisnik</th>
+          <th>Trenutni balans</th>
+          <th>Ukupno potrošeno</th>
+          <th>Ukupno dopunjeno</th>
+          <th>Poslednja transakcija</th>
+          <th>Akcija</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let _ of skeletonRows" class="skeleton-row">
+          <td><div class="skeleton skeleton-user"></div></td>
+          <td><div class="skeleton skeleton-balance"></div></td>
+          <td><div class="skeleton skeleton-short"></div></td>
+          <td><div class="skeleton skeleton-short"></div></td>
+          <td><div class="skeleton skeleton-short"></div></td>
+          <td><div class="skeleton skeleton-btn"></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Data table -->
+  <ng-container *ngIf="!loading">
+    <div *ngIf="!creditsPage || creditsPage.content.length === 0" class="empty">
+      <span class="material-icons empty-icon">account_balance_wallet</span>
+      <p>Nema korisnika koji odgovaraju pretrazi.</p>
+    </div>
+
+    <div *ngIf="creditsPage && creditsPage.content.length > 0" class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Korisnik</th>
+            <th>Trenutni balans</th>
+            <th>Ukupno potrošeno</th>
+            <th>Ukupno dopunjeno</th>
+            <th>Poslednja transakcija</th>
+            <th>Akcija</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of creditsPage.content">
+            <td class="user-cell">
+              <div class="user-avatar">{{ user.fullName.charAt(0).toUpperCase() }}</div>
+              <div class="user-info">
+                <span class="user-name">{{ user.fullName }}</span>
+                <span class="user-email">{{ user.email }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="balance" [class.positive]="user.currentBalance > 0">
+                {{ user.currentBalance | number:'1.0-0' }} RSD
+              </span>
+            </td>
+            <td class="spent-col">{{ user.totalSpent | number:'1.0-0' }} RSD</td>
+            <td class="topup-col">{{ user.totalTopups | number:'1.0-0' }} RSD</td>
+            <td class="date-col">{{ formatDate(user.lastTransactionAt) }}</td>
+            <td>
+              <button class="btn-credit" (click)="openCreditModal(user)">
+                <span class="material-icons btn-icon">add</span>
+                Kredit
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination" *ngIf="creditsPage.totalPages > 1">
+        <button class="page-btn" (click)="prevPage()" [disabled]="creditsPage.first">Prethodna</button>
+        <span>Strana {{ creditsPage.number + 1 }} od {{ creditsPage.totalPages }}</span>
+        <button class="page-btn" (click)="nextPage()" [disabled]="creditsPage.last">Sledeća</button>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!-- Credit Modal -->
+<div class="modal-overlay" *ngIf="showCreditModal" (click)="closeCreditModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <h3>Dodaj kredit</h3>
+    <p class="modal-user">
+      <strong>{{ creditUser?.fullName }}</strong>
+      <span class="modal-email">{{ creditUser?.email }}</span>
+    </p>
+    <p class="modal-balance">
+      Trenutni balans:
+      <span [class.positive]="(creditUser?.currentBalance ?? 0) > 0">
+        {{ creditUser?.currentBalance | number:'1.0-0' }} RSD
+      </span>
+    </p>
+
+    <label class="field-label">Iznos (RSD)</label>
+    <input
+      type="number"
+      class="field-input"
+      [(ngModel)]="creditAmount"
+      min="1"
+      placeholder="npr. 500"
+    />
+
+    <label class="field-label">Napomena (opciono)</label>
+    <input
+      type="text"
+      class="field-input"
+      [(ngModel)]="creditDescription"
+      placeholder="npr. Uplata bankovnim transferom"
+    />
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeCreditModal()">Odustani</button>
+      <button
+        class="btn-confirm"
+        (click)="confirmAddCredit()"
+        [disabled]="!creditAmount || creditAmount <= 0 || addingCredit"
+      >
+        {{ addingCredit ? 'Dodavanje...' : 'Dodaj kredit' }}
+      </button>
+    </div>
+  </div>
+</div>

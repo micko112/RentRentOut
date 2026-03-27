@@ -1,6 +1,7 @@
 package org.landm.service;
 
 import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.admin.UserCreditSummaryDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.user.UserDto;
 import org.springframework.data.domain.Page;
@@ -16,4 +17,5 @@ public interface AdminService {
     String toggleUserEnabled(Long userId);
     String unsuspendAd(Long adId);
     Map<String, Long> getStats();
+    Page<UserCreditSummaryDto> getUserCreditSummaries(String search, Pageable pageable);
 }

@@ -1,6 +1,7 @@
 package org.landm.controller;
 
 import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.admin.UserCreditSummaryDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.user.UserDto;
 import org.landm.service.AdminService;
@@ -64,5 +65,13 @@ public class AdminController {
     public ResponseEntity<Map<String, Long>> getStats() {
         Map<String, Long> stats = adminService.getStats();
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/credits")
+    public ResponseEntity<Page<UserCreditSummaryDto>> getUserCreditSummaries(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 20) Pageable pageable) {
+        Page<UserCreditSummaryDto> page = adminService.getUserCreditSummaries(search, pageable);
+        return ResponseEntity.ok(page);
     }
 }
