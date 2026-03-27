@@ -97,6 +97,7 @@ export class AdminUsersComponent implements OnInit {
         this.toastService.showSuccess(`Dodato ${this.creditAmount} RSD korisniku ${this.creditUser!.firstname}.`);
         this.addingCredit = false;
         this.closeCreditModal();
+        this.loadUsers();
       },
       error: () => {
         this.toastService.showError('Greška pri dodavanju kredita.');

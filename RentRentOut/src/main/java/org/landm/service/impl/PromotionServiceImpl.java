@@ -155,6 +155,25 @@ public class PromotionServiceImpl implements PromotionService {
         CreditTransaction tx = new CreditTransaction(
                 user, amount, TransactionType.TOPUP_ADMIN, description, null);
         creditTransactionRepository.save(tx);
+
+        try {
+            BigDecimal newBalance = user.getCredit();
+            SimpleMailMessage msg = new SimpleMailMessage();
+            msg.setTo(user.getEmail());
+            msg.setSubject("Kredit je dodat na vaš nalog — Izdajem Iznajmljujem");
+            msg.setText(
+                "Poštovani/a " + user.getFirstname() + ",\n\n" +
+                "Na vaš nalog je dodato " + amount.toPlainString() + " RSD kredita.\n" +
+                (description != null && !description.isBlank() ? "Napomena: " + description + "\n" : "") +
+                "Novo stanje: " + newBalance.toPlainString() + " RSD\n\n" +
+                "Možete iskoristiti kredit za promociju oglasa:\n" +
+                frontendBaseUrl + "/user/me/my-ads\n\n" +
+                "Srdačno,\nIzdajem Iznajmljujem tim"
+            );
+            mailSender.send(msg);
+        } catch (Exception e) {
+            // Email greška ne sprečava dodavanje kredita
+        }
     }
 
     @Override
@@ -169,6 +188,13 @@ public class PromotionServiceImpl implements PromotionService {
         return creditTransactionRepository
                 .findAllByUserIdOrderByCreatedAtDesc(userId, pageable)
                 .map(CreditTransactionDto::from);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AdminCreditTransactionDto> getAllTransactions(Pageable pageable) {
+        return creditTransactionRepository.findAllByOrderByCreatedAtDesc(pageable)
+                .map(AdminCreditTransactionDto::from);
     }
 
     /**

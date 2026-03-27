@@ -357,13 +357,15 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable) {
-        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), withPromotionSort(pageable));
+        Pageable effectivePageable = criteria.isPromoSort() ? withPromotionSort(pageable) : pageable;
+        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), effectivePageable);
         return adPage.map(adMapper::toPreviewDto);
     }
 
     @Override
     public Page<AdPreviewDto> search(AdSearchCriteriaDto criteria, Pageable pageable, Long userId) {
-        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), withPromotionSort(pageable));
+        Pageable effectivePageable = criteria.isPromoSort() ? withPromotionSort(pageable) : pageable;
+        Page<Ad> adPage = adRepository.findAll(buildSearchSpec(criteria), effectivePageable);
         Set<Long> savedAdIds = getSavedAdIds(userId, adPage);
         return adPage.map(ad -> {
             AdPreviewDto dto = adMapper.toPreviewDto(ad);

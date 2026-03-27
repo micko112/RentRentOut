@@ -31,6 +31,7 @@ export class AdService {
     if (criteria.page !== undefined) params = params.append('page', criteria.page.toString());
     if (criteria.size) params = params.append('size', criteria.size.toString());
     if (criteria.sort) params = params.append('sort', criteria.sort);
+    if (criteria.promoSort === false) params = params.append('promoSort', 'false');
 
 
     return this.http.get<Page<AdPreview>>(`${this.adApiUrl}/search`, { params });

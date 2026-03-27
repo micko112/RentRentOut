@@ -109,6 +109,22 @@
 }
 
 
+/* ── Promotion card borders ── */
+.card-featured {
+  border-color: #e8a020;
+  box-shadow: 0 0 8px 1px #f59e0b38, 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.card-priority {
+  border-color: #b36fd4;
+  box-shadow: 0 0 8px 1px #a855f728, 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.card-highlighted {
+  border-color: var(--color-primary-border);
+  box-shadow: 0 0 6px 1px #81318120;
+}
+
 /* Promotion badges */
 .promo-badge {
   position: absolute;
@@ -121,15 +137,17 @@
   z-index: 2;
   letter-spacing: 0.3px;
   pointer-events: none;
+  text-transform: uppercase;
 }
 
 .badge-featured {
   background: linear-gradient(135deg, #f59e0b, #d97706);
   color: #fff;
+  box-shadow: 0 1px 4px #d9770650;
 }
 
 .badge-priority {
-  background: var(--color-primary);
+  background: #a855f7;
   color: #fff;
 }
 

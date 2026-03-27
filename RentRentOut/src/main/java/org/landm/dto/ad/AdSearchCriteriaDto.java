@@ -12,6 +12,7 @@ public class AdSearchCriteriaDto {
     private PriceInterval priceInterval;
     private Long locationId;
     private String city;
+    private boolean promoSort = true;
 
     public AdSearchCriteriaDto() {
     }
@@ -70,5 +71,13 @@ public class AdSearchCriteriaDto {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public boolean isPromoSort() {
+        return promoSort;
+    }
+
+    public void setPromoSort(boolean promoSort) {
+        this.promoSort = promoSort;
     }
 }

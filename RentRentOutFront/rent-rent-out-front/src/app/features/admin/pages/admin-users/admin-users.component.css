@@ -109,6 +109,19 @@
   &:disabled { color: var(--color-text-muted); cursor: not-allowed; }
 }
 
+.credit-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.credit-balance {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
 .btn-credit {
   padding: 5px 10px;
   border-radius: 6px;
@@ -118,6 +131,7 @@
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
 
   &:hover { background: var(--color-primary); color: #fff; }
 }

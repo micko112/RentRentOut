@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
+
+    <!-- AES-256/CBC enkriptovana vrednost (IV 16B + data + Base64) je ~64-88 karaktera.
+         VARCHAR(30) nije dovoljno — proširujemo na 100. -->
+    <changeSet id="23-1" author="landm">
+        <modifyDataType tableName="user"
+                        columnName="phone_number"
+                        newDataType="VARCHAR(100)"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -12,19 +12,59 @@
     </div>
   </div>
 
-  <!-- How to top up -->
+  <!-- Top-up section -->
   <div class="topup-card">
-    <h3><span class="material-icons">add_circle_outline</span> Kako dopuniti kredit?</h3>
-    <p>
-      Kredit se dopunjuje ručno — pošaljite nam poruku na
-      <a href="mailto:izdajemiznajmljujem.rs@gmail.com">izdajemiznajmljujem.rs&#64;gmail.com</a>
-      sa naslovom <strong>"Dopuna kredita"</strong> i navedite iznos koji želite da dopunite.
-      Nakon potvrde uplate, kredit će biti dodat na vaš nalog.
+    <h3><span class="material-icons">add_circle_outline</span> Dopuna kredita</h3>
+
+    <!-- Amount selector -->
+    <p class="amount-label">Izaberite iznos dopune:</p>
+    <div class="amount-row">
+      <button
+        *ngFor="let a of quickAmounts"
+        class="amount-btn"
+        [class.active]="!showCustom && selectedAmount === a"
+        (click)="selectAmount(a)">
+        {{ a | number:'1.0-0' }} RSD
+      </button>
+      <button class="amount-btn amount-custom-btn" [class.active]="showCustom" (click)="toggleCustom()">
+        Drugi iznos
+      </button>
+    </div>
+
+    <div class="custom-amount-wrap" *ngIf="showCustom">
+      <input
+        type="number"
+        class="custom-amount-input"
+        [(ngModel)]="customAmount"
+        placeholder="Unesite iznos (min. 100 RSD)"
+        min="100"
+        step="100" />
+    </div>
+
+    <!-- Payment data table -->
+    <p class="payment-intro">
+      <span class="material-icons">account_balance</span>
+      Izvršite prenos putem e-bankinga ili uplatnice:
     </p>
-    <p class="topup-note">
+    <div class="payment-table">
+      <div class="payment-row" *ngFor="let row of paymentRows">
+        <span class="payment-label">{{ row.label }}</span>
+        <span class="payment-value" [class.highlight]="row.key === 'poziv' || row.key === 'iznos'">{{ row.value }}</span>
+        <button class="copy-btn" (click)="copyField(row.key, row.value)" [class.copied]="copied[row.key]">
+          <span class="material-icons">{{ copied[row.key] ? 'check' : 'content_copy' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="topup-note">
       <span class="material-icons">info_outline</span>
-      Minimalna dopuna je <strong>100 RSD</strong>. Kredit nema rok trajanja i ne može biti refundiran.
-    </p>
+      <span>
+        Nakon uplate pošaljite potvrdu na
+        <a href="mailto:izdajemiznajmljujem.rs@gmail.com">izdajemiznajmljujem.rs&#64;gmail.com</a>
+        — kredit se dodaje u roku od jednog radnog dana.
+        <strong>Obavezno unesite tačan poziv na broj</strong> kako bismo identifikovali vašu uplatu.
+      </span>
+    </div>
   </div>
 
   <!-- Promotion packages -->

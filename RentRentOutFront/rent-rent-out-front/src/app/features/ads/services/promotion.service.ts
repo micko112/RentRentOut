@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../core/config/api.config';
 import { PromotionType } from '../../../shared/models/adPreview.model';
@@ -32,6 +32,12 @@ export interface CreditTransaction {
   description: string;
   referenceId: number | null;
   createdAt: string;
+}
+
+export interface AdminCreditTransaction extends CreditTransaction {
+  userId: number;
+  userEmail: string;
+  userName: string;
 }
 
 export interface CreditTransactionPage {
@@ -75,6 +81,16 @@ export class PromotionService {
   }
 
   addCredit(userId: number, amount: number, description: string): Observable<void> {
-    return this.http.post<void>(`${this.base}/admin/credit`, { userId, amount, description });
+    const params = new HttpParams()
+      .set('userId', userId.toString())
+      .set('amount', amount.toString())
+      .set('description', description || 'Dopuna kredita');
+    return this.http.post<void>(`${this.base}/admin/credit`, null, { params });
+  }
+
+  getAllTransactions(page = 0, size = 30): Observable<{ content: AdminCreditTransaction[]; totalPages: number; number: number; first: boolean; last: boolean }> {
+    return this.http.get<any>(`${this.base}/admin/transactions`, {
+      params: { page: page.toString(), size: size.toString() }
+    });
   }
 }

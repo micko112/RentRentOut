@@ -152,7 +152,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     const title = `${ad.title} — Izdajem Iznajmljujem`;
     const desc = ad.description
       ? ad.description.substring(0, 155).replace(/\s+/g, ' ').trim() + '...'
-      : `Iznajmi ${ad.title} u ${ad.city}. Pogledaj oglas na Izdajem Iznajmljujem.`;
+      : `Iznajmi ${ad.title} u ${ad.location?.city ?? 'Srbiji'}. Pogledaj oglas na Izdajem Iznajmljujem.`;
     const image = (ad.images && ad.images.length > 0)
       ? ad.images[0]
       : `${this.BASE_URL}/assets/images/placeholder.png`;

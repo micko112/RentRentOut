@@ -12,4 +12,5 @@ export interface AdSearchCriteria{
   page?: number;
   size?: number;
   sort?: string;
+  promoSort?: boolean;
 }

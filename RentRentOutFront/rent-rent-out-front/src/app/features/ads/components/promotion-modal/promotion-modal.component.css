@@ -45,7 +45,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 260px;
+    max-width: min(320px, 50vw);
   }
 
   .btn-close {

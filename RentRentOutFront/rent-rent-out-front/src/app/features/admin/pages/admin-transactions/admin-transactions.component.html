@@ -1,0 +1,46 @@
+<div class="admin-transactions">
+  <h2>Kreditne transakcije</h2>
+
+  <div *ngIf="loading" class="loading">Učitavanje...</div>
+
+  <ng-container *ngIf="!loading">
+    <div *ngIf="transactions.length === 0" class="empty">Nema transakcija.</div>
+
+    <table *ngIf="transactions.length > 0" class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Korisnik</th>
+          <th>Email</th>
+          <th>Tip</th>
+          <th>Iznos</th>
+          <th>Opis</th>
+          <th>Datum</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tx of transactions">
+          <td class="id-col">{{ tx.id }}</td>
+          <td>{{ tx.userName }}</td>
+          <td class="email-col">{{ tx.userEmail }}</td>
+          <td>
+            <span class="type-badge" [class.positive]="isPositive(tx.transactionType)" [class.negative]="!isPositive(tx.transactionType)">
+              {{ typeLabel(tx.transactionType) }}
+            </span>
+          </td>
+          <td class="amount-col" [class.positive]="isPositive(tx.transactionType)" [class.negative]="!isPositive(tx.transactionType)">
+            {{ isPositive(tx.transactionType) ? '+' : '' }}{{ tx.amount | number:'1.0-0' }} RSD
+          </td>
+          <td class="desc-col">{{ tx.description || '—' }}</td>
+          <td class="date-col">{{ tx.createdAt | date:'dd.MM.yy. HH:mm' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button class="page-btn" (click)="prevPage()" [disabled]="first">Prethodna</button>
+      <span>Strana {{ currentPage + 1 }} od {{ totalPages }}</span>
+      <button class="page-btn" (click)="nextPage()" [disabled]="last">Sledeća</button>
+    </div>
+  </ng-container>
+</div>

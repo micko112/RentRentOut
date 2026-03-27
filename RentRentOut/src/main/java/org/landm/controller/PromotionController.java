@@ -10,7 +10,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -37,8 +36,7 @@ public class PromotionController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ActivePromotionDto> activate(
             @Valid @RequestBody ActivatePromotionRequest request,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = extractUserId(userDetails);
+            @AuthenticationPrincipal Long userId) {
         ActivePromotionDto dto = promotionService.activate(request.getAdId(), request.getPromotionType(), userId);
         return ResponseEntity.ok(dto);
     }
@@ -54,8 +52,8 @@ public class PromotionController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> renewAd(
             @PathVariable Long adId,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        promotionService.renewAd(adId, extractUserId(userDetails));
+            @AuthenticationPrincipal Long userId) {
+        promotionService.renewAd(adId, userId);
         return ResponseEntity.ok().build();
     }
 
@@ -63,8 +61,8 @@ public class PromotionController {
     @GetMapping("/credit")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CreditBalanceDto> getCreditBalance(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        BigDecimal balance = promotionService.getCreditBalance(extractUserId(userDetails));
+            @AuthenticationPrincipal Long userId) {
+        BigDecimal balance = promotionService.getCreditBalance(userId);
         return ResponseEntity.ok(new CreditBalanceDto(balance));
     }
 
@@ -72,9 +70,17 @@ public class PromotionController {
     @GetMapping("/credit/history")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<CreditTransactionDto>> getCreditHistory(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal Long userId,
             @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(promotionService.getCreditHistory(extractUserId(userDetails), pageable));
+        return ResponseEntity.ok(promotionService.getCreditHistory(userId, pageable));
+    }
+
+    /** GET /api/promotions/admin/transactions — sve kreditne transakcije (admin) */
+    @GetMapping("/admin/transactions")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<AdminCreditTransactionDto>> getAllTransactions(
+            @PageableDefault(size = 30) Pageable pageable) {
+        return ResponseEntity.ok(promotionService.getAllTransactions(pageable));
     }
 
     /** POST /api/promotions/admin/credit — admin dodaje kredit korisniku */
@@ -86,9 +92,5 @@ public class PromotionController {
             @RequestParam(required = false, defaultValue = "Dopuna kredita") String description) {
         promotionService.addCredit(userId, amount, description);
         return ResponseEntity.ok().build();
-    }
-
-    private Long extractUserId(UserDetails userDetails) {
-        return Long.parseLong(userDetails.getUsername());
     }
 }

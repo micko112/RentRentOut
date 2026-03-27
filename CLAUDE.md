@@ -417,9 +417,24 @@ SENTRY_TRACES_SAMPLE_RATE=0.1
 SENTRY_ENVIRONMENT=production
 ```
 
-### Google Analytics (OSTALO)
+### Google Analytics (IMPLEMENTIRANO)
 
-Zameniti `G-XXXXXXXXXX` u `shared/services/cookie-consent.service.ts` sa pravim GA4 Measurement ID iz analytics.google.com. Korisnik već ima nalog kreiran.
+GA4 Measurement ID je postavljen u `shared/services/cookie-consent.service.ts`. Skript se učitava dinamički samo kad korisnik prihvati kolačiće.
+
+### SEO Meta Tagovi (IMPLEMENTIRANO)
+
+- **`index.html`** — statički default tagovi: `description`, `og:description`, `og:image`, `og:url`, `twitter:card/title/description/image`
+- **`AdDetailsComponent`** — dinamički tagovi putem Angular `Title` i `Meta` servisa:
+  - `<title>` → `{naslov oglasa} — Izdajem Iznajmljujem`
+  - `og:title`, `og:description` (prvih 155 znakova opisa), `og:image` (prva slika), `og:url`, `og:type: product`
+  - `twitter:card/title/description/image`
+  - `ngOnDestroy()` resetuje tagove na default vrednosti
+- **Napomena**: Angular je SPA — Google Crawler izvršava JS i vidi dinamičke tagove. Za Facebook/WhatsApp deljenje koristi se Cloudinary URL slike koji je javno dostupan. Za optimalni crawling bez JS (stariji botovi) potreban bi bio Angular SSR — nije implementiran.
+
+### Email Podsetnik za Istek Oglasa (IMPLEMENTIRANO)
+
+- **`AdRepository.findAdsExpiringBetween(from, to)`** — JPQL query za aktivne oglase čiji `expiresAt` pada u zadati vremenski prozor
+- **`PromotionServiceImpl.sendExpiryReminders()`** — `@Scheduled(cron = "0 0 10 * * *")`, svako jutro u 10:00; prozor `[now+2d, now+3d]` hvata svaki oglas tačno jednom; email sadrži link na oglas i link na Moji oglasi za obnovu; greška na jednom emailu ne prekida ostale
 
 ---
 

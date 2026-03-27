@@ -40,7 +40,8 @@
               {{ user.enabled ? 'Deaktiviraj' : 'Aktiviraj' }}
             </button>
           </td>
-          <td>
+          <td class="credit-cell">
+            <span class="credit-balance">{{ user.credit | number:'1.0-0' }} RSD</span>
             <button class="btn-credit" (click)="openCreditModal(user)">+ Kredit</button>
           </td>
         </tr>

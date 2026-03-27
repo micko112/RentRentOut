@@ -1,5 +1,12 @@
 
-<div class="listing-card" [ngClass]="{'list-view': viewMode === 'list'}" [routerLink]="['/ads', ad.id]">
+<div class="listing-card"
+     [ngClass]="{
+       'list-view':         viewMode === 'list',
+       'card-featured':     promoStyle && ad.promotionType === 'FEATURED',
+       'card-priority':     promoStyle && ad.promotionType === 'PRIORITY',
+       'card-highlighted':  promoStyle && ad.promotionType === 'HIGHLIGHTED'
+     }"
+     [routerLink]="['/ads', ad.id]">
   <div class="image-wrapper">
     <img [src]="imageUrl"
          (error)="handleImageError($event)"

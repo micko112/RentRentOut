@@ -15,6 +15,7 @@ import {AuthService} from '../../../auth/services/auth.service';
 export class AdCardComponent implements OnInit {
   @Input() ad!: AdPreview;
   @Input() viewMode: 'grid' | 'list' = 'grid';
+  @Input() promoStyle = false;
 
   isSaved: boolean = false;
   isSavingToggle: boolean = false;

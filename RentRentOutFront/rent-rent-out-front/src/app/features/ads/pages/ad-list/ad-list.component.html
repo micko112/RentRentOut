@@ -102,7 +102,8 @@
             <app-ad-card
               *ngFor="let ad of adsPage.content"
               [ad]="ad"
-              [viewMode]="isSearchMode ? 'list' : 'grid'">
+              [viewMode]="isSearchMode ? 'list' : 'grid'"
+              [promoStyle]="isSearchMode">
             </app-ad-card>
           </div>
 

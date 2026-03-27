@@ -154,7 +154,7 @@ export class AdListComponent implements OnInit, OnDestroy {
     this.latestLoaded = false;
     this.homeCategories = this.HOME_CATEGORIES.map(c => ({ ...c, ads: [], total: 0, loaded: false }));
 
-    this.adService.search({ sort: 'id,desc', size: 9 }).pipe(
+    this.adService.search({ sort: 'id,desc', size: 9, promoSort: false }).pipe(
       takeUntil(this.homeDataDestroy$),
       takeUntil(this.destroy$)
     ).subscribe({
@@ -166,7 +166,7 @@ export class AdListComponent implements OnInit, OnDestroy {
     });
 
     this.HOME_CATEGORIES.forEach((cat, index) => {
-      this.adService.search({ categoryId: cat.id, sort: 'id,desc', size: 6 }).pipe(
+      this.adService.search({ categoryId: cat.id, sort: 'id,desc', size: 6, promoSort: false }).pipe(
         takeUntil(this.homeDataDestroy$),
         takeUntil(this.destroy$)
       ).subscribe({

@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CreditTransactionRepository extends JpaRepository<CreditTransaction, Long> {
     Page<CreditTransaction> findAllByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+
+    Page<CreditTransaction> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

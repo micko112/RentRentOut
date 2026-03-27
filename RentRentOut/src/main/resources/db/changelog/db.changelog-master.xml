@@ -40,6 +40,7 @@
     <include file="/db/changelog/db.changelog-20-add-social-ids-to-user.xml"/>
     <include file="/db/changelog/db.changelog-21-add-ad-expiry-and-promotion.xml"/>
     <include file="/db/changelog/db.changelog-22-create-promotion-system.xml"/>
+    <include file="/db/changelog/db.changelog-23-expand-phone-number.xml"/>
 
     <include file="/db/changelog/db.changelog-seed-location.xml"/>
     <include file="/db/changelog/db.changelog-seed-categories-full.xml"/>

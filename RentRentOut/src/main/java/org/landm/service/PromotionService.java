@@ -31,6 +31,9 @@ public interface PromotionService {
     /** Istorija transakcija kredita */
     Page<CreditTransactionDto> getCreditHistory(Long userId, Pageable pageable);
 
+    /** Sve transakcije — za admin panel */
+    Page<AdminCreditTransactionDto> getAllTransactions(Pageable pageable);
+
     /** Scheduled: gasi istekle promocije (poziva se automatski svakih sat) */
     void expirePromotions();
 
