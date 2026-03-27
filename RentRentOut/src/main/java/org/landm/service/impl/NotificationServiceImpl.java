@@ -10,12 +10,11 @@ import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
 import org.landm.repository.PushSubscriptionRepository;
 import org.landm.repository.UserRepository;
+import org.landm.service.HtmlEmailService;
 import org.landm.service.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +25,8 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
 
     private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
-    private static final String FROM_EMAIL = "rentrentout@gmail.com";
 
-    private final JavaMailSender mailSender;
+    private final HtmlEmailService htmlEmailService;
     private final PushSubscriptionRepository pushSubscriptionRepository;
     private final UserRepository userRepository;
     private final PushService pushService;
@@ -37,13 +35,13 @@ public class NotificationServiceImpl implements NotificationService {
     private String frontendBaseUrl;
 
     public NotificationServiceImpl(
-            JavaMailSender mailSender,
+            HtmlEmailService htmlEmailService,
             PushSubscriptionRepository pushSubscriptionRepository,
             UserRepository userRepository,
             @Value("${app.vapid.public-key}") String vapidPublicKey,
             @Value("${app.vapid.private-key}") String vapidPrivateKey,
             @Value("${app.vapid.subject}") String vapidSubject) throws Exception {
-        this.mailSender = mailSender;
+        this.htmlEmailService = htmlEmailService;
         this.pushSubscriptionRepository = pushSubscriptionRepository;
         this.userRepository = userRepository;
 
@@ -56,76 +54,44 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendContractRequestEmail(User owner, Ad ad, User lessee) {
-        try {
-            SimpleMailMessage msg = new SimpleMailMessage();
-            msg.setTo(owner.getEmail());
-            msg.setFrom(FROM_EMAIL);
-            msg.setSubject("New rental request for: " + ad.getTitle());
-            msg.setText(
-                "Hello " + owner.getFirstname() + ",\n\n" +
-                lessee.getFirstname() + " " + lessee.getLastname() + " wants to rent your item: " + ad.getTitle() + ".\n\n" +
-                "Log in to review the request: " + frontendBaseUrl + "/user/contracts\n\n" +
-                "Sincerely,\nRentRentOut team"
-            );
-            mailSender.send(msg);
-        } catch (Exception e) {
-            log.warn("Failed to send contract request email: {}", e.getMessage());
-        }
-
+        htmlEmailService.sendContractRequestEmail(
+            owner.getEmail(), owner.getFirstname(),
+            lessee.getFirstname() + " " + lessee.getLastname(),
+            ad.getTitle(),
+            frontendBaseUrl + "/user/contracts"
+        );
         sendPushNotification(
             owner.getId(),
-            "New rental request",
-            lessee.getFirstname() + " wants to rent: " + ad.getTitle()
+            "Novi zahtev za iznajmljivanje",
+            lessee.getFirstname() + " želi da iznajmi: " + ad.getTitle()
         );
     }
 
     @Override
     public void sendContractAcceptedEmail(User lessee, Ad ad) {
-        try {
-            SimpleMailMessage msg = new SimpleMailMessage();
-            msg.setTo(lessee.getEmail());
-            msg.setFrom(FROM_EMAIL);
-            msg.setSubject("Your rental request was accepted: " + ad.getTitle());
-            msg.setText(
-                "Hello " + lessee.getFirstname() + ",\n\n" +
-                "Great news! Your rental request for \"" + ad.getTitle() + "\" has been accepted.\n\n" +
-                "View your contracts: " + frontendBaseUrl + "/user/contracts\n\n" +
-                "Sincerely,\nRentRentOut team"
-            );
-            mailSender.send(msg);
-        } catch (Exception e) {
-            log.warn("Failed to send contract accepted email: {}", e.getMessage());
-        }
-
+        htmlEmailService.sendContractAcceptedEmail(
+            lessee.getEmail(), lessee.getFirstname(),
+            ad.getTitle(),
+            frontendBaseUrl + "/user/contracts"
+        );
         sendPushNotification(
             lessee.getId(),
-            "Rental request accepted!",
-            "Your request for \"" + ad.getTitle() + "\" was accepted."
+            "Zahtev prihvaćen!",
+            "Vaš zahtev za \"" + ad.getTitle() + "\" je prihvaćen."
         );
     }
 
     @Override
     public void sendContractRejectedEmail(User lessee, Ad ad) {
-        try {
-            SimpleMailMessage msg = new SimpleMailMessage();
-            msg.setTo(lessee.getEmail());
-            msg.setFrom(FROM_EMAIL);
-            msg.setSubject("Your rental request was declined: " + ad.getTitle());
-            msg.setText(
-                "Hello " + lessee.getFirstname() + ",\n\n" +
-                "Unfortunately, your rental request for \"" + ad.getTitle() + "\" has been declined.\n\n" +
-                "Browse other listings: " + frontendBaseUrl + "\n\n" +
-                "Sincerely,\nRentRentOut team"
-            );
-            mailSender.send(msg);
-        } catch (Exception e) {
-            log.warn("Failed to send contract rejected email: {}", e.getMessage());
-        }
-
+        htmlEmailService.sendContractRejectedEmail(
+            lessee.getEmail(), lessee.getFirstname(),
+            ad.getTitle(),
+            frontendBaseUrl + "/ads"
+        );
         sendPushNotification(
             lessee.getId(),
-            "Rental request declined",
-            "Your request for \"" + ad.getTitle() + "\" was declined."
+            "Zahtev odbijen",
+            "Vaš zahtev za \"" + ad.getTitle() + "\" je odbijen."
         );
     }
 

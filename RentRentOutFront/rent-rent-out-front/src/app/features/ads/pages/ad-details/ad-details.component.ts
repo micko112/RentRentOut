@@ -12,12 +12,13 @@ import {ReviewService} from '../../../review/services/review.service';
 import {UserService} from '../../../user/services/user.service';
 import {AuthService} from '../../../auth/services/auth.service';
 import {RentalCalendarComponent} from '../../components/rental-calendar/rental-calendar.component';
+import {ReportModalComponent} from '../../components/report-modal/report-modal.component';
 import {Title, Meta} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-ad-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, InitialsPipe, ReviewCardComponent, RentalCalendarComponent],
+  imports: [CommonModule, RouterLink, InitialsPipe, ReviewCardComponent, RentalCalendarComponent, ReportModalComponent],
   templateUrl: './ad-details.component.html',
   styleUrl: './ad-details.component.css'
 })
@@ -40,6 +41,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
   isSaved: boolean = false;
   isTogglingS: boolean = false;
   isLoggedIn: boolean = false;
+  reportOpen: boolean = false;
 
   @ViewChild('thumbnailScroll') thumbnailScrollContainer!: ElementRef;
 
@@ -101,6 +103,10 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
         }));
       })
     );
+  }
+
+  openReport() {
+    this.reportOpen = true;
   }
 
   selectImage(imageUrl: string) {

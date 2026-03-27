@@ -10,7 +10,8 @@
   <div class="image-wrapper">
     <img [src]="imageUrl"
          (error)="handleImageError($event)"
-         alt="{{ ad.title }}" style="">
+         alt="{{ ad.title }}"
+         loading="lazy">
 
     <span *ngIf="ad.promotionType === 'FEATURED'" class="promo-badge badge-featured">Na vrhu</span>
     <span *ngIf="ad.promotionType === 'PRIORITY'" class="promo-badge badge-priority">Prioritetni</span>

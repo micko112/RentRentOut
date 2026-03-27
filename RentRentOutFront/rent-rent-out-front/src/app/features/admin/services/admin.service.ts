@@ -9,8 +9,22 @@ import { RentalContract } from '../../../shared/models/rental-contract.model';
 export interface AdminStats {
   totalUsers: number;
   totalAds: number;
+  activeAds: number;
   totalContracts: number;
   activeContracts: number;
+  pendingReports: number;
+}
+
+export interface AdReport {
+  id: number;
+  adId: number;
+  adTitle: string;
+  reporterId: number;
+  reporterName: string;
+  reason: string;
+  note: string;
+  reviewed: boolean;
+  createdAt: string;
 }
 
 export interface UserCreditSummary {
@@ -71,5 +85,17 @@ export class AdminService {
       params = params.set('search', search.trim());
     }
     return this.http.get<Page<UserCreditSummary>>(`${this.url}/credits`, { params });
+  }
+
+  getReports(page: number = 0, size: number = 25, onlyUnreviewed: boolean = true): Observable<Page<AdReport>> {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('onlyUnreviewed', onlyUnreviewed);
+    return this.http.get<Page<AdReport>>(`${this.url}/reports`, { params });
+  }
+
+  markReportReviewed(reportId: number): Observable<void> {
+    return this.http.patch<void>(`${this.url}/reports/${reportId}/reviewed`, {});
   }
 }

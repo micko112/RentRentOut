@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
                 		emailVerificationService.createAndSaveToken(savedUser);
 
                 emailVerificationService.sendVerificationEmail(savedUser.getEmail(),
-                		verificationToken.getToken());
+                		savedUser.getFirstname(), verificationToken.getToken());
 
                 return userMapper.toDto(savedUser);
             }
@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
 			user.setEmail(editUserDto.getEmail());
 			user.setEnabled(false);
 			EmailVerificationToken verificationToken = emailVerificationService.createAndSaveToken(user);
-			emailVerificationService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
+			emailVerificationService.sendVerificationEmail(user.getEmail(), user.getFirstname(), verificationToken.getToken());
 		}
 		if (editUserDto.getDescription() != null) user.setDescription(HtmlSanitizer.sanitize(editUserDto.getDescription()));
 		if (editUserDto.getPhoneNumber() != null) {

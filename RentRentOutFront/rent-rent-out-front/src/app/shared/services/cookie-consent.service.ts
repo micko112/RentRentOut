@@ -46,8 +46,6 @@ export class CookieConsentService {
   }
 
   private loadGoogleAnalytics(): void {
-    if (GA_MEASUREMENT_ID === 'G-GYYJSDLKLB') return; // placeholder — ne učitavaj
-
     if (document.getElementById('ga-script')) return; // već učitan
 
     const script = document.createElement('script');

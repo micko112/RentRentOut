@@ -7,10 +7,9 @@ import org.landm.entity.PasswordResetToken;
 import org.landm.entity.User;
 import org.landm.repository.PasswordResetTokenRepository;
 import org.landm.repository.UserRepository;
+import org.landm.service.HtmlEmailService;
 import org.landm.service.PasswordResetService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +23,16 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
-    private final JavaMailSender mailSender;
+    private final HtmlEmailService htmlEmailService;
     private final PasswordEncoder passwordEncoder;
 
     public PasswordResetServiceImpl(UserRepository userRepository,
                                     PasswordResetTokenRepository tokenRepository,
-                                    JavaMailSender mailSender,
+                                    HtmlEmailService htmlEmailService,
                                     PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
-        this.mailSender = mailSender;
+        this.htmlEmailService = htmlEmailService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -55,14 +54,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         tokenRepository.save(resetToken);
 
         String link = resetPasswordUrl + "?token=" + resetToken.getToken();
-
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(email);
-        msg.setSubject("Resetovanje lozinke");
-        msg.setText("Koristite link ispod da resetujete vašu lozinku.\n\n"
-                + link + "\n\nLink važi do kraja sutrašnjeg dana.\n\nSrdačno,\nIzdajemiZnajmljujem tim");
-
-        mailSender.send(msg);
+        htmlEmailService.sendPasswordResetEmail(email, user.getFirstname(), link);
     }
 
     @Override

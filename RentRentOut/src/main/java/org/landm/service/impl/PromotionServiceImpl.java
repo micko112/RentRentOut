@@ -6,12 +6,11 @@ import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PromotionType;
 import org.landm.entity.Enums.TransactionType;
 import org.landm.repository.*;
+import org.landm.service.HtmlEmailService;
 import org.landm.service.PromotionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ public class PromotionServiceImpl implements PromotionService {
     private final UserRepository userRepository;
     private final AdPromotionRepository adPromotionRepository;
     private final CreditTransactionRepository creditTransactionRepository;
-    private final JavaMailSender mailSender;
+    private final HtmlEmailService htmlEmailService;
 
     @Value("${app.frontend.base-url:https://izdajemiznajmljujem.com}")
     private String frontendBaseUrl;
@@ -37,12 +36,12 @@ public class PromotionServiceImpl implements PromotionService {
                                 UserRepository userRepository,
                                 AdPromotionRepository adPromotionRepository,
                                 CreditTransactionRepository creditTransactionRepository,
-                                JavaMailSender mailSender) {
+                                HtmlEmailService htmlEmailService) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adPromotionRepository = adPromotionRepository;
         this.creditTransactionRepository = creditTransactionRepository;
-        this.mailSender = mailSender;
+        this.htmlEmailService = htmlEmailService;
     }
 
     @Override
@@ -156,24 +155,13 @@ public class PromotionServiceImpl implements PromotionService {
                 user, amount, TransactionType.TOPUP_ADMIN, description, null);
         creditTransactionRepository.save(tx);
 
-        try {
-            BigDecimal newBalance = user.getCredit();
-            SimpleMailMessage msg = new SimpleMailMessage();
-            msg.setTo(user.getEmail());
-            msg.setSubject("Kredit je dodat na vaš nalog — Izdajem Iznajmljujem");
-            msg.setText(
-                "Poštovani/a " + user.getFirstname() + ",\n\n" +
-                "Na vaš nalog je dodato " + amount.toPlainString() + " RSD kredita.\n" +
-                (description != null && !description.isBlank() ? "Napomena: " + description + "\n" : "") +
-                "Novo stanje: " + newBalance.toPlainString() + " RSD\n\n" +
-                "Možete iskoristiti kredit za promociju oglasa:\n" +
-                frontendBaseUrl + "/user/me/my-ads\n\n" +
-                "Srdačno,\nIzdajem Iznajmljujem tim"
-            );
-            mailSender.send(msg);
-        } catch (Exception e) {
-            // Email greška ne sprečava dodavanje kredita
-        }
+        htmlEmailService.sendCreditAddedEmail(
+            user.getEmail(), user.getFirstname(),
+            amount.toPlainString(),
+            user.getCredit().toPlainString(),
+            description,
+            frontendBaseUrl + "/user/me/ads"
+        );
     }
 
     @Override
@@ -265,27 +253,14 @@ public class PromotionServiceImpl implements PromotionService {
 
         List<Ad> ads = adRepository.findAdsExpiringBetween(from, to);
         for (Ad ad : ads) {
-            try {
-                String email = ad.getOwner().getEmail();
-                String expiryDate = ad.getExpiresAt().format(fmt);
-                String adUrl = frontendBaseUrl + "/ads/" + ad.getId();
-                String myAdsUrl = frontendBaseUrl + "/user/me/ads";
-
-                SimpleMailMessage msg = new SimpleMailMessage();
-                msg.setTo(email);
-                msg.setSubject("Vaš oglas ističe za 3 dana — " + ad.getTitle());
-                msg.setText(
-                    "Poštovani/a " + ad.getOwner().getFirstname() + ",\n\n" +
-                    "Vaš oglas \"" + ad.getTitle() + "\" ističe " + expiryDate + ".\n\n" +
-                    "Oglas možete besplatno obnoviti na stranici Moji oglasi:\n" +
-                    myAdsUrl + "\n\n" +
-                    "Oglas: " + adUrl + "\n\n" +
-                    "Srdačno,\nIzdajem Iznajmljujem tim"
-                );
-                mailSender.send(msg);
-            } catch (Exception e) {
-                // Nastavi sa ostalim oglasima čak i ako jedan email ne uspe
-            }
+            htmlEmailService.sendAdExpiryReminderEmail(
+                ad.getOwner().getEmail(),
+                ad.getOwner().getFirstname(),
+                ad.getTitle(),
+                ad.getExpiresAt().format(fmt),
+                frontendBaseUrl + "/ads/" + ad.getId(),
+                frontendBaseUrl + "/user/me/ads"
+            );
         }
     }
 }

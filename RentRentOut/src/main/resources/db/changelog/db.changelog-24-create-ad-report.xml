@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="24-create-ad-report" author="landm">
+        <createTable tableName="ad_report">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ad_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_report_ad"
+                             references="ad(id)"
+                             deleteCascade="true"/>
+            </column>
+            <column name="reporter_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_report_user"
+                             references="user(id)"
+                             deleteCascade="true"/>
+            </column>
+            <column name="reason" type="VARCHAR(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note" type="VARCHAR(500)"/>
+            <column name="reviewed" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="ad_report" indexName="idx_report_ad_id">
+            <column name="ad_id"/>
+        </createIndex>
+        <createIndex tableName="ad_report" indexName="idx_report_reviewed">
+            <column name="reviewed"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

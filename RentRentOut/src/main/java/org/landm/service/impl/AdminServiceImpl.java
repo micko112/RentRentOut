@@ -1,10 +1,12 @@
 package org.landm.service.impl;
 
 import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.admin.AdReportDto;
 import org.landm.dto.admin.UserCreditSummaryDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.user.UserDto;
 import org.landm.entity.Ad;
+import org.landm.entity.AdReport;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.ContractStatus;
 import org.landm.entity.RentalContract;
@@ -13,6 +15,7 @@ import org.landm.mapper.AdMapper;
 import org.landm.mapper.RentalContractMapper;
 import org.landm.exception.UserNotFoundException;
 import org.landm.mapper.UserMapper;
+import org.landm.repository.AdReportRepository;
 import org.landm.repository.AdRepository;
 import org.landm.repository.CreditTransactionRepository;
 import org.landm.repository.RentalContractRepository;
@@ -34,6 +37,7 @@ public class AdminServiceImpl implements AdminService {
     private final RentalContractRepository rentalContractRepository;
     private final UserRepository userRepository;
     private final CreditTransactionRepository creditTransactionRepository;
+    private final AdReportRepository adReportRepository;
     private final UserMapper userMapper;
     private final AdMapper adMapper;
     private final RentalContractMapper rentalContractMapper;
@@ -43,6 +47,7 @@ public class AdminServiceImpl implements AdminService {
             RentalContractRepository rentalContractRepository,
             UserRepository userRepository,
             CreditTransactionRepository creditTransactionRepository,
+            AdReportRepository adReportRepository,
             UserMapper userMapper,
             AdMapper adMapper,
             RentalContractMapper rentalContractMapper) {
@@ -50,6 +55,7 @@ public class AdminServiceImpl implements AdminService {
         this.rentalContractRepository = rentalContractRepository;
         this.userRepository = userRepository;
         this.creditTransactionRepository = creditTransactionRepository;
+        this.adReportRepository = adReportRepository;
         this.userMapper = userMapper;
         this.adMapper = adMapper;
         this.rentalContractMapper = rentalContractMapper;
@@ -128,15 +134,20 @@ public class AdminServiceImpl implements AdminService {
     public Map<String, Long> getStats() {
         long totalUsers = userRepository.count();
         long totalAds = adRepository.count();
+        long activeAds = adRepository.findAllByAdStatus(AdStatus.ACTIVE,
+                org.springframework.data.domain.Pageable.unpaged()).getTotalElements();
         long totalContracts = rentalContractRepository.count();
         long activeContracts = rentalContractRepository.countByContractStatusIn(
                 List.of(ContractStatus.ACTIVE, ContractStatus.ACCEPTED));
+        long pendingReports = adReportRepository.countByReviewedFalse();
 
         Map<String, Long> stats = new LinkedHashMap<>();
         stats.put("totalUsers", totalUsers);
         stats.put("totalAds", totalAds);
+        stats.put("activeAds", activeAds);
         stats.put("totalContracts", totalContracts);
         stats.put("activeContracts", activeContracts);
+        stats.put("pendingReports", pendingReports);
         return stats;
     }
 
@@ -144,5 +155,25 @@ public class AdminServiceImpl implements AdminService {
     public Page<UserCreditSummaryDto> getUserCreditSummaries(String search, Pageable pageable) {
         String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
         return creditTransactionRepository.findUserCreditSummaries(searchParam, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AdReportDto> getReports(boolean onlyUnreviewed, Pageable pageable) {
+        if (onlyUnreviewed) {
+            return adReportRepository.findAllByReviewedFalseOrderByCreatedAtDesc(pageable)
+                    .map(AdReportDto::from);
+        }
+        return adReportRepository.findAllByOrderByCreatedAtDesc(pageable)
+                .map(AdReportDto::from);
+    }
+
+    @Override
+    @Transactional
+    public void markReportReviewed(Long reportId) {
+        AdReport report = adReportRepository.findById(reportId)
+                .orElseThrow(() -> new IllegalArgumentException("Prijava nije pronađena."));
+        report.setReviewed(true);
+        adReportRepository.save(report);
     }
 }

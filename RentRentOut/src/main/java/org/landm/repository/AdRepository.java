@@ -38,4 +38,7 @@ public interface AdRepository extends JpaRepository<Ad, Long> , JpaSpecification
               AND a.expiresAt BETWEEN :from AND :to
             """)
     List<Ad> findAdsExpiringBetween(LocalDateTime from, LocalDateTime to);
+
+    @Query("SELECT a.id FROM Ad a WHERE a.adStatus = org.landm.entity.Enums.AdStatus.ACTIVE ORDER BY a.id DESC")
+    List<Long> findAllActiveIds();
 }

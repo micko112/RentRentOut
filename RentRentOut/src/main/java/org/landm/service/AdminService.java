@@ -1,6 +1,7 @@
 package org.landm.service;
 
 import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.admin.AdReportDto;
 import org.landm.dto.admin.UserCreditSummaryDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.user.UserDto;
@@ -18,4 +19,6 @@ public interface AdminService {
     String unsuspendAd(Long adId);
     Map<String, Long> getStats();
     Page<UserCreditSummaryDto> getUserCreditSummaries(String search, Pageable pageable);
+    Page<AdReportDto> getReports(boolean onlyUnreviewed, Pageable pageable);
+    void markReportReviewed(Long reportId);
 }

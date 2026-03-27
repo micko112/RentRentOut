@@ -10,9 +10,8 @@ import org.landm.mapper.UserMapper;
 import org.landm.repository.EmailVerificationRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.EmailVerificationService;
+import org.landm.service.HtmlEmailService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -20,17 +19,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class EmailVerificationServiceImpl implements EmailVerificationService {
 
-	@Value("${app.frontend.url:http://localhost:4200/verify-email}")
-	private String frontendUrl;
 	private final EmailVerificationRepository tokenRepository;
 	private final UserRepository userRepository;
-	private final JavaMailSender javaMailSender;
+	private final HtmlEmailService htmlEmailService;
 	private final UserMapper userMapper;
-	
-	public EmailVerificationServiceImpl(EmailVerificationRepository tokenRepo, 
-			UserRepository userRepository, JavaMailSender javaMailSender, 
+
+	@Value("${app.frontend.base-url:http://localhost:4200}")
+	private String frontendBaseUrl;
+
+	public EmailVerificationServiceImpl(EmailVerificationRepository tokenRepo,
+			UserRepository userRepository, HtmlEmailService htmlEmailService,
 			UserMapper userMapper) {
-		this.javaMailSender = javaMailSender;
+		this.htmlEmailService = htmlEmailService;
 		this.tokenRepository = tokenRepo;
 		this.userRepository = userRepository;
 		this.userMapper = userMapper;
@@ -51,18 +51,9 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 	}
 
 	@Override
-	public void sendVerificationEmail(String email, String token) {
-		
-		String link = frontendUrl + "?token=" + token;
-		
-		SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setTo(email);
-		msg.setSubject("Potvrdite vašu email adresu");
-		msg.setText("Koristite link ispod da potvrdite vašu email adresu.\n\n"
-		+ link + "\n\nHvala što koristite našu platformu!\n\nSrdačno,\nIzdajemiZnajmljujem tim");
-		
-		javaMailSender.send(msg);
-		
+	public void sendVerificationEmail(String email, String firstname, String token) {
+		String link = frontendBaseUrl + "/verify-email?token=" + token;
+		htmlEmailService.sendVerificationEmail(email, firstname, link);
 	}
 
 	@Transactional

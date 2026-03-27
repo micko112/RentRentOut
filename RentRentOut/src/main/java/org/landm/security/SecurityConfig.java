@@ -81,6 +81,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.PATCH, "/api/rental-contract/**").authenticated()
 						.requestMatchers(HttpMethod.DELETE, "/api/rental-contract/**").authenticated()
 
+						.requestMatchers(HttpMethod.POST, "/api/ads/*/report").authenticated()
 						.requestMatchers(HttpMethod.DELETE, "/api/ads/**").authenticated()
 						.requestMatchers("/api/admin/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
@@ -99,6 +100,7 @@ public class SecurityConfig {
 
 						.requestMatchers(HttpMethod.POST, "/api/images/upload").authenticated()
 
+						.requestMatchers(HttpMethod.GET, "/sitemap.xml").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/auth/validate-email").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()

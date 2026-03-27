@@ -540,6 +540,27 @@
     background-color: var(--color-primary-hover);
   }
 }
+.btn-report {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px 12px;
+  background: none;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  color: #999;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+
+  .material-icons { font-size: 16px; }
+
+  &:hover { color: #c0392b; border-color: #c0392b; }
+}
+
 /* image overlay ------------------------------------------------------------------*/
 .image-overlay {
   position: fixed;

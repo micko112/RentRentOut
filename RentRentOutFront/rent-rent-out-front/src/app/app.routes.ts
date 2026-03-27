@@ -15,6 +15,7 @@ import {authGuard} from './features/auth/auth.guard';
 import {PrivacyPolicyComponent} from './features/legal/pages/privacy-policy/privacy-policy.component';
 import {TermsOfServiceComponent} from './features/legal/pages/terms-of-service/terms-of-service.component';
 import {CreditComponent} from './features/user/pages/credit/credit.component';
+import {NotFoundComponent} from './shared/pages/not-found/not-found.component';
 
 export const routes: Routes = [
   {path:'ads',
@@ -42,7 +43,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: '/ads'
+    component: NotFoundComponent
   },
 
 ];

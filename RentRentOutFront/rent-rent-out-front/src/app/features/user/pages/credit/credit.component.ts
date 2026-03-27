@@ -6,9 +6,8 @@ import { PromotionService, CreditTransaction } from '../../../ads/services/promo
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AuthService } from '../../../auth/services/auth.service';
 
-// TODO: Zameniti pravim podacima firme pre lansiranja
 const COMPANY_NAME = 'Dimitrije Mitic';
-const BANK_ACCOUNT  = '000-0000000000-00';
+const BANK_ACCOUNT  = '265-0000006785327-58';
 const PAYMENT_CODE  = '221';
 const PAYMENT_MODEL = '97';
 const PAYMENT_PURPOSE = 'Dopuna kredita Izdajem Iznajmljujem';

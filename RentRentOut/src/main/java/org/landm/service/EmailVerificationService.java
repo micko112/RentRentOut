@@ -8,7 +8,7 @@ public interface EmailVerificationService {
 
 	public EmailVerificationToken createAndSaveToken(User user);
 	
-	public void sendVerificationEmail(String email, String token);
+	public void sendVerificationEmail(String email, String firstname, String token);
 	
 	public UserDto verifyEmail(String token);
 	

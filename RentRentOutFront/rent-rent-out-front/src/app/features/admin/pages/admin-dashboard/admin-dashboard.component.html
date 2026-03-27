@@ -5,20 +5,34 @@
 
   <div class="stats-grid" *ngIf="stats">
     <div class="stat-card">
+      <div class="stat-icon material-icons">people</div>
       <div class="stat-value">{{ stats.totalUsers }}</div>
       <div class="stat-label">Ukupno korisnika</div>
     </div>
     <div class="stat-card">
+      <div class="stat-icon material-icons">campaign</div>
       <div class="stat-value">{{ stats.totalAds }}</div>
       <div class="stat-label">Ukupno oglasa</div>
     </div>
+    <div class="stat-card highlight-green">
+      <div class="stat-icon material-icons">check_circle</div>
+      <div class="stat-value">{{ stats.activeAds }}</div>
+      <div class="stat-label">Aktivni oglasi</div>
+    </div>
     <div class="stat-card">
+      <div class="stat-icon material-icons">handshake</div>
       <div class="stat-value">{{ stats.totalContracts }}</div>
       <div class="stat-label">Ukupno ugovora</div>
     </div>
-    <div class="stat-card highlight">
+    <div class="stat-card highlight-green">
+      <div class="stat-icon material-icons">sync</div>
       <div class="stat-value">{{ stats.activeContracts }}</div>
       <div class="stat-label">Aktivni ugovori</div>
+    </div>
+    <div class="stat-card" [class.highlight-red]="stats.pendingReports > 0">
+      <div class="stat-icon material-icons">flag</div>
+      <div class="stat-value">{{ stats.pendingReports }}</div>
+      <div class="stat-label">Nepregledane prijave</div>
     </div>
   </div>
 </div>

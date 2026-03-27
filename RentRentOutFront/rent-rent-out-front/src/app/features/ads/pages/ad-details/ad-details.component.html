@@ -222,11 +222,23 @@
           <button class="btn-message"
                   *ngIf="!isMyAd"
                   (click)="startChat()">Pošalji poruku</button>
+
+          <button class="btn-report"
+                  *ngIf="isLoggedIn && !isMyAd"
+                  (click)="openReport()">
+            <span class="material-icons">flag</span> Prijavi oglas
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<app-report-modal
+  *ngIf="reportOpen"
+  [adId]="currentAd.id"
+  (closed)="reportOpen = false">
+</app-report-modal>
 
 <div class="image-overlay" *ngIf="isOverlayOpen" (click)="closeOverlay()">
   <button class="close-btn" (click)="closeOverlay()">&times;</button>

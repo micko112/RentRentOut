@@ -75,6 +75,10 @@ export class AdService {
     return this.http.post<void>(`${this.adApiUrl}/${adId}/view`, {});
   }
 
+  reportAd(adId: number, reason: string, note: string): Observable<string> {
+    return this.http.post(`${this.adApiUrl}/${adId}/report`, { reason, note }, { responseType: 'text' });
+  }
+
   saveAd(adId: number): Observable<void> {
     return this.http.post<void>(`${this.adApiUrl}/${adId}/save`, {});
   }

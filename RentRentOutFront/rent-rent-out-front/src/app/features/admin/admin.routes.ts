@@ -6,6 +6,7 @@ import { AdminAdsComponent } from './pages/admin-ads/admin-ads.component';
 import { AdminContractsComponent } from './pages/admin-contracts/admin-contracts.component';
 import { AdminTransactionsComponent } from './pages/admin-transactions/admin-transactions.component';
 import { AdminCreditsComponent } from './pages/admin-credits/admin-credits.component';
+import { AdminReportsComponent } from './pages/admin-reports/admin-reports.component';
 import { adminGuard } from './guards/admin.guard';
 
 export const ADMIN_ROUTES: Routes = [
@@ -21,6 +22,7 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'contracts', component: AdminContractsComponent },
       { path: 'transactions', component: AdminTransactionsComponent },
       { path: 'credits', component: AdminCreditsComponent },
+      { path: 'reports', component: AdminReportsComponent },
     ]
   }
 ];

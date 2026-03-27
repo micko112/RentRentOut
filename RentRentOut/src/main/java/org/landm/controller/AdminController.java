@@ -1,6 +1,7 @@
 package org.landm.controller;
 
 import org.landm.dto.ad.AdPreviewDto;
+import org.landm.dto.admin.AdReportDto;
 import org.landm.dto.admin.UserCreditSummaryDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.user.UserDto;
@@ -73,5 +74,18 @@ public class AdminController {
             @PageableDefault(size = 20) Pageable pageable) {
         Page<UserCreditSummaryDto> page = adminService.getUserCreditSummaries(search, pageable);
         return ResponseEntity.ok(page);
+    }
+
+    @GetMapping("/reports")
+    public ResponseEntity<Page<AdReportDto>> getReports(
+            @RequestParam(defaultValue = "false") boolean onlyUnreviewed,
+            @PageableDefault(size = 25) Pageable pageable) {
+        return ResponseEntity.ok(adminService.getReports(onlyUnreviewed, pageable));
+    }
+
+    @PatchMapping("/reports/{id}/reviewed")
+    public ResponseEntity<Void> markReportReviewed(@PathVariable Long id) {
+        adminService.markReportReviewed(id);
+        return ResponseEntity.ok().build();
     }
 }
