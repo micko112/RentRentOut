@@ -96,6 +96,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/user/**").permitAll()
 
 						.requestMatchers(HttpMethod.POST, "/api/reviews").authenticated()
+						.requestMatchers(HttpMethod.GET, "/api/reviews/contract-with/**").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/reviews").permitAll()
 
 						.requestMatchers(HttpMethod.POST, "/api/images/upload").authenticated()

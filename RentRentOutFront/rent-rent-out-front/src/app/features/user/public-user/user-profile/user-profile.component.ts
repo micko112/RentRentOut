@@ -12,6 +12,7 @@ import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
 import {ReviewFormComponent} from '../../../review/components/review-form/review-form.component';
 import {Review} from '../../../../shared/models/review';
 import {AuthService} from '../../../auth/services/auth.service';
+import {ReviewService} from '../../../review/services/review.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -33,10 +34,13 @@ export class UserProfileComponent implements OnInit {
 
   constructor(private userService: UserService,
               private route: ActivatedRoute,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private reviewService: ReviewService) {
   }
   userId!: number;
   isOwnProfile = false;
+  reviewContractId: number | null = null;
+  reviewCheckDone = false;
 
   profile$!: Observable<PublicProfile>;
 
@@ -72,7 +76,17 @@ export class UserProfileComponent implements OnInit {
       })
     );
 
-
+    if (!this.isOwnProfile && this.authService.currentUserValue) {
+      this.reviewService.getContractWith(this.userId).subscribe({
+        next: (res) => {
+          this.reviewContractId = res.contractId;
+          this.reviewCheckDone = true;
+        },
+        error: () => { this.reviewCheckDone = true; }
+      });
+    } else {
+      this.reviewCheckDone = true;
+    }
   }
 
   applyFilter(): void {

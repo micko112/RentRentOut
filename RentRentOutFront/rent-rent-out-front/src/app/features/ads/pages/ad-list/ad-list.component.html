@@ -33,6 +33,22 @@
 
     <main class="ads-display-area">
 
+      <!-- HERO (samo home mod) -->
+      <div class="hero-banner" *ngIf="homeMode">
+        <div class="hero-content">
+          <h1 class="hero-title">Iznajmi šta trebaš.<br>Izdaj šta imaš.</h1>
+          <p class="hero-sub">Platforma za kratkoročno iznajmljivanje opreme, alata i svega ostalog — direktno od lokalnih iznajmljivača.</p>
+          <div class="hero-actions">
+            <a routerLink="/ads/create" class="hero-btn hero-btn--primary">
+              <span class="material-icons">add</span> Postavi oglas
+            </a>
+            <a routerLink="/" [queryParams]="{sort: 'id,desc'}" class="hero-btn hero-btn--secondary">
+              Pretraži oglase
+            </a>
+          </div>
+        </div>
+      </div>
+
       <!-- HOME MODE: sekcije po kategorijama -->
       <div class="home-sections" *ngIf="homeMode">
 

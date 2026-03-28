@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -156,6 +157,17 @@ public class ReviewServiceImpl implements ReviewService {
             return new ReviewEligibilityDto(false, "Već ste ocenili korisnika za ovu saradnju.");
         }
         return new ReviewEligibilityDto(true, "");
+    }
+
+    @Override
+    public Long findContractWithUser(Long currentUserId, Long otherUserId) {
+        List<RentalContract> contracts = rentalContractRepository.findFinishedBetweenUsers(currentUserId, otherUserId);
+        return contracts.stream()
+            .filter(rc -> !rc.getEndDate().isBefore(LocalDate.now().minusDays(30)))
+            .filter(rc -> !reviewRepository.existsByContractIdAndReviewerId(rc.getId(), currentUserId))
+            .map(RentalContract::getId)
+            .findFirst()
+            .orElse(null);
     }
 
     @Override

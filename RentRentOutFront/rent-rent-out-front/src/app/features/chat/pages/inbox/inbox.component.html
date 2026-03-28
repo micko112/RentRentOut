@@ -93,27 +93,35 @@
                    [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
                 <div class="contract-card">
                   <div class="contract-card-header">
-                    <span class="contract-card-icon">🤝</span>
+                    <span class="contract-card-icon material-icons">handshake</span>
                     <span class="contract-card-title">Zahtev za iznajmljivanje</span>
                   </div>
                   <div class="contract-card-body">
                     <!-- Oglas (ceo red) -->
                     <div class="contract-card-row">
-                      <span class="contract-card-label">📦 Oglas:</span>
+                      <span class="contract-card-label">
+                        <span class="material-icons contract-label-icon">inventory_2</span> Oglas:
+                      </span>
                       <span class="contract-card-value">{{ msg.contractAdTitle }}</span>
                     </div>
                     <!-- Datumi i cena u jednom horizontalnom redu -->
                     <div class="contract-meta-row">
                       <div class="contract-meta-item">
-                        <span class="contract-card-label">📅 Od:</span>
+                        <span class="contract-card-label">
+                          <span class="material-icons contract-label-icon">calendar_today</span> Od:
+                        </span>
                         <span class="contract-card-value">{{ msg.contractStartDate | date:'dd.MM.yyyy.' }}</span>
                       </div>
                       <div class="contract-meta-item">
-                        <span class="contract-card-label">📅 Do:</span>
+                        <span class="contract-card-label">
+                          <span class="material-icons contract-label-icon">event</span> Do:
+                        </span>
                         <span class="contract-card-value">{{ msg.contractEndDate | date:'dd.MM.yyyy.' }}</span>
                       </div>
                       <div class="contract-meta-item">
-                        <span class="contract-card-label">💰 Ukupno:</span>
+                        <span class="contract-card-label">
+                          <span class="material-icons contract-label-icon">payments</span> Ukupno:
+                        </span>
                         <span class="contract-price-value">{{ msg.contractTotalPrice | number:'1.2-2' }} {{ msg.contractCurrency }}</span>
                       </div>
                     </div>

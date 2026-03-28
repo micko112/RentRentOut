@@ -3,7 +3,8 @@
   <!-- Logged in: user info -->
   <ng-container *ngIf="currentUser$ | async as user; else guestBlock">
     <div class="user-info">
-      <div class="user-avatar">{{ user.firstname.charAt(0) }}{{ user.lastname.charAt(0) }}</div>
+      <img *ngIf="user.avatarUrl" class="user-avatar user-avatar--img" [src]="user.avatarUrl" [alt]="user.firstname" />
+      <div *ngIf="!user.avatarUrl" class="user-avatar">{{ user.firstname.charAt(0) }}{{ user.lastname.charAt(0) }}</div>
       <div class="user-details">
         <span class="user-name">{{ user.firstname }} {{ user.lastname }}</span>
         <span class="user-email">{{ user.email }}</span>

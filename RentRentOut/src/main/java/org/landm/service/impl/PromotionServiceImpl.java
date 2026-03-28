@@ -1,11 +1,20 @@
 package org.landm.service.impl;
 
-import org.landm.dto.promotion.*;
-import org.landm.entity.*;
+import org.landm.dto.promotion.ActivePromotionDto;
+import org.landm.dto.promotion.AdminCreditTransactionDto;
+import org.landm.dto.promotion.CreditTransactionDto;
+import org.landm.dto.promotion.PromotionPackageDto;
+import org.landm.entity.Ad;
+import org.landm.entity.AdPromotion;
+import org.landm.entity.CreditTransaction;
 import org.landm.entity.Enums.AdStatus;
 import org.landm.entity.Enums.PromotionType;
 import org.landm.entity.Enums.TransactionType;
-import org.landm.repository.*;
+import org.landm.entity.User;
+import org.landm.repository.AdPromotionRepository;
+import org.landm.repository.AdRepository;
+import org.landm.repository.CreditTransactionRepository;
+import org.landm.repository.UserRepository;
 import org.landm.service.HtmlEmailService;
 import org.landm.service.PromotionService;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +24,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+
+@Slf4j
 @Service
 public class PromotionServiceImpl implements PromotionService {
 
@@ -155,13 +168,17 @@ public class PromotionServiceImpl implements PromotionService {
                 user, amount, TransactionType.TOPUP_ADMIN, description, null);
         creditTransactionRepository.save(tx);
 
-        htmlEmailService.sendCreditAddedEmail(
-            user.getEmail(), user.getFirstname(),
-            amount.toPlainString(),
-            user.getCredit().toPlainString(),
-            description,
-            frontendBaseUrl + "/user/me/ads"
-        );
+        try {
+            htmlEmailService.sendCreditAddedEmail(
+                user.getEmail(), user.getFirstname(),
+                amount.toPlainString(),
+                user.getCredit().toPlainString(),
+                description,
+                frontendBaseUrl + "/user/me/ads"
+            );
+        } catch (Exception e) {
+            log.warn("Greška pri slanju email obaveštenja o kreditu: {}", e.getMessage());
+        }
     }
 
     @Override

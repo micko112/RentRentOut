@@ -30,13 +30,15 @@ export class RegisterComponent implements OnInit {
       firstname: ['', [Validators.required, Validators.minLength(2)]],
       lastname: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      termsAccepted: [false, Validators.requiredTrue]
     });
   }
   get firstname() { return this.registerForm.get('firstname'); }
   get lastname() { return this.registerForm.get('lastname'); }
   get email() { return this.registerForm.get('email'); }
   get password() { return this.registerForm.get('password'); }
+  get termsAccepted() { return this.registerForm.get('termsAccepted'); }
 
   onSubmit(): void {
     if (this.isSubmitting) return;
@@ -46,7 +48,8 @@ export class RegisterComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-    this.authService.register(this.registerForm.value).subscribe({
+    const { termsAccepted: _, ...payload } = this.registerForm.value;
+    this.authService.register(payload).subscribe({
       next: () => {
         this.router.navigate(['/login']);
         this.toastService.showSuccess("Uspesno ste se registrovali! Proverite email za potvrdu naloga.");

@@ -40,4 +40,8 @@ export class ReviewService {
     return this.http.post<Review>(`${API_BASE_URL}/reviews`, payload);
   }
 
+  getContractWith(userId: number): Observable<{ contractId: number | null }> {
+    return this.http.get<{ contractId: number | null }>(`${API_BASE_URL}/reviews/contract-with/${userId}`);
+  }
+
 }

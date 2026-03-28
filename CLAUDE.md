@@ -302,21 +302,17 @@ Backend koristi `--spring.profiles.active=prod` → učitava `application-prod.p
 
 ### Šta treba ručno dodati na serveru (nije u gitu)
 
-U `/opt/app/RentRentOut/src/main/resources/application-prod.properties` dodati:
-```properties
-app.cookie.secure=true
-encryption.phone-key=<32-char-random-key>
-```
-
-Ili ekvivalentno u `.env` kao env varijable (Spring Boot relaxed binding):
+U `.env` fajlu na serveru (`/opt/app/RentRentOut/.env`):
 ```
 APP_COOKIE_SECURE=true
-ENCRYPTION_PHONE_KEY=<32-char-random-key>
+ENCRYPTION_PHONE_KEY=<32-char-random-key>   ← POSTAVLJENO 2026-03-27
 ```
 
 **Generisanje ključa na serveru**: `python3 -c "import secrets, string; print(''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32)))"`
 
 **VAŽNO**: `APP.COOKIE.SECURE` sa tačkama je **nevalidan** env var naziv na Linux/Docker-u. Koristiti `APP_COOKIE_SECURE` (sa underscoreom).
+
+**Status (2026-03-27)**: `ENCRYPTION_PHONE_KEY` je postavljen na serveru. Baza podataka je očišćena — svi mock podaci obrisani, ostao samo pravi korisnik (id=10, `dimitrijemitic112@gmail.com`, role=ADMIN).
 
 ---
 
@@ -400,7 +396,7 @@ Svi frontend delovi sistema promocija su implementirani:
 
 ### Cookie Banner + Legal Stranice (IMPLEMENTIRANO)
 
-- **`CookieConsentService`** (`shared/services/cookie-consent.service.ts`) — `localStorage` key `cookie_consent`; GA4 se učitava dinamički samo na prihvat; GA4 placeholder: `G-XXXXXXXXXX` (zameniti pravim ID)
+- **`CookieConsentService`** (`shared/services/cookie-consent.service.ts`) — `localStorage` key `cookie_consent`; GA4 se učitava dinamički samo na prihvat; **GA4 ID: `G-GYYJSDLKLB`** (postavljeno, aktivan)
 - **`CookieBannerComponent`** (`shared/components/cookie-banner/`) — fixed bottom banner, `*ngIf="(status$ | async) === null"`, slide-up animacija
 - **`/privacy-policy`** — potpun ZZPL/GDPR tekst na srpskom (10 sekcija)
 - **`/terms-of-service`** — potpun tekst uslova korišćenja (9 sekcija), uključuje opis kredit sistema i cene paketa
@@ -435,6 +431,101 @@ GA4 Measurement ID je postavljen u `shared/services/cookie-consent.service.ts`. 
 
 - **`AdRepository.findAdsExpiringBetween(from, to)`** — JPQL query za aktivne oglase čiji `expiresAt` pada u zadati vremenski prozor
 - **`PromotionServiceImpl.sendExpiryReminders()`** — `@Scheduled(cron = "0 0 10 * * *")`, svako jutro u 10:00; prozor `[now+2d, now+3d]` hvata svaki oglas tačno jednom; email sadrži link na oglas i link na Moji oglasi za obnovu; greška na jednom emailu ne prekida ostale
+
+---
+
+## HTML Email Servis (IMPLEMENTIRANO)
+
+`HtmlEmailServiceImpl.java` (`service/impl/`) — zamena za `SimpleMailMessage`/`JavaMailSender` u svim service-ima.
+
+- Purple-themed table-based HTML layout (kompatibilan sa svim email klijentima)
+- `esc()` helper za XSS zaštitu svih user-content vrednosti
+- 7 implementiranih metoda: `sendVerificationEmail`, `sendPasswordResetEmail`, `sendContractRequestEmail`, `sendContractAcceptedEmail`, `sendContractRejectedEmail`, `sendCreditAddedEmail`, `sendAdExpiryReminderEmail`
+- `send()` hvata sve exceptione i loguje warning — ne blokira main flow
+- Svi emaili na **srpskom jeziku** (lokalizovano u ovoj sesiji)
+
+**Refaktorisani servisi:**
+- `EmailVerificationServiceImpl` — koristi `HtmlEmailService`; interfejs sada prima `firstname` parametar
+- `PasswordResetServiceImpl` — koristi `HtmlEmailService`
+- `NotificationServiceImpl` — sve 3 contract email metode; push notifikacije naslovi na srpskom
+- `PromotionServiceImpl` — `addCredit()` i `sendExpiryReminders()` emaili
+
+---
+
+## Ad Reporting System (IMPLEMENTIRANO)
+
+Korisnici mogu prijaviti oglase. Admin vidi prijave u posebnom tabu.
+
+### Backend
+
+- **`AdReport.java`** (entity) — `id`, `ad` (lazy FK), `reporter` (lazy FK), `reason` (VARCHAR 60), `note` (VARCHAR 500), `reviewed` (boolean), `createdAt`
+- **`AdReportRepository.java`** — `existsByAdIdAndReporterId()`, `findAllByOrderByCreatedAtDesc()`, `findAllByReviewedFalseOrderByCreatedAtDesc()`, `countByReviewedFalse()`
+- **`dto/admin/AdReportDto.java`** — static `from(AdReport r)` factory
+- **`db.changelog-24-create-ad-report.xml`** — `ad_report` tabela sa FK cascade delete i indexima
+- **`AdReportController`** — `POST /api/ads/{adId}/report` (authenticated; guard: ne može sopstveni oglas; duplikat guard)
+- **`AdminController`** — `GET /api/admin/reports?onlyUnreviewed=true|false`, `PATCH /api/admin/reports/{id}/reviewed`
+- **`AdminServiceImpl`** — `getStats()` sada vraća 6 polja: dodato `activeAds` i `pendingReports`; `getReports()`, `markReportReviewed()`
+- **`AdRepository`** — dodato `findAllActiveIds()` JPQL query (koristi ga i `SitemapController`)
+
+### Frontend
+
+- **`ReportModalComponent`** (`features/ads/components/report-modal/`) — 5 razloga + opcionalna napomena (500 char); `ToastService.showSuccess/showError`
+- **`AdDetailsComponent`** — dugme "Prijavi oglas" vidljivo samo ulogovanim ne-vlasnicima; `reportOpen: boolean`
+- **`ad.service.ts`** — dodato `reportAd(adId, reason, note): Observable<string>`
+- **`AdminReportsComponent`** (`features/admin/pages/admin-reports/`) — tabela sa filterom (samo nepregledane / sve), "Označi pregledano", paginacija
+- **`admin.routes.ts`** — `{ path: 'reports', component: AdminReportsComponent }`
+- **`admin-shell.component.html`** — nav link "Prijave"
+- **`admin-dashboard.component.html`** — 6 stat kartica (Korisnici, Ukupno oglasi, Aktivni oglasi, Ugovori, Aktivni ugovori, Nepregledane prijave — crveno kad > 0)
+- **`admin.service.ts`** — `AdminStats` prošireno sa `activeAds`, `pendingReports`; dodato `getReports()`, `markReportReviewed()`
+
+---
+
+## Sitemap.xml (IMPLEMENTIRANO)
+
+- **`SitemapController.java`** — `GET /sitemap.xml`, `MediaType.APPLICATION_XML_VALUE`; statičke stranice + sve aktivne oglasi iz `AdRepository.findAllActiveIds()`
+- **`nginx.prod.conf`** — `location = /sitemap.xml` proxira na `backend:8080` (pre `/api/` bloka)
+- **`public/robots.txt`** — `Allow: /`, `Sitemap: https://izdajemiznajmljujem.com/sitemap.xml`
+- **`SecurityConfig`** — `GET /sitemap.xml` je `permitAll`
+
+---
+
+## PWA i Performance (IMPLEMENTIRANO)
+
+- **`public/manifest.webmanifest`** — PWA manifest, `theme_color: "#813181"`, `display: "standalone"`, ikone
+- **`index.html`** — `<meta name="theme-color" content="#813181">` + `<link rel="manifest" href="manifest.webmanifest">`
+- **`ad-card.component.html`** — `loading="lazy"` na `<img>` tagu
+- **`angular.json`** — `anyComponentStyle` budget: `maximumWarning` 8kB→16kB, `maximumError` 16kB→24kB (pre-existing overrun u create-ad/edit-ad komponentama)
+
+---
+
+## DB Backup Script (IMPLEMENTIRANO)
+
+**`backup.sh`** (u project root, deployuje se na VPS):
+- MySQL dump via `docker exec mysql`, gzip kompresija
+- 14-dnevna rotacija (automatsko brisanje starih backup-ova)
+- Cron na serveru: `0 2 * * * /opt/app/backup.sh >> /opt/app/backups/backup.log 2>&1`
+
+---
+
+## Rate Limiting (VEĆ IMPLEMENTIRANO)
+
+`RateLimitFilter.java` (`security/`) — `@Component`, Bucket4j biblioteka. Štiti:
+- `POST /api/auth/login`, `POST /api/auth/register`, `POST /api/auth/forgot-password`
+- Social login endpointe
+Auto-registrovan kao Spring servlet filter — bez promene `SecurityConfig`.
+
+---
+
+## Produkcijska Baza Podataka (STATUS 2026-03-27)
+
+- Mock podaci potpuno obrisani (`TRUNCATE` svih data tabela: ad, ad_image, ad_view, review, notification, message, conversation, rental_contract, saved_ad, ad_report, ad_promotion, credit_transaction, email_verification_token, password_reset_token)
+- Jedini preostali korisnik: **id=10**, `dimitrijemitic112@gmail.com`, `role_id=1` (ADMIN)
+- `ENCRYPTION_PHONE_KEY` postavljen u `/opt/app/RentRentOut/.env`
+
+**Napomena za MySQL Docker konekciju**: koristiti `-h 127.0.0.1` (TCP), ne `localhost` (socket fail sa root passwordom):
+```bash
+docker exec -it <mysql-container> mysql -h 127.0.0.1 -u root -p
+```
 
 ---
 

@@ -483,6 +483,13 @@
 .contract-card-icon {
   font-size: 18px;
   line-height: 1;
+  color: var(--color-primary);
+}
+
+.contract-label-icon {
+  font-size: 12px;
+  vertical-align: middle;
+  color: var(--color-text-light);
 }
 
 .contract-card-title {

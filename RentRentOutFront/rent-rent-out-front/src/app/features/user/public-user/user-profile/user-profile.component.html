@@ -26,7 +26,7 @@
           <div class="score negative"><span class="icon material-symbols-outlined">thumb_down</span> {{ data.userInfo?.negativeReviews || 0 }}</div>
         </div>
         <button class="btn-review"
-                *ngIf="!showForm && !isOwnProfile"
+                *ngIf="!showForm && !isOwnProfile && reviewCheckDone && reviewContractId !== null"
                 (click)="toggleForm()">Ocenite
         </button>
       </div>
@@ -36,7 +36,7 @@
     <div class="review-form-section">
       <app-review-form
         *ngIf="showForm"
-        [contractId]="null">
+        [contractId]="reviewContractId">
       </app-review-form>
     </div>
 

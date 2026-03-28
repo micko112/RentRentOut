@@ -122,6 +122,10 @@
   flex-shrink: 0;
 }
 
+.user-avatar--img {
+  object-fit: cover;
+}
+
 .user-details {
   display: flex;
   flex-direction: column;

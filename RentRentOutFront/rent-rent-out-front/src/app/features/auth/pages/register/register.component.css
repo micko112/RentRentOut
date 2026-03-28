@@ -63,6 +63,34 @@ h2{
   }
 }
 
+.terms-field {
+  margin-bottom: 20px;
+}
+
+.terms-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.5;
+
+  input[type="checkbox"] {
+    margin-top: 2px;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    accent-color: #813181;
+    cursor: pointer;
+  }
+
+  a {
+    color: #813181;
+    text-decoration: underline;
+  }
+}
+
 .login-link {
   text-align: center;
   margin-top: 20px;

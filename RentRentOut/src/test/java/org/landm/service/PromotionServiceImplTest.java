@@ -21,8 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.landm.service.HtmlEmailService;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -48,7 +47,7 @@ class PromotionServiceImplTest {
     private CreditTransactionRepository creditTransactionRepository;
 
     @Mock
-    private JavaMailSender mailSender;
+    private HtmlEmailService htmlEmailService;
 
     @InjectMocks
     private PromotionServiceImpl promotionService;
@@ -362,7 +361,7 @@ class PromotionServiceImplTest {
         when(creditTransactionRepository.save(txCaptor.capture())).thenAnswer(inv -> inv.getArgument(0));
 
         // Email može da se pošalje ili ne — ne bacamo grešku
-        doNothing().when(mailSender).send(any(SimpleMailMessage.class));
+        doNothing().when(htmlEmailService).sendCreditAddedEmail(any(), any(), any(), any(), any(), any());
 
         promotionService.addCredit(1L, new BigDecimal("300.00"), "Test dopuna");
 
@@ -415,7 +414,7 @@ class PromotionServiceImplTest {
         when(creditTransactionRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         // Email baci RuntimeException
-        doThrow(new RuntimeException("SMTP greška")).when(mailSender).send(any(SimpleMailMessage.class));
+        doThrow(new RuntimeException("SMTP greška")).when(htmlEmailService).sendCreditAddedEmail(any(), any(), any(), any(), any(), any());
 
         // Ne sme da propagira grešku
         promotionService.addCredit(1L, new BigDecimal("100"), "dopuna");

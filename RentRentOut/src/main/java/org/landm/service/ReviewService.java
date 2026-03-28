@@ -16,4 +16,6 @@ public interface ReviewService  {
     public ReviewEligibilityDto checkEligibility(Long contractId, Long reviewerId);
 
    public Page<ReviewDto> getAllForUser(Pageable pageable, Long revieweeId);
+
+   public Long findContractWithUser(Long currentUserId, Long otherUserId);
 }

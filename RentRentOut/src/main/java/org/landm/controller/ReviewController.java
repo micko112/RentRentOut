@@ -14,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+
 @RestController
 @RequestMapping("/api/")
 public class ReviewController {
@@ -43,6 +45,14 @@ public class ReviewController {
         Long reviewerId = Long.parseLong(auth.getName());
 
         return ResponseEntity.ok(reviewService.checkEligibility(contractId, reviewerId));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("reviews/contract-with/{userId}")
+    public ResponseEntity<?> findContractWith(@PathVariable Long userId, Authentication auth) {
+        Long currentUserId = Long.parseLong(auth.getName());
+        Long contractId = reviewService.findContractWithUser(currentUserId, userId);
+        return ResponseEntity.ok(Collections.singletonMap("contractId", contractId));
     }
 
 }

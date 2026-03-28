@@ -14,6 +14,8 @@ import {NotificationsPageComponent} from './features/notifications/pages/notific
 import {authGuard} from './features/auth/auth.guard';
 import {PrivacyPolicyComponent} from './features/legal/pages/privacy-policy/privacy-policy.component';
 import {TermsOfServiceComponent} from './features/legal/pages/terms-of-service/terms-of-service.component';
+import {HowItWorksComponent} from './features/legal/pages/how-it-works/how-it-works.component';
+import {ContactComponent} from './features/legal/pages/contact/contact.component';
 import {CreditComponent} from './features/user/pages/credit/credit.component';
 import {NotFoundComponent} from './shared/pages/not-found/not-found.component';
 
@@ -39,6 +41,8 @@ export const routes: Routes = [
   {path: 'reset-password', component: ResetPasswordComponent},
   {path: 'privacy-policy', component: PrivacyPolicyComponent},
   {path: 'terms-of-service', component: TermsOfServiceComponent},
+  {path: 'how-it-works', component: HowItWorksComponent},
+  {path: 'contact', component: ContactComponent},
   {path: 'credit', component: CreditComponent, canActivate: [authGuard]},
 
   {
