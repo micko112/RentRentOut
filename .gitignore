@@ -26,3 +26,10 @@ RentRentOutFront/package-lock.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Lični/interni fajlovi (beleške, slučajevi korišćenja, skice)
+sk.txt
+sk*.txt
+"slucajevi koriscenja.txt"
+slucajevi koriscenja.txt
+*.notes.txt

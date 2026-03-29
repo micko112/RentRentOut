@@ -94,4 +94,10 @@ extends JpaRepository<RentalContract, Long>, JpaSpecificationExecutor<RentalCont
 	List<RentalContract> findByStatusInAndStartDateBefore(
 			@Param("statuses") List<ContractStatus> statuses,
 			@Param("today") LocalDate today);
+
+	@Query("SELECT rc FROM RentalContract rc JOIN FETCH rc.ad a JOIN FETCH a.owner JOIN FETCH rc.lessee WHERE rc.contractStatus = 'ACCEPTED' AND rc.startDate <= :today")
+	List<RentalContract> findAcceptedContractsStartingOnOrBefore(@Param("today") LocalDate today);
+
+	@Query("SELECT rc FROM RentalContract rc JOIN FETCH rc.ad a JOIN FETCH a.owner JOIN FETCH rc.lessee WHERE rc.contractStatus = 'ACTIVE' AND rc.endDate < :today")
+	List<RentalContract> findActiveContractsEndedBefore(@Param("today") LocalDate today);
 }

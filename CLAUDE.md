@@ -4,528 +4,309 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Full-stack rental marketplace application:
+Full-stack rental marketplace — **https://izdajemiznajmljujem.com**
 - **Backend**: Spring Boot 3.2.4 (Java 17, Maven) — REST API + WebSocket
-- **Frontend**: Angular 19.2 (TypeScript) — SPA with lazy-loaded feature modules
-- **Database**: MySQL 8.0 with Liquibase migrations
+- **Frontend**: Angular 19.2 (TypeScript) — SPA, lazy-loaded feature modules
+- **Database**: MySQL 8.0 + Liquibase migrations
 
 ## Development Commands
 
-### Frontend (`RentRentOutFront/rent-rent-out-front/`)
-
 ```bash
-npm start          # Dev server at http://localhost:4200
-npm run build      # Production build to dist/
-npm test           # Karma + Jasmine unit tests
-ng test --include='**/foo.spec.ts'  # Run a single test file
-```
+# Frontend (RentRentOutFront/rent-rent-out-front/)
+npm start          # Dev server :4200
+npm run build      # Production build
+npm test           # Karma + Jasmine
+ng test --include='**/foo.spec.ts'
 
-### Backend (`RentRentOut/`)
+# Backend (RentRentOut/)
+mvn spring-boot:run
+mvn package -DskipTests
+mvn test
+mvn test -Dtest=FooTest
 
-```bash
-mvn spring-boot:run           # Run locally (requires MySQL on localhost:3306)
-mvn package -DskipTests       # Build JAR
-mvn test                      # Run all tests
-mvn test -Dtest=FooTest       # Run a single test class
-```
-
-### Full Stack (Docker)
-
-```bash
-docker-compose up             # Start all services (MySQL, backend :8080, frontend :4200)
-docker-compose up --build     # Rebuild and start
+# Full Stack
+docker-compose up --build
 ```
 
 ## Git Worktrees
 
-This repo uses **two worktrees**:
-- `C:/xampp/htdocs/Rent Rent Out/` — `main` branch
-- `C:/xampp/htdocs/RentRentOut-Profile/` — `features/user-profile` branch
-
-When making changes to `main`, always `cd` into `C:/xampp/htdocs/Rent Rent Out/` first.
+- `C:/xampp/htdocs/Rent Rent Out/` — `main`
+- `C:/xampp/htdocs/RentRentOut-Profile/` — `features/user-profile`
 
 ## Architecture
 
 ### Backend (`RentRentOut/src/main/java/org/landm/`)
 
-Layered Spring Boot architecture: Controller → Service (interface + impl) → Repository (JPA) → Entity
+Layered: Controller → Service (interface + impl) → Repository (JPA) → Entity
 
-Key packages:
-- `controller/` — REST endpoints; `ChatWsController` handles WebSocket messaging; `AuthController` handles `/api/auth/refresh`, `/api/auth/logout`, `/api/auth/ws-token`
-- `service/` — Business logic; each domain has an interface and implementation
-- `entity/` — JPA entities: `User`, `Ad`, `RentalContract`, `Review`, `Conversation`, `Message`, `Notification`; `MessageType` enum (`REGULAR`, `SYSTEM`)
-- `dto/` — DTOs grouped by feature (ad, chat, review, user, contract, notification)
-- `repository/` — Spring Data JPA repositories
-- `security/` — JWT auth (`JwtUtil`, `JwtFilter`), WebSocket JWT (`JwtChannelInterceptor`), `SecurityConfig`, `PhoneNumberConverter` (AES-256 JPA converter)
-- `config/` — CORS (`WebConfig`), WebSocket (`WebSocketConfig`), mail
+- `controller/` — REST endpoints; `ChatWsController` (WebSocket); `AuthController` (`/api/auth/refresh|logout|ws-token`)
+- `service/` — Business logic
+- `entity/` — `User`, `Ad`, `RentalContract`, `Review`, `Conversation`, `Message`, `Notification`, `AdReport`, `AdPromotion`, `CreditTransaction`
+- `dto/` — DTOs grouped by feature
+- `repository/` — Spring Data JPA
+- `security/` — `JwtUtil`, `JwtFilter`, `JwtChannelInterceptor`, `SecurityConfig`, `PhoneNumberConverter` (AES-256)
+- `config/` — `WebConfig` (CORS), `WebSocketConfig`, mail
 
-Database migrations are in `src/main/resources/db/changelog/` (Liquibase XML changesets). **Always add new schema changes as new migration files, never edit existing ones.**
+**Liquibase**: migrations in `src/main/resources/db/changelog/`. Never edit existing changesets — always add new numbered XML files. Current: 1–24.
 
-Two Spring profiles: default (local) uses `application.properties`; `docker` uses `application-docker.properties`; `prod` uses `application-prod.properties`.
+**Spring profiles**: `application.properties` (local), `application-docker.properties`, `application-prod.properties`.
 
-**Ključne zavisnosti u `pom.xml`** koje nisu managed kroz Spring Boot BOM i moraju imati eksplicitnu verziju:
-- `com.nimbusds:nimbus-jose-jwt:9.37.3` — koristi se u `UserServiceImpl.appleLogin()` za verifikaciju Apple JWT tokena
-- `com.google.api-client:google-api-client:2.2.0` — za Google OAuth verifikaciju u `UserServiceImpl.googleLogin()`
+**Explicit pom.xml versions** (not managed by Spring Boot BOM):
+- `com.nimbusds:nimbus-jose-jwt:9.37.3` — Apple JWT verification
+- `com.google.api-client:google-api-client:2.2.0` — Google OAuth
 
 ### Security
 
 `SecurityConfig.java` — ključne napomene:
-- Custom `authenticationEntryPoint` vraća **401 JSON** (ne 403) za neautentifikovane zahteve. Frontend `errorInterceptor` radi auto-logout na 401, ali prikazuje toast na 403.
-- `GET /api/user/me` mora biti eksplicitno pre `GET /api/user/**` (koji je `permitAll`), inače anonimni korisnici dobijaju 403 od `@PreAuthorize` umesto 401 od entrypoint-a.
-- `DELETE /api/admin/**` mora imati vodeći `/` u putanji.
-- HTTP security headers su uključeni: `X-Frame-Options: DENY`, HSTS (1 godina + subdomeni), CSP (dozvoljava Google/Facebook SDK, Cloudinary, Material Icons CDN).
-- `POST /api/auth/refresh` i `POST /api/auth/logout` su `permitAll`; `GET /api/auth/ws-token` je `authenticated`.
+- Custom `authenticationEntryPoint` vraća **401 JSON** (ne 403). Frontend `errorInterceptor` radi auto-logout na 401, prikazuje toast na 403.
+- `GET /api/user/me` mora biti pre `GET /api/user/**` (koji je `permitAll`) — inače anonimni korisnici dobijaju 403 od `@PreAuthorize`.
+- `DELETE /api/admin/**` mora imati vodeći `/`.
+- HTTP headers: `X-Frame-Options: DENY`, HSTS (1 god + subdomeni), CSP (Google/Facebook SDK, Cloudinary, Material Icons CDN).
+- `GET /api/reviews/contract-with/**` mora biti `authenticated()` pre opšteg `GET /api/reviews` koji je `permitAll`.
 
-**Phone number enkripcija**: `PhoneNumberConverter.java` (`security/`) — JPA `AttributeConverter` sa AES-256/CBC/PKCS5Padding. Random IV se prepend-uje svakom enkriptovanom vrednosti (Base64 encoded). Backward-compatible: ako dekriptovanje ne uspe, vraća raw vrednost (za postojeće plain-text brojeve u bazi). Ključ se čita iz `encryption.phone-key` property. Spring-managed komponenta (da bi `@Value` injection radilo u JPA konverteru — statičko polje sa setter injektovanjem).
+**Phone encryption**: `PhoneNumberConverter` — AES-256/CBC/PKCS5Padding, random IV prepended (Base64). Backward-compatible. Key iz `encryption.phone-key`. Spring-managed sa statičkim poljem + setter injection za `@Value`.
 
-### DTO Sigurnost (šta se NE šalje prema frontu)
+**Rate limiting**: `RateLimitFilter` (`security/`) — Bucket4j, štiti login/register/forgot-password + social login. Auto-registrovan kao Spring servlet filter.
 
-- `UserShortDto` — sadrži `phoneNumber` ali **maskiran** kao `"06x / xxx-xxxx"` (null ako nema) — frontend koristi to samo da zna treba li prikazati dugme "Prikaži broj"; pravi broj se dohvata zasebnim `GET /api/user/{id}/phone` (requires auth)
-- `AdDto` — nema `email` vlasnika (PII curenje)
-- `RentalContractDto` — koristi `ContractParticipantDto` (samo id, ime, avatar) za lessee/owner, ne pun `UserDto`
+### DTO Security
 
-### Frontend (`RentRentOutFront/rent-rent-out-front/src/app/`)
+- `UserShortDto.phoneNumber` — maskiran kao `"06x / xxx-xxxx"` (null ako nema); pravi broj: `GET /api/user/{id}/phone` (requires auth)
+- `AdDto` — nema email vlasnika
+- `RentalContractDto` — koristi `ContractParticipantDto` (id, ime, avatar), ne pun `UserDto`
 
-Feature-based module structure with lazy loading:
+### Frontend (`src/app/`)
 
-- `core/` — Singleton services and layout shell
-  - `config/` — API endpoint constants and RxStomp WebSocket config
-  - `layout/` — Header, Footer, Navbar, Sidebar components (the app shell)
-  - `services/` — `NotificationService` (global chat unread badge via `BehaviorSubject`; `initialize()` hits `GET /api/chat/unread-count`); WebSocket service for real-time chat
-- `shared/` — Shared models (TypeScript interfaces) and reusable components (Toast, SkeletonCard)
-- `features/` — Lazy-loaded feature modules:
-  - `auth/` — Login, Register, email verification, password reset; `authGuard` protects routes
-  - `ads/` — Ad listings, details, create/edit; `RentalCalendarComponent` (`features/ads/components/rental-calendar/`) is a standalone reusable calendar widget
-  - `chat/` — Real-time inbox using `@stomp/rx-stomp` over WebSocket; three-column layout (conversation list | messages | calendar); system messages rendered as centered gray bubbles
-  - `user/` — User profile pages (`my-ads`, `saved-ads`, `contracts`, `my-profile`)
-  - `contracts/` — Rental contract management
-  - `review/` — Review/rating system
-  - `notifications/` — In-app notification center (`/notifications` route); `NotificationsService` (`features/notifications/services/`) holds unread count via `BehaviorSubject`
-  - `admin/` — Admin dashboard; `adminGuard` restricts access
-
-Routes are defined in `app.routes.ts` with lazy loading for all feature modules.
+- `core/` — `layout/` (Header, Navbar, Sidebar, Footer); `services/` (`NotificationService` — chat unread badge); `config/` (API endpoints, RxStomp config)
+- `shared/` — TypeScript models, Toast, SkeletonCard, pipes, `CookieConsentService`
+- `features/` — lazy-loaded:
+  - `auth/` — Login, Register (ToS checkbox), email verify, password reset
+  - `ads/` — listings, details, create/edit wizard, `RentalCalendarComponent`, `PromotionModalComponent`, `ReportModalComponent`
+  - `chat/` — 3-column inbox (conversations | messages | calendar)
+  - `user/` — `my-ads`, `saved-ads`, `contracts`, `my-profile`, `credit`
+  - `review/` — rating form + review cards
+  - `notifications/` — notification center
+  - `legal/` — `/privacy-policy`, `/terms-of-service`, `/how-it-works`, `/contact`
+  - `admin/` — dashboard, users, ads, contracts, reports, credits
 
 ### Material Icons
 
-Dva fonta su učitana u `index.html`:
-- **Material Icons** (klasični, popunjeni): `class="material-icons"` — CDN `family=Material+Icons`
-- **Material Icons Outlined**: `class="material-icons-outlined"` — CDN `family=Material+Icons+Outlined`
-- **Material Symbols Outlined** (noviji, tanji, varijabilni): `class="material-symbols-outlined"` — CDN sa osama `opsz,wght,FILL,GRAD`
+Tri fonta u `index.html`:
+- `class="material-icons"` — popunjeni (standardni)
+- `class="material-icons-outlined"` — outlined
+- `class="material-symbols-outlined"` — tanki, varijabilni (više ikona, npr. `tools_power_drill`)
 
-Globalni CSS u `styles.css` za Symbols:
 ```css
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 24;
-}
+/* styles.css */
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 24; }
 ```
-Symbols imaju više ikona od klasičnih Icons (npr. `tools_power_drill`). Koristiti `material-symbols-outlined` za fine/tanke ikone, `material-icons` za standardne.
 
-### App Shell Layout (`app.component`)
+### App Shell
 
-`app.component.css` uses flexbox with `gap: 185px` between sidebar and content. Key CSS classes:
-- `.has-sidebar` — applied when sidebar is visible; used to apply max-width centering on pages without sidebar
-- `.is-admin` — applied on `/admin` routes; removes padding from page-content
-
-`app.component.ts` exposes:
-- `showSidebar$` — based on **route only** (not auth state); `true` on all non-`/admin` routes
-- `isAdmin$` — `true` when URL starts with `/admin`
-
-Router uses `withPreloading(PreloadAllModules)` + `withInMemoryScrolling({ scrollPositionRestoration: 'top' })`.
+`app.component.css`: flexbox sa `gap: 185px` između sidebar i sadržaja.
+- `.has-sidebar` — max-width centering na stranicama bez sidebar-a
+- `.is-admin` — uklanja padding (admin rute)
+- `showSidebar$` — baziran na ruti (ne auth state); `true` na svim non-`/admin` rutama
+- Router: `withPreloading(PreloadAllModules)` + `withInMemoryScrolling({ scrollPositionRestoration: 'top' })`
 
 ### Sidebar (`core/layout/sidebar/`)
 
-- Uses **Material Icons** (`<span class="material-icons nav-icon">`) — CDN loaded in `index.html`
-- Color theme: purple `#813181` for avatar background, active state, hover state, and left border on active link
+- Uvek vidljiv (non-admin rute) — guest state i logged-in state
+- **Avatar**: `<img>` ako `user.avatarUrl` postoji, inače inicijali (purple `#813181` background)
 - Active link: `background: #f5ecff`, `border-left: 3px solid #813181`, `color: #813181`
-- Unread badge (red `#e53935`) shown on Poruke and Obaveštenja links
-- **Sidebar always visible** — shown on all non-admin routes regardless of login state
-- **Guest state**: shows login/register buttons + locked (greyed-out, `pointer-events: none`) nav items
-- **Logged-in state**: shows user avatar (initials), full interactive nav
-- `SidebarComponent.ngOnInit()` calls both `NotificationService.initialize()` (chat unread) and `NotificationsService.loadUnreadCount()` (app notifications unread) — only when user is logged in
+- Unread badge (red `#e53935`) na Poruke i Obaveštenja
+- `ngOnInit()`: ako ulogovan → `NotificationService.initialize()` + `NotificationsService.loadUnreadCount()`
+- Guest state: login/register dugmad + zaključani nav itemi (`pointer-events: none`)
 
 ### Authentication Flow
 
-**HttpOnly Cookie JWT** (XSS-safe — nema localStorage):
-- Login vraća **dva HttpOnly cookie-ja**: `access_token` (15 min) + `refresh_token` (7 dana). Browser ih automatski šalje na svaki zahtev; JavaScript ih ne može pročitati.
-- Login odgovor JSON sadrži i `wsToken` (kratkotrajan JWT) — čuva se samo **in-memory** u `AuthService.wsToken` (ne localStorage!) za STOMP `Authorization` header.
-- `JwtFilter` čita `access_token` cookie **prvo**; fallback na `Authorization: Bearer` header (za WebSocket STOMP handshake koji ne može da šalje cookie-je).
-- `AuthController` (`/api/auth/`): `POST /refresh` — validira `refresh_token` cookie, izdaje novi `access_token` cookie + vraća `{wsToken}`; `POST /logout` — briše oba cookie-ja (maxAge=0); `GET /ws-token` — vraća svež `wsToken` za WebSocket (requires auth).
-- `app.cookie.secure=false` lokalno (HTTP); mora biti `true` u produkciji (`application-prod.properties`).
+**HttpOnly Cookie JWT**:
+- Login → dva cookie-ja: `access_token` (15 min) + `refresh_token` (7 dana) + JSON `{wsToken}` (in-memory, za STOMP header)
+- `JwtFilter`: čita `access_token` cookie prvo, fallback na `Authorization: Bearer` header
+- `errorInterceptor`: 401 → `POST /api/auth/refresh` → retry; ako ne uspe → `/login`
+- `AuthService.loadInitialUser()`: `GET /api/user/me` na startu → ako uspe, dohvata `wsToken` sa `GET /api/auth/ws-token`
+- Dev proxy (`proxy.conf.json`): `/api` i `/ws` → `localhost:8080`
 
-**Frontend token refresh flow**: `errorInterceptor` hvata 401 → ako nije auth endpoint → poziva `POST /api/auth/refresh` (refresh cookie se automatski šalje) → ponavlja originalni zahtev. Ako refresh ne uspe → redirect na `/login`.
+Social login: Google (GIS), Facebook (FB SDK), Apple (identity token) → isti backend flow.
 
-`AuthService.loadInitialUser()` — na startu app poziva `GET /api/user/me` (cookie se šalje automatski). Ako uspe → dohvata i `wsToken` sa `GET /api/auth/ws-token`. Na 401 → ne radi ništa (korisnik nije ulogovan).
+### Chat i Poruke
 
-`authGuard` koristi `authService.currentUserValue` (ne localStorage).
+**Message types** (`MessageType` enum, `VARCHAR(20)`):
+- `REGULAR` — obična poruka (bubble, desno/levo)
+- `SYSTEM` — auto-generisana od backenda; renderuje se kao centrirani sivi kursiv bubble
+- `CONTRACT_REQUEST` — kartica ugovora; ikone: `handshake`, `inventory_2`, `calendar_today`, `event`, `payments` (sve `material-icons`, ne emojiji)
 
-**Angular dev proxy** (`proxy.conf.json` u Angular project root): proxira `/api` → `localhost:8080` i `/ws` → `localhost:8080` (WebSocket). Ovo čini da browser vidi sve sa `localhost:4200` → cookie-ji su same-origin u razvoju. Proxy je aktivan samo u `serve:development` konfiguraciji (`angular.json`).
+`InboxComponent`: `isLoadingMessages` spinner pri promeni konverzacije; polling 5s kao WebSocket fallback.
 
-Social login: Google (GIS button u `ngAfterViewInit`), Facebook (FB SDK), Apple (identity token). Svi koriste isti backend flow: verifikacija tokena → pronađi ili kreiraj korisnika → postavi HttpOnly cookie-je + vrati `{user, wsToken}`.
+**Chat unread badge** (`NotificationService`, `core/services/`):
+- `BehaviorSubject<number>`, `initialize()` → `GET /api/chat/unread-count`
+- `updateFromConversations()`, `onConversationOpened(n)`, `onNewMessageInBackground()`
+- Backend: `MessageRepository.countUnreadForUser()` — JPQL join participantOne/Two (bez N+1)
 
-### Real-Time Chat
+### Notifications
 
-WebSocket endpoint at `/ws` (STOMP protocol). Frontend uses `RxStompService` (configured in `core/config/`).
-
-`InboxComponent` (`features/chat/pages/inbox/`) uses `isLoadingMessages` flag — shows a spinner while messages load on conversation switch. Polling every 5s refreshes conversation list and active messages as WebSocket fallback.
-
-### Message Types
-
-`Message` entity has a `messageType` column (`VARCHAR(20)`, default `REGULAR`). Two values:
-- `REGULAR` — normal user message
-- `SYSTEM` — auto-generated by backend (e.g. contract accepted/rejected); rendered as centered italic gray bubble
-
-### Global Chat Unread Badge
-
-`NotificationService` (`core/services/`) holds a `BehaviorSubject<number>` for total unread chat message count:
-- `initialize()` — fetches `GET /api/chat/unread-count`; called by `SidebarComponent.ngOnInit()`
-- `updateFromConversations()` — recomputes from conversation list
-- `onConversationOpened(n)` — optimistically subtracts `n` when conversation opened
-- `onNewMessageInBackground()` — increments by 1 when WebSocket message arrives for background conversation
-
-Backend: `MessageRepository.countUnreadForUser(userId)` uses single JPQL query joining `participantOne`/`participantTwo` to avoid N+1.
-
-### In-App Notifications System
-
-- `NotificationType` enum: `CONTRACT_REQUESTED`, `CONTRACT_ACCEPTED`, `CONTRACT_REJECTED`, `CONTRACT_CANCELLED`, `CONTRACT_ACTIVE`, `CONTRACT_FINISHED`, `NEW_REVIEW`, `AD_SAVED`
-- `NotificationController` at `/api/notifications`: GET all, GET unread-count, PATCH read, PATCH read-all
+- `NotificationType`: CONTRACT_REQUESTED/ACCEPTED/REJECTED/CANCELLED/ACTIVE/FINISHED, NEW_REVIEW, AD_SAVED
+- `/api/notifications`: GET all, GET unread-count, PATCH read, PATCH read-all
 - `NotificationsService` (`features/notifications/services/`) — `unreadCount$` BehaviorSubject
-- Liquibase migration: `db.changelog-13-create-notification.xml`
+- Migracija: `db.changelog-13-create-notification.xml`
 
-### Save Count na oglasima
+### Ad List & Search
 
-`Ad` entity ima `saveCount` kolonu (INT, default 0) — inkrementira u `AdServiceImpl.saveAd()`, dekrementira u `unsaveAd()` (minimum 0). Prikazuje se na `AdCardComponent` pored `viewCount` (ikonica `bookmark`).
+`features/ads/pages/ad-list/` — dva moda:
 
-### RentalCalendarComponent
+**Home mod** (`homeMode = true`): hero banner na vrhu + `CategoriesSidebar` + Najnoviji (9) + 5 kategorija (ID: 200, 300, 100, 600, 700). `loadHomeData()` — 6 paralelnih API poziva, skeleton loaders (`latestLoaded` flag, `skeleton9/skeleton6`). Sve subscription-i imaju `takeUntil(destroy$)`.
 
-Standalone component at `features/ads/components/rental-calendar/`. Accepts:
-- `@Input() ad: Ad`
-- `@Input() set blockedIntervals(value)` — setter that regenerates calendar when new intervals arrive
-- `@Input() isMyAd: boolean` — shows "Block dates" button instead of "Send request" when true
+**Search mod** (`isSearchMode = true`): `FiltersSidebar` + list view + sortiranje. Kritično: `route.queryParams` subscription **uvek aktivan** (ne unutar `*ngIf`) — inače se ne detektuje prelaz homeMode→searchMode bez F5. `isSearchMode`/`homeMode` inicijalizuju se sinhrono iz `route.snapshot` (NG0100 prevencija).
 
-Reused in both `AdDetailsComponent` and `InboxComponent` (third column).
+Paginacija: numerisana, `…`, purple aktivna stranica.
 
-### Ad List stranica i pretraga
-
-`features/ads/pages/ad-list/` — glavna stranica sa oglasima. Tri moda:
-
-**Home mod** (`homeMode = true`) — nema query params:
-- `CategoriesSidebar` levo; desno: **Najnoviji oglasi** (9) + 5 fiksnih kategorija (6 svaka)
-- 5 kategorija: Tehnologija i uređaji (ID 200), Oprema za film i fotografiju (300), Alati i oruđa (100), Događaji i zurke (600), Prevoz i oprema za prirodu (700)
-- `loadHomeData()` radi 6 paralelnih API poziva; sve HTTP subscription-ovi imaju `takeUntil(destroy$)` da sprečavaju memory leak
-- **Skeleton loaders**: `latestLoaded = false` flag + `readonly skeleton9 = Array(9)` / `readonly skeleton6 = Array(6)` — `SkeletonCardComponent` shimmer placeholders se prikazuju dok podaci ne stignu; `latestLoaded = true` se postavlja tek kad latest ads API odgovori
-
-**Search mod** (`isSearchMode = true`) — aktivan kad ima keyword, categoryId, locationId, city, minPrice, maxPrice, priceInterval ILI sort param:
-- `FiltersSidebar` levo, list view desno, loading spinner tokom pretrage
-- Sortiranje dropdown (Najnovije / Najjeftinije / Najskuplje)
-
-**Kritična arhitekturna napomena**: `adsPage` je `Page<AdPreview> | null` (NE Observable). `route.queryParams` subscription je **uvek aktivan** (nije unutar `*ngIf`) — to je ključno jer `async` pipe unutar `*ngIf` bi se unsubscribovao kad je `homeMode=true`, što bi sprečilo detekciju prelaza u search mod bez F5.
-
-**NG0100 prevencija**: `isSearchMode` i `homeMode` se inicijalizuju sinhrono iz `route.snapshot` na startu `ngOnInit` pre prvog CD ciklusa.
-
-Paginacija: numerisana, `…` za preskočene opsege, purple `#813181` za aktivnu stranicu.
-
-### FiltersSidebar
-
-`features/ads/components/filters-sidebar/`:
-- **`previewCount`** — interno se računa debounced (350ms) API pozivom pri svakoj promeni filtera; prikazuje se u badge-u na "Prikaži oglase" dugmetu pre klika
-- **`@Input() set initialCriteria`** — popunjava forme iz URL query params kad korisnik direktno pristupa search URL-u
-- **`@Input() set locations`** — setter koji triggeruje `trySyncCityPicker()` za sinhronizaciju lokacije iz URL-a
-- `onApplyFilters()` u parent-u eksplicitno postavlja SVE param-e (null briše iz URL-a) — bez `queryParamsHandling: 'merge'` jer bi stari param-i ostali
+**FiltersSidebar**: debounced (350ms) `previewCount`; `@Input() set initialCriteria` (iz URL params); `onApplyFilters()` eksplicitno postavlja SVE params (bez `queryParamsHandling: 'merge'`).
 
 ### Create/Edit Ad Wizard
 
-Create Ad (`features/ads/pages/create-ad/`) i Edit Ad (`features/ads/pages/edit-ad/`):
-- Step 1: Kategorija + naslov (char counter) + opis (char counter)
-- Step 2: Drag-drop slike (10 max, 10MB), cena/valuta/interval, lokacija autocomplete, quantity stepper
-- CSS: `margin-left: -200px; width: calc(100% + 200px)` da cancela app layout gap (reset na 900px)
-- Kategorije koriste `material-symbols-outlined` sa `font-variation-settings` za thin stil
+- Step 1: kategorija + naslov (char counter) + opis
+- Step 2: drag-drop slike (10 max, 10MB), cena/valuta/interval, lokacija autocomplete, quantity stepper
+- CSS: `margin-left: -200px; width: calc(100% + 200px)` (cancela sidebar gap, reset na 900px)
+- Kategorije: `material-symbols-outlined` sa `font-variation-settings`
+- `angular.json` style budget: `maximumWarning` 16kB, `maximumError` 24kB
 
-### My Ads stranica
+### Ad Details (`features/ads/pages/ad-details/`)
 
-`features/user/pages/my-ads/` — pretraga po naslovu (client-side), delete modal sa razlozima, Material Icons.
+- `latestReviews$` — subscribuje se jednom sa `async` pipe u `*ngIf` (unutrašnji div reuses `reviews` varijablu)
+- Telefon: dugme "Prikaži broj" vidljivo ako `ad.owner.phoneNumber` nije null; broj se dohvata klikom
+- `isMyAd=true`: prikazuje "Izmeni" dugme, sakriva "Pošalji zahtev" i "Prijavi oglas"
+- `isMyAd=false` + ulogovan: prikazuje "Prijavi oglas" (otvara `ReportModalComponent`)
+- Dynamic SEO: Angular `Title`+`Meta` servisi; `ngOnDestroy()` resetuje tagove
 
-### Ad Details stranica
+### Review System
 
-`features/ads/pages/ad-details/`:
-- `latestReviews$` se subscribuje **jednom** sa `async` pipe u `*ngIf` — unutrašnji div koristi isti `reviews` template varijablu (ne `latestReviews$ | async` drugi put)
-- Telefon vlasnika: dugme "Prikaži broj" vidljivo ako `ad.owner.phoneNumber` nije null (maskirana vrednost), pravi broj se dohvata klikom na zasebnom endpoint-u
-- Za sopstveni oglas (`isMyAd=true`): prikazuje se "Izmeni" dugme sa RouterLink na `/ads/{id}/edit`
+`GET /api/reviews/contract-with/{userId}` (authenticated) — vraća `{ contractId: number | null }`:
+- Pronalazi završene ugovore između currentUser i userId (`findFinishedBetweenUsers()`)
+- Filtrira: `endDate >= now - 30 dana` i korisnik još nije ostavio recenziju za taj ugovor
+- Koristi se u `UserProfileComponent` — "Ocenite" dugme vidljivo samo ako `reviewContractId !== null`
+- `reviewCheckDone` flag sprečava prikaz dugmeta pre odgovora sa servera
 
-### Contracts stranica
+`ReviewCard`: ime recenzenta je `<a [routerLink]="['/user', review.reviewer.id]">`; fallback: `'Korisnik'`.
 
-`features/user/pages/contracts/` — dolazni i odlazni ugovori, pretraga po naslovu (client-side).
+### Register
 
-### Review Card
+- `termsAccepted: [false, Validators.requiredTrue]` u form grupi
+- Getter: `get termsAccepted()` za template validaciju
+- Submit payload: `const { termsAccepted: _, ...payload } = this.registerForm.value` (ne šalje se backendu)
+- Link na `/terms-of-service` i `/privacy-policy` u checkboxu
 
-`features/review/components/review-card/` — ime recenzenta je klikabilni `<a>` link (`[routerLink]="['/user', review.reviewer.id]"`) koji vodi na profil korisnika. Fallback ime: `'Korisnik'` (ne placeholder sa pravim imenom).
+### Legal Stranice (`features/legal/pages/`)
+
+- `/privacy-policy` — ZZPL/GDPR tekst (10 sekcija)
+- `/terms-of-service` — uslovi korišćenja (9 sekcija, cene paketa)
+- `/how-it-works` — hero + dvostubački layout (vlasnik / iznajmljivač), napomene, CTA
+- `/contact` — email podrška, GDPR kartica, prijava oglasa kartica, pravne info
+
+Footer: samo stvarne rute (Platforma: how-it-works, terms, privacy, contact; Korisno: create, browse, register, login). Nema dead linkova.
+
+### User Pages
+
+- `my-ads/` — client-side pretraga, expiry info (crveno/narandžasto ≤5 dana), promo badge, dugmad: Obnovi + Promoviši + Izmeni + Obriši
+- `contracts/` — dolazni i odlazni, pretraga po naslovu (client-side)
+- `credit/` (`/credit`, auth guard, `max-width: 860px`) — balance card, uputstvo, tabela paketa, istorija transakcija
+- `RentalCalendarComponent` (`features/ads/components/rental-calendar/`) — standalone, reused u AdDetails i InboxComponent; `@Input() isMyAd` preklapanje "Blokiraj" umesto "Pošalji zahtev"
 
 ### Color Theme
 
-Two primary colors:
-- **Purple** `#813181` — sidebar avatar, active nav links, notification badges/pills, buttons, accents
-- **Green** `#6ecf7e` — secondary accent; opacity is intentionally varied per context
+- **Purple** `#813181` — primary: buttons, avatar, active nav, badges, accents
+- **Green** `#6ecf7e` — secondary accent
 
-**Do not replace either color with blue or other colors.**
-
-## Production
-
-Aplikacija je deployovana na: **https://izdajemiznajmljujem.com**
-
-- **VPS**: Hetzner CX22 — IP `178.104.97.101`, Ubuntu 22.04
-- **Stack**: Docker Compose (`docker-compose.prod.yml`) — MySQL + backend + frontend + Nginx
-- **SSL**: Let's Encrypt (Certbot), auto-renewal cron u 3h svake noći (`/opt/app/renew-ssl.sh`)
-- **Slike**: Cloudinary (cloud name: `drwxucq4m`)
-- **Mail**: Gmail SMTP (`izdajemiznajmljujem.rs@gmail.com`)
-- **Repo na VPS-u**: `/opt/app/`
-- **Env fajl**: `/opt/app/RentRentOut/.env` (nikad ne commitovati)
-- **Symlink**: `/opt/app/.env` → `/opt/app/RentRentOut/.env` (potreban za Docker Compose varijable)
-
-### Deploy komande (na VPS-u)
-
-```bash
-cd /opt/app
-git pull
-docker compose -f docker-compose.prod.yml up --build -d
-```
-
-### Produkciski profil
-
-Backend koristi `--spring.profiles.active=prod` → učitava `application-prod.properties`.
-`application.properties` je u `.gitignore` — ne postoji na serveru, sve ide kroz `application-prod.properties`.
-
-### Ključne arhitekturne odluke
-
-- `WebConfig.java` čita `app.frontend.base-url` iz properties za CORS (ne hardkodovano)
-- Angular `environment.prod.ts` koristi relativni `/api` URL — Nginx proxira na backend
-- WebSocket URL se izvodi iz `window.location` u produkciji (HTTP→WS, HTTPS→WSS)
-- `google.client-id` je u `environment.ts` / `environment.prod.ts`, ne hardkodovan
-
-### Šta treba ručno dodati na serveru (nije u gitu)
-
-U `.env` fajlu na serveru (`/opt/app/RentRentOut/.env`):
-```
-APP_COOKIE_SECURE=true
-ENCRYPTION_PHONE_KEY=<32-char-random-key>   ← POSTAVLJENO 2026-03-27
-```
-
-**Generisanje ključa na serveru**: `python3 -c "import secrets, string; print(''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32)))"`
-
-**VAŽNO**: `APP.COOKIE.SECURE` sa tačkama je **nevalidan** env var naziv na Linux/Docker-u. Koristiti `APP_COOKIE_SECURE` (sa underscoreom).
-
-**Status (2026-03-27)**: `ENCRYPTION_PHONE_KEY` je postavljen na serveru. Baza podataka je očišćena — svi mock podaci obrisani, ostao samo pravi korisnik (id=10, `dimitrijemitic112@gmail.com`, role=ADMIN).
+**Ne zamenjivati ni jednu boju plavom.**
 
 ---
 
 ## Sistem Promocija (Monetizacija)
 
-Prihod platforme dolazi od korisnika koji plaćaju promociju svojih oglasa. **Nema P2P plaćanja** — korisnici se međusobno dogovaraju za plaćanje.
+Prihod od promocija oglasa. Nema P2P plaćanja.
 
-### Model
-
-- Svaki oglas traje **30 dana** od kreiranja (`expires_at` na `Ad` entity). Besplatno obnavljanje uvek (`POST /api/promotions/renew/{adId}`).
-- Oglas po isteku dobija `adStatus = ARCHIVED` (scheduled job svakog jutra u 03:00).
-- Kredit korisnika: `User.credit` (BigDecimal, već postoji). Admin dodaje kredit kroz admin panel.
-
-### Paketi promocija (PromotionType enum)
-
-| Tip | displayName | Cena | Trajanje | Efekt |
-|---|---|---|---|---|
-| `FEATURED` | Na vrhu | 500 RSD | 7 dana | `promotionRank=3` — uvek prvi u pretrazi |
-| `PRIORITY` | Prioritetni | 250 RSD | 3 dana | `promotionRank=2` — ispred standardnih |
-| `HIGHLIGHTED` | Istaknut oglas | 100 RSD | 30 dana | `promotionRank=0` — samo vizuelno (boja kartice) |
-
-### Backend arhitektura (implementirano)
-
-**Novi fajlovi:**
-- `entity/Enums/PromotionType.java` — enum sa rank/price/duration
-- `entity/Enums/TransactionType.java` — TOPUP_ADMIN, PROMOTION_PURCHASE, ADMIN_ADJUSTMENT
-- `entity/AdPromotion.java` — istorija aktiviranih promocija (tabela `ad_promotion`)
-- `entity/CreditTransaction.java` — istorija transakcija (tabela `credit_transaction`)
-- `repository/AdPromotionRepository.java`
-- `repository/CreditTransactionRepository.java`
-- `dto/promotion/` — PromotionPackageDto, ActivatePromotionRequest, ActivePromotionDto, CreditBalanceDto, CreditTransactionDto
-- `service/PromotionService.java` + `impl/PromotionServiceImpl.java`
-- `controller/PromotionController.java`
-
-**Modifikacije:**
-- `entity/Ad.java` — dodato: `expiresAt`, `promotionType`, `promotionExpiresAt`, `promotionRank` (int, default 0)
-- `dto/ad/AdPreviewDto.java` — dodato: `expiresAt`, `promotionType`
-- `mapper/AdMapper.java` — mapira nova polja u `toPreviewDto()`
-- `service/impl/AdServiceImpl.java` — `withPromotionSort()` metoda prependa `promotionRank DESC` sort
-- `security/SecurityConfig.java` — dodati `/api/promotions/**` endpointi
-- `db/changelog/db.changelog-master.xml` — include 21 i 22
-
-**Migracije:**
-- `db.changelog-21-add-ad-expiry-and-promotion.xml` — `expires_at`, `promotion_type`, `promotion_expires_at`, `promotion_rank` na `ad` tabeli
-- `db.changelog-22-create-promotion-system.xml` — `ad_promotion` i `credit_transaction` tabele
-
-**Scheduled jobs (u PromotionServiceImpl):**
-- `expirePromotions()` — svakih sat (fixedDelay=3600000): resetuje `promotionType/promotionRank` na oglasima čija promocija je istekla
-- `expireAds()` — svako jutro u 03:00 (cron): postavlja `adStatus=ARCHIVED` za istekle oglase
-
-### API Endpointi
-
-| Method | URL | Auth | Opis |
+**Paketi** (`PromotionType` enum):
+| Tip | Cena | Trajanje | Efekt |
 |---|---|---|---|
-| GET | `/api/promotions/packages` | public | Lista paketa sa cenama |
-| POST | `/api/promotions/activate` | auth | Aktivira promociju (skida kredit) |
-| GET | `/api/promotions/ad/{adId}` | public | Aktivne promocije za oglas |
-| POST | `/api/promotions/renew/{adId}` | auth | Besplatna obnova oglasa |
-| GET | `/api/promotions/credit` | auth | Stanje kredita korisnika |
-| GET | `/api/promotions/credit/history` | auth | Istorija transakcija |
-| POST | `/api/promotions/admin/credit` | admin | Dodaj kredit korisniku |
+| `FEATURED` | 500 RSD | 7 dana | `promotionRank=3` — vrh pretrage |
+| `PRIORITY` | 250 RSD | 3 dana | `promotionRank=2` — ispred standardnih |
+| `HIGHLIGHTED` | 100 RSD | 30 dana | `promotionRank=0` — samo vizuelno |
 
-### Frontend (IMPLEMENTIRANO)
-
-Svi frontend delovi sistema promocija su implementirani:
-
-1. **`AdPreview` model** (`shared/models/adPreview.model.ts`) — dodata `expiresAt?: string` i `promotionType?: PromotionType | null`; `PromotionType = 'FEATURED' | 'PRIORITY' | 'HIGHLIGHTED'` eksportovan odavde
-2. **`PromotionService`** (`features/ads/services/promotion.service.ts`) — `getPackages()`, `activate()`, `getActivePromotions()`, `renewAd()`, `getCreditBalance()`, `getCreditHistory()`, `addCredit()` (admin)
-3. **`AdCardComponent`** — badge `<span class="promo-badge badge-featured/priority/highlighted">` dodat na `.image-wrapper`, pozicioniran `top:8px; left:8px`
-4. **"Moji oglasi"** (`features/user/pages/my-ads/`) — `ad-management-actions` prikazuje: expiry info (crveno/narandžasto kad ≤5 dana), promo badge ako aktivan, dugmad "Obnovi" (besplatno, blokira dupli klik) + "Promoviši" (otvara modal) + Izmeni + Obriši
-5. **`PromotionModalComponent`** (`features/ads/components/promotion-modal/`) — modalni prozor sa 3 paketa, stanjem kredita, disabled paket ako nema dovoljno kredita, link "Dopuni" ka `/credit`
-6. **Stranica "Kredit"** (`features/user/pages/credit/`) — ruta `/credit` (auth guard), prikazuje: balance card, uputstvo za dopunu, tabelu paketa, istoriju transakcija
-7. **Admin panel** (`features/admin/pages/admin-users/`) — kolona "Kredit" sa dugmetom "+ Kredit"; modal sa iznosom i napomenom; poziva `POST /api/promotions/admin/credit`
-
-**Stil za promotion badge:**
+**Promotion badge CSS:**
 ```css
-.badge-featured  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
-.badge-priority  { background: var(--color-primary); color: #fff; }
+.badge-featured    { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+.badge-priority    { background: var(--color-primary); color: #fff; }
 .badge-highlighted { background: var(--color-primary-light); color: var(--color-primary); border: 1px solid var(--color-primary-border); }
 ```
 
-### Cookie Banner + Legal Stranice (IMPLEMENTIRANO)
+**Backend entiteti**: `AdPromotion`, `CreditTransaction`; enumi `PromotionType`, `TransactionType`.
+**Ad entity**: `expiresAt`, `promotionType`, `promotionExpiresAt`, `promotionRank` (int, default 0).
+**Migracije**: changelog-21 (expiry + promotion kolone), changelog-22 (tabele ad_promotion, credit_transaction).
 
-- **`CookieConsentService`** (`shared/services/cookie-consent.service.ts`) — `localStorage` key `cookie_consent`; GA4 se učitava dinamički samo na prihvat; **GA4 ID: `G-GYYJSDLKLB`** (postavljeno, aktivan)
-- **`CookieBannerComponent`** (`shared/components/cookie-banner/`) — fixed bottom banner, `*ngIf="(status$ | async) === null"`, slide-up animacija
-- **`/privacy-policy`** — potpun ZZPL/GDPR tekst na srpskom (10 sekcija)
-- **`/terms-of-service`** — potpun tekst uslova korišćenja (9 sekcija), uključuje opis kredit sistema i cene paketa
-- Footer linkovi ažurirani na `/privacy-policy` i `/terms-of-service`
+**Scheduled jobs** (u `PromotionServiceImpl` — `@Slf4j`):
+- `expirePromotions()` — svakih sat: resetuje promotionType/Rank na isteklim
+- `expireAds()` — 03:00 cron: `adStatus=ARCHIVED` za istekle oglase
+- `sendExpiryReminders()` — 10:00 cron: email za oglase koji ističu za 2–3 dana (prozor `[now+2d, now+3d]`)
 
-### Sentry (IMPLEMENTIRANO)
+Email u `addCredit()` i `sendExpiryReminders()` je wrapped u try-catch + `log.warn` — ne blokira main flow.
 
-Backend: `sentry-spring-boot-starter-jakarta`. Frontend: `@sentry/angular^10.46.0`, `Sentry.init()` pre `bootstrapApplication()` u `main.ts`.
+**API**: `GET /api/promotions/packages`, `POST /api/promotions/activate`, `GET /api/promotions/ad/{adId}`, `POST /api/promotions/renew/{adId}`, `GET /api/promotions/credit`, `GET /api/promotions/credit/history`, `POST /api/promotions/admin/credit`.
 
-Za produkciju, dodati u `/opt/app/RentRentOut/.env`:
+---
+
+## HTML Email Servis
+
+`HtmlEmailServiceImpl` (`service/impl/`) — purple table-based HTML, kompatibilan sa svim klijentima. `esc()` helper za XSS zaštitu. `send()` hvata sve exceptione. 7 metoda: verifikacija, reset lozinke, contract request/accepted/rejected, credit added, ad expiry reminder. Svi emaili na srpskom.
+
+---
+
+## Ad Reporting
+
+**Backend**: `AdReport` entity (reason VARCHAR 60, note VARCHAR 500, reviewed bool); `POST /api/ads/{adId}/report` (ne može sopstveni oglas, duplikat guard); `GET /api/admin/reports?onlyUnreviewed=`, `PATCH /api/admin/reports/{id}/reviewed`. Migracija: changelog-24.
+
+**Frontend**: `ReportModalComponent` (5 razloga + napomena 500 char); admin stranica sa filterom i paginacijom; dashboard prikazuje 6 stat kartica (uključuje activeAds i pendingReports — crveno kad > 0).
+
+---
+
+## SEO, Sitemap, PWA
+
+- **Sitemap**: `SitemapController` → `GET /sitemap.xml` (permitAll); statičke stranice + svi aktivni oglasi iz `findAllActiveIds()`; Nginx proxira `/sitemap.xml` na backend
+- **robots.txt**: `public/robots.txt` — `Allow: /`, sitemap URL
+- **SEO**: `AdDetailsComponent` dynamički postavlja `<title>`, og:title/description/image/url/type, twitter:card; `ngOnDestroy()` resetuje na defaulte
+- **PWA**: `manifest.webmanifest` (theme_color `#813181`, standalone), `<meta name="theme-color">`, `loading="lazy"` na ad kartici
+- **GA4**: ID `G-GYYJSDLKLB`, učitava se dinamički samo na prihvat kolačića (`CookieConsentService`, localStorage key `cookie_consent`)
+- **Cookie banner**: `CookieBannerComponent` (`shared/components/cookie-banner/`), `*ngIf="(status$ | async) === null"`, slide-up animacija
+- **Sentry**: backend `sentry-spring-boot-starter-jakarta`; frontend `@sentry/angular^10`; `Sentry.init()` pre `bootstrapApplication()`
+
+---
+
+## Production
+
+- **VPS**: Hetzner CX22 — `178.104.97.101`, Ubuntu 22.04
+- **Stack**: Docker Compose (`docker-compose.prod.yml`) — MySQL + backend + frontend + Nginx
+- **SSL**: Let's Encrypt, auto-renewal cron 03:00 (`/opt/app/renew-ssl.sh`)
+- **Repo na VPS-u**: `/opt/app/`; **Env**: `/opt/app/RentRentOut/.env`; **Symlink**: `/opt/app/.env` → `/opt/app/RentRentOut/.env`
+- **Backup**: `backup.sh` — MySQL dump gzip, 14-dnevna rotacija; cron `0 2 * * *`
+- **Deploy**: `cd /opt/app && git pull && docker compose -f docker-compose.prod.yml up --build -d`
+- Angular `environment.prod.ts` koristi relativni `/api` URL (Nginx proxira); WebSocket URL se izvodi iz `window.location`; `google.client-id` u `environment.ts` (ne hardkodovan)
+- `app.cookie.secure=false` lokalno; `APP_COOKIE_SECURE=true` u `.env` na serveru
+
+**Env varijable na serveru** (nisu u gitu):
 ```
+APP_COOKIE_SECURE=true
+ENCRYPTION_PHONE_KEY=<32 chars>   # postavljeno 2026-03-27
 SENTRY_DSN=https://...@sentry.io/...
 SENTRY_TRACES_SAMPLE_RATE=0.1
 SENTRY_ENVIRONMENT=production
 ```
+Generisanje ključa: `python3 -c "import secrets, string; print(''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32)))"`
 
-### Google Analytics (IMPLEMENTIRANO)
+**VAŽNO**: `APP.COOKIE.SECURE` (sa tačkama) je nevalidan env var na Linux. Koristiti underscore.
 
-GA4 Measurement ID je postavljen u `shared/services/cookie-consent.service.ts`. Skript se učitava dinamički samo kad korisnik prihvati kolačiće.
-
-### SEO Meta Tagovi (IMPLEMENTIRANO)
-
-- **`index.html`** — statički default tagovi: `description`, `og:description`, `og:image`, `og:url`, `twitter:card/title/description/image`
-- **`AdDetailsComponent`** — dinamički tagovi putem Angular `Title` i `Meta` servisa:
-  - `<title>` → `{naslov oglasa} — Izdajem Iznajmljujem`
-  - `og:title`, `og:description` (prvih 155 znakova opisa), `og:image` (prva slika), `og:url`, `og:type: product`
-  - `twitter:card/title/description/image`
-  - `ngOnDestroy()` resetuje tagove na default vrednosti
-- **Napomena**: Angular je SPA — Google Crawler izvršava JS i vidi dinamičke tagove. Za Facebook/WhatsApp deljenje koristi se Cloudinary URL slike koji je javno dostupan. Za optimalni crawling bez JS (stariji botovi) potreban bi bio Angular SSR — nije implementiran.
-
-### Email Podsetnik za Istek Oglasa (IMPLEMENTIRANO)
-
-- **`AdRepository.findAdsExpiringBetween(from, to)`** — JPQL query za aktivne oglase čiji `expiresAt` pada u zadati vremenski prozor
-- **`PromotionServiceImpl.sendExpiryReminders()`** — `@Scheduled(cron = "0 0 10 * * *")`, svako jutro u 10:00; prozor `[now+2d, now+3d]` hvata svaki oglas tačno jednom; email sadrži link na oglas i link na Moji oglasi za obnovu; greška na jednom emailu ne prekida ostale
-
----
-
-## HTML Email Servis (IMPLEMENTIRANO)
-
-`HtmlEmailServiceImpl.java` (`service/impl/`) — zamena za `SimpleMailMessage`/`JavaMailSender` u svim service-ima.
-
-- Purple-themed table-based HTML layout (kompatibilan sa svim email klijentima)
-- `esc()` helper za XSS zaštitu svih user-content vrednosti
-- 7 implementiranih metoda: `sendVerificationEmail`, `sendPasswordResetEmail`, `sendContractRequestEmail`, `sendContractAcceptedEmail`, `sendContractRejectedEmail`, `sendCreditAddedEmail`, `sendAdExpiryReminderEmail`
-- `send()` hvata sve exceptione i loguje warning — ne blokira main flow
-- Svi emaili na **srpskom jeziku** (lokalizovano u ovoj sesiji)
-
-**Refaktorisani servisi:**
-- `EmailVerificationServiceImpl` — koristi `HtmlEmailService`; interfejs sada prima `firstname` parametar
-- `PasswordResetServiceImpl` — koristi `HtmlEmailService`
-- `NotificationServiceImpl` — sve 3 contract email metode; push notifikacije naslovi na srpskom
-- `PromotionServiceImpl` — `addCredit()` i `sendExpiryReminders()` emaili
-
----
-
-## Ad Reporting System (IMPLEMENTIRANO)
-
-Korisnici mogu prijaviti oglase. Admin vidi prijave u posebnom tabu.
-
-### Backend
-
-- **`AdReport.java`** (entity) — `id`, `ad` (lazy FK), `reporter` (lazy FK), `reason` (VARCHAR 60), `note` (VARCHAR 500), `reviewed` (boolean), `createdAt`
-- **`AdReportRepository.java`** — `existsByAdIdAndReporterId()`, `findAllByOrderByCreatedAtDesc()`, `findAllByReviewedFalseOrderByCreatedAtDesc()`, `countByReviewedFalse()`
-- **`dto/admin/AdReportDto.java`** — static `from(AdReport r)` factory
-- **`db.changelog-24-create-ad-report.xml`** — `ad_report` tabela sa FK cascade delete i indexima
-- **`AdReportController`** — `POST /api/ads/{adId}/report` (authenticated; guard: ne može sopstveni oglas; duplikat guard)
-- **`AdminController`** — `GET /api/admin/reports?onlyUnreviewed=true|false`, `PATCH /api/admin/reports/{id}/reviewed`
-- **`AdminServiceImpl`** — `getStats()` sada vraća 6 polja: dodato `activeAds` i `pendingReports`; `getReports()`, `markReportReviewed()`
-- **`AdRepository`** — dodato `findAllActiveIds()` JPQL query (koristi ga i `SitemapController`)
-
-### Frontend
-
-- **`ReportModalComponent`** (`features/ads/components/report-modal/`) — 5 razloga + opcionalna napomena (500 char); `ToastService.showSuccess/showError`
-- **`AdDetailsComponent`** — dugme "Prijavi oglas" vidljivo samo ulogovanim ne-vlasnicima; `reportOpen: boolean`
-- **`ad.service.ts`** — dodato `reportAd(adId, reason, note): Observable<string>`
-- **`AdminReportsComponent`** (`features/admin/pages/admin-reports/`) — tabela sa filterom (samo nepregledane / sve), "Označi pregledano", paginacija
-- **`admin.routes.ts`** — `{ path: 'reports', component: AdminReportsComponent }`
-- **`admin-shell.component.html`** — nav link "Prijave"
-- **`admin-dashboard.component.html`** — 6 stat kartica (Korisnici, Ukupno oglasi, Aktivni oglasi, Ugovori, Aktivni ugovori, Nepregledane prijave — crveno kad > 0)
-- **`admin.service.ts`** — `AdminStats` prošireno sa `activeAds`, `pendingReports`; dodato `getReports()`, `markReportReviewed()`
-
----
-
-## Sitemap.xml (IMPLEMENTIRANO)
-
-- **`SitemapController.java`** — `GET /sitemap.xml`, `MediaType.APPLICATION_XML_VALUE`; statičke stranice + sve aktivne oglasi iz `AdRepository.findAllActiveIds()`
-- **`nginx.prod.conf`** — `location = /sitemap.xml` proxira na `backend:8080` (pre `/api/` bloka)
-- **`public/robots.txt`** — `Allow: /`, `Sitemap: https://izdajemiznajmljujem.com/sitemap.xml`
-- **`SecurityConfig`** — `GET /sitemap.xml` je `permitAll`
-
----
-
-## PWA i Performance (IMPLEMENTIRANO)
-
-- **`public/manifest.webmanifest`** — PWA manifest, `theme_color: "#813181"`, `display: "standalone"`, ikone
-- **`index.html`** — `<meta name="theme-color" content="#813181">` + `<link rel="manifest" href="manifest.webmanifest">`
-- **`ad-card.component.html`** — `loading="lazy"` na `<img>` tagu
-- **`angular.json`** — `anyComponentStyle` budget: `maximumWarning` 8kB→16kB, `maximumError` 16kB→24kB (pre-existing overrun u create-ad/edit-ad komponentama)
-
----
-
-## DB Backup Script (IMPLEMENTIRANO)
-
-**`backup.sh`** (u project root, deployuje se na VPS):
-- MySQL dump via `docker exec mysql`, gzip kompresija
-- 14-dnevna rotacija (automatsko brisanje starih backup-ova)
-- Cron na serveru: `0 2 * * * /opt/app/backup.sh >> /opt/app/backups/backup.log 2>&1`
-
----
-
-## Rate Limiting (VEĆ IMPLEMENTIRANO)
-
-`RateLimitFilter.java` (`security/`) — `@Component`, Bucket4j biblioteka. Štiti:
-- `POST /api/auth/login`, `POST /api/auth/register`, `POST /api/auth/forgot-password`
-- Social login endpointe
-Auto-registrovan kao Spring servlet filter — bez promene `SecurityConfig`.
-
----
-
-## Produkcijska Baza Podataka (STATUS 2026-03-27)
-
-- Mock podaci potpuno obrisani (`TRUNCATE` svih data tabela: ad, ad_image, ad_view, review, notification, message, conversation, rental_contract, saved_ad, ad_report, ad_promotion, credit_transaction, email_verification_token, password_reset_token)
-- Jedini preostali korisnik: **id=10**, `dimitrijemitic112@gmail.com`, `role_id=1` (ADMIN)
-- `ENCRYPTION_PHONE_KEY` postavljen u `/opt/app/RentRentOut/.env`
-
-**Napomena za MySQL Docker konekciju**: koristiti `-h 127.0.0.1` (TCP), ne `localhost` (socket fail sa root passwordom):
+**MySQL Docker konekcija**: `-h 127.0.0.1` (TCP), ne `localhost` (socket fail):
 ```bash
 docker exec -it <mysql-container> mysql -h 127.0.0.1 -u root -p
 ```
+
+**DB status (2026-03-27)**: Mock podaci obrisani. Jedini korisnik: id=10, `dimitrijemitic112@gmail.com`, role=ADMIN.
 
 ---
 
