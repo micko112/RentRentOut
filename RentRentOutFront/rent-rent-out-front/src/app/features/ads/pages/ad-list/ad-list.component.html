@@ -42,7 +42,7 @@
             <a routerLink="/ads/create" class="hero-btn hero-btn--primary">
               <span class="material-icons">add</span> Postavi oglas
             </a>
-            <a routerLink="/" [queryParams]="{sort: 'id,desc'}" class="hero-btn hero-btn--secondary">
+            <a routerLink="/ads" [queryParams]="{sort: 'id,desc'}" class="hero-btn hero-btn--secondary">
               Pretraži oglase
             </a>
           </div>
@@ -59,7 +59,7 @@
               <span class="material-icons section-icon">schedule</span>
               <h2 class="section-title">Najnoviji oglasi</h2>
             </div>
-            <a routerLink="/" [queryParams]="{sort: 'id,desc'}" class="section-see-all">
+            <a routerLink="/ads" [queryParams]="{sort: 'id,desc'}" class="section-see-all">
               Pogledajte sve <span class="material-icons">arrow_forward</span>
             </a>
           </div>
@@ -79,7 +79,7 @@
               <h2 class="section-title">{{ cat.displayName }}</h2>
               <span class="section-count" *ngIf="cat.total > 0">{{ cat.total }} oglasa</span>
             </div>
-            <a routerLink="/" [queryParams]="{categoryId: cat.id}" class="section-see-all">
+            <a routerLink="/ads" [queryParams]="{categoryId: cat.id}" class="section-see-all">
               Pogledajte sve <span class="material-icons">arrow_forward</span>
             </a>
           </div>

@@ -19,6 +19,14 @@ export class FiltersSidebarComponent implements OnInit, OnDestroy {
 
   @Input() categories: Category[] = [];
 
+  get parentCategories(): Category[] {
+    return this.categories.filter(c => !c.parentId);
+  }
+
+  getChildren(parentId: number): Category[] {
+    return this.categories.filter(c => c.parentId === parentId);
+  }
+
   private _locations: Location[] = [];
   @Input() set locations(value: Location[]) {
     this._locations = value;

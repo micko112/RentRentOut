@@ -8,24 +8,24 @@
 .hero-banner {
   background: linear-gradient(135deg, var(--color-primary) 0%, #5c2060 100%);
   border-radius: 16px;
-  padding: 36px 40px;
-  margin-bottom: 32px;
+  padding: 20px 32px;
+  margin-bottom: 24px;
   color: #fff;
 }
 
 .hero-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
   line-height: 1.25;
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   color: #fff;
 }
 
 .hero-sub {
-  font-size: 15px;
+  font-size: 14px;
   opacity: 0.88;
-  margin: 0 0 24px;
-  line-height: 1.6;
+  margin: 0 0 16px;
+  line-height: 1.5;
   max-width: 520px;
 }
 
@@ -64,12 +64,11 @@
 
 @media (max-width: 600px) {
   .hero-banner {
-    padding: 24px 20px;
+    padding: 16px 18px;
     border-radius: 12px;
   }
 
-  .hero-title { font-size: 22px; }
-  .hero-sub { font-size: 14px; }
+  .hero-title { font-size: 20px; }
 }
 
 /* =========================================

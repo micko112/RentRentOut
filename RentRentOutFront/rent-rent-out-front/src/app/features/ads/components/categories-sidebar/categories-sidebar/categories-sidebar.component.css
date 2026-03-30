@@ -35,11 +35,11 @@
 .category-list {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Manji razmak jer stavljamo padding na same elemente */
+  gap: 2px;
 
   .category-item {
-    padding: 10px 14px;
-    border-radius: 8px; /* Mali radius na samim stavkama */
+    padding: 9px 14px;
+    border-radius: 8px;
     color: #555;
     font-size: 15px;
     font-weight: 500;
@@ -49,23 +49,37 @@
     display: flex;
     align-items: center;
 
-    /* HYGGLO EFEKAT: Na hover dobija sivu pozadinu i malo se pomeri udesno */
     &:hover {
       background-color: rgba(247, 247, 247, 0.5);
       color: #111;
       transform: translateX(4px);
     }
 
-    /* KADA JE SELEKTOVANO */
     &.active {
-      background-color: #eef2ff; /* Nežna plava/brand pozadina */
-      color: #0056b3; /* Jaka brand boja teksta */
+      background-color: #f5ecff;
+      color: #813181;
       font-weight: 600;
 
-      /* Ako je već aktivno, ne želimo da se pomera na hover */
       &:hover {
         transform: none;
       }
     }
+  }
+
+  .category-item--parent {
+    font-weight: 600;
+    color: #333;
+    margin-top: 4px;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  .category-item--child {
+    padding-left: 28px;
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
   }
 }

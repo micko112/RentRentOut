@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="fix-category-parent-ids-25" author="micko112">
+        <!--
+            Potkategorije su u bazi sa parent_id = NULL.
+            Rešenje: UPDATE po imenu, samo tamo gde parent_id IS NULL.
+            Ne brišemo ništa — oglasi i dalje referenciraju iste category.id.
+        -->
+
+        <!-- 100 — Građevinska oprema i alati -->
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Bušilice i šrafilice'        AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Struja i agregati'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Testerisanje i sečenje'       AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Brušenje i poliranje'         AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Ventilacija i grejanje'       AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Merni instrumenti'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Ručni alati'                  AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Krečenje i tapete'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Glodanje i hoblovanje'        AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 100 WHERE name = 'Skele i podupirači'           AND parent_id IS NULL</sql>
+
+        <!-- 200 — Elektronika -->
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Audio oprema i zvuk'          AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Dronovi'                      AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Projektori i televizori'      AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Računari i oprema'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Video igre i konzole'         AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Mobilni telefoni i tableti'   AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Radio stanice i toki-voki'    AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Kancelarijske mašine'         AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'POS terminali'                AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 200 WHERE name = 'Ostalo u elektronici'         AND parent_id IS NULL</sql>
+
+        <!-- 300 — Foto i Video -->
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Fotoaparati i kamere'         AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Objektivi'                    AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Blicevi i rasveta'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Stativi i rigovi'             AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Foto/Video paketi'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Monitori'                     AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Baterije za kamere'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Memorijske kartice'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Foto pozadine'                AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 300 WHERE name = 'Ostalo u foto i video'        AND parent_id IS NULL</sql>
+
+        <!-- 400 — Bašta -->
+        <sql>UPDATE category SET parent_id = 400 WHERE name = 'Baštenske mašine'             AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 400 WHERE name = 'Merdevine'                    AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 400 WHERE name = 'Održavanje travnjaka'         AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 400 WHERE name = 'Baštenski alati'              AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 400 WHERE name = 'Baštenski nameštaj'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 400 WHERE name = 'Ostalo u bašti'               AND parent_id IS NULL</sql>
+
+        <!-- 500 — Kuća i dom -->
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Stilizovanje i dekoracija'    AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Čišćenje i pranje'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Kuhinjski aparati'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Oprema za decu'               AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Lična nega'                   AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Mašine za šivenje'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Oprema za selidbe'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Oprema za kućne ljubimce'     AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 500 WHERE name = 'Ostalo u kući'                AND parent_id IS NULL</sql>
+
+        <!-- 600 — Proslave i događaji -->
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Zvuk, rasveta i bina'         AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Odeća i kostimi'              AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Nameštaj za proslave'         AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Ketering i kuhinja'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Aktivnosti i zabava'          AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Šatori i tende'               AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Dekoracija'                   AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Party paketi'                 AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Grejalice i pečurke'          AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 600 WHERE name = 'Ostalo za proslave'           AND parent_id IS NULL</sql>
+
+        <!-- 700 — Sport i rekreacija -->
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Muzički instrumenti'          AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Kampovanje i outdoor'         AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Biciklizam'                   AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Igra i hobi'                  AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Sportski rekviziti'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Sportovi na vodi'             AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Trening i teretana'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Zimski sportovi'              AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Putovanja i koferi'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 700 WHERE name = 'Mobilnost i medicinska nega'  AND parent_id IS NULL</sql>
+
+        <!-- 800 — Vozila i oprema -->
+        <sql>UPDATE category SET parent_id = 800 WHERE name = 'Auto oprema'                  AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 800 WHERE name = 'Alati za radionicu'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 800 WHERE name = 'Čamci i plovila'              AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 800 WHERE name = 'Prikolice'                    AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 800 WHERE name = 'Kamperi i kamp prikolice'     AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 800 WHERE name = 'Motocikli i oprema'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 800 WHERE name = 'Prikolice za konje'           AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 800 WHERE name = 'Ostala vozila'                AND parent_id IS NULL</sql>
+
+        <!-- 900 — Nekretnine -->
+        <sql>UPDATE category SET parent_id = 900 WHERE name = 'Stanovi na dan'               AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 900 WHERE name = 'Stanovi (dugoročno)'          AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 900 WHERE name = 'Kuće i vile'                  AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 900 WHERE name = 'Vikendice i brvnare'          AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 900 WHERE name = 'Poslovni prostori'            AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 900 WHERE name = 'Garaže i parking'             AND parent_id IS NULL</sql>
+        <sql>UPDATE category SET parent_id = 900 WHERE name = 'Sobe'                         AND parent_id IS NULL</sql>
+    </changeSet>
+
+</databaseChangeLog>
