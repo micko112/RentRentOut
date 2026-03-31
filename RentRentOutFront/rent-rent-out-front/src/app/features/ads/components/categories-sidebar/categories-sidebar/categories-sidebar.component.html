@@ -16,12 +16,24 @@
            (click)="onCategoryClick(parent.id)">
           {{ parent.name }}
         </a>
-        <a class="category-item category-item--child"
-           *ngFor="let child of getChildren(parent.id)"
-           [class.active]="child.id === selectedCategoryId"
-           (click)="onCategoryClick(child.id)">
-          {{ child.name }}
-        </a>
+        <ng-container *ngFor="let child of getChildren(parent.id)">
+          <a class="category-item category-item--child"
+             [class.active]="child.id === selectedCategoryId"
+             (click)="hasGrandchildren(child.id) ? toggleExpand(child.id) : onCategoryClick(child.id)">
+            {{ child.name }}
+            <span class="material-icons expand-icon" *ngIf="hasGrandchildren(child.id)">
+              {{ expandedLevel2Ids.has(child.id) ? 'expand_more' : 'chevron_right' }}
+            </span>
+          </a>
+          <ng-container *ngIf="expandedLevel2Ids.has(child.id)">
+            <a class="category-item category-item--grandchild"
+               *ngFor="let grandchild of getGrandchildren(child.id)"
+               [class.active]="grandchild.id === selectedCategoryId"
+               (click)="onCategoryClick(grandchild.id)">
+              {{ grandchild.name }}
+            </a>
+          </ng-container>
+        </ng-container>
       </ng-container>
     </div>
   </div>

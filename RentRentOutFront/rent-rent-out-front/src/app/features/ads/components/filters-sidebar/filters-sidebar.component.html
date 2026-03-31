@@ -35,7 +35,10 @@
           <option [ngValue]="undefined">Sve kategorije</option>
           <optgroup *ngFor="let parent of parentCategories" [label]="parent.name">
             <option [ngValue]="parent.id">{{ parent.name }} (sve)</option>
-            <option *ngFor="let child of getChildren(parent.id)" [ngValue]="child.id">{{ child.name }}</option>
+            <ng-container *ngFor="let child of getChildren(parent.id)">
+              <option [ngValue]="child.id">{{ child.name }}</option>
+              <option *ngFor="let grandchild of getChildren(child.id)" [ngValue]="grandchild.id">— {{ grandchild.name }}</option>
+            </ng-container>
           </optgroup>
         </select>
       </div>

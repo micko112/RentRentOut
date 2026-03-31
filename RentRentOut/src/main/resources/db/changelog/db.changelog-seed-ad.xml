@@ -315,7 +315,7 @@
             <column name="ad_status" value="ACTIVE"/>
             <column name="total_quantity" valueNumeric="1"/>
             <column name="owner_id" valueNumeric="4"/>
-            <column name="category_id" valueNumeric="904"/>
+            <column name="category_id" valueNumeric="901"/>
             <column name="location_id" valueNumeric="5"/>
         </insert>
 
@@ -328,7 +328,7 @@
             <column name="ad_status" value="ACTIVE"/>
             <column name="total_quantity" valueNumeric="1"/>
             <column name="owner_id" valueNumeric="3"/>
-            <column name="category_id" valueNumeric="905"/>
+            <column name="category_id" valueNumeric="901"/>
             <column name="location_id" valueNumeric="2"/>
         </insert>
         <!-- ========================================== -->

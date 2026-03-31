@@ -46,6 +46,8 @@
 
     <include file="/db/changelog/db.changelog-seed-location.xml"/>
     <include file="/db/changelog/db.changelog-seed-categories-full.xml"/>
+    <include file="/db/changelog/db.changelog-26-categories-3-levels.xml"/>
+    <include file="/db/changelog/db.changelog-27-categories-remaining.xml"/>
 
     <!-- Onda korisnike (kojima treba lokacija) -->
     <include file="/db/changelog/db.changelog-seed-user.xml"/>
