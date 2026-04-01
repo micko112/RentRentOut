@@ -40,56 +40,15 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
       <!-- ──────────────────────────────────
-           KORAK 1 · KATEGORIJA + OPIS
+           KORAK 1 · NASLOV + KATEGORIJA + OPIS
            ────────────────────────────────── -->
       <div class="step-panel" *ngIf="currentStep === 1">
 
-        <!-- KATEGORIJA -->
+        <!-- NASLOV -->
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">1</span>
-            Kategorija
-          </div>
-          <p class="section-hint">Izaberite kategoriju koja opisuje vaš predmet</p>
-
-          <div class="category-grid">
-            <button type="button"
-                    *ngFor="let cat of parentCategories"
-                    class="cat-card"
-                    [class.selected]="isParentSelected(cat)"
-                    (click)="selectParentCategory(cat)">
-              <span class="cat-icon material-symbols-outlined">{{ getCategoryIcon(cat.name) }}</span>
-              <span class="cat-name">{{ cat.name }}</span>
-              <div class="cat-check" *ngIf="isParentSelected(cat)">✓</div>
-            </button>
-          </div>
-
-          <!-- Podkategorije -->
-          <div class="subcategory-section" *ngIf="childCategories.length > 0">
-            <div class="sub-label">Podkategorija <span class="req">*</span></div>
-            <div class="subcategory-chips">
-              <button type="button"
-                      *ngFor="let child of childCategories"
-                      class="sub-chip"
-                      [class.selected]="isChildSelected(child)"
-                      (click)="selectChildCategory(child)">
-                {{ child.name }}
-              </button>
-            </div>
-          </div>
-
-          <small class="field-error" *ngIf="form.get('categoryId')?.touched && !form.get('categoryId')?.value">
-            Izaberite kategoriju pre nastavka.
-          </small>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <!-- NASLOV & OPIS -->
-        <section class="section-block">
-          <div class="section-title">
-            <span class="section-num">2</span>
-            Opis oglasa
+            Naslov oglasa
           </div>
 
           <div class="form-field">
@@ -109,6 +68,103 @@
             <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
               Naslov je obavezan.
             </small>
+          </div>
+
+          <!-- SUGGEST ROW -->
+          <div class="suggest-row">
+            <button type="button"
+                    class="btn-suggest"
+                    [disabled]="!canSuggest || isSuggestingCategories"
+                    (click)="suggestCategories()">
+              <span class="material-icons suggest-icon" *ngIf="!isSuggestingCategories">auto_awesome</span>
+              <span class="suggest-spinner" *ngIf="isSuggestingCategories"></span>
+              {{ isSuggestingCategories ? 'Preporučujem...' : 'Preporuči kategoriju' }}
+            </button>
+            <span class="suggest-hint" *ngIf="!canSuggest">Unesite naslov (min. 3 karaktera)</span>
+          </div>
+
+          <!-- SUGGESTED RESULTS -->
+          <div class="suggest-results" *ngIf="suggestedCategories.length > 0">
+            <div class="suggest-results-label">Predložene kategorije — klikni da primeniš:</div>
+            <div class="suggest-chips">
+              <button type="button"
+                      *ngFor="let s of suggestedCategories"
+                      class="suggest-chip"
+                      [class.applied]="appliedSuggestionId === s.id"
+                      (click)="applySuggestedCategory(s)">
+                <span class="material-icons suggest-chip-icon">
+                  {{ appliedSuggestionId === s.id ? 'check_circle' : 'category' }}
+                </span>
+                <span class="suggest-chip-text">
+                  <span class="suggest-chip-path">{{ getCategoryPath(s) }}</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- KATEGORIJA -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">2</span>
+            Kategorija
+          </div>
+          <p class="section-hint">Izaberite kategoriju koja opisuje vaš predmet</p>
+
+          <div class="category-grid">
+            <button type="button"
+                    *ngFor="let cat of parentCategories"
+                    class="cat-card"
+                    [class.selected]="isParentSelected(cat)"
+                    (click)="selectParentCategory(cat)">
+              <span class="cat-icon material-symbols-outlined">{{ getCategoryIcon(cat.name) }}</span>
+              <span class="cat-name">{{ cat.name }}</span>
+              <div class="cat-check" *ngIf="isParentSelected(cat)">✓</div>
+            </button>
+          </div>
+
+          <!-- Level-2 chips -->
+          <div class="subcategory-section" *ngIf="childCategories.length > 0">
+            <div class="sub-label">Podkategorija <span class="req">*</span></div>
+            <div class="subcategory-chips">
+              <button type="button"
+                      *ngFor="let child of childCategories"
+                      class="sub-chip"
+                      [class.selected]="isChildSelected(child)"
+                      (click)="selectChildCategory(child)">
+                {{ child.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Level-3 chips -->
+          <div class="subcategory-section subcategory-section--l3" *ngIf="grandchildCategories.length > 0">
+            <div class="sub-label">Pod-podkategorija <span class="req">*</span></div>
+            <div class="subcategory-chips">
+              <button type="button"
+                      *ngFor="let gc of grandchildCategories"
+                      class="sub-chip sub-chip--l3"
+                      [class.selected]="isGrandchildSelected(gc)"
+                      (click)="selectGrandchildCategory(gc)">
+                {{ gc.name }}
+              </button>
+            </div>
+          </div>
+
+          <small class="field-error" *ngIf="form.get('categoryId')?.touched && !form.get('categoryId')?.value">
+            Izaberite kategoriju pre nastavka.
+          </small>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- OPIS -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">3</span>
+            Opis oglasa
           </div>
 
           <div class="form-field">

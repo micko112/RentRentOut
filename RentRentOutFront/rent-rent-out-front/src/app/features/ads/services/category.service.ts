@@ -12,6 +12,10 @@ export class CategoryService {
 
   getAll(): Observable<Category[]> {
     return this.http.get<Category[]>(`${API_BASE_URL}/categories`);
-}
+  }
+
+  suggest(title: string): Observable<Category[]> {
+    return this.http.post<Category[]>(`${API_BASE_URL}/categories/suggest`, { title });
+  }
 
 }

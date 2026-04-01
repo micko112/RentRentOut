@@ -216,9 +216,6 @@
 .sidebar-area {
   width: 280px;
   flex-shrink: 0;
-  position: sticky;
-  top: 155px;
-  z-index: 1000;
 }
 
 .ads-display-area {

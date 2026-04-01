@@ -37,7 +37,14 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   parentCategories: Category[] = [];
   childCategories: Category[] = [];
+  grandchildCategories: Category[] = [];
   selectedParentId: number | null = null;
+  selectedLevel2Id: number | null = null;
+
+  // ── Category suggest ─────────────────────────────────────────────────────
+  suggestedCategories: Category[] = [];
+  isSuggestingCategories = false;
+  appliedSuggestionId: number | null = null;
 
   // ── Locations ───────────────────────────────────────────────────────────
   locations: Location[] = [];
@@ -55,7 +62,7 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   ];
 
   readonly stepConfig = [
-    { label: 'Kategorija i opis' },
+    { label: 'Naslov i kategorija' },
     { label: 'Slike, cena i lokacija' },
   ];
 
@@ -169,7 +176,7 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   }
 
   // ════════════════════════════════════════════════════════
-  //  CATEGORIES
+  //  CATEGORIES — 3 levels
   // ════════════════════════════════════════════════════════
 
   getCategoryIcon(name: string): string {
@@ -182,7 +189,9 @@ export class CreateAdComponent implements OnInit, OnDestroy {
 
   selectParentCategory(cat: Category): void {
     this.selectedParentId = cat.id;
+    this.selectedLevel2Id = null;
     this.childCategories = this.categories.filter(c => c.parentId === cat.id);
+    this.grandchildCategories = [];
     if (this.childCategories.length === 0) {
       this.form.patchValue({ categoryId: cat.id });
     } else {
@@ -191,19 +200,79 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   }
 
   selectChildCategory(cat: Category): void {
+    this.selectedLevel2Id = cat.id;
+    this.grandchildCategories = this.categories.filter(c => c.parentId === cat.id);
+    if (this.grandchildCategories.length === 0) {
+      this.form.patchValue({ categoryId: cat.id });
+    } else {
+      this.form.patchValue({ categoryId: null });
+    }
+  }
+
+  selectGrandchildCategory(cat: Category): void {
     this.form.patchValue({ categoryId: cat.id });
   }
 
-  isParentSelected(cat: Category): boolean { return this.selectedParentId === cat.id; }
-  isChildSelected(cat: Category): boolean  { return this.form.get('categoryId')?.value === cat.id; }
+  isParentSelected(cat: Category): boolean   { return this.selectedParentId === cat.id; }
+  isChildSelected(cat: Category): boolean    { return this.selectedLevel2Id === cat.id; }
+  isGrandchildSelected(cat: Category): boolean { return this.form.get('categoryId')?.value === cat.id; }
 
-  getSelectedCategoryName(): string {
-    const id = this.form.get('categoryId')?.value;
-    return this.categories.find(c => c.id === id)?.name ?? '—';
+  getCategoryPath(cat: Category): string {
+    const parts: string[] = [cat.name];
+    let current: Category | undefined = cat;
+    while (current?.parentId) {
+      current = this.categories.find(c => c.id === current!.parentId);
+      if (current) parts.unshift(current.name);
+    }
+    return parts.join(' › ');
   }
 
-  getSelectedParentName(): string {
-    return this.parentCategories.find(c => c.id === this.selectedParentId)?.name ?? '';
+  // ════════════════════════════════════════════════════════
+  //  CATEGORY SUGGEST
+  // ════════════════════════════════════════════════════════
+
+  get canSuggest(): boolean {
+    return (this.form.get('title')?.value?.trim()?.length ?? 0) >= 3;
+  }
+
+  suggestCategories(): void {
+    const title = this.form.get('title')?.value?.trim();
+    if (!title || title.length < 3) return;
+    this.isSuggestingCategories = true;
+    this.suggestedCategories = [];
+    this.appliedSuggestionId = null;
+    this.categoryService.suggest(title).subscribe({
+      next: cats => {
+        this.suggestedCategories = cats.slice(0, 5);
+        this.isSuggestingCategories = false;
+      },
+      error: () => {
+        this.isSuggestingCategories = false;
+        this.toastService.showError('Greška pri preporuci kategorije.');
+      },
+    });
+  }
+
+  applySuggestedCategory(cat: Category): void {
+    this.appliedSuggestionId = cat.id;
+
+    // Build chain: find level-1 and level-2 parents
+    const level3 = !cat.parentId ? null : (() => {
+      const parent = this.categories.find(c => c.id === cat.parentId);
+      return parent?.parentId ? cat : null;
+    })();
+
+    const level2 = level3
+      ? this.categories.find(c => c.id === level3.parentId) ?? null
+      : (!cat.parentId ? null : cat);
+
+    const level1 = level2
+      ? (this.categories.find(c => c.id === level2.parentId) ?? (level2.parentId ? null : level2))
+      : cat;
+
+    if (level1) this.selectParentCategory(level1);
+    if (level2 && level2.id !== level1?.id) this.selectChildCategory(level2);
+    if (level3) this.selectGrandchildCategory(level3);
   }
 
   // ════════════════════════════════════════════════════════
@@ -327,9 +396,9 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   //  GETTERS
   // ════════════════════════════════════════════════════════
 
-  get titleLength(): number     { return this.form.get('title')?.value?.length ?? 0; }
-  get descLength(): number      { return this.form.get('description')?.value?.length ?? 0; }
-  get quantity(): number        { return this.form.get('totalQuantity')?.value ?? 1; }
+  get titleLength(): number      { return this.form.get('title')?.value?.length ?? 0; }
+  get descLength(): number       { return this.form.get('description')?.value?.length ?? 0; }
+  get quantity(): number         { return this.form.get('totalQuantity')?.value ?? 1; }
   get selectedCurrency(): string { return this.form.get('currency')?.value ?? 'RSD'; }
   get selectedInterval(): string { return this.form.get('priceInterval')?.value ?? PriceInterval.PER_DAY; }
 
