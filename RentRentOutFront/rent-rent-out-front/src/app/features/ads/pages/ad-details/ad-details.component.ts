@@ -155,7 +155,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
   }
 
   private updateMetaTags(ad: Ad): void {
-    const title = `${ad.title} — Izdajem Iznajmljujem`;
+    const title = `${ad.title} - Izdajem Iznajmljujem`;
     const desc = ad.description
       ? ad.description.substring(0, 155).replace(/\s+/g, ' ').trim() + '...'
       : `Iznajmi ${ad.title} u ${ad.location?.city ?? 'Srbiji'}. Pogledaj oglas na Izdajem Iznajmljujem.`;
@@ -179,9 +179,9 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
 
   private resetMetaTags(): void {
     this.titleService.setTitle(this.DEFAULT_TITLE);
-    this.metaService.updateTag({ name: 'description', content: 'Iznajmi sve što ti treba — alati, tehnika, oprema. Besplatno objavi oglas.' });
+    this.metaService.updateTag({ name: 'description', content: 'Iznajmi sve što ti treba - alati, tehnika, oprema. Besplatno objavi oglas.' });
     this.metaService.updateTag({ property: 'og:title', content: this.DEFAULT_TITLE });
-    this.metaService.updateTag({ property: 'og:description', content: 'Iznajmi sve što ti treba — alati, tehnika, oprema. Besplatno objavi oglas.' });
+    this.metaService.updateTag({ property: 'og:description', content: 'Iznajmi sve što ti treba - alati, tehnika, oprema. Besplatno objavi oglas.' });
     this.metaService.updateTag({ property: 'og:image', content: `${this.BASE_URL}/assets/images/placeholder.png` });
     this.metaService.updateTag({ property: 'og:url', content: this.BASE_URL });
     this.metaService.updateTag({ property: 'og:type', content: 'website' });

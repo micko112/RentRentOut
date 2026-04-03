@@ -14,7 +14,34 @@
 @media (max-width: 900px) {
   .filters-container {
     width: 100%;
-    padding: 16px;
+    padding: 8px 10px;
+  }
+
+  .filter-section .filter-title {
+    font-size: 13px;
+    margin: 0 0 6px 0;
+    padding-bottom: 6px;
+  }
+
+  .category-list {
+    gap: 0;
+
+    .category-item {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+
+      &:hover { transform: none; }
+    }
+
+    .category-item--child {
+      padding-left: 16px;
+      font-size: 11px;
+    }
+
+    .category-item--grandchild {
+      display: none;
+    }
   }
 }
 

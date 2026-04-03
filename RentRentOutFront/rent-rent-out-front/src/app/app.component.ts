@@ -8,6 +8,7 @@ import { ToastComponent } from './shared/components/toast/toast.component';
 import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
 import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
 import { NotificationService } from './core/services/notification.service';
+import { SidebarStateService } from './core/services/sidebar-state.service';
 import { map, filter, startWith } from 'rxjs';
 
 @Component({
@@ -22,6 +23,9 @@ export class AppComponent {
 
   private router = inject(Router);
   private notificationService = inject(NotificationService);
+  private sidebarState = inject(SidebarStateService);
+
+  sidebarCollapsed$ = this.sidebarState.collapsed$;
 
   chatUnread$ = this.notificationService.totalUnread$;
 

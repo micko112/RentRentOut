@@ -1,7 +1,10 @@
 <app-header></app-header>
 <app-navbar></app-navbar>
 
-<div class="main-app-wrapper" [class.has-sidebar]="showSidebar$ | async" [class.is-admin]="isAdmin$ | async">
+<div class="main-app-wrapper"
+     [class.has-sidebar]="showSidebar$ | async"
+     [class.is-admin]="isAdmin$ | async"
+     [class.sidebar-collapsed]="sidebarCollapsed$ | async">
   <app-sidebar *ngIf="showSidebar$ | async"></app-sidebar>
   <main class="page-content">
     <router-outlet></router-outlet>

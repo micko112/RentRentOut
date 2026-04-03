@@ -1,4 +1,8 @@
-<aside class="sidebar">
+<aside class="sidebar" [class.collapsed]="isCollapsed$ | async">
+
+  <button class="sidebar-toggle" (click)="toggle()" [title]="(isCollapsed$ | async) ? 'Proširi meni' : 'Skupi meni'">
+    <span class="material-icons">{{ (isCollapsed$ | async) ? 'chevron_right' : 'chevron_left' }}</span>
+  </button>
 
   <!-- Logged in: user info -->
   <ng-container *ngIf="currentUser$ | async as user; else guestBlock">
@@ -12,69 +16,62 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a routerLink="/user/me/ads" routerLinkActive="active">
-        <span class="material-icons nav-icon">article</span> Moji oglasi
+      <a routerLink="/user/me/ads" routerLinkActive="active" title="Moji oglasi">
+        <span class="material-icons nav-icon">article</span>
+        <span class="nav-label">Moji oglasi</span>
       </a>
-      <a routerLink="/user/saved-ads" routerLinkActive="active">
-        <span class="material-icons nav-icon">bookmark</span> Sačuvani oglasi
+      <a routerLink="/user/saved-ads" routerLinkActive="active" title="Sačuvani oglasi">
+        <span class="material-icons nav-icon">bookmark</span>
+        <span class="nav-label">Sačuvani oglasi</span>
       </a>
-      <a routerLink="/messages" routerLinkActive="active">
-        <span class="material-icons nav-icon">forum</span> Poruke
+      <a routerLink="/messages" routerLinkActive="active" title="Poruke">
+        <span class="material-icons nav-icon">forum</span>
+        <span class="nav-label">Poruke</span>
         <span class="unread-badge" *ngIf="(totalUnread$ | async) as count">
           {{ count > 99 ? '99+' : count }}
         </span>
       </a>
-      <a routerLink="/user/me/contracts" routerLinkActive="active">
-        <span class="material-icons nav-icon">description</span> Moji Ugovori
+      <a routerLink="/user/me/contracts" routerLinkActive="active" title="Moji Ugovori">
+        <span class="material-icons nav-icon">description</span>
+        <span class="nav-label">Moji Ugovori</span>
       </a>
-      <a routerLink="/notifications" routerLinkActive="active">
-        <span class="material-icons nav-icon">notifications</span> Obaveštenja
+      <a routerLink="/notifications" routerLinkActive="active" title="Obaveštenja">
+        <span class="material-icons nav-icon">notifications</span>
+        <span class="nav-label">Obaveštenja</span>
         <span class="unread-badge" *ngIf="(notifUnread$ | async) as count">
           {{ count > 99 ? '99+' : count }}
         </span>
       </a>
-      <a [routerLink]="['/user', user.id, 'reviews']" routerLinkActive="active">
-        <span class="material-icons nav-icon">star</span> Ocene
+      <a [routerLink]="['/user', user.id, 'reviews']" routerLinkActive="active" title="Ocene">
+        <span class="material-icons nav-icon">star</span>
+        <span class="nav-label">Ocene</span>
       </a>
-      <!--
-      <a routerLink="/following" routerLinkActive="active">
-        <span class="material-icons nav-icon">visibility</span> Pratim
+      <a routerLink="/credit" routerLinkActive="active" title="Kredit">
+        <span class="material-icons nav-icon">account_balance_wallet</span>
+        <span class="nav-label">Kredit</span>
       </a>
-      -->
-
-      <!--
-      <a routerLink="/saved-searches" routerLinkActive="active">
-        <span class="material-icons nav-icon">search</span> Sačuvane pretrage
-      </a>
-      <a routerLink="/address-book" routerLinkActive="active">
-        <span class="material-icons nav-icon">contacts</span> Adresar
-      </a>
-      -->
-      <a routerLink="/credit" routerLinkActive="active">
-        <span class="material-icons nav-icon">account_balance_wallet</span> Kredit
-      </a>
-      <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <span class="material-icons nav-icon">manage_accounts</span> Moj Nalog
+      <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" title="Moj Nalog">
+        <span class="material-icons nav-icon">manage_accounts</span>
+        <span class="nav-label">Moj Nalog</span>
       </a>
     </nav>
   </ng-container>
 
   <ng-template #guestBlock>
-  <div class="guest-block">
-    <div class="guest-avatar">?</div>
-    <p class="guest-text">Niste prijavljeni</p>
-    <a routerLink="/login" class="btn-login">Prijavi se</a>
-    <a routerLink="/register" class="btn-register">Registruj se</a>
-  </div>
+    <div class="guest-block">
+      <div class="guest-avatar">?</div>
+      <p class="guest-text">Niste prijavljeni</p>
+      <a routerLink="/login" class="btn-login">Prijavi se</a>
+      <a routerLink="/register" class="btn-register">Registruj se</a>
+    </div>
 
-  <nav class="sidebar-nav sidebar-nav--locked">
-    <span class="nav-item-locked"><span class="material-icons nav-icon">article</span> Moji oglasi</span>
-    <span class="nav-item-locked"><span class="material-icons nav-icon">forum</span> Poruke</span>
-    <span class="nav-item-locked"><span class="material-icons nav-icon">notifications</span> Obaveštenja</span>
-    <span class="nav-item-locked"><span class="material-icons nav-icon">star</span> Ocene</span>
-    <span class="nav-item-locked"><span class="material-icons nav-icon">manage_accounts</span> Moj Nalog</span>
-  </nav>
-</ng-template>
-
+    <nav class="sidebar-nav sidebar-nav--locked">
+      <span class="nav-item-locked" title="Moji oglasi"><span class="material-icons nav-icon">article</span><span class="nav-label"> Moji oglasi</span></span>
+      <span class="nav-item-locked" title="Poruke"><span class="material-icons nav-icon">forum</span><span class="nav-label"> Poruke</span></span>
+      <span class="nav-item-locked" title="Obaveštenja"><span class="material-icons nav-icon">notifications</span><span class="nav-label"> Obaveštenja</span></span>
+      <span class="nav-item-locked" title="Ocene"><span class="material-icons nav-icon">star</span><span class="nav-label"> Ocene</span></span>
+      <span class="nav-item-locked" title="Moj Nalog"><span class="material-icons nav-icon">manage_accounts</span><span class="nav-label"> Moj Nalog</span></span>
+    </nav>
+  </ng-template>
 
 </aside>

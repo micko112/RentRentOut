@@ -85,7 +85,7 @@
 
           <!-- SUGGESTED RESULTS -->
           <div class="suggest-results" *ngIf="suggestedCategories.length > 0">
-            <div class="suggest-results-label">Predložene kategorije — klikni da primeniš:</div>
+            <div class="suggest-results-label">Predložene kategorije - klikni da primeniš:</div>
             <div class="suggest-chips">
               <button type="button"
                       *ngFor="let s of suggestedCategories"
@@ -311,7 +311,7 @@
                 </div>
               </div>
               <div class="tier-input-wrap">
-                <input type="number" formControlName="pricePerWeek" placeholder="—" min="1" class="tier-input">
+                <input type="number" formControlName="pricePerWeek" placeholder="-" min="1" class="tier-input">
                 <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
               </div>
             </div>
@@ -324,7 +324,7 @@
                 </div>
               </div>
               <div class="tier-input-wrap">
-                <input type="number" formControlName="pricePerMonth" placeholder="—" min="1" class="tier-input">
+                <input type="number" formControlName="pricePerMonth" placeholder="-" min="1" class="tier-input">
                 <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
               </div>
             </div>

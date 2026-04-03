@@ -16,12 +16,24 @@
   flex: 1;
   min-width: 0;
   padding-top: 30px;
+  padding-right: 20px;
 }
 
 .main-app-wrapper.is-admin .page-content {
   padding: 0;
   max-width: none;
   margin: 0;
+}
+
+/* Sidebar skupljen — na velikom ekranu sačuvaj gap, sadržaj se pomeri samo malo */
+.main-app-wrapper.sidebar-collapsed {
+  gap: 16px;
+}
+
+@media (min-width: 1401px) {
+  .main-app-wrapper.sidebar-collapsed {
+    gap: 185px;
+  }
 }
 
 @media (max-width: 1400px) {

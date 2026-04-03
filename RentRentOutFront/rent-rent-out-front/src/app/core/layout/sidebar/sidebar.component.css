@@ -31,11 +31,101 @@
   width: 185px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   background: var(--color-white);
   border-radius: 8px;
   border: 1px solid var(--color-border);
+  transition: width 0.25s ease;
+}
+
+/* =========================================
+   TOGGLE BUTTON
+   ========================================= */
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 6px 8px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  color: var(--color-text-light);
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+  min-height: 32px;
+}
+
+.sidebar-toggle:hover {
+  color: var(--color-primary);
+  background: var(--color-border-light);
+}
+
+.sidebar-toggle .material-icons {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* =========================================
+   COLLAPSED STATE
+   ========================================= */
+.sidebar.collapsed {
+  width: 52px;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  justify-content: center;
+  padding: 6px 0;
+}
+
+.sidebar.collapsed .user-details,
+.sidebar.collapsed .guest-text,
+.sidebar.collapsed .btn-login,
+.sidebar.collapsed .btn-register,
+.sidebar.collapsed .nav-label {
+  display: none;
+}
+
+.sidebar.collapsed .user-info {
+  justify-content: center;
+  padding: 12px 0;
+  gap: 0;
+}
+
+.sidebar.collapsed .guest-block {
+  align-items: center;
+  padding: 12px 0;
+  gap: 0;
+}
+
+.sidebar.collapsed .sidebar-nav a,
+.sidebar.collapsed .nav-item-locked {
+  justify-content: center;
+  padding: 12px 0;
+  gap: 0;
+}
+
+.sidebar.collapsed .nav-icon {
+  margin: 0;
+  width: auto;
+}
+
+.sidebar.collapsed .unread-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  margin: 0;
+  min-width: 14px;
+  height: 14px;
+  font-size: 9px;
+  padding: 0 3px;
+  border-radius: 7px;
+}
+
+.sidebar.collapsed .sidebar-nav a {
+  position: relative;
 }
 
 /* Guest Block */

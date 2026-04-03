@@ -11,6 +11,7 @@
     <img [src]="imageUrl"
          (error)="handleImageError($event)"
          alt="{{ ad.title }}"
+         width="400" height="267"
          loading="lazy">
 
     <span *ngIf="ad.promotionType === 'FEATURED'" class="promo-badge badge-featured">Na vrhu</span>
@@ -30,7 +31,7 @@
 
   <div class="listing-info">
     <div class="text-area">
-      <a class="listing-title">{{ ad.title }}</a>
+      <a class="listing-title" [routerLink]="['/ads', ad.id]" (click)="$event.stopPropagation()">{{ ad.title }}</a>
       <div class="listing-description" *ngIf="viewMode === 'list'">{{ ad.description }}</div>
     </div>
     <div class="listing-location" *ngIf="!ad.municipality">{{ ad.city }} </div>
