@@ -29,9 +29,7 @@
         <insert tableName="category"><column name="id" valueNumeric="1011"/><column name="name" value="Aparati za zavarivanje"/><column name="parent_id" valueNumeric="100"/></insert>
         <insert tableName="category"><column name="id" valueNumeric="1012"/><column name="name" value="Radna rasveta"/><column name="parent_id" valueNumeric="100"/></insert>
         <insert tableName="category"><column name="id" valueNumeric="1013"/><column name="name" value="Ostalo u građevini i alatima"/><column name="parent_id" valueNumeric="100"/></insert>
-        <insert tableName="category"><column name="id" valueNumeric="1014"/><column name="name" value="Skele"/><column name="parent_id" valueNumeric="100"/></insert>
         <insert tableName="category"><column name="id" valueNumeric="1015"/><column name="name" value="Inverter"/><column name="parent_id" valueNumeric="200"/></insert>
-        <insert tableName="category"><column name="id" valueNumeric="1016"/><column name="name" value="Projektor i TV"/><column name="parent_id" valueNumeric="200"/></insert>
         <insert tableName="category"><column name="id" valueNumeric="1017"/><column name="name" value="Satelitska oprema"/><column name="parent_id" valueNumeric="200"/></insert>
         <insert tableName="category"><column name="id" valueNumeric="1018"/><column name="name" value="Pametni zvučnik"/><column name="parent_id" valueNumeric="200"/></insert>
 
@@ -249,22 +247,22 @@
         <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostalo u kancelarijskim mašinama', id FROM category WHERE name = 'Kancelarijske mašine' AND parent_id = 200</sql>
 
         <!-- ================================================================ -->
-        <!-- LEVEL-3: Bušilice i odvijači (Alati i građevina, parent 100)      -->
+        <!-- LEVEL-3: Bušilice i šrafilice (Alati i građevina, parent 100)    -->
         <!-- ================================================================ -->
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ugaona bušilica', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Set bitova', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Kramp', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Burgije', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Mašina za bušenje', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Krunska testera', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Udarna bušilica', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Udarni ključ', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Stub bušilica', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Plug i klinovi', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Rotacioni čekić', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Odvijači', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Mašina za bušenje kamena', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
-        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostalo u bušilicama i odvijačima', id FROM category WHERE name = 'Bušilice i odvijači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ugaona bušilica', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Set bitova', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Pikamer', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Burgije', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Mašina za bušenje', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Krunska testera', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Udarna bušilica', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Udarni ključ', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Stub bušilica', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Plug i klinovi', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Rotacioni čekić', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Šrafilice', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Mašina za bušenje kamena', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostalo u bušilicama i šrafilicama', id FROM category WHERE name = 'Bušilice i šrafilice' AND parent_id = 100</sql>
 
         <!-- ================================================================ -->
         <!-- LEVEL-3: Komprimovani vazduh (ID 1001)                            -->
@@ -336,34 +334,34 @@
         <insert tableName="category"><column name="name" value="Ostalo u zavarivanju"/><column name="parent_id" valueNumeric="1011"/></insert>
 
         <!-- ================================================================ -->
-        <!-- LEVEL-3: Skele (ID 1014)                                          -->
+        <!-- LEVEL-3: Skele i podupirači (parent 100)                          -->
         <!-- ================================================================ -->
-        <insert tableName="category"><column name="name" value="Kolica za građevinski otpad"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Gradilišna ograda"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Građevinska skela"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Prekrivači prozora"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Lift za suvi zid"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Podupirač"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Konji za farbanje"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Sto za tapete"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Kolica za gipsane ploče"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Radna platforma"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Radni sto"/><column name="parent_id" valueNumeric="1014"/></insert>
-        <insert tableName="category"><column name="name" value="Ostalo u skelama"/><column name="parent_id" valueNumeric="1014"/></insert>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Kolica za građevinski otpad', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Gradilišna ograda', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Građevinska skela', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Prekrivači prozora', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Lift za suvi zid', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Podupirač', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Konji za farbanje', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Sto za tapete', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Kolica za gipsane ploče', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Radna platforma', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Radni sto', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostalo u skelama', id FROM category WHERE name = 'Skele i podupirači' AND parent_id = 100</sql>
 
         <!-- ================================================================ -->
-        <!-- LEVEL-3: Projektor i TV (ID 1016)                                 -->
+        <!-- LEVEL-3: Projektori i televizori (parent 200)                     -->
         <!-- ================================================================ -->
-        <insert tableName="category"><column name="name" value="Veliki ekran"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="DVD i Blu-ray"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="Media plejeri"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="Nadgledni projektor"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="Projektor"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="Projekciono platno"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="Slajd projektor"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="TV"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="VHS plejer"/><column name="parent_id" valueNumeric="1016"/></insert>
-        <insert tableName="category"><column name="name" value="Ostalo u projektorima i TV"/><column name="parent_id" valueNumeric="1016"/></insert>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Veliki ekran', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'DVD i Blu-ray', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Media plejeri', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Nadgledni projektor', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Projektor', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Projekciono platno', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Slajd projektor', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'TV', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'VHS plejer', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostalo u projektorima i TV', id FROM category WHERE name = 'Projektori i televizori' AND parent_id = 200</sql>
 
         <!-- ================================================================ -->
         <!-- LEVEL-3: Fotoaparati i kamere (Foto i Video, parent 300)          -->

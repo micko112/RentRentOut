@@ -933,6 +933,36 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
    RESPONSIVE
    ════════════════════════════════════════════════════════ */
 
+/* ── Medium screens — smanjeni gap, proporcionalni offset ── */
+@media (max-width: 1400px) {
+  .wizard-page {
+    margin-left: -209px;  /* sidebar 185px + gap 24px */
+    width: calc(100% + 209px);
+  }
+}
+
+@media (max-width: 1200px) {
+  .wizard-page {
+    margin-left: -201px;  /* sidebar 185px + gap 16px */
+    width: calc(100% + 201px);
+  }
+  .wizard-header { padding: 0 28px; }
+  .wizard-body   { padding: 28px 28px 280px; }
+  .section-block { padding: 28px 32px; }
+  .progress-track { margin: 0 -28px; }
+}
+
+@media (max-width: 1000px) {
+  .wizard-page {
+    margin-left: -197px;  /* sidebar 185px + gap 12px */
+    width: calc(100% + 197px);
+  }
+  .wizard-header { padding: 0 20px; }
+  .wizard-body   { padding: 24px 20px 260px; }
+  .section-block { padding: 24px 24px; }
+  .progress-track { margin: 0 -20px; }
+}
+
 /* Ispod 900px sidebar već ide u column, resetuj offset */
 @media (max-width: 900px) {
   .wizard-page {

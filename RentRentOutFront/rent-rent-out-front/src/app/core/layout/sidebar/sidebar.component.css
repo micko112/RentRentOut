@@ -7,6 +7,20 @@
   flex-shrink: 0;
 }
 
+@media (max-width: 1200px) {
+  :host {
+    top: 102px;
+    height: calc(100vh - 102px);
+  }
+}
+
+@media (max-width: 1000px) {
+  :host {
+    top: 90px;
+    height: calc(100vh - 90px);
+  }
+}
+
 @media (max-width: 900px) {
   :host {
     display: none;

@@ -102,20 +102,40 @@ Tri fonta u `index.html`:
 
 ### App Shell
 
-`app.component.css`: flexbox sa `gap: 185px` između sidebar i sadržaja.
+`app.component.css`: flexbox layout; gap između sidebar i sadržaja je responsivan:
+- `> 1400px` — `gap: 185px` (default)
+- `≤ 1400px` — `gap: 24px`
+- `≤ 1200px` — `gap: 16px`
+- `≤ 1000px` — `gap: 12px`
+- `≤ 900px` — `flex-direction: column; gap: 0` (mobile)
+
 - `.has-sidebar` — max-width centering na stranicama bez sidebar-a
 - `.is-admin` — uklanja padding (admin rute)
 - `showSidebar$` — baziran na ruti (ne auth state); `true` na svim non-`/admin` rutama
 - Router: `withPreloading(PreloadAllModules)` + `withInMemoryScrolling({ scrollPositionRestoration: 'top' })`
 
+### Header (`core/layout/header/`)
+
+Header je uvek jednored (nema flex-wrap). Breakpointi:
+- `> 1400px` — `padding: 40px` → visina headera: **142px**
+- `≤ 1400px` — dugmad se skupljaju, bez margin-right
+- `≤ 1200px` — `padding: 20px 28px` → visina: **102px**
+- `≤ 1000px` — `padding: 14px 20px` → visina: **90px**; `.btn-post-ad` nestaje (korisnik koristi sidebar ili mobile nav)
+- `≤ 900px` — `padding: 10px 14px`; `user-actions` hidden; mobile nav preuzima navigaciju
+
 ### Sidebar (`core/layout/sidebar/`)
 
-- Uvek vidljiv (non-admin rute) — guest state i logged-in state
+- Uvek vidljiv (non-admin rute, > 900px) — guest state i logged-in state
 - **Avatar**: `<img>` ako `user.avatarUrl` postoji, inače inicijali (purple `#813181` background)
 - Active link: `background: #f5ecff`, `border-left: 3px solid #813181`, `color: #813181`
 - Unread badge (red `#e53935`) na Poruke i Obaveštenja
 - `ngOnInit()`: ako ulogovan → `NotificationService.initialize()` + `NotificationsService.loadUnreadCount()`
 - Guest state: login/register dugmad + zaključani nav itemi (`pointer-events: none`)
+- `position: sticky` — `top` usklađen sa visinom headera po breakpointu:
+  - `> 1200px` — `top: 142px; height: calc(100vh - 142px)`
+  - `≤ 1200px` — `top: 102px; height: calc(100vh - 102px)`
+  - `≤ 1000px` — `top: 90px; height: calc(100vh - 90px)`
+  - `≤ 900px` — `display: none`
 
 ### Authentication Flow
 
@@ -165,7 +185,14 @@ Paginacija: numerisana, `…`, purple aktivna stranica.
 
 - Step 1: kategorija + naslov (char counter) + opis
 - Step 2: drag-drop slike (10 max, 10MB), cena/valuta/interval, lokacija autocomplete, quantity stepper
-- CSS: `margin-left: -200px; width: calc(100% + 200px)` (cancela sidebar gap, reset na 900px)
+- CSS full-bleed: wizard iskače iz sidebar layouta negativnim marginom koji se smanjuje sa gap-om:
+  - `> 1400px` — `margin-left: -385px; width: calc(100% + 385px)` (sidebar 185 + gap 200)
+  - `≤ 1400px` — `margin-left: -209px; width: calc(100% + 209px)` (sidebar 185 + gap 24)
+  - `≤ 1200px` — `margin-left: -201px; width: calc(100% + 201px)` (sidebar 185 + gap 16)
+  - `≤ 1000px` — `margin-left: -197px; width: calc(100% + 197px)` (sidebar 185 + gap 12)
+  - `≤ 900px` — `margin-left: 0; width: 100%` (mobile reset)
+- `overflow-x: hidden` na `.wizard-page` štiti od horizontalnog skrola
+- `margin-top: -30px` cancela `page-content padding-top: 30px`
 - Kategorije: `material-symbols-outlined` sa `font-variation-settings`
 - `angular.json` style budget: `maximumWarning` 16kB, `maximumError` 24kB
 

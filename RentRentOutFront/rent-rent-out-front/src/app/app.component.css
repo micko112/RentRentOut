@@ -24,6 +24,24 @@
   margin: 0;
 }
 
+@media (max-width: 1400px) {
+  .main-app-wrapper {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .main-app-wrapper {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .main-app-wrapper {
+    gap: 12px;
+  }
+}
+
 @media (max-width: 900px) {
   .main-app-wrapper {
     flex-direction: column;

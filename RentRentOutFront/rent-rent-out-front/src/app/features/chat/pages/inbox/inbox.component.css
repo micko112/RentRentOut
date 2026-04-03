@@ -6,6 +6,18 @@
   height: calc(100vh - 182px); /* 142px header + 30px page-content padding + 10px bottom gap */
 }
 
+@media (max-width: 1200px) {
+  :host {
+    height: calc(100vh - 142px); /* 102px header + 30px padding + 10px gap */
+  }
+}
+
+@media (max-width: 1000px) {
+  :host {
+    height: calc(100vh - 130px); /* 90px header + 30px padding + 10px gap */
+  }
+}
+
 .chat-container {
   display: flex;
   height: 95%;
