@@ -34,5 +34,10 @@
       <div class="stat-value">{{ stats.pendingReports }}</div>
       <div class="stat-label">Nepregledane prijave</div>
     </div>
+    <div class="stat-card highlight-green">
+      <div class="stat-icon material-icons">payments</div>
+      <div class="stat-value">{{ (stats.totalRevenue || 0) | number:'1.0-0' }} <small>RSD</small></div>
+      <div class="stat-label">Ukupan prihod</div>
+    </div>
   </div>
 </div>

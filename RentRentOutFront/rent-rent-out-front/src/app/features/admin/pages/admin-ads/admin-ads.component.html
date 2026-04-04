@@ -1,5 +1,17 @@
 <div class="admin-ads">
-  <h2>Oglasi</h2>
+  <div class="page-header">
+    <h2>Oglasi</h2>
+    <div class="filters-bar">
+      <div class="search-bar">
+        <span class="material-icons">search</span>
+        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()"
+               placeholder="Pretraži po naslovu...">
+      </div>
+      <select class="status-select" [(ngModel)]="statusFilter" (ngModelChange)="onStatusChange()">
+        <option *ngFor="let opt of STATUS_OPTIONS" [value]="opt.value">{{ opt.label }}</option>
+      </select>
+    </div>
+  </div>
 
   <div *ngIf="loading" class="loading">Učitavanje...</div>
 
@@ -12,33 +24,28 @@
           <th>Lokacija</th>
           <th>Cena</th>
           <th>Status</th>
-          <th>Akcija</th>
+          <th>Akcije</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let ad of adsPage.content">
+        <tr *ngFor="let ad of adsPage.content; trackBy: trackByAd">
           <td>{{ ad.id }}</td>
-          <td>{{ ad.title }}</td>
-          <td>{{ ad.city }}, {{ ad.municipality }}</td>
+          <td>
+            <a [routerLink]="['/ads', ad.id]" target="_blank" class="ad-link">{{ ad.title }}</a>
+          </td>
+          <td>{{ ad.city }}<span *ngIf="ad.municipality">, {{ ad.municipality }}</span></td>
           <td>{{ ad.price | number }} {{ ad.currency }}</td>
           <td>
             <span class="status-badge" [ngClass]="ad.adStatus?.toLowerCase()">
               {{ ad.adStatus }}
             </span>
           </td>
-          <td>
-            <button
-              *ngIf="ad.adStatus !== 'SUSPENDED_BY_ADMIN'"
-              class="btn-action suspend"
-              (click)="suspendAd(ad)">
-              Suspenduj
-            </button>
-            <button
-              *ngIf="ad.adStatus === 'SUSPENDED_BY_ADMIN'"
-              class="btn-action unsuspend"
-              (click)="unsuspendAd(ad)">
-              Reaktiviraj
-            </button>
+          <td class="actions-cell">
+            <button *ngIf="ad.adStatus !== 'SUSPENDED_BY_ADMIN'" class="btn-action suspend"
+                    (click)="suspendAd(ad)">Suspenduj</button>
+            <button *ngIf="ad.adStatus === 'SUSPENDED_BY_ADMIN'" class="btn-action unsuspend"
+                    (click)="unsuspendAd(ad)">Reaktiviraj</button>
+            <button class="btn-action delete" (click)="deleteAd(ad)">Obriši</button>
           </td>
         </tr>
       </tbody>
@@ -46,8 +53,14 @@
 
     <div class="pagination">
       <button class="page-btn" (click)="prevPage()" [disabled]="adsPage.first">Prethodna</button>
-      <span>Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}</span>
+      <span>Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}
+        <span class="total-count">({{ adsPage.totalElements }} oglasa)</span>
+      </span>
       <button class="page-btn" (click)="nextPage()" [disabled]="adsPage.last">Sledeća</button>
     </div>
+  </div>
+
+  <div *ngIf="!loading && adsPage?.totalElements === 0" class="empty-state">
+    Nema oglasa koji odgovaraju pretrazi.
   </div>
 </div>

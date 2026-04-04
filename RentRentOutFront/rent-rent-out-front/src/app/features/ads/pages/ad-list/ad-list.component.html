@@ -64,15 +64,15 @@
             </a>
           </div>
           <div class="grid-layout" *ngIf="!latestLoaded">
-            <app-skeleton-card *ngFor="let s of skeleton9"></app-skeleton-card>
+            <app-skeleton-card *ngFor="let s of skeleton9; trackBy: trackByPage"></app-skeleton-card>
           </div>
           <div class="grid-layout" *ngIf="latestLoaded">
-            <app-ad-card *ngFor="let ad of latestAds" [ad]="ad" [viewMode]="'grid'"></app-ad-card>
+            <app-ad-card *ngFor="let ad of latestAds; trackBy: trackByAdId" [ad]="ad" [viewMode]="'grid'"></app-ad-card>
           </div>
         </div>
 
         <!-- Kategorije -->
-        <div class="home-section" *ngFor="let cat of homeCategories">
+        <div class="home-section" *ngFor="let cat of homeCategories; trackBy: trackByCatId">
           <div class="section-header">
             <div class="section-left">
               <span class="material-icons section-icon">{{ cat.icon }}</span>
@@ -84,10 +84,10 @@
             </a>
           </div>
           <div class="grid-layout" *ngIf="!cat.loaded">
-            <app-skeleton-card *ngFor="let s of skeleton6"></app-skeleton-card>
+            <app-skeleton-card *ngFor="let s of skeleton6; trackBy: trackByPage"></app-skeleton-card>
           </div>
           <div class="grid-layout" *ngIf="cat.loaded && cat.ads.length > 0">
-            <app-ad-card *ngFor="let ad of cat.ads" [ad]="ad" [viewMode]="'grid'"></app-ad-card>
+            <app-ad-card *ngFor="let ad of cat.ads; trackBy: trackByAdId" [ad]="ad" [viewMode]="'grid'"></app-ad-card>
           </div>
           <div class="section-empty" *ngIf="cat.loaded && cat.ads.length === 0">
             Trenutno nema oglasa u ovoj kategoriji.
@@ -116,7 +116,7 @@
         <ng-container *ngIf="adsPage && !isLoading">
           <div [ngClass]="isSearchMode ? 'list-layout' : 'grid-layout'">
             <app-ad-card
-              *ngFor="let ad of adsPage.content"
+              *ngFor="let ad of adsPage.content; trackBy: trackByAdId"
               [ad]="ad"
               [viewMode]="isSearchMode ? 'list' : 'grid'"
               [promoStyle]="isSearchMode">
@@ -131,7 +131,7 @@
               <span class="material-icons">chevron_left</span>
             </button>
 
-            <ng-container *ngFor="let p of getPageRange(adsPage.number, adsPage.totalPages)">
+            <ng-container *ngFor="let p of getPageRange(adsPage.number, adsPage.totalPages); trackBy: trackByPage">
               <span *ngIf="p === '...'" class="page-ellipsis">…</span>
               <button *ngIf="p !== '...'"
                       class="page-num-btn"

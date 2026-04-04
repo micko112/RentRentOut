@@ -84,15 +84,29 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Page<UserDto> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable)
+    public Page<UserDto> getAllUsers(String search, Pageable pageable) {
+        String s = (search != null && !search.isBlank()) ? search.trim() : null;
+        return userRepository.searchUsers(s, pageable)
                 .map(userMapper::toDto);
     }
 
     @Override
-    public Page<AdPreviewDto> getAllAds(Pageable pageable) {
-        return adRepository.findAll(pageable)
+    public Page<AdPreviewDto> getAllAds(String search, String status, Pageable pageable) {
+        String s = (search != null && !search.isBlank()) ? search.trim() : null;
+        AdStatus adStatus = null;
+        if (status != null && !status.isBlank()) {
+            try { adStatus = AdStatus.valueOf(status.toUpperCase()); } catch (IllegalArgumentException ignored) {}
+        }
+        return adRepository.searchAds(s, adStatus, pageable)
                 .map(adMapper::toPreviewDto);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAd(Long adId) {
+        Ad ad = adRepository.findById(adId)
+                .orElseThrow(() -> new IllegalArgumentException("Oglas nije pronađen."));
+        adRepository.delete(ad);
     }
 
     @Override
@@ -132,22 +146,27 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Map<String, Long> getStats() {
-        long totalUsers = userRepository.count();
-        long totalAds = adRepository.count();
-        long activeAds = adRepository.findAllByAdStatus(AdStatus.ACTIVE,
-                org.springframework.data.domain.Pageable.unpaged()).getTotalElements();
+        long totalUsers     = userRepository.count();
+        long totalAds       = adRepository.count();
+        long activeAds      = adRepository.findAllByAdStatus(AdStatus.ACTIVE,
+                                  org.springframework.data.domain.Pageable.unpaged()).getTotalElements();
         long totalContracts = rentalContractRepository.count();
         long activeContracts = rentalContractRepository.countByContractStatusIn(
-                List.of(ContractStatus.ACTIVE, ContractStatus.ACCEPTED));
+                                  List.of(ContractStatus.ACTIVE, ContractStatus.ACCEPTED));
         long pendingReports = adReportRepository.countByReviewedFalse();
+        long totalRevenue   = creditTransactionRepository.findAll().stream()
+                                  .filter(t -> t.getAmount() != null && t.getAmount().compareTo(java.math.BigDecimal.ZERO) > 0)
+                                  .mapToLong(t -> t.getAmount().longValue())
+                                  .sum();
 
         Map<String, Long> stats = new LinkedHashMap<>();
-        stats.put("totalUsers", totalUsers);
-        stats.put("totalAds", totalAds);
-        stats.put("activeAds", activeAds);
-        stats.put("totalContracts", totalContracts);
+        stats.put("totalUsers",      totalUsers);
+        stats.put("totalAds",        totalAds);
+        stats.put("activeAds",       activeAds);
+        stats.put("totalContracts",  totalContracts);
         stats.put("activeContracts", activeContracts);
-        stats.put("pendingReports", pendingReports);
+        stats.put("pendingReports",  pendingReports);
+        stats.put("totalRevenue",    totalRevenue);
         return stats;
     }
 

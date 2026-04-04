@@ -26,55 +26,71 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    // ── Ads ────────────────────────────────────────────────
+
+    @GetMapping("/ads")
+    public ResponseEntity<Page<AdPreviewDto>> getAllAds(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
+            @PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(adminService.getAllAds(search, status, pageable));
+    }
+
     @PatchMapping("/ads/{adId}/suspend")
     public ResponseEntity<String> suspendAd(@PathVariable Long adId) {
-        String response = adminService.suspendAd(adId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(adminService.suspendAd(adId));
     }
 
     @PatchMapping("/ads/{adId}/unsuspend")
     public ResponseEntity<String> unsuspendAd(@PathVariable Long adId) {
-        String response = adminService.unsuspendAd(adId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(adminService.unsuspendAd(adId));
+    }
+
+    @DeleteMapping("/ads/{adId}")
+    public ResponseEntity<Void> deleteAd(@PathVariable Long adId) {
+        adminService.deleteAd(adId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ── Users ──────────────────────────────────────────────
+
+    @GetMapping("/users")
+    public ResponseEntity<Page<UserDto>> getAllUsers(
+            @RequestParam(required = false) String search,
+            @PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(adminService.getAllUsers(search, pageable));
     }
 
     @PatchMapping("/users/{id}/disable")
     public ResponseEntity<String> toggleUserEnabled(@PathVariable Long id) {
-        String response = adminService.toggleUserEnabled(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(adminService.toggleUserEnabled(id));
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<Page<UserDto>> getAllUsers(@PageableDefault(size = 20) Pageable pageable) {
-        Page<UserDto> users = adminService.getAllUsers(pageable);
-        return ResponseEntity.ok(users);
-    }
-
-    @GetMapping("/ads")
-    public ResponseEntity<Page<AdPreviewDto>> getAllAds(@PageableDefault(size = 20) Pageable pageable) {
-        Page<AdPreviewDto> ads = adminService.getAllAds(pageable);
-        return ResponseEntity.ok(ads);
-    }
+    // ── Contracts ──────────────────────────────────────────
 
     @GetMapping("/contracts")
-    public ResponseEntity<Page<RentalContractDto>> getAllContracts(@PageableDefault(size = 20) Pageable pageable) {
-        Page<RentalContractDto> contracts = adminService.getAllContracts(pageable);
-        return ResponseEntity.ok(contracts);
+    public ResponseEntity<Page<RentalContractDto>> getAllContracts(
+            @PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(adminService.getAllContracts(pageable));
     }
+
+    // ── Stats ──────────────────────────────────────────────
 
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> getStats() {
-        Map<String, Long> stats = adminService.getStats();
-        return ResponseEntity.ok(stats);
+        return ResponseEntity.ok(adminService.getStats());
     }
+
+    // ── Credits ────────────────────────────────────────────
 
     @GetMapping("/credits")
     public ResponseEntity<Page<UserCreditSummaryDto>> getUserCreditSummaries(
             @RequestParam(required = false) String search,
             @PageableDefault(size = 20) Pageable pageable) {
-        Page<UserCreditSummaryDto> page = adminService.getUserCreditSummaries(search, pageable);
-        return ResponseEntity.ok(page);
+        return ResponseEntity.ok(adminService.getUserCreditSummaries(search, pageable));
     }
+
+    // ── Reports ────────────────────────────────────────────
 
     @GetMapping("/reports")
     public ResponseEntity<Page<AdReportDto>> getReports(

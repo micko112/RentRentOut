@@ -12,11 +12,12 @@ import java.util.Map;
 
 public interface AdminService {
     String suspendAd(Long adId);
-    Page<UserDto> getAllUsers(Pageable pageable);
-    Page<AdPreviewDto> getAllAds(Pageable pageable);
+    String unsuspendAd(Long adId);
+    void deleteAd(Long adId);
+    Page<UserDto> getAllUsers(String search, Pageable pageable);
+    Page<AdPreviewDto> getAllAds(String search, String status, Pageable pageable);
     Page<RentalContractDto> getAllContracts(Pageable pageable);
     String toggleUserEnabled(Long userId);
-    String unsuspendAd(Long adId);
     Map<String, Long> getStats();
     Page<UserCreditSummaryDto> getUserCreditSummaries(String search, Pageable pageable);
     Page<AdReportDto> getReports(boolean onlyUnreviewed, Pageable pageable);

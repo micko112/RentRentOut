@@ -48,6 +48,16 @@ services:
     depends_on:
       - backend
 
+  # ─── ML servis (predlaganje kategorija) ──────────────────────────────────────
+  ml-service:
+    build:
+      context: ./RentRentOutML/ai_service
+      dockerfile: Dockerfile
+    image: rentrentout-ml
+    container_name: rentrentout-ml
+    restart: unless-stopped
+    # Port 8000 nije eksponovan prema van — Nginx komunicira interno
+
   # ─── Nginx reverse proxy ──────────────────────────────────────────────────────
   nginx:
     image: nginx:alpine

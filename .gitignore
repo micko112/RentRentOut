@@ -23,6 +23,11 @@ RentRentOutFront/package-lock.json
 **/application.properties
 **/application-prod.properties
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
 # OS
 .DS_Store
 Thumbs.db

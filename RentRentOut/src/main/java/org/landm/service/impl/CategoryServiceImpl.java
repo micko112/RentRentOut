@@ -6,16 +6,25 @@ import org.landm.entity.Category;
 import org.landm.mapper.CategoryMapper;
 import org.landm.repository.CategoryRepository;
 import org.landm.service.CategoryService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final RestClient restClient = RestClient.create();
+
+    @Value("${ai.service.url}")
+    private String aiServiceUrl;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
@@ -65,6 +74,28 @@ public class CategoryServiceImpl implements CategoryService{
             collectAllChildIds(child, allIds);
         }
     }
+    @Override
+    public Long suggestCategory(String title) {
+        Map<String, String> body = new HashMap<>();
+        body.put("title", title);
 
+        try {
+            Map response = restClient.post()
+                    .uri(aiServiceUrl + "/api/predict-category")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(body)
+                    .retrieve()
+                    .body(Map.class);
+
+            // Ako je Python vratio odgovor, izvuci predicted_category_id
+            if (response != null && response.containsKey("predicted_category_id")) {
+                return ((Number) response.get("predicted_category_id")).longValue();
+            }
+        } catch (Exception e) {
+            // Ako je Python server ugašen, ne želimo da pukne cela Java aplikacija
+            System.out.println("AI Service je trenutno nedostupan: " + e.getMessage());
+        }
+        return null; // Vraća null ako AI ne uspe da pogodi
+    }
 
 }

@@ -10,5 +10,6 @@ public interface CategoryService {
     public CategoryDto get(Long id);
     public List<Long> findAllSubCategoryId(Long parentId);
     public List<CategoryDto> getAll();
+    public Long suggestCategory(String title);
 
 }

@@ -49,5 +49,15 @@ services:
     depends_on:
       - backend
 
+  # ─── ML servis (predlaganje kategorija) ──────────────────────────────────────
+  ml-service:
+    build:
+      context: ./RentRentOutML/ai_service
+      dockerfile: Dockerfile
+    image: rentrentout-ml
+    container_name: rentrentout-ml
+    ports:
+      - "8000:8000"
+
 volumes:
   mysql_data:

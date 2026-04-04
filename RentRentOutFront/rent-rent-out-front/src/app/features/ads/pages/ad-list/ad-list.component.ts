@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { AdCardComponent } from '../../components/ad-card/ad-card.component';
 import { CommonModule } from '@angular/common';
 import { AdPreview, Page } from '../../../../shared/models/adPreview.model';
@@ -14,7 +14,7 @@ import { AdSearchCriteria } from '../../../../shared/models/adSearchCriteria';
 import { FiltersSidebarComponent } from '../../components/filters-sidebar/filters-sidebar.component';
 import { CategoriesSidebarComponent } from '../../components/categories-sidebar/categories-sidebar/categories-sidebar.component';
 import { Location } from '../../../../shared/models/location.model';
-
+import { SeoService } from '../../../../core/services/seo.service';
 
 @Component({
   selector: 'app-ad-list',
@@ -60,6 +60,8 @@ export class AdListComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private homeDataDestroy$ = new Subject<void>();
+
+  private seoService = inject(SeoService);
 
   constructor(
     private adService: AdService,
@@ -117,6 +119,7 @@ export class AdListComponent implements OnInit, OnDestroy {
 
         if (this.homeMode) {
           this.loadHomeData();
+          this.seoService.setHomePage();
           this.isLoading = false;
           return of(null);
         }
@@ -130,7 +133,15 @@ export class AdListComponent implements OnInit, OnDestroy {
         };
 
         return this.adService.search(criteria).pipe(
-          tap(res => this.totalResults = res.totalElements),
+          tap(res => {
+            this.totalResults = res.totalElements;
+            this.seoService.setSearchPage({
+              categoryName:  this.activeCategory,
+              keyword:       params['keyword'] || undefined,
+              city:          params['city']    || undefined,
+              totalResults:  res.totalElements,
+            });
+          }),
           finalize(() => this.isLoading = false)
         );
       })
@@ -145,6 +156,7 @@ export class AdListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
     this.homeDataDestroy$.next();
     this.homeDataDestroy$.complete();
+    this.seoService.reset();
   }
 
   private loadHomeData(): void {
@@ -244,4 +256,8 @@ export class AdListComponent implements OnInit, OnDestroy {
   }
 
   asNumber(p: number | '...'): number { return p as number; }
+
+  trackByAdId(_: number, ad: AdPreview): number { return ad.id; }
+  trackByCatId(_: number, cat: { id: number }): number { return cat.id; }
+  trackByPage(_: number, p: number | '...'): number | string { return p; }
 }

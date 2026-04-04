@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import {Review} from '../../../../shared/models/review';
 import {DatePipe, NgClass, NgIf} from '@angular/common';
 import {RouterLink} from '@angular/router';
@@ -13,9 +13,9 @@ import {RouterLink} from '@angular/router';
   ],
   standalone: true,
   templateUrl: './review-card.component.html',
-  styleUrl: './review-card.component.css'
+  styleUrl: './review-card.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class ReviewCardComponent {
   @Input() public review!: Review;
 

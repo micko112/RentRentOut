@@ -13,6 +13,7 @@ export interface AdminStats {
   totalContracts: number;
   activeContracts: number;
   pendingReports: number;
+  totalRevenue: number;
 }
 
 export interface AdReport {
@@ -49,16 +50,21 @@ export class AdminService {
     return this.http.get<AdminStats>(`${this.url}/stats`);
   }
 
-  getUsers(page: number = 0, size: number = 20): Observable<Page<User>> {
-    return this.http.get<Page<User>>(`${this.url}/users`, {
-      params: { page, size }
-    });
+  getUsers(page: number = 0, size: number = 20, search: string = ''): Observable<Page<User>> {
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (search.trim()) params = params.set('search', search.trim());
+    return this.http.get<Page<User>>(`${this.url}/users`, { params });
   }
 
-  getAds(page: number = 0, size: number = 20): Observable<Page<AdPreview>> {
-    return this.http.get<Page<AdPreview>>(`${this.url}/ads`, {
-      params: { page, size }
-    });
+  getAds(page: number = 0, size: number = 20, search: string = '', status: string = ''): Observable<Page<AdPreview>> {
+    let params = new HttpParams().set('page', page).set('size', size);
+    if (search.trim()) params = params.set('search', search.trim());
+    if (status.trim()) params = params.set('status', status.trim());
+    return this.http.get<Page<AdPreview>>(`${this.url}/ads`, { params });
+  }
+
+  deleteAd(adId: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/ads/${adId}`);
   }
 
   getContracts(page: number = 0, size: number = 20): Observable<Page<RentalContract>> {

@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {UserService} from '../../services/user.service';
 import {ActivatedRoute} from '@angular/router';
 import {Observable, tap} from 'rxjs';
+import {SeoService} from '../../../../core/services/seo.service';
 
 import {ReviewCardComponent} from '../../../review/components/review-card/review-card.component';
 import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component';
@@ -30,12 +31,13 @@ import {ReviewService} from '../../../review/services/review.service';
   standalone: true,
   styleUrl: './user-profile.component.css'
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
 
   constructor(private userService: UserService,
               private route: ActivatedRoute,
               private authService: AuthService,
-              private reviewService: ReviewService) {
+              private reviewService: ReviewService,
+              private seoService: SeoService) {
   }
   userId!: number;
   isOwnProfile = false;
@@ -73,6 +75,7 @@ export class UserProfileComponent implements OnInit {
       tap(data => {
         this.reviews = data.reviews.content;
         this.applyFilter();
+        this.seoService.setUserProfilePage(data.userInfo);
       })
     );
 
@@ -95,6 +98,10 @@ export class UserProfileComponent implements OnInit {
       const typeMatch = this.activeTypeTab === 'ALL' || review.reviewType === this.activeTypeTab;
       return roleMatch && typeMatch;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.seoService.reset();
   }
 
   toggleForm(): void {

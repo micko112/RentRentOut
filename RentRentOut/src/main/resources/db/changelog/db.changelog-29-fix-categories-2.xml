@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="fix-categories-names-29" author="micko112">
+
+        <!-- ================================================================ -->
+        <!-- 1. Hrvatizmi i gramatičke ispravke                               -->
+        <!-- ================================================================ -->
+        <sql>UPDATE category SET name = 'VR naočare'                      WHERE name = 'VR naočale'</sql>
+        <sql>UPDATE category SET name = 'Baštenska testera i makaze'       WHERE name = 'Vrtlarska testera i škare'</sql>
+        <sql>UPDATE category SET name = 'Perač pod visokim pritiskom'      WHERE name = 'Visokotlačni perač'</sql>
+        <sql>UPDATE category SET name = 'Korpa za vatru'                   WHERE name = 'Košara za vatru'</sql>
+        <sql>UPDATE category SET name = 'Tiganj za paelju'                 WHERE name = 'Paella tava'</sql>
+        <sql>UPDATE category SET name = 'Sto za glodalicu'                 WHERE name = 'Stol za glodalicu'</sql>
+        <sql>UPDATE category SET name = 'Čistač tepiha i tapacirunga'      WHERE name = 'Čistač tepiha i tapaciringa'</sql>
+        <sql>UPDATE category SET name = 'Odeća za jedrenje'                WHERE name = 'Jedriličarska odeća'</sql>
+        <sql>UPDATE category SET name = 'Baštenska drobilica'              WHERE name = 'Baštenski drobilica'</sql>
+        <sql>UPDATE category SET name = 'Drobilica za drvo'                WHERE name = 'Drobionica drveta'</sql>
+        <sql>UPDATE category SET name = 'Lonci i tiganji'                  WHERE name = 'Lonci i tiganje'</sql>
+        <sql>UPDATE category SET name = 'Radionička dizalica'              WHERE name = 'Radioničarska dizalica'</sql>
+        <sql>UPDATE category SET name = 'Radionička presa'                 WHERE name = 'Radioničarska presa'</sql>
+
+        <!-- ================================================================ -->
+        <!-- 2. Bukvalni prevodi sa engleskog                                 -->
+        <!-- ================================================================ -->
+        <sql>UPDATE category SET name = 'Dizalica za gipsane ploče'        WHERE name = 'Lift za suvi zid'</sql>
+        <sql>UPDATE category SET name = 'Brusilica za zidove'              WHERE name = 'Brusilica za suvi zid'</sql>
+
+        <!-- Tražač kabla u Merni instrumenti (ne ID 1335 koji je već preimenovan) -->
+        <sql splitStatements="false">
+            UPDATE category SET name = 'Detektor kablova'
+            WHERE name = 'Tražač kabla'
+              AND parent_id = (
+                  SELECT id FROM (SELECT id FROM category WHERE name = 'Merni instrumenti' AND parent_id = 100) AS tmp
+              )
+        </sql>
+
+        <sql>UPDATE category SET name = 'Detektor greda'                   WHERE name = 'Tražač greda'</sql>
+        <sql>UPDATE category SET name = 'Posuda za grejanje hrane'         WHERE name = 'Chafing dish'</sql>
+        <sql>UPDATE category SET name = 'Pedala za gitaru'                 WHERE name = 'Gitarni pedal'</sql>
+        <sql>UPDATE category SET name = 'Igre na vodi'                     WHERE name = 'Vodene igre'</sql>
+        <sql>UPDATE category SET name = 'Skijanje na vodi i wakeboard'     WHERE name = 'Vodni ski i wakeboard'</sql>
+
+        <!-- ================================================================ -->
+        <!-- 3. Rogobatni prevodi i terminologija                             -->
+        <!-- ================================================================ -->
+        <sql>UPDATE category SET name = 'Ćuskija / Pajser'                 WHERE name = 'Gvozdena šipka'</sql>
+
+        <!-- Skakavac u Aktivnosti i zabava (parent 600) -->
+        <sql splitStatements="false">
+            UPDATE category SET name = 'Dvorac na naduvavanje'
+            WHERE name = 'Skakavac'
+              AND parent_id = (
+                  SELECT id FROM (SELECT id FROM category WHERE name = 'Aktivnosti i zabava' AND parent_id = 600) AS tmp
+              )
+        </sql>
+
+        <sql>UPDATE category SET name = 'Prozračivač travnjaka'            WHERE name = 'Skarifajzer'</sql>
+        <sql>UPDATE category SET name = 'Alat za štelovanje šarki'         WHERE name = 'Regulator šarki'</sql>
+        <sql>UPDATE category SET name = 'Dizalice i podupirači'            WHERE name = 'Dizalica i stalci'</sql>
+
+        <!-- ================================================================ -->
+        <!-- 4. Domaći žargon i auto-moto izrazi                             -->
+        <!-- ================================================================ -->
+        <sql>UPDATE category SET name = 'Prikolica sa arnjevima'           WHERE name = 'Prikolica sa kavezom'</sql>
+        <sql>UPDATE category SET name = 'Prikolica sa ceradom'             WHERE name = 'Prikolica s pokrivačem'</sql>
+        <sql>UPDATE category SET name = 'Kuvanje piva i vinarstvo'         WHERE name = 'Varenje piva i vinarstvo'</sql>
+        <sql>UPDATE category SET name = 'Đakuzi'                           WHERE name = 'Jakuzi'</sql>
+        <sql>UPDATE category SET name = 'Aparat za kokice'                 WHERE name = 'Kokičar'</sql>
+
+    </changeSet>
+
+</databaseChangeLog>

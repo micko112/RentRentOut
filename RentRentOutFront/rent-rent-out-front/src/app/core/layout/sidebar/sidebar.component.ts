@@ -26,13 +26,6 @@ export class SidebarComponent implements OnInit {
   notifUnread$ = this.notificationsService.unreadCount$;
   isCollapsed$ = this.sidebarState.collapsed$;
 
-  @HostListener('window:resize')
-  onResize(): void {
-    if (window.innerWidth < 1600) {
-      this.sidebarState.setCollapsed(true);
-    }
-  }
-
   toggle(): void {
     this.sidebarState.toggle();
   }

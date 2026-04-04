@@ -1,14 +1,14 @@
 /* ════════════════════════════════════════════════════════
    EDIT AD WIZARD — 2-step form
-   Sidebar: 185px + gap: 200px = 385px offset fixed below
+   Offset = gap only (sidebar ostaje vidljiv levo)
    ════════════════════════════════════════════════════════ */
 
 :host { display: block; }
 
-/* ── Izlazimo iz sidebar layouta ──────────────────────── */
+/* ── Prekriva samo gap, sidebar ostaje vidljiv ──────────── */
 .wizard-page {
-  margin-left: -385px;                /* sidebar 185px + gap 200px */
-  width: calc(100% + 385px);
+  margin-left: -185px;                /* gap 185px */
+  width: calc(100% + 185px);
   margin-top: -30px;                  /* page-content padding-top */
   min-height: 100vh;
   background: linear-gradient(145deg, #f0f2ff 0%, #f5f0ff 45%, #eefdf4 100%);
@@ -898,39 +898,48 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
 
 /* ════════════════════════════════════════════════════════
    RESPONSIVE
+   Offset = gap only, sidebar ostaje vidljiv levo
    ════════════════════════════════════════════════════════ */
 
-/* ── Medium screens — smanjeni gap, proporcionalni offset ── */
+/* ── 1500px: smanji unutrašnju marginu ── */
+@media (max-width: 1500px) {
+  .wizard-header { padding: 0 32px; }
+  .wizard-body   { padding: 28px 32px 80px; }
+  .section-block { padding: 28px 36px; }
+  .progress-track { margin: 0 -32px; }
+}
+
+/* ── 1400px: gap se smanjuje na 24px ── */
 @media (max-width: 1400px) {
   .wizard-page {
-    margin-left: -209px;  /* sidebar 185px + gap 24px */
-    width: calc(100% + 209px);
+    margin-left: -24px;   /* gap 24px */
+    width: calc(100% + 24px);
   }
 }
 
 @media (max-width: 1200px) {
   .wizard-page {
-    margin-left: -201px;  /* sidebar 185px + gap 16px */
-    width: calc(100% + 201px);
+    margin-left: -16px;   /* gap 16px */
+    width: calc(100% + 16px);
   }
-  .wizard-header { padding: 0 28px; }
-  .wizard-body   { padding: 28px 28px 80px; }
-  .section-block { padding: 28px 32px; }
-  .progress-track { margin: 0 -28px; }
+  .wizard-header { padding: 0 24px; }
+  .wizard-body   { padding: 24px 24px 80px; }
+  .section-block { padding: 24px 28px; }
+  .progress-track { margin: 0 -24px; }
 }
 
 @media (max-width: 1000px) {
   .wizard-page {
-    margin-left: -197px;  /* sidebar 185px + gap 12px */
-    width: calc(100% + 197px);
+    margin-left: -12px;   /* gap 12px */
+    width: calc(100% + 12px);
   }
   .wizard-header { padding: 0 20px; }
-  .wizard-body   { padding: 24px 20px 60px; }
-  .section-block { padding: 24px 24px; }
+  .wizard-body   { padding: 20px 20px 60px; }
+  .section-block { padding: 20px 24px; }
   .progress-track { margin: 0 -20px; }
 }
 
-/* Ispod 900px sidebar već ide u column, resetuj offset */
+/* Ispod 900px sidebar ide u column, resetuj offset */
 @media (max-width: 900px) {
   .wizard-page {
     margin-left: 0;
@@ -939,7 +948,7 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   }
   .wizard-header { padding: 0 16px; }
   .wizard-body   { padding: 20px 16px 60px; }
-  .section-block { padding: 24px 20px; }
+  .section-block { padding: 20px 18px; }
   .progress-track { margin: 0 -16px; }
   .step-pills { display: none; }
 }

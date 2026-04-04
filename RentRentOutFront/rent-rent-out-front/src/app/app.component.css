@@ -58,6 +58,7 @@
   .main-app-wrapper {
     flex-direction: column;
     gap: 0;
+    align-items: stretch;
   }
 
   .main-app-wrapper:not(.has-sidebar) .page-content {

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="fix-categories-names-28" author="micko112">
+
+        <!-- ================================================================ -->
+        <!-- 1. ID 1335: Tražač kabla (Bašta / Održavanje travnjaka)          -->
+        <!--    → Detektor kablova za robotske kosilice                       -->
+        <!-- ================================================================ -->
+        <sql>UPDATE category SET name = 'Detektor kablova za robotske kosilice' WHERE id = 1335</sql>
+
+        <!-- ================================================================ -->
+        <!-- 2. Obriši "Tegljač kabla" (bio pod Struja i agregati)            -->
+        <!--    Oglase koji koriste tu kategoriju premesti na parent           -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">
+            UPDATE ad
+            SET category_id = (
+                SELECT id FROM (SELECT id FROM category WHERE name = 'Struja i agregati' AND parent_id = 100) AS tmp
+            )
+            WHERE category_id = (
+                SELECT id FROM (SELECT id FROM category WHERE name = 'Tegljač kabla') AS tmp2
+            )
+        </sql>
+        <sql>DELETE FROM category WHERE name = 'Tegljač kabla'</sql>
+
+        <!-- ================================================================ -->
+        <!-- 3. Preimenovanja — loši prevodi i rogobatni nazivi               -->
+        <!-- ================================================================ -->
+
+        <!-- Sekač zavrtnjeva → Sekač vijaka -->
+        <sql>UPDATE category SET name = 'Sekač vijaka' WHERE name = 'Sekač zavrtnjeva'</sql>
+
+        <!-- Teški čekić → Macola -->
+        <sql>UPDATE category SET name = 'Macola' WHERE name = 'Teški čekić'</sql>
+
+        <!-- Plug i klinovi → Ankeri i tiplovi -->
+        <sql>UPDATE category SET name = 'Ankeri i tiplovi' WHERE name = 'Plug i klinovi'</sql>
+
+        <!-- Usisivač za pašnjak → Usisivač za lišće -->
+        <sql>UPDATE category SET name = 'Usisivač za lišće' WHERE name = 'Usisivač za pašnjak'</sql>
+
+        <!-- Razmetač → Rasipač za đubrivo -->
+        <sql>UPDATE category SET name = 'Rasipač za đubrivo' WHERE name = 'Razmetač'</sql>
+
+        <!-- Parna cediljka → Sokovnik na paru -->
+        <sql>UPDATE category SET name = 'Sokovnik na paru' WHERE name = 'Parna cediljka'</sql>
+
+        <!-- Konji za farbanje → Nogari za farbanje (u Krečenje i tapete + Skele i podupirači) -->
+        <sql>UPDATE category SET name = 'Nogari za farbanje' WHERE name = 'Konji za farbanje'</sql>
+
+        <!-- Nadgledni projektor → Grafoskop -->
+        <sql>UPDATE category SET name = 'Grafoskop' WHERE name = 'Nadgledni projektor'</sql>
+
+        <!-- Kosa testera → Stoni ger za drvo -->
+        <sql>UPDATE category SET name = 'Stoni ger za drvo' WHERE name = 'Kosa testera'</sql>
+
+        <!-- Ručna kosa testera → Ručni ger za drvo -->
+        <sql>UPDATE category SET name = 'Ručni ger za drvo' WHERE name = 'Ručna kosa testera'</sql>
+
+        <!-- Mašina za panje → Freza za panjeve -->
+        <sql>UPDATE category SET name = 'Freza za panjeve' WHERE name = 'Mašina za panje'</sql>
+
+        <!-- Čekić za stubove → Pobijač stubova -->
+        <sql>UPDATE category SET name = 'Pobijač stubova' WHERE name = 'Čekić za stubove'</sql>
+
+        <!-- Stativo za slikanje → Štafelaj -->
+        <sql>UPDATE category SET name = 'Štafelaj' WHERE name = 'Stativo za slikanje'</sql>
+
+        <!-- Šišač za pse → Mašinica za šišanje pasa -->
+        <sql>UPDATE category SET name = 'Mašinica za šišanje pasa' WHERE name = 'Šišač za pse'</sql>
+
+        <!-- Nargilica → Nargila -->
+        <sql>UPDATE category SET name = 'Nargila' WHERE name = 'Nargilica'</sql>
+
+        <!-- Saonice → Sanke -->
+        <sql>UPDATE category SET name = 'Sanke' WHERE name = 'Saonice'</sql>
+
+        <!-- Flyjumpers → Fly jumpers -->
+        <sql>UPDATE category SET name = 'Fly jumpers' WHERE name = 'Flyjumpers'</sql>
+
+        <!-- ================================================================ -->
+        <!-- 4. Ijekavica → Ekavica                                           -->
+        <!-- ================================================================ -->
+
+        <!-- Ugaomjer → Uglomer -->
+        <sql>UPDATE category SET name = 'Uglomer' WHERE name = 'Ugaomjer'</sql>
+
+        <!-- Ručni rendač → Ručno rende -->
+        <sql>UPDATE category SET name = 'Ručno rende' WHERE name = 'Ručni rendač'</sql>
+
+        <!-- Stoni rendač → Stono rende -->
+        <sql>UPDATE category SET name = 'Stono rende' WHERE name = 'Stoni rendač'</sql>
+
+        <!-- ID 1038: Oscilirajući višenamjenski alat → Oscilirajući višenamenski alat / Multialat -->
+        <sql>UPDATE category SET name = 'Oscilirajući višenamenski alat / Multialat' WHERE id = 1038</sql>
+
+        <!-- Metrar → Metar -->
+        <sql>UPDATE category SET name = 'Metar' WHERE name = 'Metrar'</sql>
+
+        <!-- ================================================================ -->
+        <!-- 5. Spajanje: Stega + Mengerica → "Stega i mengel"                -->
+        <!-- ================================================================ -->
+
+        <!-- Preimenuj "Stega" u "Stega i mengel" -->
+        <sql>UPDATE category SET name = 'Stega i mengel' WHERE name = 'Stega'</sql>
+
+        <!-- Premesti oglase koji koriste "Mengerica" na "Stega i mengel" -->
+        <sql splitStatements="false">
+            UPDATE ad
+            SET category_id = (SELECT id FROM (SELECT id FROM category WHERE name = 'Stega i mengel') AS tmp)
+            WHERE category_id = (SELECT id FROM (SELECT id FROM category WHERE name = 'Mengerica') AS tmp2)
+        </sql>
+
+        <!-- Obriši "Mengerica" -->
+        <sql>DELETE FROM category WHERE name = 'Mengerica'</sql>
+
+        <!-- ================================================================ -->
+        <!-- 6. Premesti električne alate iz "Struja i agregati"              -->
+        <!--    u "Ručni alati" (van kategorije teških agregata)              -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">
+            UPDATE category
+            SET parent_id = (
+                SELECT id FROM (SELECT id FROM category WHERE name = 'Ručni alati' AND parent_id = 100) AS r
+            )
+            WHERE name IN ('Skidač izolacije', 'Kalemovi i električni kablovi')
+              AND parent_id = (
+                  SELECT id FROM (SELECT id FROM category WHERE name = 'Struja i agregati' AND parent_id = 100) AS s
+              )
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -7,11 +7,12 @@ import { PriceInterval } from '../../../../shared/models/price-interval.enum';
 import { CategoryService } from '../../services/category.service';
 import { LocationService } from '../../services/location.service';
 import { Router, RouterLink } from '@angular/router';
-import { filter, switchMap, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { Location } from '../../../../shared/models/location.model';
 import { CityPickerComponent, CityPickerOption } from '../../../../shared/components/city-picker/city-picker.component';
 import { AuthService } from '../../../auth/services/auth.service';
+
 
 @Component({
   selector: 'app-create-ad',
@@ -45,6 +46,8 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   suggestedCategories: Category[] = [];
   isSuggestingCategories = false;
   appliedSuggestionId: number | null = null;
+
+  private destroy$ = new Subject<void>();
 
   // ── Locations ───────────────────────────────────────────────────────────
   locations: Location[] = [];
@@ -128,6 +131,24 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       images:        [[]],
       pricePerWeek:  [null],
       pricePerMonth: [null],
+    });
+    this.form.get('title')?.valueChanges.pipe(
+      debounceTime(800),
+      distinctUntilChanged(),
+      filter(title => title && title.length > 5),
+      switchMap(title => this.categoryService.suggestCategory(title)),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (categoryId) => {
+        if (categoryId) {
+          const found = this.categories.find(c => c.id === categoryId);
+          if (found) {
+            this.applySuggestedCategory(found);
+            this.toastService.showSuccess('AI je automatski prepoznao kategoriju!');
+          }
+        }
+      },
+      error: () => {},
     });
   }
 
@@ -241,9 +262,12 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     this.isSuggestingCategories = true;
     this.suggestedCategories = [];
     this.appliedSuggestionId = null;
-    this.categoryService.suggest(title).subscribe({
-      next: cats => {
-        this.suggestedCategories = cats.slice(0, 5);
+    this.categoryService.suggestCategory(title).subscribe({
+      next: categoryId => {
+        if (categoryId) {
+          const found = this.categories.find(c => c.id === categoryId);
+          this.suggestedCategories = found ? [found] : [];
+        }
         this.isSuggestingCategories = false;
       },
       error: () => {
@@ -403,6 +427,8 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   get selectedInterval(): string { return this.form.get('priceInterval')?.value ?? PriceInterval.PER_DAY; }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.previewUrls.forEach(url => URL.revokeObjectURL(url));
   }
 }

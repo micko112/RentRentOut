@@ -1,5 +1,12 @@
 <div class="admin-users">
-  <h2>Korisnici</h2>
+  <div class="page-header">
+    <h2>Korisnici</h2>
+    <div class="search-bar">
+      <span class="material-icons">search</span>
+      <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()"
+             placeholder="Pretraži po imenu ili emailu...">
+    </div>
+  </div>
 
   <div *ngIf="loading" class="loading">Učitavanje...</div>
 
@@ -17,9 +24,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of usersPage.content">
+        <tr *ngFor="let user of usersPage.content; trackBy: trackByUser">
           <td>{{ user.id }}</td>
-          <td>{{ user.firstname }} {{ user.lastname }}</td>
+          <td>
+            <a [routerLink]="['/user', user.id, 'reviews']" target="_blank" class="user-link">
+              {{ user.firstname }} {{ user.lastname }}
+            </a>
+          </td>
           <td>{{ user.email }}</td>
           <td>
             <span class="badge" [class.admin]="user.role === 'ROLE_ADMIN'">
@@ -50,9 +61,15 @@
 
     <div class="pagination">
       <button class="page-btn" (click)="prevPage()" [disabled]="usersPage.first">Prethodna</button>
-      <span>Strana {{ usersPage.number + 1 }} od {{ usersPage.totalPages }}</span>
+      <span>Strana {{ usersPage.number + 1 }} od {{ usersPage.totalPages }}
+        <span class="total-count">({{ usersPage.totalElements }} korisnika)</span>
+      </span>
       <button class="page-btn" (click)="nextPage()" [disabled]="usersPage.last">Sledeća</button>
     </div>
+  </div>
+
+  <div *ngIf="!loading && usersPage?.totalElements === 0" class="empty-state">
+    Nema korisnika koji odgovaraju pretrazi.
   </div>
 </div>
 

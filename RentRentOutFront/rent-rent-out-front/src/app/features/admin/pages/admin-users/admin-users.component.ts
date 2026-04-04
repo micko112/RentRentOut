@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { AdminService } from '../../services/admin.service';
 import { User } from '../../../../shared/models/user.model';
 import { Page } from '../../../../shared/models/adPreview.model';
@@ -10,14 +13,18 @@ import { PromotionService } from '../../../ads/services/promotion.service';
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.css'
 })
-export class AdminUsersComponent implements OnInit {
+export class AdminUsersComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  private searchSubject = new Subject<string>();
+
   usersPage: Page<User> | null = null;
   loading = true;
   currentPage = 0;
+  searchQuery = '';
 
   // Credit modal
   showCreditModal = false;
@@ -33,12 +40,31 @@ export class AdminUsersComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.searchSubject.pipe(
+      debounceTime(350),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.currentPage = 0;
+      this.loadUsers();
+    });
     this.loadUsers();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onSearchChange() {
+    this.searchSubject.next(this.searchQuery);
+  }
+
+  trackByUser(_: number, u: User) { return u.id; }
+
   loadUsers() {
     this.loading = true;
-    this.adminService.getUsers(this.currentPage).subscribe({
+    this.adminService.getUsers(this.currentPage, 20, this.searchQuery).subscribe({
       next: (page) => {
         this.usersPage = page;
         this.loading = false;

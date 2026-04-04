@@ -1,4 +1,17 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /messages
+Disallow: /notifications
+Disallow: /user/me
+Disallow: /user/saved-ads
+Disallow: /credit
+Disallow: /login
+Disallow: /register
+Disallow: /verify-email
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /ads/create
+Disallow: /ads/*/edit
 
 Sitemap: https://izdajemiznajmljujem.com/sitemap.xml

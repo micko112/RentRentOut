@@ -1,5 +1,6 @@
-import {Component} from '@angular/core';
-import {RouterModule} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { SeoService } from '../../../../core/services/seo.service';
 
 @Component({
   selector: 'app-contact',
@@ -8,4 +9,14 @@ import {RouterModule} from '@angular/router';
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css'
 })
-export class ContactComponent {}
+export class ContactComponent implements OnInit {
+  constructor(private seoService: SeoService) {}
+
+  ngOnInit(): void {
+    this.seoService.setStaticPage(
+      'Kontakt',
+      'Kontaktiraj tim Izdajem Iznajmljujem za podršku, pitanja ili prijavu problema.',
+      '/contact'
+    );
+  }
+}

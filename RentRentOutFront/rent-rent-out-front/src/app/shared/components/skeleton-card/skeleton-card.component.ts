@@ -1,5 +1,6 @@
-import {CommonModule} from '@angular/common';
-import {Component, Input} from '@angular/core';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-skeleton-card',
@@ -15,7 +16,8 @@ import {Component, Input} from '@angular/core';
       </div>
     </div>
   `,
-  styleUrl: './skeleton-card.component.css'
+  styleUrl: './skeleton-card.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkeletonCardComponent {
   @Input() listView = false;
