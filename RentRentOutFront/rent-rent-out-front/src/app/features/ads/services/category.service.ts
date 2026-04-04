@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Category } from '../../../shared/models/category.model';
 import { Observable } from 'rxjs';
@@ -9,16 +9,15 @@ import { API_BASE_URL } from '../../../core/config/api.config';
   providedIn: 'root'
 })
 export class CategoryService {
+  private http = inject(HttpClient);
   private all$ = this.http.get<Category[]>(`${API_BASE_URL}/categories`).pipe(shareReplay(1));
-
-  constructor(private http: HttpClient) { }
 
   getAll(): Observable<Category[]> {
     return this.all$;
   }
 
   suggestCategory(title: string): Observable<number> {
-    let params = new HttpParams().set('title', title);
+    const params = new HttpParams().set('title', title);
     return this.http.get<number>(`${API_BASE_URL}/categories/suggest`, { params });
   }
 

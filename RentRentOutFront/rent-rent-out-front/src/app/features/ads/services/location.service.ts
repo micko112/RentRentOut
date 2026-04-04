@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -9,9 +9,8 @@ import { Location } from '../../../shared/models/location.model';
   providedIn: 'root'
 })
 export class LocationService {
+  private http = inject(HttpClient);
   private all$ = this.http.get<Location[]>(`${API_BASE_URL}/locations`).pipe(shareReplay(1));
-
-  constructor(private http: HttpClient) {}
 
   getAll(): Observable<Location[]> {
     return this.all$;
