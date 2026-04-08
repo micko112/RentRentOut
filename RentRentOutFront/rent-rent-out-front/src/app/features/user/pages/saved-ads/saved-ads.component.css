@@ -109,10 +109,21 @@
   color: #555;
 }
 
+@media (max-width: 768px) {
+  .ads-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+}
+
 @media (max-width: 480px) {
   .ads-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .header-row {
+    margin-bottom: 16px;
   }
 
   .header-row h2 {
@@ -122,5 +133,10 @@
   .pagination-wrapper {
     gap: 10px;
     margin-top: 20px;
+  }
+
+  .page-btn {
+    padding: 8px 14px;
+    font-size: 13px;
   }
 }

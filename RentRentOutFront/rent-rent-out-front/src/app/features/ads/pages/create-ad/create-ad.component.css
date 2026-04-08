@@ -870,52 +870,86 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
 
 .suggest-results {
   margin-top: 14px;
-  padding: 14px 16px;
-  background: var(--color-primary-light);
-  border: 1px solid var(--color-primary-border);
-  border-radius: 10px;
+  background: var(--color-white);
+  border: 1.5px solid var(--color-primary-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px var(--color-primary-glow);
 }
 
 .suggest-results-label {
-  font-size: 12px;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--color-primary);
-  margin-bottom: 10px;
+  padding: 10px 14px 8px;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
+  background: var(--color-primary-light);
+  border-bottom: 1px solid var(--color-primary-border);
+
+  .suggest-results-icon { font-size: 14px; }
 }
 
 .suggest-chips {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .suggest-chip {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: #fff;
-  border: 1.5px solid var(--color-primary-border);
-  border-radius: 8px;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--color-white);
+  border: none;
+  border-bottom: 1px solid var(--color-border-light);
   cursor: pointer;
   text-align: left;
-  transition: all .15s;
-  font-size: 13px;
+  transition: background .13s;
+  width: 100%;
 
-  .suggest-chip-icon { font-size: 16px; color: var(--color-primary); flex-shrink: 0; }
+  &:last-child { border-bottom: none; }
 
-  .suggest-chip-path { color: #444; font-weight: 500; }
+  &:hover {
+    background: var(--color-primary-xlight);
 
-  &:hover { background: var(--color-primary-light); border-color: var(--color-primary); }
-
-  &.applied {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    .suggest-chip-icon { color: #fff; }
-    .suggest-chip-path { color: #fff; }
+    .suggest-chip-rank { background: var(--color-primary); color: #fff; }
+    .suggest-chip-arrow { color: var(--color-primary); opacity: 1; }
   }
+}
+
+.suggest-chip-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-border-medium);
+  color: var(--color-white);
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: background .13s;
+}
+
+.suggest-chip-path {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-body);
+  line-height: 1.4;
+}
+
+.suggest-chip-arrow {
+  font-size: 18px;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+  flex-shrink: 0;
+  transition: color .13s, opacity .13s;
 }
 
 /* Level-3 chips — malo manji i blago uvučeni */
@@ -993,4 +1027,19 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   .loc-qty-row    { flex-direction: column; }
   .interval-row   { flex-wrap: wrap; }
   .ppc-value      { font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+  .wizard-header  { padding: 0 12px; }
+  .wizard-body    { padding: 16px 12px 80px; } /* 80px = mobile nav clearance */
+  .section-block  { padding: 16px 14px; border-radius: 12px; }
+  .category-grid  { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .category-btn   { padding: 10px 6px; font-size: 11px; }
+  .category-icon  { font-size: 22px; }
+  .wizard-nav     { gap: 10px; }
+  .btn-prev, .btn-next { padding: 11px 18px; font-size: 14px; }
+  .img-dropzone   { padding: 24px 12px; }
+  .qty-stepper    { gap: 10px; }
+  .step-indicator { font-size: 12px; padding: 4px 10px; }
+  .ppc-value      { font-size: 20px; }
 }

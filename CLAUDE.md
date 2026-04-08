@@ -285,6 +285,43 @@ Email u `addCredit()` i `sendExpiryReminders()` je wrapped u try-catch + `log.wa
 
 ---
 
+## ML Servis — Predlaganje Kategorija
+
+**Lokacija**: `RentRentOutML/ai_service/`
+
+**Stack**: Python 3.11, FastAPI, PyTorch (CPU), scikit-learn (TF-IDF), joblib
+
+**Fajlovi**:
+- `main.py` — FastAPI app, klasa `RentRentOutKategorizator` (nn.Sequential: 256→128→N klasa), endpoint `POST /api/predict-category`
+- `rentrentout_model.pth` — sačuvane težine modela
+- `tfidf_vectorizer.pkl` — TF-IDF vektorizator
+- `label_encoder.pkl` — mapiranje indeksa → MySQL category ID
+- `requirements.txt` — fastapi, uvicorn, joblib, scikit-learn
+- `Dockerfile` — single-stage `python:3.11-slim`, torch instaliran sa CPU-only index URL
+
+**Flow**: Angular → `GET /api/categories/suggest?title=...` → Spring Boot `CategoryServiceImpl.suggestCategory()` → `POST http://ml-service:8000/api/predict-category` (JSON body `{title}`) → vraća `{ predicted_category_id: Long }`
+
+**Backend integracija** (`CategoryServiceImpl`):
+- `RestClient` kao polje (ne kreira se svaki put)
+- URL konfigurisan via `@Value("${ai.service.url}")`:
+  - `application.properties`: `http://localhost:8000`
+  - `application-docker.properties` / `application-prod.properties`: `http://ml-service:8000`
+- `contentType(MediaType.APPLICATION_JSON)` obavezno — bez toga FastAPI vraća 422
+
+**Frontend integracija** (`create-ad` wizard, Step 1):
+- `CategoryService.suggestCategory(title)` → `Observable<number>` (category ID)
+- Auto-suggest: debounce 800ms + `switchMap` + `takeUntil(destroy$)` → `applySuggestedCategory()` (ažurira vizuelno stablo)
+- Manuelno dugme "Preporuči kategoriju" → traži kategoriju po ID-u u lokalnom nizu → prikazuje chip
+- `GET /api/categories/suggest` je `permitAll()` u SecurityConfig (pokriveno sa `/api/categories/**`)
+
+**Nginx** (`nginx.prod.conf`): `location = /api/predict-category` (exact match) pre opšteg `/api/` bloka → proxira na `ml-service:8000`
+
+**Dev proxy** (`proxy.conf.json`): `/api/predict-category` → `localhost:8000` (mora biti pre `/api` entrija)
+
+**Docker**: servis `ml-service` u oba `docker-compose.yml` (port 8000 eksponovan lokalno) i `docker-compose.prod.yml` (samo interno)
+
+---
+
 ## Ad Reporting
 
 **Backend**: `AdReport` entity (reason VARCHAR 60, note VARCHAR 500, reviewed bool); `POST /api/ads/{adId}/report` (ne može sopstveni oglas, duplikat guard); `GET /api/admin/reports?onlyUnreviewed=`, `PATCH /api/admin/reports/{id}/reviewed`. Migracija: changelog-24.

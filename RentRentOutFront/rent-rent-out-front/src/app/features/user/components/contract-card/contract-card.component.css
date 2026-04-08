@@ -227,3 +227,26 @@
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 480px) {
+  .contract-card {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    white-space: normal;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .actions a,
+  .actions button {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+}

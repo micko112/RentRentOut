@@ -329,3 +329,34 @@
     width: 100%;
   }
 }
+
+@media (max-width: 480px) {
+  .search-bar {
+    min-height: 44px;
+  }
+
+  .search-input {
+    font-size: 14px;
+  }
+
+  .ad-management-actions {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .action-btns {
+    width: 100%;
+    margin-left: 0;
+
+    button {
+      flex: 1;
+      justify-content: center;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+  }
+
+  .expiry-info {
+    font-size: 12px;
+  }
+}

@@ -75,7 +75,7 @@ public class CategoryServiceImpl implements CategoryService{
         }
     }
     @Override
-    public Long suggestCategory(String title) {
+    public List<Long> suggestCategory(String title) {
         Map<String, String> body = new HashMap<>();
         body.put("title", title);
 
@@ -87,15 +87,14 @@ public class CategoryServiceImpl implements CategoryService{
                     .retrieve()
                     .body(Map.class);
 
-            // Ako je Python vratio odgovor, izvuci predicted_category_id
-            if (response != null && response.containsKey("predicted_category_id")) {
-                return ((Number) response.get("predicted_category_id")).longValue();
+            if (response != null && response.containsKey("predicted_category_ids")) {
+                List<Number> ids = (List<Number>) response.get("predicted_category_ids");
+                return ids.stream().map(Number::longValue).toList();
             }
         } catch (Exception e) {
-            // Ako je Python server ugašen, ne želimo da pukne cela Java aplikacija
             System.out.println("AI Service je trenutno nedostupan: " + e.getMessage());
         }
-        return null; // Vraća null ako AI ne uspe da pogodi
+        return List.of();
     }
 
 }

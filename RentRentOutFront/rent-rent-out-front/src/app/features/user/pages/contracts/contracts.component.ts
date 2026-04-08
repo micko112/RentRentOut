@@ -64,14 +64,16 @@ export class ContractsComponent implements OnInit, OnDestroy {
 
         if (this.scrollToContractId) {
           const targetId = this.scrollToContractId;
-          setTimeout(() => {
-            const el = document.getElementById('contract-' + targetId);
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              el.classList.add('contract-highlighted');
-              setTimeout(() => el.classList.remove('contract-highlighted'), 2000);
-            }
-          }, 150);
+          if (typeof document !== 'undefined') {
+            setTimeout(() => {
+              const el = document.getElementById('contract-' + targetId);
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.classList.add('contract-highlighted');
+                setTimeout(() => el.classList.remove('contract-highlighted'), 2000);
+              }
+            }, 150);
+          }
         }
       },
       error: () => {

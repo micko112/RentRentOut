@@ -1,4 +1,4 @@
-<div class="chat-container">
+<div class="chat-container" [class.mobile-view-chat]="mobileView === 'chat'">
 
   <!-- ========================================== -->
   <!-- LEVA STRANA: Lista razgovora               -->
@@ -56,6 +56,9 @@
 
         <!-- 1. Header (Info o oglasu i sagovorniku) -->
         <div class="chat-header">
+          <button class="back-btn-mobile" (click)="backToList()">
+            <span class="material-icons">arrow_back</span>
+          </button>
           <img [src]="activeConversation.adThumbnail || 'assets/images/placeholder.png'" alt="Oglas" class="header-ad-img">
           <div class="header-info">
             <a class="header-ad-link" [routerLink]="['/ads', activeConversation.adId]">{{ activeConversation.adTitle }}</a>

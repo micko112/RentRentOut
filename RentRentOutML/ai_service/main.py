@@ -51,15 +51,15 @@ def predict_category(request: AdRequest):
     # b) Numpy -> PyTorch Tenzor
     X_tenzor = torch.tensor(X_novi, dtype=torch.float32)
     
-    # c) Pogađanje (Inference)
+    # c) Pogađanje top-5 (Inference)
     with torch.no_grad(): # Gasimo praćenje gradijenata radi brzine
         izlaz = model(X_tenzor)
-        predikcija_indeks = izlaz.argmax(dim=1).item() # Dobijamo npr. 145
-    
-    # d) Prevođenje indeksa nazad u tvoj MySQL ID
-    pravi_kategorija_id = label_encoder.inverse_transform([predikcija_indeks])[0]
-    
+        top5_indeksi = izlaz.topk(5, dim=1).indices[0].tolist()
+
+    # d) Prevođenje indeksa nazad u MySQL ID-eve
+    top5_ids = [int(label_encoder.inverse_transform([i])[0]) for i in top5_indeksi]
+
     return {
         "title": request.title,
-        "predicted_category_id": int(pravi_kategorija_id)
+        "predicted_category_ids": top5_ids
     }

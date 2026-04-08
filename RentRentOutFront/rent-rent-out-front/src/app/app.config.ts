@@ -1,9 +1,11 @@
 import {ApplicationConfig, inject, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter, withInMemoryScrolling, withPreloading, PreloadAllModules, Router } from '@angular/router';
+import { provideClientHydration } from '@angular/platform-browser';
 import {
   HttpClient,
   HttpInterceptorFn,
   provideHttpClient,
+  withFetch,
   withInterceptors
 } from '@angular/common/http';
 import localeSr from '@angular/common/locales/sr-Latn';
@@ -70,7 +72,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withPreloading(PreloadAllModules), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
+    provideClientHydration(),
     {provide: LOCALE_ID, useValue: 'sr-Latn'},
     DatePipe,
     {

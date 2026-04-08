@@ -959,3 +959,13 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   .interval-row { flex-wrap: wrap; }
   .ppc-value   { font-size: 22px; }
 }
+
+@media (max-width: 480px) {
+  .wizard-header  { padding: 0 12px; }
+  .wizard-body    { padding: 16px 12px 80px; }
+  .section-block  { padding: 16px 14px; border-radius: 12px; }
+  .wizard-nav     { gap: 10px; }
+  .btn-prev, .btn-next { padding: 11px 18px; font-size: 14px; }
+  .img-dropzone   { padding: 24px 12px; }
+  .ppc-value      { font-size: 20px; }
+}

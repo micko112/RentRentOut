@@ -13,14 +13,38 @@
     </div>
   </div>
 
+  <!-- ── Mobile filter bar (samo na mobilnom) ── -->
+  <div class="mobile-filter-bar">
+    <button class="mobile-filter-btn" (click)="toggleMobileFilters()">
+      <span class="material-icons">tune</span>
+      {{ isSearchMode ? 'Filteri' : 'Kategorije' }}
+    </button>
+    <div class="mobile-sort-wrap" *ngIf="isSearchMode">
+      <select class="mobile-sort-select" (change)="onSortChange($event)">
+        <option value="id,desc">Najnovije</option>
+        <option value="price,asc">Najjeftinije</option>
+        <option value="price,desc">Najskuplje</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ── Overlay ── -->
+  <div class="drawer-overlay" [class.visible]="showMobileFilters" (click)="closeMobileFilters()"></div>
+
   <div class="main-content-wrapper">
 
-    <aside class="sidebar-area">
+    <!-- Filter panel — sidebar na desktopu, drawer na mobilnom -->
+    <div class="filter-panel" [class.mobile-open]="showMobileFilters">
+      <div class="drawer-handle-bar">
+        <div class="drawer-handle"></div>
+        <button class="drawer-close-btn" (click)="closeMobileFilters()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
       <app-categories-sidebar
         *ngIf="!isSearchMode"
         (categorySelected)="onCategoryFiltered($event)">
       </app-categories-sidebar>
-
       <app-filters-sidebar
         *ngIf="isSearchMode"
         [categories]="categories"
@@ -28,7 +52,7 @@
         [initialCriteria]="currentCriteria"
         (applyFilters)="onApplyFilters($event)">
       </app-filters-sidebar>
-    </aside>
+    </div>
 
 
     <main class="ads-display-area">

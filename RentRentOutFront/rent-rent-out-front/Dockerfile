@@ -5,18 +5,20 @@ WORKDIR /app
 
 # Kopiramo package fajlove prvo - npm install se kešira ako se deps nisu promenile
 COPY package*.json .
-RUN npm ci --quiet
+RUN npm ci --quiet --legacy-peer-deps
 
-# Kopiramo source i buildujemo
+# Kopiramo source i buildujemo (SSR)
 COPY . .
 RUN npm run build
 
-# ─── Stage 2: Serve ───────────────────────────────────────────────────────────
-FROM nginx:alpine
+# ─── Stage 2: SSR server ──────────────────────────────────────────────────────
+FROM node:20-alpine
 
-COPY --from=build /app/dist/rent-rent-out-front/browser /usr/share/nginx/html
+WORKDIR /app
 
-# nginx config za Angular SPA (history API fallback)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Kopiramo samo dist folder (browser + server)
+COPY --from=build /app/dist/rent-rent-out-front ./dist/rent-rent-out-front
 
-EXPOSE 80
+EXPOSE 4000
+
+CMD ["node", "dist/rent-rent-out-front/server/server.mjs"]

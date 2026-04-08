@@ -30,6 +30,7 @@ export class AdListComponent implements OnInit, OnDestroy {
   locations: Location[] = [];
   isSearchMode = false;
   homeMode = false;
+  showMobileFilters = false;
   currentKeyword = '';
   activeCategory = 'Svi oglasi';
   totalResults = 0;
@@ -157,6 +158,9 @@ export class AdListComponent implements OnInit, OnDestroy {
     this.homeDataDestroy$.next();
     this.homeDataDestroy$.complete();
     this.seoService.reset();
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('drawer-open');
+    }
   }
 
   private loadHomeData(): void {
@@ -197,7 +201,22 @@ export class AdListComponent implements OnInit, OnDestroy {
     });
   }
 
+  toggleMobileFilters(): void {
+    this.showMobileFilters = !this.showMobileFilters;
+    if (typeof document !== 'undefined') {
+      document.body.classList.toggle('drawer-open', this.showMobileFilters);
+    }
+  }
+
+  closeMobileFilters(): void {
+    this.showMobileFilters = false;
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('drawer-open');
+    }
+  }
+
   onCategoryFiltered(categoryId: number): void {
+    this.closeMobileFilters();
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { categoryId },
@@ -222,6 +241,7 @@ export class AdListComponent implements OnInit, OnDestroy {
   }
 
   onApplyFilters(criteria: Partial<AdSearchCriteria>): void {
+    this.closeMobileFilters();
     const currentSort = this.route.snapshot.queryParams['sort'] || null;
     this.router.navigate([], {
       relativeTo: this.route,
@@ -245,7 +265,7 @@ export class AdListComponent implements OnInit, OnDestroy {
       queryParams: { page: pageIndex },
       queryParamsHandling: 'merge',
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   getPageRange(current: number, total: number): (number | '...')[] {

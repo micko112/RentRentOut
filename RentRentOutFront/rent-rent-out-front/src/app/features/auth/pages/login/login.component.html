@@ -6,14 +6,14 @@
     </div>
     <div class="form-field">
       <label for="email" >Email</label>
-      <input id="email" formControlName="email" placeholder="Email">
+      <input id="email" formControlName="email" placeholder="Email" autocomplete="email">
       <div *ngIf="submitted && form.get('email')?.invalid" class="error-msg">
         Unesite validan email.
       </div>
     </div>
     <div class="form-field">
       <label for="password" >Lozinka</label>
-      <input id="password" type="password" formControlName="password" placeholder="Lozinka">
+      <input id="password" type="password" formControlName="password" placeholder="Lozinka" autocomplete="current-password">
       <div *ngIf="form.get('password')?.touched && form.get('password')?.invalid" class="error-msg">
         Unesite ispravnu lozinku.
       </div>

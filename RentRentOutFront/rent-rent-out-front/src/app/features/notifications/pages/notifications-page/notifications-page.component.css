@@ -251,3 +251,38 @@
   .page-header { flex-direction: column; align-items: flex-start; }
   .notif-link { display: none; }
 }
+
+@media (max-width: 480px) {
+  .notif-page { padding: 14px 0 30px; }
+
+  .page-header h1 { font-size: 19px; }
+
+  /* Filter tabs — horizontalni scroll da ne prelomi */
+  .filter-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  .tab {
+    padding: 9px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .notif-item {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .notif-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+
+  .notif-title { font-size: 13px; }
+  .notif-msg { font-size: 13px; }
+}

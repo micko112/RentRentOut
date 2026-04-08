@@ -27,6 +27,7 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   // Left side
   conversations: ConversationPreview[] = [];
   activeConversation: ConversationPreview | null = null;
+  mobileView: 'list' | 'chat' = 'list';
 
   // Right side
   groupedMessages: MessageGroup[] = [];
@@ -154,6 +155,9 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   openConversation(conv: ConversationPreview) {
     const prevUnread = conv.unreadCount || 0;
     this.activeConversation = conv;
+    if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+      this.mobileView = 'chat';
+    }
     conv.unreadCount = 0;
     this.notificationService.onConversationOpened(prevUnread);
 
@@ -407,6 +411,10 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
       dateLabel,
       messages
     }));
+  }
+
+  backToList(): void {
+    this.mobileView = 'list';
   }
 
   goToContract(contractId?: number): void {

@@ -1,6 +1,6 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
 import {Ad} from '../../../../shared/models/ad.model';
-import {CommonModule} from '@angular/common';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {map, Observable, switchMap, tap} from 'rxjs';
 import {AdService} from '../../services/ad.service';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -54,6 +54,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private authService: AuthService,
     private seoService: SeoService,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
   ngOnInit() {
@@ -63,7 +64,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
       switchMap(params => {
         const id = Number(params.get('id'));
 
-        if (this.isLoggedIn) {
+        if (this.isLoggedIn && isPlatformBrowser(this.platformId)) {
           const viewKey = `viewed_ad_${id}`;
           if (!sessionStorage.getItem(viewKey)) {
             sessionStorage.setItem(viewKey, '1');
@@ -120,7 +121,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     this.currentOverlayIndex = this.currentAd.images.indexOf(this.selectedImageUrl!);
     if (this.currentOverlayIndex === -1) this.currentOverlayIndex = 0;
     this.isOverlayOpen = true;
-    document.body.style.overflow = 'hidden';
+    if (isPlatformBrowser(this.platformId)) document.body.style.overflow = 'hidden';
   }
 
   nextImage(event: Event) {
@@ -140,12 +141,12 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
 
   closeOverlay() {
     this.isOverlayOpen = false;
-    document.body.style.overflow = '';
+    if (isPlatformBrowser(this.platformId)) document.body.style.overflow = '';
   }
 
   ngOnDestroy(): void {
     if (this.isOverlayOpen) {
-      document.body.style.overflow = '';
+      if (isPlatformBrowser(this.platformId)) document.body.style.overflow = '';
     }
     this.seoService.reset();
   }

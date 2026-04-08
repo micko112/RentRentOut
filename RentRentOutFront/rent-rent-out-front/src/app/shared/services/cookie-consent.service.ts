@@ -1,13 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 
 export type ConsentStatus = 'accepted' | 'declined' | null;
 
-// ─── Zameni sa tvojim GA4 Measurement ID ─────────────────────────────────────
-// Nađi ga na: analytics.google.com → Admin → Data Streams → tvoj stream → Measurement ID
 const GA_MEASUREMENT_ID = 'G-GYYJSDLKLB';
-// ─────────────────────────────────────────────────────────────────────────────
-
 const STORAGE_KEY = 'cookie_consent';
 
 @Injectable({ providedIn: 'root' })
@@ -17,9 +14,8 @@ export class CookieConsentService {
   private statusSubject = new BehaviorSubject<ConsentStatus>(this.readFromStorage());
   status$ = this.statusSubject.asObservable();
 
-  constructor() {
-    // Ako je prethodno prihvatio, učitaj GA odmah
-    if (this.readFromStorage() === 'accepted') {
+  constructor(@Inject(PLATFORM_ID) private platformId: object) {
+    if (isPlatformBrowser(this.platformId) && this.readFromStorage() === 'accepted') {
       this.loadGoogleAnalytics();
     }
   }
@@ -29,17 +25,22 @@ export class CookieConsentService {
   }
 
   accept(): void {
-    localStorage.setItem(STORAGE_KEY, 'accepted');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(STORAGE_KEY, 'accepted');
+      this.loadGoogleAnalytics();
+    }
     this.statusSubject.next('accepted');
-    this.loadGoogleAnalytics();
   }
 
   decline(): void {
-    localStorage.setItem(STORAGE_KEY, 'declined');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(STORAGE_KEY, 'declined');
+    }
     this.statusSubject.next('declined');
   }
 
   private readFromStorage(): ConsentStatus {
+    if (typeof localStorage === 'undefined') return null;
     const val = localStorage.getItem(STORAGE_KEY);
     if (val === 'accepted' || val === 'declined') return val;
     return null;

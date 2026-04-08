@@ -200,3 +200,17 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .hiw-hero h1 {
+    font-size: 24px;
+  }
+
+  .hiw-hero {
+    margin-bottom: 32px;
+  }
+
+  .hiw-page {
+    padding: 24px 14px 80px;
+  }
+}

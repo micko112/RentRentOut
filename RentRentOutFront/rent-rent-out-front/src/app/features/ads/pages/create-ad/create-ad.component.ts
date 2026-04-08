@@ -45,7 +45,6 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   // ── Category suggest ─────────────────────────────────────────────────────
   suggestedCategories: Category[] = [];
   isSuggestingCategories = false;
-  appliedSuggestionId: number | null = null;
 
   private destroy$ = new Subject<void>();
 
@@ -139,9 +138,9 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       switchMap(title => this.categoryService.suggestCategory(title)),
       takeUntil(this.destroy$)
     ).subscribe({
-      next: (categoryId) => {
-        if (categoryId) {
-          const found = this.categories.find(c => c.id === categoryId);
+      next: (categoryIds) => {
+        if (categoryIds?.length) {
+          const found = this.categories.find(c => c.id === categoryIds[0]);
           if (found) {
             this.applySuggestedCategory(found);
             this.toastService.showSuccess('AI je automatski prepoznao kategoriju!');
@@ -261,13 +260,11 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     if (!title || title.length < 3) return;
     this.isSuggestingCategories = true;
     this.suggestedCategories = [];
-    this.appliedSuggestionId = null;
     this.categoryService.suggestCategory(title).subscribe({
-      next: categoryId => {
-        if (categoryId) {
-          const found = this.categories.find(c => c.id === categoryId);
-          this.suggestedCategories = found ? [found] : [];
-        }
+      next: categoryIds => {
+        this.suggestedCategories = (categoryIds ?? [])
+          .map(id => this.categories.find(c => c.id === id))
+          .filter((c): c is Category => !!c);
         this.isSuggestingCategories = false;
       },
       error: () => {
@@ -278,7 +275,7 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   }
 
   applySuggestedCategory(cat: Category): void {
-    this.appliedSuggestionId = cat.id;
+    this.suggestedCategories = [];
 
     // Build chain: find level-1 and level-2 parents
     const level3 = !cat.parentId ? null : (() => {

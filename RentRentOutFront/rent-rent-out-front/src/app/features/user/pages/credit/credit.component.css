@@ -387,3 +387,46 @@
     .balance-amount { font-size: 28px; }
   }
 }
+
+@media (max-width: 480px) {
+  .balance-card {
+    padding: 16px;
+    gap: 14px;
+
+    .balance-amount { font-size: 24px; }
+    .balance-label  { font-size: 13px; }
+  }
+
+  .balance-icon-wrap {
+    width: 44px;
+    height: 44px;
+    .material-icons { font-size: 22px; }
+  }
+
+  .topup-card {
+    padding: 16px;
+  }
+
+  .payment-label {
+    width: 110px;
+    font-size: 12px;
+  }
+
+  .payment-value {
+    font-size: 12px;
+  }
+
+  .amount-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  .tx-item {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .tx-info .tx-label { font-size: 13px; }
+  .tx-amount { font-size: 14px; }
+}

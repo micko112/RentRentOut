@@ -43,3 +43,10 @@ a {
 ul {
   padding-left: 22px;
 }
+
+@media (max-width: 480px) {
+  .legal-page { padding: 24px 14px 80px; }
+  h1 { font-size: 22px; }
+  h2 { font-size: 16px; margin-top: 24px; }
+  p, li { font-size: 14px; }
+}

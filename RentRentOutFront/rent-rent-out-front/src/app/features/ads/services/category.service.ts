@@ -16,9 +16,9 @@ export class CategoryService {
     return this.all$;
   }
 
-  suggestCategory(title: string): Observable<number> {
+  suggestCategory(title: string): Observable<number[]> {
     const params = new HttpParams().set('title', title);
-    return this.http.get<number>(`${API_BASE_URL}/categories/suggest`, { params });
+    return this.http.get<number[]>(`${API_BASE_URL}/categories/suggest`, { params });
   }
 
 }

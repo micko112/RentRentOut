@@ -85,19 +85,18 @@
 
           <!-- SUGGESTED RESULTS -->
           <div class="suggest-results" *ngIf="suggestedCategories.length > 0">
-            <div class="suggest-results-label">Predložene kategorije - klikni da primeniš:</div>
+            <div class="suggest-results-label">
+              <span class="material-icons suggest-results-icon">auto_awesome</span>
+              Izaberite kategoriju:
+            </div>
             <div class="suggest-chips">
               <button type="button"
-                      *ngFor="let s of suggestedCategories"
+                      *ngFor="let s of suggestedCategories; let i = index"
                       class="suggest-chip"
-                      [class.applied]="appliedSuggestionId === s.id"
                       (click)="applySuggestedCategory(s)">
-                <span class="material-icons suggest-chip-icon">
-                  {{ appliedSuggestionId === s.id ? 'check_circle' : 'category' }}
-                </span>
-                <span class="suggest-chip-text">
-                  <span class="suggest-chip-path">{{ getCategoryPath(s) }}</span>
-                </span>
+                <span class="suggest-chip-rank">{{ i + 1 }}</span>
+                <span class="suggest-chip-path">{{ getCategoryPath(s) }}</span>
+                <span class="material-icons suggest-chip-arrow">chevron_right</span>
               </button>
             </div>
           </div>

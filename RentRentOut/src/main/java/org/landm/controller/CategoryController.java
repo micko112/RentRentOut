@@ -40,9 +40,9 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.create(req), HttpStatus.CREATED);
     }
     @GetMapping("/suggest")
-    public ResponseEntity<Long> suggestCategory(@RequestParam String title) {
-        Long categoryId = categoryService.suggestCategory(title);
-        return ResponseEntity.ok(categoryId);
+    public ResponseEntity<List<Long>> suggestCategory(@RequestParam String title) {
+        List<Long> categoryIds = categoryService.suggestCategory(title);
+        return ResponseEntity.ok(categoryIds);
     }
 
 }
