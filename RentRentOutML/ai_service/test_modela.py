@@ -1,3 +1,5 @@
+import unicodedata
+
 import torch
 import torch.nn as nn
 import joblib
@@ -5,6 +7,15 @@ import warnings
 import csv
 import io
 warnings.filterwarnings("ignore") 
+
+def ocisti_tekst(tekst):
+    if not isinstance(tekst, str):
+        return ""
+    tekst = tekst.lower()
+    tekst = tekst.replace('đ', 'dj').replace('dž', 'dz')
+    tekst = ''.join(c for c in unicodedata.normalize('NFKD', tekst) if not unicodedata.combining(c))
+    return tekst
+
 
 csv_data = """id,name,parent_id
 100,Građevinska oprema i alati,
@@ -753,6 +764,7 @@ print("Učitavam mozak mreže...")
 vectorizer = joblib.load("tfidf_vectorizer.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
 
+
 ulazna_velicina = len(vectorizer.vocabulary_)
 broj_klasa = len(label_encoder.classes_)
 
@@ -773,8 +785,11 @@ while True:
         print("Unesi malo duži tekst!")
         continue
 
+    ociscen_tekst = ocisti_tekst(tekst)
+    print(f"(Model vidi ovo: '{ociscen_tekst}')")
+
     # a) Pretvaranje teksta u tenzore
-    X_novi = vectorizer.transform([tekst]).toarray()
+    X_novi = vectorizer.transform([ociscen_tekst]).toarray()
     X_tenzor = torch.tensor(X_novi, dtype=torch.float32)
     
     with torch.no_grad():

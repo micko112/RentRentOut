@@ -70,36 +70,6 @@
             </small>
           </div>
 
-          <!-- SUGGEST ROW -->
-          <div class="suggest-row">
-            <button type="button"
-                    class="btn-suggest"
-                    [disabled]="!canSuggest || isSuggestingCategories"
-                    (click)="suggestCategories()">
-              <span class="material-icons suggest-icon" *ngIf="!isSuggestingCategories">auto_awesome</span>
-              <span class="suggest-spinner" *ngIf="isSuggestingCategories"></span>
-              {{ isSuggestingCategories ? 'Preporučujem...' : 'Preporuči kategoriju' }}
-            </button>
-            <span class="suggest-hint" *ngIf="!canSuggest">Unesite naslov (min. 3 karaktera)</span>
-          </div>
-
-          <!-- SUGGESTED RESULTS -->
-          <div class="suggest-results" *ngIf="suggestedCategories.length > 0">
-            <div class="suggest-results-label">
-              <span class="material-icons suggest-results-icon">auto_awesome</span>
-              Izaberite kategoriju:
-            </div>
-            <div class="suggest-chips">
-              <button type="button"
-                      *ngFor="let s of suggestedCategories; let i = index"
-                      class="suggest-chip"
-                      (click)="applySuggestedCategory(s)">
-                <span class="suggest-chip-rank">{{ i + 1 }}</span>
-                <span class="suggest-chip-path">{{ getCategoryPath(s) }}</span>
-                <span class="material-icons suggest-chip-arrow">chevron_right</span>
-              </button>
-            </div>
-          </div>
         </section>
 
         <div class="section-divider"></div>

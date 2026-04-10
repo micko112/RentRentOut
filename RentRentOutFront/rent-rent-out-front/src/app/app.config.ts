@@ -34,18 +34,34 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError(err => {
       if (err.status === 401) {
-        // Startup auth check — silently ignore, user is not logged in
-        if (req.url.includes('/user/me')) {
-          return throwError(() => err);
-        }
-
-        // Ne pokušavaj refresh na auth endpointima — izbegava petlju
+        const isUserMe   = req.url.includes('/user/me');
+        const isRetry    = req.headers.has('X-Is-Retry');
+        const isSilent   = req.headers.has('X-Silent');
         const isAuthEndpoint =
           req.url.includes('/auth/refresh') ||
           req.url.includes('/auth/logout')  ||
           req.url.includes('/user/login');
 
-        if (!isAuthEndpoint && !req.headers.has('X-Is-Retry')) {
+        // Interni "tihi" refresh pozivi — nikad ne redirectuju
+        if (isSilent) return throwError(() => err);
+
+        // Startup /user/me: pokušaj refresh jednom, bez redirecta na failure
+        if (isUserMe) {
+          if (isRetry) return throwError(() => err);
+          return http.post('/api/auth/refresh', {}, {
+            withCredentials: true,
+            headers: { 'X-Silent': 'true' }
+          }).pipe(
+            switchMap(() => next(req.clone({
+              withCredentials: true,
+              headers: req.headers.set('X-Is-Retry', 'true')
+            }))),
+            catchError(() => throwError(() => err))
+          );
+        }
+
+        // Ostali endpointi: pokušaj refresh jednom, pa redirect na login
+        if (!isAuthEndpoint && !isRetry) {
           return http.post('/api/auth/refresh', {}, { withCredentials: true }).pipe(
             switchMap(() => next(req.clone({
               withCredentials: true,
