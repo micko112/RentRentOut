@@ -10,7 +10,13 @@
           {{ data.userInfo?.displayName | initials }}
         </div>
         <div class="details">
-          <h1>{{ data.userInfo?.displayName }}</h1>
+          <h1>
+            {{ data.userInfo?.displayName }}
+            <span *ngIf="data.userInfo?.identified" class="verified-badge" title="Verifikovan korisnik">
+              <span class="material-icons">verified</span>
+              Verifikovan
+            </span>
+          </h1>
           <p class="meta-info">
             <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ data.userInfo?.locationDisplay || 'Nepoznata lokacija' }}</span>
             <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>Član od: {{ data.userInfo?.createdAt | date:'dd.MM.yyyy' }}.</span>

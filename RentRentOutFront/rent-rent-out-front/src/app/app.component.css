@@ -184,3 +184,125 @@
     line-height: 1;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   MOBILE SEARCH BAR (ispod headera, sticky)
+   ═══════════════════════════════════════════════════ */
+.mobile-search-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--color-white);
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 60px; /* visina headera na mobilnom */
+    z-index: 9998;
+  }
+
+  .msb-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    height: 40px;
+    padding: 0 8px;
+    background: #fafafa;
+    transition: border-color 0.15s;
+
+    &:focus-within {
+      border-color: var(--color-primary);
+      background: var(--color-white);
+    }
+  }
+
+  .msb-search-icon {
+    font-size: 18px;
+    color: #aaa;
+    flex-shrink: 0;
+    margin-right: 6px;
+  }
+
+  .msb-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #333;
+
+    &::placeholder { color: #aaa; }
+  }
+
+  .msb-filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-primary);
+    border-radius: 8px;
+    transition: background 0.15s;
+
+    .material-icons { font-size: 22px; }
+
+    &:hover { background: var(--color-primary-light); }
+  }
+
+  /* Nema padding-top — category strip ide odmah ispod search bara */
+  .page-content { padding-top: 0; }
+}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE SIDEBAR OVERLAY (desno, ≤768px)
+   ═══════════════════════════════════════════════════ */
+.mobile-sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    /* Viši od headera (99999) da prekrije i header */
+    z-index: 100001;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-sidebar-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-sidebar-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 85%;
+    max-width: 340px;
+    height: 100%;
+    background: var(--color-white);
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .mobile-sidebar-overlay.open .mobile-sidebar-panel {
+    transform: translateX(0);
+  }
+}

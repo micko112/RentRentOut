@@ -1,5 +1,20 @@
-<app-header></app-header>
+<app-header (openMobileMenuEvent)="mobileMenuOpen = true"></app-header>
 <app-navbar></app-navbar>
+
+<!-- Mobile search bar (ispod headera, sticky, ≤768px) -->
+<div class="mobile-search-bar" *ngIf="showSidebar$ | async">
+  <div class="msb-input-wrap">
+    <span class="material-icons msb-search-icon">search</span>
+    <input type="text"
+           class="msb-input"
+           placeholder="Pretraži oglase..."
+           #msbInput
+           (keyup.enter)="onMobileSearch(msbInput.value)">
+  </div>
+  <button class="msb-filter-btn" (click)="triggerMobileFilter()" title="Filteri">
+    <span class="material-icons">tune</span>
+  </button>
+</div>
 
 <div class="main-app-wrapper"
      [class.has-sidebar]="showSidebar$ | async"
@@ -9,6 +24,20 @@
   <main class="page-content">
     <router-outlet></router-outlet>
   </main>
+</div>
+
+<!-- Mobile sidebar overlay (desna strana, ≤768px) -->
+<div class="mobile-sidebar-overlay"
+     [class.open]="mobileMenuOpen"
+     (click)="mobileMenuOpen = false"
+     *ngIf="showSidebar$ | async">
+  <div class="mobile-sidebar-panel" (click)="$event.stopPropagation()">
+    <app-sidebar
+      *ngIf="mobileMenuOpen"
+      [mobileDrawer]="true"
+      (closeDrawer)="mobileMenuOpen = false">
+    </app-sidebar>
+  </div>
 </div>
 
 <nav class="mobile-nav" *ngIf="showSidebar$ | async">
@@ -38,4 +67,5 @@
 
 <app-cookie-banner></app-cookie-banner>
 <app-toast></app-toast>
+<app-support-widget *ngIf="!(isAdmin$ | async)"></app-support-widget>
 <app-footer></app-footer>

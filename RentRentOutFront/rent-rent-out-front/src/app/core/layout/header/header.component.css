@@ -3,14 +3,12 @@
   top: 0;
   z-index: 99999;
   padding: 40px;
-  border-bottom: 1px solid var(--color-border);
   background-color: var(--color-white);
-
 }
+
 .site-header .container {
   max-width: 100%;
   margin: 0;
-
 }
 
 .header-content {
@@ -21,15 +19,12 @@
 }
 
 .logo {
-  flex: 0 0 auto; /* ne raste, samo koliko treba */
-  position: static;
-
+  flex: 0 0 auto;
   a {
     text-decoration: none;
     display: flex;
     align-items: center;
   }
-
   .logo-img {
     width: 205px;
     height: 61px;
@@ -72,7 +67,6 @@
     }
   }
 
-
   .search-btn {
     border-radius: 25px;
     padding: 9px 25px;
@@ -83,23 +77,23 @@
     font-size: 15px;
     font-weight: bold;
     white-space: nowrap;
-    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 
     &:hover {
       background-color: var(--color-secondary-hover);
-      transition: 0.2s;
       box-shadow: 0 4px 10px var(--color-accent-shadow);
-
     }
   }
 }
+
 .search-bar:focus-within {
   border: 1px solid var(--color-primary);
   box-shadow: 0 4px 10px var(--color-primary-shadow);
 }
+
 .user-actions {
   flex: 0 0 auto;
   display: flex;
@@ -116,16 +110,10 @@
     border: none;
     font-size: 15px;
     font-weight: bold;
-    white-space: nowrap;
-    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
     margin-right: 60px;
-
-    &:hover {
-      background-color: var(--color-secondary-hover);
-      transition: 0.2s;
-      box-shadow: 0 4px 10px var(--color-accent-shadow);
-    }
+    &:hover { background-color: var(--color-secondary-hover); }
   }
+
   .btn-admin {
     background-color: var(--color-accent);
     border-radius: 15px;
@@ -135,13 +123,10 @@
     border: none;
     font-size: 14px;
     font-weight: bold;
-
-    &:hover {
-      background-color: var(--color-accent-hover);
-      transition: 0.2s;
-    }
+    &:hover { background-color: var(--color-accent-hover); }
   }
-  .btn-profile{
+
+  .btn-profile {
     background-color: var(--color-white);
     border-radius: 15px;
     padding: 12px 30px;
@@ -150,13 +135,9 @@
     border: 1px solid black;
     font-size: 15px;
     font-weight: bold;
-
-    &:hover {
-      opacity: 0.6;
-      transition: 0.2s;
-      box-shadow: 0 4px 10px var(--color-accent-shadow);
-    }
+    &:hover { opacity: 0.6; }
   }
+
   .auth-button {
     background-color: var(--color-white);
     border-radius: 15px;
@@ -166,133 +147,103 @@
     border: 1px solid black;
     font-size: 15px;
     font-weight: bold;
-
-    &:hover {
-      opacity: 0.6;
-      transition: 0.2s;
-      box-shadow: 0 4px 10px var(--color-accent-shadow);
-    }
+    &:hover { opacity: 0.6; }
   }
 }
+
+/* Mobile akcije — sakrivene na desktopu */
+.mobile-actions { display: none; }
+
 @media (max-width: 1400px) {
-  .user-actions .btn-post-ad {
-    margin-right: 0;
-  }
+  .user-actions .btn-post-ad { margin-right: 0; }
   .user-actions .auth-button,
   .user-actions .btn-post-ad,
-  .user-actions .btn-profile {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
+  .user-actions .btn-profile { padding: 10px 20px; font-size: 14px; }
 }
 
 @media (max-width: 1200px) {
-  .site-header {
-    padding: 20px 28px;
-  }
+  .site-header { padding: 20px 28px; }
   .user-actions .auth-button,
   .user-actions .btn-post-ad,
-  .user-actions .btn-profile {
-    padding: 8px 16px;
-    font-size: 14px;
-  }
+  .user-actions .btn-profile { padding: 8px 16px; font-size: 14px; }
 }
 
 @media (max-width: 1000px) {
-  .site-header {
-    padding: 14px 20px;
-  }
-  .header-content {
-    flex-wrap: nowrap;
-    gap: 12px;
-  }
-  .user-actions .btn-post-ad {
-    display: none;
-  }
+  .site-header { padding: 14px 20px; }
+  .header-content { flex-wrap: nowrap; gap: 12px; }
+  .user-actions .btn-post-ad { display: none; }
   .user-actions .auth-button,
   .user-actions .btn-profile,
-  .user-actions .btn-admin {
-    padding: 8px 14px;
-    font-size: 13px;
-  }
+  .user-actions .btn-admin { padding: 8px 14px; font-size: 13px; }
 }
 
 @media (max-width: 900px) {
+  .site-header { padding: 10px 14px; }
+  .logo .logo-img { width: 160px; height: 48px; }
+  .user-actions { display: none; }
+  .search-bar { height: 42px; }
+}
+
+/* ═══════════════════════════════════
+   MOBILE HEADER (≤768px) — ikon-only
+   ═══════════════════════════════════ */
+@media (max-width: 768px) {
   .site-header {
     padding: 10px 14px;
-  }
-
-  .logo .logo-img {
-    width: 160px;
-    height: 48px;
-  }
-
-  .user-actions {
-    display: none; /* hidden on mobile — use bottom nav instead */
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
 
   .header-content {
     flex-wrap: nowrap;
+    gap: 0;
+    align-items: center;
   }
 
-  .search-bar {
-    height: 42px;
-  }
-}
-
-@media (max-width: 768px) {
-  .site-header {
-    padding: 8px 12px;
-  }
+  .logo { flex: 1; }
 
   .logo .logo-img {
-    width: 140px;
-    height: 42px;
+    width: 120px;
+    height: auto;
   }
 
-  .search-bar {
-    height: 38px;
-    border-radius: 20px;
+  /* Sakrij search bar u headeru — ide u mobile-search-bar ispod */
+  .search-bar { display: none; }
+
+  /* Sakrij desktop user actions */
+  .user-actions { display: none; }
+
+  /* Prikaži mobilne ikonice */
+  .mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: -6px;
   }
 
-  .search-bar input {
-    font-size: 13px;
-    line-height: 38px;
+  .mobile-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #444;
+    transition: background 0.15s, color 0.15s;
+
+    .material-icons { font-size: 24px; }
+
+    &:hover { background: #f5f5f5; color: var(--color-primary); }
   }
 
-  .search-bar .search-btn {
-    padding: 6px 14px;
-    font-size: 13px;
-  }
-
-  .search-bar .search-icon {
-    width: 20px;
-    height: 20px;
-    margin: 4px 6px;
+  .mobile-icon-btn--menu {
+    color: #333;
   }
 }
 
 @media (max-width: 480px) {
-  .site-header {
-    padding: 8px 10px;
-  }
-
-  .logo .logo-img {
-    width: 120px;
-    height: 36px;
-  }
-
-  .header-content {
-    gap: 8px;
-  }
-
-  .search-bar {
-    height: 38px;
-  }
-
-  .search-bar .search-btn {
-    padding: 5px 12px;
-    font-size: 12px;
-    border-radius: 20px;
-  }
+  .logo .logo-img { width: 100px; }
 }

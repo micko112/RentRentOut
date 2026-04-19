@@ -1,0 +1,66 @@
+<!-- Floating bubble -->
+<button class="support-fab" (click)="toggle()" [attr.aria-label]="isOpen ? 'Sakrij podršku' : 'Otvori podršku'">
+  <span class="material-icons" *ngIf="!isOpen">chat</span>
+  <span class="material-icons" *ngIf="isOpen">keyboard_arrow_down</span>
+</button>
+
+<!-- Floater panel -->
+<div class="support-panel" *ngIf="isOpen">
+
+  <!-- Header -->
+  <header class="panel-header">
+    <div class="header-left">
+      <div class="bot-avatar" aria-hidden="true">
+        <span class="material-symbols-outlined">smart_toy</span>
+        <span class="ai-badge">AI</span>
+      </div>
+      <div class="header-title">
+        <span class="bot-name">bot Igor</span>
+        <span class="bot-status">
+          <span class="status-dot"></span>
+          Online
+        </span>
+      </div>
+    </div>
+    <button class="close-btn" (click)="close()" aria-label="Zatvori">
+      <span class="material-icons">close</span>
+    </button>
+  </header>
+
+  <!-- Chat -->
+  <div #messagesList class="messages-list">
+    <div *ngIf="!hasMessages" class="chat-intro">
+      <div class="bot-avatar lg" aria-hidden="true">
+        <span class="material-symbols-outlined">smart_toy</span>
+      </div>
+      <h4>Zdravo, ja sam bot Igor</h4>
+      <p>Pitaj me bilo šta o platformi ili pravnim temama vezanim za iznajmljivanje.</p>
+    </div>
+
+    <div *ngFor="let m of messages; trackBy: trackByIndex"
+         class="msg"
+         [class.msg-user]="m.role === 'user'"
+         [class.msg-bot]="m.role === 'bot'">
+      <div class="msg-bubble">{{ m.text }}</div>
+    </div>
+
+    <div *ngIf="loading" class="msg msg-bot">
+      <div class="msg-bubble typing">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <textarea
+      #inputRef
+      [(ngModel)]="draft"
+      (keydown)="onInputKeydown($event)"
+      placeholder="Napiši pitanje…"
+      rows="1"
+      [disabled]="loading"></textarea>
+    <button class="send-btn" (click)="send()" [disabled]="!draft.trim() || loading" aria-label="Pošalji">
+      <span class="material-icons">send</span>
+    </button>
+  </div>
+</div>

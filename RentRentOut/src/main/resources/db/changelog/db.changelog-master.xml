@@ -50,6 +50,7 @@
     <include file="/db/changelog/db.changelog-27-categories-remaining.xml"/>
     <include file="/db/changelog/db.changelog-28-fix-categories.xml"/>
     <include file="/db/changelog/db.changelog-29-fix-categories-2.xml"/>
+    <include file="/db/changelog/db.changelog-30-create-identity-verification.xml"/>
 
     <!-- Onda korisnike (kojima treba lokacija) -->
     <include file="/db/changelog/db.changelog-seed-user.xml"/>

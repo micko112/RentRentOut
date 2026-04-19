@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, HostListener } from '@angular/core';
+import { Component, EventEmitter, HostBinding, inject, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
@@ -25,6 +25,13 @@ export class SidebarComponent implements OnInit {
   totalUnread$ = this.notificationService.totalUnread$;
   notifUnread$ = this.notificationsService.unreadCount$;
   isCollapsed$ = this.sidebarState.collapsed$;
+
+  @Input() mobileDrawer = false;
+  @Output() closeDrawer = new EventEmitter<void>();
+
+  @HostBinding('class.mobile-drawer-mode') get isMobileDrawer() {
+    return this.mobileDrawer;
+  }
 
   toggle(): void {
     this.sidebarState.toggle();

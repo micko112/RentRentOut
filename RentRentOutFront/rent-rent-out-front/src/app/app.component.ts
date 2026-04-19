@@ -7,14 +7,16 @@ import { HeaderComponent } from './core/layout/header/header.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
 import { CookieBannerComponent } from './shared/components/cookie-banner/cookie-banner.component';
+import { SupportWidgetComponent } from './features/support/support-widget/support-widget.component';
 import { NotificationService } from './core/services/notification.service';
 import { SidebarStateService } from './core/services/sidebar-state.service';
+import { MobileFilterService } from './core/services/mobile-filter.service';
 import { map, filter, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, NavbarComponent, FooterComponent, HeaderComponent, ToastComponent, SidebarComponent, CookieBannerComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, NavbarComponent, FooterComponent, HeaderComponent, ToastComponent, SidebarComponent, CookieBannerComponent, SupportWidgetComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -24,10 +26,11 @@ export class AppComponent {
   private router = inject(Router);
   private notificationService = inject(NotificationService);
   private sidebarState = inject(SidebarStateService);
+  private mobileFilterService = inject(MobileFilterService);
 
   sidebarCollapsed$ = this.sidebarState.collapsed$;
-
   chatUnread$ = this.notificationService.totalUnread$;
+  mobileMenuOpen = false;
 
   private route$ = this.router.events.pipe(
     filter(e => e instanceof NavigationEnd),
@@ -47,4 +50,14 @@ export class AppComponent {
   isAdmin$ = this.route$.pipe(
     map(url => url.startsWith('/admin'))
   );
+
+  onMobileSearch(term: string): void {
+    if (term.trim()) {
+      this.router.navigate(['/ads'], { queryParams: { keyword: term.trim() } });
+    }
+  }
+
+  triggerMobileFilter(): void {
+    this.mobileFilterService.toggle();
+  }
 }

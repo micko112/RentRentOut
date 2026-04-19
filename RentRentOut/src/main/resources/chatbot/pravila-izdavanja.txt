@@ -1,0 +1,38 @@
+PRAVILA PLATFORME IZDAJEMIZNAJMLJUJEM.COM I OSNOVNA PRAVA KORISNIKA
+====================================================================
+
+1. Pravo na postavljanje oglasa imaju isključivo lica koja su punoletna (18+ godina) i koja su prošla email verifikaciju.
+
+2. Korisnici koji su prošli identifikaciju (KYC — upload ličnog dokumenta) dobijaju oznaku "Verifikovan" na profilu i imaju veće poverenje među drugim korisnicima.
+
+3. Postavljanje oglasa je besplatno. Promotivne opcije se naplaćuju u kreditima: FEATURED 500 RSD (7 dana, vrh pretrage), PRIORITY 250 RSD (3 dana), HIGHLIGHTED 100 RSD (30 dana, vizuelni badge).
+
+4. Dopuna kredita vrši se uplatom na zvanični račun platforme (Dimitrije Mitic, 265-0000006785327-58) uz obavezno korišćenje jedinstvenog poziva na broj koji se generiše na stranici `/credit`.
+
+5. Krediti nisu povratni nakon što su iskorišćeni za aktivaciju promocije. Ako promocija nije konzumirana, korisnik može tražiti povraćaj u roku od 7 dana na mejl podrške.
+
+6. Depozit koji zakupac eventualno uplaćuje zakupodavcu obavezno se vraća po isteku ugovora, ukoliko predmet iznajmljivanja nije oštećen i ukoliko je vraćen u dogovorenom roku.
+
+7. Stanje iznajmljene stvari (fotografije, funkcionalnost) obavezno se dokumentuje pri primopredaji — i preporučuje se razmena tih fotografija u chat-u platforme kao dokaz.
+
+8. Ukoliko stanodavac (vlasnik stvari) otkaže već prihvaćen ugovor bez opravdanog razloga, zakupac ima pravo na prioritetnu podršku i eventualnu naknadu troškova dokazanih kroz chat istoriju.
+
+9. Otkazni rok za već prihvaćen ugovor je minimum 48 sati pre datuma početka — kasnije otkazivanje može rezultirati negativnom recenzijom i suspenzijom naloga kod ponavljanja.
+
+10. Oštećenje iznajmljene stvari mora biti prijavljeno u roku od 48 sati od primopredaje. Prijava se vrši kroz chat platforme i mejlom na izdajemiznajmljujem.rs@gmail.com sa fotografijama.
+
+11. Platforma ne posreduje u plaćanju naknade za rental (iznajmljivanje) — to se dogovara direktno između korisnika. Platforma naplaćuje isključivo promotivne opcije putem sistema kredita.
+
+12. Zabranjeno je oglašavanje: oružja, narkotika, životinja, ljudskih organa, krađene robe, falsifikata, pirotehnike, alkohola licima mlađim od 18 godina, kao i bilo kakvih nelegalnih usluga.
+
+13. Korisnik ima pravo na brisanje naloga i svih ličnih podataka u skladu sa Zakonom o zaštiti podataka o ličnosti (ZZPL) i GDPR-om — zahtev se šalje na izdajemiznajmljujem.rs@gmail.com.
+
+14. Kasno vraćanje iznajmljene stvari može rezultirati dodatnom naknadom za svaki započet dan kašnjenja prema ceni iz originalnog oglasa.
+
+15. Sporovi oko ugovora rešavaju se najpre direktno kroz chat platforme. Ukoliko korisnici ne postignu dogovor, slučaj se eskaliraju na izdajemiznajmljujem.rs@gmail.com — admini posreduju u roku od 3 radna dana.
+
+16. Prijava sumnje na prevaru (traženje uplate na privatne račune van /credit stranice, lažni oglasi, pretnje) mora biti bezuslovna — suspenzija naloga je trenutna, a slučaj se predaje nadležnim organima ako postoje elementi krivičnog dela.
+
+17. Recenzije se mogu ostaviti isključivo nakon završenog ugovora, u roku od 30 dana. Lažne recenzije, međusobno "nameštanje" i vređanja se brišu bez upozorenja.
+
+18. Prava potrošača u skladu sa Zakonom o zaštiti potrošača — pravo na reklamaciju neispravne usluge, pravo na informisanost, pravo na zaštitu od nepoštene poslovne prakse — primenjuju se na sve komercijalne transakcije preko platforme.

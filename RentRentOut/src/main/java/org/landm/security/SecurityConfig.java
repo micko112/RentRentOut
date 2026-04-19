@@ -83,6 +83,7 @@ public class SecurityConfig {
 
 						.requestMatchers(HttpMethod.POST, "/api/ads/*/report").authenticated()
 						.requestMatchers(HttpMethod.DELETE, "/api/ads/**").authenticated()
+						.requestMatchers("/api/verification/**").authenticated()
 						.requestMatchers("/api/admin/**").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
@@ -109,6 +110,7 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
 					.requestMatchers(HttpMethod.GET,  "/api/auth/ws-token").authenticated()
 
+						.requestMatchers("/api/support/**").permitAll()
 
 						.requestMatchers("/api/chat/**").authenticated()
 						.requestMatchers("/api/notifications/**").authenticated()

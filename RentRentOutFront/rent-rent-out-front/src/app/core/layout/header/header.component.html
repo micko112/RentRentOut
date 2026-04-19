@@ -1,31 +1,46 @@
 <header class="site-header">
   <div class="container header-content">
+
+    <!-- LOGO -->
     <div class="logo">
       <a routerLink="/">
         <img src="assets/images/logo.png" class="logo-img" alt="logo" width="205" height="61"/>
       </a>
     </div>
+
+    <!-- DESKTOP: search bar -->
     <div class="search-bar">
       <img src="assets/images/icons8-search-50.png" class="search-icon" alt="search"/>
       <input type="text" placeholder="Sve što zamislite.. "
-      [(ngModel)]="searchTerm"
-      (keyup.enter)="onSearch()">
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()">
       <button class="search-btn" (click)="onSearch()">Traži</button>
     </div>
+
+    <!-- DESKTOP: user actions -->
     <div class="user-actions" *ngIf="currentUser$ | async as user; else notLoggedIn">
       <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
       <button *ngIf="user.role === 'ROLE_ADMIN'" class="btn-admin" (click)="adminPanel()">Admin Panel</button>
       <button class="btn-profile" (click)="myProfile()">Moj Profil</button>
       <button class="auth-button" (click)="logout()">Odjavi se</button>
     </div>
-
     <ng-template #notLoggedIn>
       <div class="user-actions">
         <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
         <button class="auth-button" (click)="login()">Uloguj se</button>
         <button class="auth-button" (click)="register()">Registruj se</button>
-
       </div>
     </ng-template>
+
+    <!-- MOBILE: ikonice desno (≤768px) -->
+    <div class="mobile-actions">
+      <button class="mobile-icon-btn" (click)="navigateSaved()" title="Sačuvani oglasi">
+        <span class="material-icons">bookmark_border</span>
+      </button>
+      <button class="mobile-icon-btn mobile-icon-btn--menu" (click)="openMobileMenuEvent.emit()" title="Meni">
+        <span class="material-icons">menu</span>
+      </button>
+    </div>
+
   </div>
 </header>

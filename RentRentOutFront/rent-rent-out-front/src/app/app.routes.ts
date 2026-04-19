@@ -17,6 +17,7 @@ import {TermsOfServiceComponent} from './features/legal/pages/terms-of-service/t
 import {HowItWorksComponent} from './features/legal/pages/how-it-works/how-it-works.component';
 import {ContactComponent} from './features/legal/pages/contact/contact.component';
 import {CreditComponent} from './features/user/pages/credit/credit.component';
+import {VerifyComponent} from './features/verification/pages/verify/verify.component';
 import {NotFoundComponent} from './shared/pages/not-found/not-found.component';
 
 export const routes: Routes = [
@@ -44,6 +45,7 @@ export const routes: Routes = [
   {path: 'how-it-works', component: HowItWorksComponent},
   {path: 'contact', component: ContactComponent},
   {path: 'credit', component: CreditComponent, canActivate: [authGuard]},
+  {path: 'verify', component: VerifyComponent, canActivate: [authGuard]},
 
   {
     path: '**',

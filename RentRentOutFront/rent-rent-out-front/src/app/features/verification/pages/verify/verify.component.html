@@ -1,0 +1,143 @@
+<div class="verify-page">
+  <div class="page-header">
+    <h1>
+      <span class="material-icons-outlined">verified_user</span>
+      Verifikacija identiteta
+    </h1>
+    <p class="subtitle">
+      Verifikujte svoj identitet da biste dobili oznaku poverenja na profilu.
+      Vaši dokumenti se brišu sa naših servera odmah nakon pregleda.
+    </p>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">Učitavanje...</div>
+
+  <!-- APPROVED -->
+  <div *ngIf="!loading && status?.status === 'APPROVED'" class="status-card approved">
+    <span class="material-icons big-icon">verified</span>
+    <h2>Vaš nalog je verifikovan</h2>
+    <p>
+      Čestitamo! Vaš identitet je potvrđen. Sada vaš profil ima oznaku <strong>Verifikovan</strong>,
+      što povećava poverenje drugih korisnika.
+    </p>
+    <a routerLink="/user/me" class="btn-primary">Pogledaj profil</a>
+  </div>
+
+  <!-- PENDING -->
+  <div *ngIf="!loading && status?.status === 'PENDING'" class="status-card pending">
+    <span class="material-icons-outlined big-icon">hourglass_top</span>
+    <h2>Zahtev čeka pregled</h2>
+    <p>
+      Vaš zahtev je poslat <strong>{{ status?.submittedAt | date:'dd.MM.yyyy. HH:mm' }}</strong>.
+      Administrator će pregledati vaše dokumente u najkraćem roku. Dobićete email
+      čim zahtev bude obrađen.
+    </p>
+  </div>
+
+  <!-- REJECTED -->
+  <div *ngIf="!loading && status?.status === 'REJECTED'" class="status-card rejected">
+    <span class="material-icons-outlined big-icon">error_outline</span>
+    <h2>Zahtev je odbijen</h2>
+    <p *ngIf="status?.rejectionReason"><strong>Razlog:</strong> {{ status?.rejectionReason }}</p>
+    <p>Možete ponovo poslati zahtev sa ispravnim dokumentima.</p>
+  </div>
+
+  <!-- UPLOAD FORMA -->
+  <div *ngIf="!loading && canResubmit" class="upload-section">
+    <h2>Pošaljite dokumente</h2>
+
+    <div class="info-box">
+      <span class="material-icons-outlined">info</span>
+      <div>
+        <strong>Šta nam treba:</strong>
+        <ul>
+          <li>Jasna fotografija <strong>prednje strane</strong> važećeg identifikacionog dokumenta
+            (lična karta, pasoš, vozačka dozvola)</li>
+          <li><strong>Zadnja strana</strong> dokumenta (opcionalno)</li>
+          <li><strong>Selfie</strong> fotografija sa dokumentom u ruci</li>
+        </ul>
+        <p class="gdpr-note">
+          Slike se bezbedno brišu sa naših servera odmah nakon što administrator obradi zahtev.
+        </p>
+      </div>
+    </div>
+
+    <div class="upload-grid">
+      <!-- DOC FRONT -->
+      <div class="upload-slot">
+        <label class="slot-label">
+          Prednja strana dokumenta <span class="required">*</span>
+        </label>
+        <div class="slot-box" [class.has-file]="docFrontPreview">
+          <ng-container *ngIf="!docFrontPreview; else frontPreview">
+            <input type="file" accept="image/jpeg,image/png,image/webp"
+                   (change)="onFileSelected($event, 'docFront')" hidden #frontInput>
+            <button type="button" class="upload-btn" (click)="frontInput.click()">
+              <span class="material-icons-outlined">cloud_upload</span>
+              <span>Izaberi sliku</span>
+            </button>
+          </ng-container>
+          <ng-template #frontPreview>
+            <img [src]="docFrontPreview" alt="Prednja strana">
+            <button type="button" class="remove-btn" (click)="removeFile('docFront')">
+              <span class="material-icons">close</span>
+            </button>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- DOC BACK -->
+      <div class="upload-slot">
+        <label class="slot-label">
+          Zadnja strana dokumenta <span class="optional">(opciono)</span>
+        </label>
+        <div class="slot-box" [class.has-file]="docBackPreview">
+          <ng-container *ngIf="!docBackPreview; else backPreview">
+            <input type="file" accept="image/jpeg,image/png,image/webp"
+                   (change)="onFileSelected($event, 'docBack')" hidden #backInput>
+            <button type="button" class="upload-btn" (click)="backInput.click()">
+              <span class="material-icons-outlined">cloud_upload</span>
+              <span>Izaberi sliku</span>
+            </button>
+          </ng-container>
+          <ng-template #backPreview>
+            <img [src]="docBackPreview" alt="Zadnja strana">
+            <button type="button" class="remove-btn" (click)="removeFile('docBack')">
+              <span class="material-icons">close</span>
+            </button>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- SELFIE -->
+      <div class="upload-slot">
+        <label class="slot-label">
+          Selfie sa dokumentom <span class="required">*</span>
+        </label>
+        <div class="slot-box" [class.has-file]="selfiePreview">
+          <ng-container *ngIf="!selfiePreview; else selfiePreviewTpl">
+            <input type="file" accept="image/jpeg,image/png,image/webp"
+                   (change)="onFileSelected($event, 'selfie')" hidden #selfieInput>
+            <button type="button" class="upload-btn" (click)="selfieInput.click()">
+              <span class="material-icons-outlined">cloud_upload</span>
+              <span>Izaberi sliku</span>
+            </button>
+          </ng-container>
+          <ng-template #selfiePreviewTpl>
+            <img [src]="selfiePreview" alt="Selfie">
+            <button type="button" class="remove-btn" (click)="removeFile('selfie')">
+              <span class="material-icons">close</span>
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn-primary" [disabled]="!canSubmit()" (click)="submit()">
+        <span *ngIf="!submitting">Pošalji zahtev za verifikaciju</span>
+        <span *ngIf="submitting">Slanje...</span>
+      </button>
+    </div>
+  </div>
+</div>

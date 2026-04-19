@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <!-- ── Mobile filter bar (samo na mobilnom) ── -->
+  <!-- ── Mobile filter bar (900px–769px) ── -->
   <div class="mobile-filter-bar">
     <button class="mobile-filter-btn" (click)="toggleMobileFilters()">
       <span class="material-icons">tune</span>
@@ -33,48 +33,190 @@
 
   <div class="main-content-wrapper">
 
-    <!-- Filter panel — sidebar na desktopu, drawer na mobilnom -->
+    <!-- Filter panel -->
     <div class="filter-panel" [class.mobile-open]="showMobileFilters">
+
+      <!-- KP-stil drawer header -->
       <div class="drawer-handle-bar">
-        <div class="drawer-handle"></div>
-        <button class="drawer-close-btn" (click)="closeMobileFilters()">
-          <span class="material-icons">close</span>
+        <button class="drawer-back-btn" (click)="onDrawerBack()">
+          <span class="material-icons">arrow_back_ios</span>
         </button>
+        <span class="drawer-title">
+          {{ mobileFilterView === 'main' ? 'Filteri' : filterSubviewTitle }}
+        </span>
+        <div class="drawer-header-actions" *ngIf="mobileFilterView === 'main'">
+          <button class="drawer-reset-btn" (click)="resetMobileFilters()">Resetuj</button>
+          <button class="drawer-apply-btn" (click)="applyMobileFilters()">Primeni</button>
+        </div>
+        <div class="drawer-header-actions" *ngIf="mobileFilterView !== 'main'">
+          <button class="drawer-apply-btn" (click)="mobileFilterView = 'main'">Primeni</button>
+        </div>
       </div>
-      <app-categories-sidebar
-        *ngIf="!isSearchMode"
-        (categorySelected)="onCategoryFiltered($event)">
-      </app-categories-sidebar>
-      <app-filters-sidebar
-        *ngIf="isSearchMode"
-        [categories]="categories"
-        [locations]="locations"
-        [initialCriteria]="currentCriteria"
-        (applyFilters)="onApplyFilters($event)">
-      </app-filters-sidebar>
+
+      <!-- ── MOBILE filter body (≤768px) ── -->
+      <div class="mobile-filter-body">
+
+        <!-- Glavni meni -->
+        <div class="filter-menu-list" *ngIf="mobileFilterView === 'main'">
+          <div class="filter-menu-item" (click)="mobileFilterView = 'kategorije'">
+            <span class="material-icons filter-menu-icon">category</span>
+            <span class="filter-menu-label">Kategorije</span>
+            <span class="filter-menu-selected" *ngIf="pendingMobileFilters.categoryId">
+              {{ getCategoryName(pendingMobileFilters.categoryId) }}
+            </span>
+            <span class="material-icons filter-menu-arrow">chevron_right</span>
+          </div>
+          <div class="filter-menu-item" (click)="mobileFilterView = 'mesto'">
+            <span class="material-icons filter-menu-icon">location_on</span>
+            <span class="filter-menu-label">Mesto</span>
+            <span class="filter-menu-selected" *ngIf="pendingMobileFilters.city">{{ pendingMobileFilters.city }}</span>
+            <span class="material-icons filter-menu-arrow">chevron_right</span>
+          </div>
+          <div class="filter-menu-item" (click)="mobileFilterView = 'cena'">
+            <span class="material-icons filter-menu-icon">payments</span>
+            <span class="filter-menu-label">Cena</span>
+            <span class="filter-menu-selected" *ngIf="mobileMinPrice || mobileMaxPrice">
+              {{ mobileMinPrice || '' }}{{ (mobileMinPrice && mobileMaxPrice) ? ' – ' : '' }}{{ mobileMaxPrice || '' }} {{ mobileCurrency }}
+            </span>
+            <span class="material-icons filter-menu-arrow">chevron_right</span>
+          </div>
+        </div>
+
+        <!-- Kategorije sub-view -->
+        <div class="filter-subview" *ngIf="mobileFilterView === 'kategorije'">
+          <div class="subview-search-wrap" *ngIf="mobileFilterCategoryStack.length === 0">
+            <span class="material-icons subview-search-icon">search</span>
+            <input class="subview-search-input"
+                   placeholder="Pretražite kategorije..."
+                   [(ngModel)]="categorySearch">
+          </div>
+          <div class="subview-list">
+            <div class="subview-item subview-item--with-arrow"
+                 *ngIf="mobileFilterCategoryStack.length === 0"
+                 (click)="selectMobileCategoryAll()"
+                 [class.selected]="!pendingMobileFilters.categoryId">
+              <span class="subview-item-label">Sve kategorije</span>
+            </div>
+            <div class="subview-item subview-item--with-arrow"
+                 *ngFor="let cat of currentCategoryList"
+                 (click)="onMobileCategoryClick(cat)"
+                 [class.selected]="pendingMobileFilters.categoryId === cat.id">
+              <span class="subview-item-label">{{ cat.name }}</span>
+              <span class="material-icons subview-item-arrow" *ngIf="categoryHasChildren(cat.id)">chevron_right</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mesto sub-view -->
+        <div class="filter-subview" *ngIf="mobileFilterView === 'mesto'">
+          <div class="subview-search-wrap">
+            <span class="material-icons subview-search-icon">search</span>
+            <input class="subview-search-input"
+                   placeholder="Pretražite mesta..."
+                   [(ngModel)]="citySearch">
+          </div>
+          <div class="popular-cities-row" *ngIf="!citySearch">
+            <button class="popular-city-chip"
+                    *ngFor="let city of popularCities"
+                    (click)="selectMobileCity(city)"
+                    [class.selected]="pendingMobileFilters.city === city">
+              {{ city }}
+            </button>
+          </div>
+          <div class="subview-list">
+            <div class="subview-item subview-item--with-arrow"
+                 (click)="selectMobileCity(null)"
+                 [class.selected]="!pendingMobileFilters.city">
+              <span class="subview-item-label">Sve lokacije</span>
+            </div>
+            <div class="subview-item subview-item--with-arrow"
+                 *ngFor="let city of filteredMobileCities"
+                 (click)="selectMobileCity(city)"
+                 [class.selected]="pendingMobileFilters.city === city">
+              <span class="subview-item-label">{{ city }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cena sub-view -->
+        <div class="filter-subview" *ngIf="mobileFilterView === 'cena'">
+          <div class="price-subview">
+            <div class="price-inputs-row">
+              <div class="price-input-wrap">
+                <label class="price-label">Od</label>
+                <input type="number"
+                       class="price-input"
+                       placeholder="0"
+                       [(ngModel)]="mobileMinPrice">
+              </div>
+              <div class="price-input-sep">—</div>
+              <div class="price-input-wrap">
+                <label class="price-label">Do</label>
+                <input type="number"
+                       class="price-input"
+                       placeholder="Bez ogr."
+                       [(ngModel)]="mobileMaxPrice">
+              </div>
+            </div>
+            <div class="currency-row">
+              <label class="currency-label">
+                <input type="radio" name="mobileCurrency" value="RSD" [(ngModel)]="mobileCurrency"> RSD
+              </label>
+              <label class="currency-label">
+                <input type="radio" name="mobileCurrency" value="EUR" [(ngModel)]="mobileCurrency"> EUR
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /mobile-filter-body -->
+
+      <!-- ── DESKTOP filter body (>768px) ── -->
+      <div class="desktop-filter-body">
+        <app-categories-sidebar
+          *ngIf="!isSearchMode"
+          (categorySelected)="onCategoryFiltered($event)">
+        </app-categories-sidebar>
+        <app-filters-sidebar
+          *ngIf="isSearchMode"
+          [categories]="categories"
+          [locations]="locations"
+          [initialCriteria]="currentCriteria"
+          (applyFilters)="onApplyFilters($event)">
+        </app-filters-sidebar>
+      </div>
+
     </div>
+    <!-- /filter-panel -->
 
 
     <main class="ads-display-area">
 
-      <!-- HERO (samo home mod) -->
-      <div class="hero-banner" *ngIf="homeMode">
-        <div class="hero-content">
-          <h1 class="hero-title">Iznajmi šta ti treba.<br>Izdaj šta imaš.</h1>
-          <p class="hero-sub">Platforma za kratkoročno iznajmljivanje opreme, alata i svega ostalog - direktno od lokalnih iznajmljivača.</p>
-          <div class="hero-actions">
-            <a routerLink="/ads/create" class="hero-btn hero-btn--primary">
-              <span class="material-icons">add</span> Postavi oglas
-            </a>
-            <a routerLink="/ads" [queryParams]="{sort: 'id,desc'}" class="hero-btn hero-btn--secondary">
-              Pretraži oglase
+      <!-- HOME MODE -->
+      <div class="home-sections" *ngIf="homeMode">
+
+        <!-- Mobile category strip -->
+        <div class="mobile-cat-strip">
+          <a class="cat-strip-item cat-strip-item--all" routerLink="/ads">
+            <span class="cat-strip-circle">
+              <span class="material-icons">apps</span>
+            </span>
+            <span class="cat-strip-label">Sve</span>
+          </a>
+          <div class="cat-strip-divider"></div>
+          <div class="cat-strip-scroll">
+            <a class="cat-strip-item"
+               *ngFor="let cat of mobileCategoryStrip"
+               [routerLink]="['/ads']"
+               [queryParams]="{categoryId: cat.id}">
+              <span class="cat-strip-circle">
+                <span class="material-icons">{{ cat.icon }}</span>
+              </span>
+              <span class="cat-strip-label">{{ cat.shortName }}</span>
             </a>
           </div>
         </div>
-      </div>
-
-      <!-- HOME MODE: sekcije po kategorijama -->
-      <div class="home-sections" *ngIf="homeMode">
 
         <!-- Najnoviji oglasi -->
         <div class="home-section">
@@ -91,7 +233,8 @@
             <app-skeleton-card *ngFor="let s of skeleton9; trackBy: trackByPage"></app-skeleton-card>
           </div>
           <div class="grid-layout" *ngIf="latestLoaded">
-            <app-ad-card *ngFor="let ad of latestAds; trackBy: trackByAdId" [ad]="ad" [viewMode]="'grid'"></app-ad-card>
+            <app-ad-card *ngFor="let ad of latestAds; trackBy: trackByAdId"
+              [ad]="ad" [viewMode]="mobileView ? 'list' : 'grid'"></app-ad-card>
           </div>
         </div>
 
@@ -111,7 +254,8 @@
             <app-skeleton-card *ngFor="let s of skeleton6; trackBy: trackByPage"></app-skeleton-card>
           </div>
           <div class="grid-layout" *ngIf="cat.loaded && cat.ads.length > 0">
-            <app-ad-card *ngFor="let ad of cat.ads; trackBy: trackByAdId" [ad]="ad" [viewMode]="'grid'"></app-ad-card>
+            <app-ad-card *ngFor="let ad of cat.ads; trackBy: trackByAdId"
+              [ad]="ad" [viewMode]="mobileView ? 'list' : 'grid'"></app-ad-card>
           </div>
           <div class="section-empty" *ngIf="cat.loaded && cat.ads.length === 0">
             Trenutno nema oglasa u ovoj kategoriji.
@@ -148,13 +292,9 @@
           </div>
 
           <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
-            <button class="page-nav-btn"
-                    [disabled]="adsPage.first"
-                    (click)="goToPage(adsPage.number - 1)"
-                    title="Prethodna">
+            <button class="page-nav-btn" [disabled]="adsPage.first" (click)="goToPage(adsPage.number - 1)" title="Prethodna">
               <span class="material-icons">chevron_left</span>
             </button>
-
             <ng-container *ngFor="let p of getPageRange(adsPage.number, adsPage.totalPages); trackBy: trackByPage">
               <span *ngIf="p === '...'" class="page-ellipsis">…</span>
               <button *ngIf="p !== '...'"
@@ -164,11 +304,7 @@
                 {{ asNumber(p) + 1 }}
               </button>
             </ng-container>
-
-            <button class="page-nav-btn"
-                    [disabled]="adsPage.last"
-                    (click)="goToPage(adsPage.number + 1)"
-                    title="Sledeća">
+            <button class="page-nav-btn" [disabled]="adsPage.last" (click)="goToPage(adsPage.number + 1)" title="Sledeća">
               <span class="material-icons">chevron_right</span>
             </button>
           </div>

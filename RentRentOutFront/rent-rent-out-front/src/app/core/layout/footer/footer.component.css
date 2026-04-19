@@ -5,21 +5,34 @@
 }
 
 .footer-inner {
-  display: flex;
-  gap: 40px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px 30px;
+  padding: 48px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
 }
 
-/* Brand */
+/* ── Brend + social (centrirano) ── */
+.footer-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  text-align: center;
+}
+
 .footer-brand {
-  flex-shrink: 0;
-  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 .brand-name {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.5px;
 }
@@ -31,15 +44,48 @@
 .brand-tagline {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.7);
-  margin-top: 6px;
+  margin: 0;
 }
 
-/* Columns */
+.footer-social {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+  transition: background 0.15s ease;
+
+  &:hover { background: var(--color-secondary); }
+
+  svg { width: 20px; height: 20px; }
+}
+
+/* Store badges — skriveni na desktopu */
+.footer-store-badges {
+  display: none;
+}
+
+/* ── Dve kolone ── */
+.footer-cols {
+  display: flex;
+  gap: 60px;
+  justify-content: center;
+}
+
 .footer-col {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 0;
+  min-width: 140px;
 }
 
 .footer-heading {
@@ -54,97 +100,27 @@
   text-decoration: none;
   font-size: 14px;
   transition: color 0.15s ease;
+
+  &:hover { color: var(--color-secondary); }
 }
 
-.footer-col a:hover {
-  color: var(--color-secondary);
-}
-
-/* Company / right side */
-.footer-company {
-  margin-left: auto;
-  align-items: flex-end;
-  text-align: right;
-  gap: 14px;
-}
-
-/* Store badges */
-.footer-store-badges {
-  display: flex;
-  gap: 10px;
-}
-
+/* Store badge style (za mobile) */
 .store-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
+  padding: 8px 16px;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 6px;
+  border-radius: 8px;
   color: var(--color-white);
   text-decoration: none;
-  font-size: 12px;
-  font-weight: 500;
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-
-.store-badge:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.7);
-}
-
-.store-badge svg {
-  width: 18px;
-  height: 18px;
-}
-
-/* Social */
-.footer-social {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-}
-
-.social-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--color-white);
-  transition: background 0.15s ease;
-}
-
-.social-link:hover {
-  background: var(--color-secondary);
-}
-
-.social-link svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* Address */
-.footer-address {
   font-size: 13px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.75);
-}
+  font-weight: 500;
+  transition: background 0.15s ease;
 
-.company-name {
-  font-weight: 600;
-  color: var(--color-white);
-}
+  &:hover { background: rgba(255, 255, 255, 0.1); }
 
-.footer-email {
-  color: var(--color-secondary);
-  text-decoration: none;
-}
-
-.footer-email:hover {
-  text-decoration: underline;
+  svg { width: 18px; height: 18px; flex-shrink: 0; }
 }
 
 /* Bottom bar */
@@ -158,39 +134,39 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 900px) {
-  .footer {
-    margin-bottom: 60px; /* room for mobile nav */
-  }
-
-  .footer-inner {
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 28px 16px 20px;
-  }
-
-  .footer-brand { width: 100%; }
-
-  .footer-col { min-width: 140px; }
-
-  .footer-company {
-    margin-left: 0;
-    align-items: flex-start;
-    text-align: left;
-    width: 100%;
-  }
-
-  .footer-social { justify-content: flex-start; }
+  .footer { margin-bottom: 60px; }
 }
 
 @media (max-width: 768px) {
-  .footer-col { min-width: calc(50% - 10px); }
+  .footer-inner {
+    padding: 32px 16px 24px;
+    gap: 24px;
+  }
+
+  /* Na mobilnom prikaži store badges */
+  .footer-store-badges {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .footer-cols {
+    gap: 20px;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .footer-col { min-width: 0; }
 }
 
 @media (max-width: 480px) {
-  .footer-inner { padding: 24px 14px 16px; gap: 16px; }
-  .footer-col { min-width: 100%; }
-  .brand-name { font-size: 22px; }
-  .footer-store-badges { flex-direction: column; gap: 8px; }
+  .footer-cols {
+    justify-content: space-between;
+    padding: 0 8px;
+  }
+
+  .brand-name { font-size: 24px; }
 }

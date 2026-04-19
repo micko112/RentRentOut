@@ -7,6 +7,7 @@ import { AdminContractsComponent } from './pages/admin-contracts/admin-contracts
 import { AdminTransactionsComponent } from './pages/admin-transactions/admin-transactions.component';
 import { AdminCreditsComponent } from './pages/admin-credits/admin-credits.component';
 import { AdminReportsComponent } from './pages/admin-reports/admin-reports.component';
+import { AdminVerificationsComponent } from './pages/admin-verifications/admin-verifications.component';
 import { adminGuard } from './guards/admin.guard';
 
 export const ADMIN_ROUTES: Routes = [
@@ -23,6 +24,7 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'transactions', component: AdminTransactionsComponent },
       { path: 'credits', component: AdminCreditsComponent },
       { path: 'reports', component: AdminReportsComponent },
+      { path: 'verifications', component: AdminVerificationsComponent },
     ]
   }
 ];

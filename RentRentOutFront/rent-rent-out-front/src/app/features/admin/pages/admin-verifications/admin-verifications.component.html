@@ -1,0 +1,144 @@
+<div class="verifications-page">
+  <div class="page-header">
+    <h2>Verifikacije identiteta</h2>
+    <div class="filter-tabs">
+      <button [class.active]="statusFilter === 'PENDING'" (click)="changeFilter('PENDING')">Čekaju pregled</button>
+      <button [class.active]="statusFilter === 'APPROVED'" (click)="changeFilter('APPROVED')">Odobreni</button>
+      <button [class.active]="statusFilter === 'REJECTED'" (click)="changeFilter('REJECTED')">Odbijeni</button>
+      <button [class.active]="statusFilter === 'ALL'" (click)="changeFilter('ALL')">Svi</button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Učitavanje...</div>
+
+  <div *ngIf="!loading && items.length === 0" class="empty">
+    Nema zahteva za ovaj filter.
+  </div>
+
+  <table *ngIf="!loading && items.length > 0" class="items-table">
+    <thead>
+      <tr>
+        <th>Korisnik</th>
+        <th>Email</th>
+        <th>Poslato</th>
+        <th>Status</th>
+        <th>Pregledano</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let v of items" [class.reviewed]="v.status !== 'PENDING'">
+        <td>
+          <a [routerLink]="['/user', v.userId]" target="_blank" class="user-link">{{ v.userFullName }}</a>
+        </td>
+        <td class="email-cell">{{ v.userEmail }}</td>
+        <td class="date-cell">{{ v.submittedAt | date:'dd.MM.yyyy. HH:mm' }}</td>
+        <td>
+          <span class="status-badge" [ngClass]="v.status.toLowerCase()">
+            {{ v.status === 'PENDING' ? 'Čeka' : v.status === 'APPROVED' ? 'Odobren' : 'Odbijen' }}
+          </span>
+        </td>
+        <td class="date-cell">{{ v.reviewedAt ? (v.reviewedAt | date:'dd.MM.yyyy.') : '—' }}</td>
+        <td>
+          <button class="btn-review" (click)="openDetails(v)">
+            {{ v.status === 'PENDING' ? 'Pregledaj' : 'Detalji' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button *ngFor="let p of [].constructor(totalPages); let i = index"
+            [class.active]="i === page"
+            (click)="goToPage(i)">{{ i + 1 }}</button>
+  </div>
+</div>
+
+<!-- ── DETAIL MODAL ── -->
+<div *ngIf="selected || detailsLoading" class="modal-overlay" (click)="closeDetails()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeDetails()">
+      <span class="material-icons">close</span>
+    </button>
+
+    <div *ngIf="detailsLoading" class="modal-loading">Učitavanje...</div>
+
+    <div *ngIf="selected" class="modal-body">
+      <h3>Pregled zahteva</h3>
+
+      <div class="user-info">
+        <div><strong>Ime:</strong> {{ selected.userFullName }}</div>
+        <div><strong>Email:</strong> {{ selected.userEmail }}</div>
+        <div><strong>Poslato:</strong> {{ selected.submittedAt | date:'dd.MM.yyyy. HH:mm' }}</div>
+        <div>
+          <strong>Status:</strong>
+          <span class="status-badge" [ngClass]="selected.status.toLowerCase()">
+            {{ selected.status === 'PENDING' ? 'Čeka' : selected.status === 'APPROVED' ? 'Odobren' : 'Odbijen' }}
+          </span>
+        </div>
+      </div>
+
+      <div *ngIf="selected.status === 'PENDING'; else deletedMsg">
+        <div class="images-grid">
+          <div class="image-slot">
+            <div class="image-label">Prednja strana dokumenta</div>
+            <a *ngIf="selected.docFrontUrl" [href]="selected.docFrontUrl" target="_blank">
+              <img [src]="selected.docFrontUrl" alt="Prednja strana">
+            </a>
+            <div *ngIf="!selected.docFrontUrl" class="no-image">—</div>
+          </div>
+
+          <div class="image-slot">
+            <div class="image-label">Zadnja strana dokumenta</div>
+            <a *ngIf="selected.docBackUrl" [href]="selected.docBackUrl" target="_blank">
+              <img [src]="selected.docBackUrl" alt="Zadnja strana">
+            </a>
+            <div *ngIf="!selected.docBackUrl" class="no-image">Nije poslato</div>
+          </div>
+
+          <div class="image-slot">
+            <div class="image-label">Selfie sa dokumentom</div>
+            <a *ngIf="selected.selfieUrl" [href]="selected.selfieUrl" target="_blank">
+              <img [src]="selected.selfieUrl" alt="Selfie">
+            </a>
+            <div *ngIf="!selected.selfieUrl" class="no-image">—</div>
+          </div>
+        </div>
+
+        <div *ngIf="!showRejectForm" class="modal-actions">
+          <button class="btn-reject" (click)="openRejectForm()">Odbij</button>
+          <button class="btn-approve" (click)="approve()">Odobri</button>
+        </div>
+
+        <div *ngIf="showRejectForm" class="reject-form">
+          <label for="rejectionReason">Razlog odbijanja:</label>
+          <textarea id="rejectionReason" rows="4" maxlength="300"
+                    [(ngModel)]="rejectionReason"
+                    placeholder="npr. Dokument je nečitak, selfie ne prikazuje lice jasno, itd."></textarea>
+          <div class="char-counter">{{ rejectionReason.length }}/300</div>
+          <div class="modal-actions">
+            <button class="btn-cancel" (click)="showRejectForm = false">Nazad</button>
+            <button class="btn-reject" (click)="reject()">Potvrdi odbijanje</button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #deletedMsg>
+        <div class="deleted-notice">
+          <span class="material-icons-outlined">delete_forever</span>
+          <div>
+            <strong>Slike su obrisane</strong>
+            <p>
+              Zahtev je već obrađen. Slike su bezbedno obrisane sa servera
+              nakon donošenja odluke.
+            </p>
+            <div *ngIf="selected.status === 'REJECTED'" class="rejection-info">
+              Ovaj zahtev je bio odbijen.
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

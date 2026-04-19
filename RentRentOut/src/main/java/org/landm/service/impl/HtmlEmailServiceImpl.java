@@ -113,6 +113,32 @@ public class HtmlEmailServiceImpl implements HtmlEmailService {
         send(to, subject, wrap(body));
     }
 
+    @Override
+    public void sendVerificationApprovedEmail(String to, String firstname, String profileUrl) {
+        String subject = "Vaš nalog je verifikovan — " + SITE_NAME;
+        String body = greeting(firstname)
+                + paragraph("Odlične vesti! Vaš identitet je uspešno <strong>verifikovan</strong>.")
+                + paragraph("Od sada pored vašeg imena stoji oznaka <strong>Verifikovan</strong>, "
+                    + "što povećava poverenje drugih korisnika i šanse za uspešne dogovore.")
+                + paragraph("Vaši dokumenti su bezbedno obrisani sa naših servera nakon pregleda — "
+                    + "čuvamo samo informaciju da ste verifikovani.")
+                + ctaButton(profileUrl, "Pogledaj profil");
+        send(to, subject, wrap(body));
+    }
+
+    @Override
+    public void sendVerificationRejectedEmail(String to, String firstname, String reason, String verifyUrl) {
+        String subject = "Zahtev za verifikaciju je odbijen — " + SITE_NAME;
+        String body = greeting(firstname)
+                + paragraph("Nažalost, vaš zahtev za verifikaciju identiteta je <strong>odbijen</strong>.")
+                + paragraph("Razlog:")
+                + highlightBox(reason)
+                + paragraph("Vaši dokumenti su obrisani sa naših servera. Možete ponovo pokrenuti "
+                    + "proces verifikacije sa ispravnim dokumentima u bilo kom trenutku.")
+                + ctaButton(verifyUrl, "Pokreni ponovo");
+        send(to, subject, wrap(body));
+    }
+
     // -------------------------------------------------------------------------
     // Private helpers — HTML building blocks
     // -------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { AdCardComponent } from '../../components/ad-card/ad-card.component';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AdPreview, Page } from '../../../../shared/models/adPreview.model';
 import { finalize, Subject, switchMap, takeUntil, tap, of } from 'rxjs';
 import { SkeletonCardComponent } from '../../../../shared/components/skeleton-card/skeleton-card.component';
@@ -15,11 +16,12 @@ import { FiltersSidebarComponent } from '../../components/filters-sidebar/filter
 import { CategoriesSidebarComponent } from '../../components/categories-sidebar/categories-sidebar/categories-sidebar.component';
 import { Location } from '../../../../shared/models/location.model';
 import { SeoService } from '../../../../core/services/seo.service';
+import { MobileFilterService } from '../../../../core/services/mobile-filter.service';
 
 @Component({
   selector: 'app-ad-list',
   standalone: true,
-  imports: [CommonModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent, SkeletonCardComponent],
+  imports: [CommonModule, FormsModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent, SkeletonCardComponent],
   templateUrl: './ad-list.component.html',
   styleUrl: './ad-list.component.css'
 })
@@ -59,10 +61,34 @@ export class AdListComponent implements OnInit, OnDestroy {
     { id: 700, displayName: 'Prevoz i oprema za prirodu',   icon: 'explore'       },
   ];
 
+  readonly mobileCategoryStrip = [
+    { id: 200, shortName: 'Tehnika',   icon: 'devices'       },
+    { id: 300, shortName: 'Foto',      icon: 'photo_camera'  },
+    { id: 100, shortName: 'Alati',     icon: 'construction'  },
+    { id: 600, shortName: 'Događaji',  icon: 'celebration'   },
+    { id: 700, shortName: 'Prevoz',    icon: 'explore'       },
+  ];
+
+  readonly popularCities = [
+    'Beograd', 'Novi Beograd', 'Zemun', 'Voždovac', 'Zvezdara',
+    'Novi Sad', 'Niš', 'Kragujevac', 'Subotica', 'Pančevo',
+  ];
+
+  /* ─── Mobile filter state ─── */
+  mobileFilterView: 'main' | 'kategorije' | 'mesto' | 'cena' = 'main';
+  pendingMobileFilters: Partial<AdSearchCriteria> = {};
+  categorySearch = '';
+  citySearch = '';
+  mobileMinPrice: number | null = null;
+  mobileMaxPrice: number | null = null;
+  mobileCurrency = 'RSD';
+  mobileFilterCategoryStack: { id: number; name: string }[] = [];
+
   private destroy$ = new Subject<void>();
   private homeDataDestroy$ = new Subject<void>();
 
   private seoService = inject(SeoService);
+  private mobileFilterService = inject(MobileFilterService);
 
   constructor(
     private adService: AdService,
@@ -71,6 +97,108 @@ export class AdListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router
   ) {}
+
+  /* ─── Getteri ─── */
+
+  get mobileView(): boolean {
+    return typeof window !== 'undefined' && window.innerWidth <= 768;
+  }
+
+  get filterSubviewTitle(): string {
+    if (this.mobileFilterView === 'kategorije') {
+      return this.mobileFilterCategoryStack.length > 0
+        ? this.mobileFilterCategoryStack[this.mobileFilterCategoryStack.length - 1].name
+        : 'Kategorije';
+    }
+    const titles: Record<string, string> = { mesto: 'Mesto', cena: 'Cena' };
+    return titles[this.mobileFilterView] ?? 'Filteri';
+  }
+
+  get allCities(): string[] {
+    return [...new Set(this.locations.map(l => l.city))].sort();
+  }
+
+  get currentCategoryList(): Category[] {
+    if (this.mobileFilterCategoryStack.length === 0) {
+      const q = this.categorySearch.toLowerCase().trim();
+      const top = this.categories.filter(c => !c.parentId);
+      if (!q) return top;
+      return this.categories.filter(c => c.name.toLowerCase().includes(q));
+    }
+    const parentId = this.mobileFilterCategoryStack[this.mobileFilterCategoryStack.length - 1].id;
+    return this.categories.filter(c => c.parentId === parentId);
+  }
+
+  categoryHasChildren(catId: number): boolean {
+    return this.categories.some(c => c.parentId === catId);
+  }
+
+  get filteredMobileCities(): string[] {
+    const q = this.citySearch.toLowerCase().trim();
+    if (!q) return this.allCities;
+    return this.allCities.filter(c => c.toLowerCase().includes(q));
+  }
+
+  getCategoryName(id: number | undefined): string {
+    if (!id) return '';
+    return this.categories.find(c => c.id === id)?.name ?? '';
+  }
+
+  /* ─── Mobile filter akції ─── */
+
+  onDrawerBack(): void {
+    if (this.mobileFilterView === 'kategorije') {
+      if (this.mobileFilterCategoryStack.length > 0) {
+        this.mobileFilterCategoryStack.pop();
+        this.categorySearch = '';
+      } else {
+        this.mobileFilterView = 'main';
+      }
+    } else if (this.mobileFilterView !== 'main') {
+      this.mobileFilterView = 'main';
+    } else {
+      this.closeMobileFilters();
+    }
+  }
+
+  onMobileCategoryClick(cat: Category): void {
+    if (this.categoryHasChildren(cat.id)) {
+      this.mobileFilterCategoryStack = [...this.mobileFilterCategoryStack, { id: cat.id, name: cat.name }];
+      this.categorySearch = '';
+    } else {
+      this.pendingMobileFilters = { ...this.pendingMobileFilters, categoryId: cat.id };
+      this.mobileFilterCategoryStack = [];
+      this.mobileFilterView = 'main';
+      this.categorySearch = '';
+    }
+  }
+
+  selectMobileCategoryAll(): void {
+    this.pendingMobileFilters = { ...this.pendingMobileFilters, categoryId: undefined };
+    this.mobileFilterCategoryStack = [];
+    this.mobileFilterView = 'main';
+    this.categorySearch = '';
+  }
+
+  selectMobileCity(city: string | null): void {
+    this.pendingMobileFilters = { ...this.pendingMobileFilters, city: city ?? undefined };
+    this.mobileFilterView = 'main';
+    this.citySearch = '';
+  }
+
+  applyMobileFilters(): void {
+    if (this.mobileFilterView === 'cena') {
+      this.pendingMobileFilters = {
+        ...this.pendingMobileFilters,
+        minPrice:      this.mobileMinPrice ?? undefined,
+        maxPrice:      this.mobileMaxPrice ?? undefined,
+        priceInterval: this.mobileCurrency === 'EUR' ? 'EUR' : undefined,
+      };
+    }
+    this.onApplyFilters(this.pendingMobileFilters);
+  }
+
+  /* ─── Lifecycle ─── */
 
   private isSearchModeFromParams(params: Record<string, string>): boolean {
     return !!(
@@ -81,10 +209,13 @@ export class AdListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Sinhrona inicijalizacija pre prvog CD ciklusa (sprečava NG0100)
     const snap = this.route.snapshot.queryParams;
     this.isSearchMode = this.isSearchModeFromParams(snap);
     this.homeMode = !this.isSearchMode;
+
+    this.mobileFilterService.toggle$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.toggleMobileFilters();
+    });
 
     this.categoryService.getAll().pipe(takeUntil(this.destroy$)).subscribe({
       next: res => {
@@ -98,7 +229,6 @@ export class AdListComponent implements OnInit, OnDestroy {
       error: () => {},
     });
 
-    // Uvek aktivna pretplata — ne zavisi od *ngIf u template-u
     this.route.queryParams.pipe(
       takeUntil(this.destroy$),
       switchMap(params => {
@@ -164,7 +294,7 @@ export class AdListComponent implements OnInit, OnDestroy {
   }
 
   private loadHomeData(): void {
-    this.homeDataDestroy$.next(); // Otkazuje prethodne nedovršene home zahteve
+    this.homeDataDestroy$.next();
     this.adsPage = null;
     this.latestAds = [];
     this.latestLoaded = false;
@@ -174,10 +304,7 @@ export class AdListComponent implements OnInit, OnDestroy {
       takeUntil(this.homeDataDestroy$),
       takeUntil(this.destroy$)
     ).subscribe({
-      next: page => {
-        this.latestAds = page.content;
-        this.latestLoaded = true;
-      },
+      next: page => { this.latestAds = page.content; this.latestLoaded = true; },
       error: () => { this.latestLoaded = true; },
     });
 
@@ -187,12 +314,7 @@ export class AdListComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       ).subscribe({
         next: page => {
-          this.homeCategories[index] = {
-            ...this.homeCategories[index],
-            ads:   page.content,
-            total: page.totalElements,
-            loaded: true,
-          };
+          this.homeCategories[index] = { ...this.homeCategories[index], ads: page.content, total: page.totalElements, loaded: true };
         },
         error: () => {
           this.homeCategories[index] = { ...this.homeCategories[index], loaded: true };
@@ -202,6 +324,15 @@ export class AdListComponent implements OnInit, OnDestroy {
   }
 
   toggleMobileFilters(): void {
+    if (!this.showMobileFilters) {
+      this.pendingMobileFilters = { ...this.currentCriteria };
+      this.mobileMinPrice = this.currentCriteria.minPrice ?? null;
+      this.mobileMaxPrice = this.currentCriteria.maxPrice ?? null;
+      this.mobileFilterView = 'main';
+      this.categorySearch = '';
+      this.citySearch = '';
+      this.mobileFilterCategoryStack = [];
+    }
     this.showMobileFilters = !this.showMobileFilters;
     if (typeof document !== 'undefined') {
       document.body.classList.toggle('drawer-open', this.showMobileFilters);
@@ -210,17 +341,25 @@ export class AdListComponent implements OnInit, OnDestroy {
 
   closeMobileFilters(): void {
     this.showMobileFilters = false;
+    this.mobileFilterView = 'main';
+    this.mobileFilterCategoryStack = [];
     if (typeof document !== 'undefined') {
       document.body.classList.remove('drawer-open');
     }
   }
 
+  resetMobileFilters(): void {
+    this.pendingMobileFilters = {};
+    this.mobileMinPrice = null;
+    this.mobileMaxPrice = null;
+    this.mobileCurrency = 'RSD';
+    this.closeMobileFilters();
+    this.router.navigate(['/ads']);
+  }
+
   onCategoryFiltered(categoryId: number): void {
     this.closeMobileFilters();
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { categoryId },
-    });
+    this.router.navigate([], { relativeTo: this.route, queryParams: { categoryId } });
   }
 
   private updateActiveCategory(categoryId: number | undefined, sort?: string): void {
