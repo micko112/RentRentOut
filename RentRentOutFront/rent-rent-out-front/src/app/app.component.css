@@ -15,7 +15,7 @@
 .page-content {
   flex: 1;
   min-width: 0;
-  padding-top: 30px;
+  padding-top: 0;
   padding-right: 20px;
 }
 
@@ -75,7 +75,7 @@
 @media (max-width: 900px) {
   .page-content {
     padding-bottom: 72px;
-    padding-top: 16px;
+    padding-top: 0;
     padding-left: 12px;
     padding-right: 12px;
   }

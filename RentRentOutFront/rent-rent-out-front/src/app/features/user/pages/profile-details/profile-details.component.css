@@ -136,6 +136,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 16px 24px;
   border-bottom: 1px solid #f0f0f0;
   background: #fafafa;
@@ -146,7 +147,11 @@
   font-size: 15px;
   font-weight: 700;
   color: #283859;
+  flex: 1;
+  min-width: 0;
 }
+
+.btn-edit { flex-shrink: 0; }
 
 /* ===== INFO LIST (view mode) ===== */
 .info-list {
@@ -409,7 +414,6 @@
     padding: 3px 9px;
   }
 
-  .btn-edit,
   .btn-save,
   .btn-cancel {
     flex: 1;

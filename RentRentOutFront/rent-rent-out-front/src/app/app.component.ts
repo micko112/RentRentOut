@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './core/layout/navbar/navbar.component';
@@ -11,6 +11,7 @@ import { SupportWidgetComponent } from './features/support/support-widget/suppor
 import { NotificationService } from './core/services/notification.service';
 import { SidebarStateService } from './core/services/sidebar-state.service';
 import { MobileFilterService } from './core/services/mobile-filter.service';
+import { CapacitorAppService } from './core/services/capacitor-app.service';
 import { map, filter, startWith } from 'rxjs';
 
 @Component({
@@ -20,13 +21,18 @@ import { map, filter, startWith } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'rent-rent-out-front';
 
   private router = inject(Router);
   private notificationService = inject(NotificationService);
   private sidebarState = inject(SidebarStateService);
   private mobileFilterService = inject(MobileFilterService);
+  private capacitorApp = inject(CapacitorAppService);
+
+  ngOnInit(): void {
+    this.capacitorApp.initialize();
+  }
 
   sidebarCollapsed$ = this.sidebarState.collapsed$;
   chatUnread$ = this.notificationService.totalUnread$;
