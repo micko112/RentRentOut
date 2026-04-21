@@ -2,11 +2,12 @@ import { Component, ElementRef, ViewChild, inject, AfterViewChecked } from '@ang
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SupportService } from '../services/support.service';
+import { MarkdownPipe } from './markdown.pipe';
 
 @Component({
   selector: 'app-support-widget',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MarkdownPipe],
   templateUrl: './support-widget.component.html',
   styleUrl: './support-widget.component.css'
 })

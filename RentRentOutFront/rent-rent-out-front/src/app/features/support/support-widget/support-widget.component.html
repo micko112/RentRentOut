@@ -41,7 +41,7 @@
          class="msg"
          [class.msg-user]="m.role === 'user'"
          [class.msg-bot]="m.role === 'bot'">
-      <div class="msg-bubble">{{ m.text }}</div>
+      <div class="msg-bubble" [innerHTML]="m.role === 'bot' ? (m.text | markdown) : m.text"></div>
     </div>
 
     <div *ngIf="loading" class="msg msg-bot">

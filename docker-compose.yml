@@ -49,13 +49,14 @@ services:
     depends_on:
       - backend
 
-  # ─── ML servis (predlaganje kategorija) ──────────────────────────────────────
+  # ─── ML servis (predlaganje kategorija + chatbot) ────────────────────────────
   ml-service:
     build:
       context: ./RentRentOutML/ai_service
       dockerfile: Dockerfile
     image: rentrentout-ml
     container_name: rentrentout-ml
+    env_file: ./RentRentOut/.env
     ports:
       - "8000:8000"
 

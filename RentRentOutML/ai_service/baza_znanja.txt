@@ -1,0 +1,414 @@
+# BAZA ZNANJA — IZDAJEMIZNAJMLJUJEM.COM
+
+Ovo je baza znanja za chatbot platforme izdajemiznajmljujem.com — srpski peer-to-peer marketplace gde privatna lica iznajmljuju svoje stvari drugim korisnicima (alati, oprema za kampovanje, sportska oprema, bicikli, instrumenti, foto-oprema, odeća za posebne prilike i slično). Platforma povezuje vlasnika i iznajmljivača — ne prodaje ništa sama.
+
+Kontakt podrške: izdajemiznajmljujem.rs@gmail.com
+
+---
+
+## SEKCIJA 1: REGISTRACIJA I NALOZI
+
+### Kako se pravi nalog
+Registracija se obavlja na stranici `/register`. Potrebno je uneti email, lozinku (minimum 6 karaktera), ime i prezime. Obavezno je čekirati polje "Slažem se sa Uslovima korišćenja i Politikom privatnosti" — bez toga registracija ne prolazi. Posle slanja forme stiže verifikacioni email sa linkom — klik na link aktivira nalog. Bez verifikacije email-a ne mogu se koristiti napredne funkcije (npr. slanje zahteva za iznajmljivanje).
+
+Postoji i brza registracija jednim klikom preko **Google**, **Facebook** ili **Apple** naloga (dugmad na `/register` i `/login` stranici). Ovi nalozi su automatski verifikovani.
+
+### Prijavljivanje
+Stranica `/login` prima email + lozinku. Posle uspešnog logovanja korisnik dobija dva HttpOnly cookie tokena (access 15 min, refresh 7 dana) — sistem se sam obnavlja. Ako korisnik ne radi ništa 30 minuta, automatski se odjavljuje radi sigurnosti.
+
+### Zaboravljena lozinka
+Na stranici `/login` postoji link "Zaboravljena lozinka?" koji vodi na `/forgot-password`. Korisnik unosi email i dobija mejl sa linkom za reset (token važi 1 sat). Klikom na link otvara se `/reset-password` gde se postavlja nova lozinka. Ako mejl ne stigne, treba proveriti spam folder.
+
+### Verifikacija identiteta (KYC)
+Na stranici `/verification` korisnik uploaduje sliku ličnog dokumenta (lična karta ili pasoš). Admin ručno pregleda i odobrava ili odbija. Status: "Na pregledu" (žuto), "Verifikovan" (zeleno, kvačica na profilu i u sidebaru), "Odbijeno" (crveno, sa razlogom). Verifikovan korisnik ima više poverenja kod drugih korisnika i bolje šanse za prihvatanje zahteva.
+
+### Brisanje naloga
+Brisanje naloga je GDPR/ZZPL pravo ("pravo na zaborav"). Zahtev se šalje mejlom na **izdajemiznajmljujem.rs@gmail.com** sa email adresom naloga koji se briše. Pre brisanja je preporučeno otkazati aktivne ugovore i isprazniti kredit (kredit se ne refundira automatski). Brisanje je trajno i ne može se vratiti.
+
+### Uređivanje profila
+Stranica `/user/me` — korisnik može menjati avatar (Cloudinary upload), opis, lokaciju, broj telefona i lozinku. Telefon se čuva šifrovano (AES-256) i prikazuje se drugim korisnicima tek klikom na "Prikaži broj" na stranici oglasa, i to samo ulogovanima.
+
+---
+
+## SEKCIJA 2: POSTAVLJANJE OGLASA
+
+### Šta je besplatno
+**Postavljanje oglasa je potpuno besplatno.** Nema mesečne pretplate, nema provizije po iznajmljivanju, nema skrivenih troškova. Plaća se samo opciono — za promociju oglasa (vidi sekciju Krediti).
+
+### Kako se postavlja oglas
+Klik na purple dugme "**+ Postavi oglas**" u headeru ili na "+" dugme na mobilnoj donjoj navigaciji vodi na `/ads/create`. Wizard ima 2 koraka:
+
+**Korak 1 — Kategorija i opis:**
+- Izbor kategorije iz hijerarhijskog stabla (npr. Alati → Električni alati → Bušilice).
+- Naslov oglasa, maksimum 100 karaktera (brojač pokazuje koliko je preostalo).
+- Opis stvari — slobodan tekst.
+- Sistem automatski predlaže kategoriju na osnovu naslova (ML model). Postoji dugme "Preporuči kategoriju" za ručno pokretanje.
+
+**Korak 2 — Slike, cena, lokacija:**
+- Drag-and-drop slika: maksimalno **10 slika** po oglasu, svaka do **10 MB**.
+- Cena + valuta (RSD) + interval naplate (po danu / po nedelji / po mesecu). Mogu se kombinovati intervali (npr. 500 RSD/dan ili 2800 RSD/nedelja).
+- Lokacija — autocomplete polje (grad/mesto).
+- Količina (stepper +/−) — koliko komada iste stvari korisnik daje na iznajmljivanje.
+
+Klikom "Objavi oglas" oglas postaje aktivan i odmah vidljiv u pretrazi na `/ads`.
+
+### Trajanje oglasa
+Svaki oglas je aktivan **30 dana**. Posle tog perioda automatski se arhivira. Vlasnik ga može produžiti dugmetom "**Obnovi**" na stranici `/user/me/ads` — dobija se novi 30-dnevni period. Oglasi koji ističu za 5 ili manje dana prikazani su crveno; oni od 5 do 10 dana — narandžasto. Sistem šalje email-podsetnik 2-3 dana pre isteka.
+
+### Šta je zabranjeno
+Nije dozvoljeno postavljati:
+- Oružje, eksplozive, municiju, opasne hemikalije.
+- Drogu, lekove na recept, alkohol i duvanske proizvode.
+- Nelegalan ili krivotvoren sadržaj (kopije robnih marki, piratski softver).
+- Žive životinje.
+- Sadržaj 18+ (eksplicitan, pornografski).
+- Stvari koje nisu u vlasništvu korisnika.
+- Usluge umesto stvari (platforma je za iznajmljivanje stvari, ne za usluge).
+- Lažne ili obmanjujuće oglase, multi-level marketing, spam.
+
+Kršenje pravila vodi do uklanjanja oglasa, upozorenja ili suspenzije naloga. Svaki korisnik može prijaviti tuđi oglas dugmetom "**Prijavi oglas**" na `/ads/:id` (5 razloga + napomena do 500 karaktera).
+
+### Izmena i brisanje sopstvenih oglasa
+Na `/user/me/ads` postoje dugmad "**Izmeni**" i "**Obriši**" (sa potvrdom). Brisanje je trenutno i nepovratno — sve slike i istorija oglasa se uklanjaju. Aktivni ugovori vezani za obrisan oglas ostaju validni.
+
+---
+
+## SEKCIJA 3: PLAĆANJE I KREDITI
+
+### Šta su krediti
+**Krediti su jedini način plaćanja unutar platforme** — koriste se isključivo za promociju oglasa. Stvarnu cenu iznajmljivanja stvari (rental) korisnici dogovaraju i plaćaju **van platforme** (gotovina pri preuzimanju, prenos na račun između sebe, itd.). Platforma NE posreduje u plaćanju iznajmljivanja i NE uzima proviziju.
+
+### Kako se kupuju krediti
+Stranica `/credit` (potreban login). Korisnik bira iznos: brzi izbor 500 / 1000 / 2000 / 5000 RSD ili custom polje (minimum 100 RSD). Sistem prikazuje uplatne instrukcije:
+
+- **Primalac:** Dimitrije Mitic
+- **Račun primaoca:** 265-0000006785327-58
+- **Šifra plaćanja:** 221
+- **Model:** 97
+- **Poziv na broj:** format `10-XXXXXXXXXX` (jedinstveni korisnički ID popunjen nulama do 10 cifara, generiše se automatski na `/credit`)
+- **Svrha uplate:** "Dopuna kredita Izdajem Iznajmljujem"
+
+Svaki red ima dugme "kopiraj" (ikonica) za brzo kopiranje vrednosti. Uplata se vrši preko e-bankinga ili uplatnicom u banci/pošti. Posle uplate korisnik šalje potvrdu (skenirana uplatnica ili screenshot e-bankinga) na **izdajemiznajmljujem.rs@gmail.com**. Admin ručno proverava i dodaje kredit na nalog (transakcija tipa TOPUP_ADMIN). Obrada obično traje od nekoliko sati do 24h.
+
+**Veoma važno:** poziv na broj mora biti tačan — bez njega ne može se identifikovati uplata.
+
+### Paketi promocije oglasa
+Promocija se aktivira na `/user/me/ads` klikom na "Promoviši" pored oglasa.
+
+| Paket | Cena | Trajanje | Šta radi |
+|---|---|---|---|
+| **FEATURED (Istaknut)** | 500 RSD | 7 dana | Oglas je na samom vrhu pretrage. |
+| **PRIORITY (Prioritetni)** | 250 RSD | 3 dana | Oglas ide ispred standardnih u listi. |
+| **HIGHLIGHTED (Označen)** | 100 RSD | 30 dana | Vizuelni badge — oglas vidno istaknut, ali ne menja redosled. |
+
+Posle isteka promocije, oglas se vraća u standardni redosled. Sistem isteklo automatski resetuje (svaki sat).
+
+### Da li se vraća novac ako se oglas obriše
+**Ne.** Kredit potrošen na promociju se ne vraća ako korisnik svojevoljno obriše oglas pre isteka promocije. Promocija je vezana za vremenski period, ne za status oglasa. Pre brisanja promovisanog oglasa razmisli — kredit ostaje "potrošen".
+
+Izuzetak: ako je oglas uklonjen administrativnom greškom platforme, korisnik može tražiti povraćaj kredita mejlom na **izdajemiznajmljujem.rs@gmail.com** uz objašnjenje slučaja.
+
+### Istorija transakcija
+Na `/credit` se prikazuje cela istorija: TOPUP_ADMIN (+, dopuna), PROMOTION_PURCHASE (−, kupovina promocije), ADMIN_ADJUSTMENT (±, korekcija od admina). Svaka transakcija ima datum, iznos i opis.
+
+---
+
+## SEKCIJA 4: BEZBEDNOST I PREVARE
+
+### Šta raditi ako neko traži novac unapred van platforme
+Ako vlasnik oglasa (ili neko ko se za njega predstavlja) traži da uplatiš ceo iznos rentala unapred na svoj lični račun **bez** ugovora u sistemu — to je **klasična prevara**. Prava razmena na platformi ide ovako:
+1. Iznajmljivač šalje zahtev (RentalContract) preko stranice oglasa.
+2. Vlasnik prihvata u sistemu (status ACCEPTED).
+3. Plaćanje rentala se dogovara **uživo pri preuzimanju** (gotovina) ili lično — nikada celokupno unapred na nepoznat račun.
+
+**Šta uraditi:**
+- Ne uplaćuj ništa.
+- Sačuvaj screenshot poruka u kojima se traži uplata.
+- Prijavi korisnika dugmetom "Prijavi oglas" + pošalji email na **izdajemiznajmljujem.rs@gmail.com** sa opisom slučaja i screenshot-ovima.
+
+### Kako prepoznati legitimnu uplatu kredita
+**Jedini zvanični račun za dopunu kredita platforme:**
+- Primalac: **Dimitrije Mitic**
+- Račun: **265-0000006785327-58**
+- Sa pozivom na broj iz tvog `/credit` profila.
+
+Ako ti neko (u chatu, mejlu, DM-u, telefonom) šalje **drugačiji** račun, **drugog primaoca**, ili traži da preskočiš poziv na broj — to NIJE platforma. Prijavi i ne uplaćuj.
+
+### Crvene zastavice — sigurni znaci prevare
+- Sagovornik insistira na komunikaciji **van platforme** ("daj mi WhatsApp / Viber / Telegram, dogovorimo se tamo").
+- Traži ti **PIN, lozinku za e-banking, broj kartice, CVV, kod sa SMS-a** — nikada to nemoj davati nikome.
+- Šalje link koji "moraš odmah da klikneš" da bi "potvrdio uplatu" ili "odblokirao nalog".
+- Cena je sumnjivo niska u poređenju sa drugim oglasima iste kategorije.
+- Slike na oglasu su preuzete sa interneta (pretraga slike u Google to često otkrije).
+- Profil je nov, bez recenzija, bez verifikovanog identiteta — i traži veliki iznos unapred.
+- Žuri te "moraš da uplatiš sad ili ću dati drugom" — pritisak vremenom je tipičan.
+
+### Šta uraditi ako si već prevaren
+1. Odmah obavesti svoju banku — može biti šanse za reverz transakcije ako je upravo izvršena.
+2. Sačuvaj sve dokaze: screenshot-ove poruka, izvod sa računa, podatke profila prevaranta.
+3. Pošalji email na **izdajemiznajmljujem.rs@gmail.com** — admin može blokirati nalog i upozoriti druge korisnike.
+4. Prijavi krivično delo prevare nadležnoj policijskoj stanici (Srbija) ili tužilaštvu — uz prikupljene dokaze.
+
+### Sigurnosne mere platforme
+- Lozinke se čuvaju hash-ovane (BCrypt).
+- Brojevi telefona se čuvaju **šifrovano AES-256** (čak ni administrator baze ne vidi čiste brojeve).
+- Komunikacija sajta je preko **HTTPS** sa Let's Encrypt sertifikatom.
+- **Rate limiting** štiti login, registraciju i forgot-password od brute-force napada.
+- HttpOnly cookie tokeni — JavaScript ne može da ih čita (zaštita od XSS).
+- Automatski logout posle 30 min neaktivnosti.
+
+### Privatnost i GDPR/ZZPL prava
+Korisnik ima pravo na: pristup podacima, ispravku, brisanje ("pravo na zaborav"), prenosivost (export), ograničenje obrade i pritužbu **Povereniku za informacije od javnog značaja i zaštitu podataka o ličnosti** (poverenik.rs). Zahtevi se šalju na **izdajemiznajmljujem.rs@gmail.com**.
+
+---
+
+## SEKCIJA 5: GDE SE ŠTA NALAZI NA SAJTU (NAVIGACIJA)
+
+### Header (gornji deo, uvek vidljiv osim u admin panelu)
+- **Levo:** logo platforme — klik vodi na početnu (`/`).
+- **Sredina:** search bar "Sve što zamislite..." + purple dugme "Traži" — pretraga po ključnoj reči.
+- **Desno (ulogovan):** purple dugme "**+ Postavi oglas**", "Admin Panel" (samo adminima), "Moj Profil", "Odjavi se".
+- **Desno (neulogovan):** "+ Postavi oglas" (vodi na login), "Uloguj se", "Registruj se".
+
+### Sidebar (leva traka, vidljiva osim u adminu i na ekranima ≤ 900px)
+Na vrhu: avatar + ime + email (ulogovan) ili "Niste prijavljeni" (gost).
+Stavke menija (sa odgovarajućim ikonicama):
+- **Moji oglasi** → `/user/me/ads`
+- **Sačuvani oglasi** → `/user/saved-ads`
+- **Poruke** → `/messages` (sa crvenim brojem nepročitanih)
+- **Moji Ugovori** → `/user/me/contracts`
+- **Obaveštenja** → `/notifications` (sa unread badge-om)
+- **Ocene** → `/user/{id}/reviews`
+- **Kredit** → `/credit`
+- **Verifikacija** → `/verification`
+- **Moj Nalog** → `/user/me`
+
+### Mobile nav (donji deo, samo ekrani ≤ 900px)
+Početna (`/ads`), Sačuvano (`/user/saved-ads`), centralno purple "+" dugme za novi oglas (`/ads/create`), Poruke (`/messages`), Nalog (`/user/me`).
+
+### Stranica oglasa `/ads/:id`
+Galerija slika gore, naslov, opis, cena, količina, lokacija. Sa strane: blok sa vlasnikom (avatar, ime, ocena, dugme "Pošalji poruku"), dugme "Prikaži broj", dugme "Sačuvaj oglas", **kalendar dostupnosti** (crveno = zauzeto), dugme "**Pošalji zahtev**" ili "**Izmeni**" (ako je tvoj). Ispod: dugme "**Prijavi oglas**" i sekcija "Poslednje recenzije" vlasnika.
+
+### Chat inbox `/messages`
+Tri kolone: leva — lista konverzacija sa unread badge-ovima; sredina — poruke (purple bubble desno = tvoje, sive levo = tuđe) + polje za unos; desna — RentalCalendar kad se priča o konkretnom oglasu. Tipovi poruka: REGULAR (običan tekst), SYSTEM (centrirana kursivna obaveštenja sistema), CONTRACT_REQUEST (kartica ugovora sa ikonama).
+
+### Ugovori `/user/me/contracts`
+Dva tab-a: **Dolazni** (gde sam vlasnik koji prima zahtev) i **Odlazni** (gde sam iznajmljivač koji šalje zahtev). Statusi: REQUESTED → ACCEPTED → ACTIVE → FINISHED, ili REJECTED / CANCELLED. Dugmad zavise od uloge i statusa: Prihvati / Odbij / Otkaži / Ostavi recenziju.
+
+### Pravne i informativne stranice
+- `/how-it-works` — vodič kroz korišćenje (vlasnik / iznajmljivač).
+- `/terms-of-service` — uslovi korišćenja.
+- `/privacy-policy` — politika privatnosti (ZZPL/GDPR).
+- `/contact` — kontakt i podrška.
+
+### Admin panel `/admin` (samo za ROLE_ADMIN)
+Dashboard sa statistikom (korisnici, aktivni oglasi, ugovori, kredit, prijave). Podstranice: Korisnici, Oglasi, Ugovori, Prijave, Krediti, Verifikacije.
+
+---
+
+## SEKCIJA 6: KRATAK PODSETNIK ZA NOVE KORISNIKE
+
+1. Registruj se na `/register` (ili Google/Facebook/Apple jednim klikom).
+2. Verifikuj email kroz link iz inbox-a.
+3. Postavi prvi oglas na `/ads/create` (besplatno) — popuni 2 koraka, dodaj do 10 slika.
+4. Kad ti neko pošalje zahtev — odgovori u `/messages` ili direktno prihvati/odbij na `/user/me/contracts`.
+5. Plaćanje rentala se dogovara **van platforme** (gotovina pri preuzimanju je najsigurnije).
+6. Krediti služe **samo** za promociju oglasa (`/credit` — uplata na zvanični račun Dimitrije Mitic).
+7. Sve sumnjive zahteve za uplatu unapred ili van platforme — **prijavi**.
+8. Kontakt podrška: **izdajemiznajmljujem.rs@gmail.com**
+
+---
+
+## SEKCIJA 7: REZERVACIJE I UGOVORI (RENTAL CONTRACTS)
+
+### Kako se šalje zahtev za iznajmljivanje
+Na stranici oglasa `/ads/:id` iznajmljivač bira period u **kalendaru dostupnosti** (crveno obojeni datumi su zauzeti/blokirani i ne mogu se birati). Posle izbora datuma klikne se dugme "**Pošalji zahtev**". Sistem automatski:
+- Kreira ugovor sa statusom REQUESTED.
+- Šalje notifikaciju vlasniku (`/notifications` + email).
+- U chat-u (`/messages`) se pojavljuje SYSTEM poruka i CONTRACT_REQUEST kartica sa detaljima (datumi, cena, količina).
+
+Zahtev ne rezerviše datume automatski — tek kad vlasnik prihvati, kalendar se zaključava.
+
+### Statusi ugovora
+- **REQUESTED** — zahtev je poslat, čeka odluku vlasnika.
+- **ACCEPTED** — vlasnik je prihvatio, datumi su rezervisani.
+- **REJECTED** — vlasnik je odbio, datumi ostaju slobodni.
+- **CANCELLED** — otkazan pre početka (bilo koja strana).
+- **ACTIVE** — trenutno traje (datum početka je nastupio).
+- **FINISHED** — završen, period iznajmljivanja je prošao. Tek sada se mogu ostavljati recenzije.
+
+Statusi se automatski menjaju po datumima (scheduled job jednom dnevno).
+
+### Prihvatanje i odbijanje zahteva
+Vlasnik vidi dolazne zahteve na `/user/me/contracts` (tab "Dolazni") ili u chat-u. Dugmad "**Prihvati**" i "**Odbij**" su dostupna dok je status REQUESTED. Po prihvatanju — iznajmljivač dobija notifikaciju i email. Po odbijanju — isto tako, ali datumi ostaju slobodni za druge zahteve.
+
+### Otkazivanje
+Obe strane mogu otkazati ugovor **pre datuma početka** (dugme "Otkaži" na ugovoru). Posle početka (ACTIVE status) otkazivanje ide kroz dogovor strana ili kroz prijavu problema na **izdajemiznajmljujem.rs@gmail.com**.
+
+### Blokiranje sopstvenih termina (bez ugovora)
+Vlasnik može sam da blokira datume kada mu stvar nije dostupna (servis, privatna upotreba, odmor). Kalendar na stranici oglasa ima dugme "**Blokiraj**" (vidljivo samo vlasniku) umesto "Pošalji zahtev". Blokirani datumi su vidljivi kao zauzeti svim posetiocima.
+
+---
+
+## SEKCIJA 8: RECENZIJE I OCENE
+
+### Kada se može ostaviti recenzija
+Recenzija je moguća **samo nakon završenog ugovora** (status FINISHED). Svaka recenzija je vezana za konkretan ugovor — ne mogu se pisati proizvoljne recenzije o nekome sa kim nemaš završen posao. Rok za pisanje: **30 dana** od kraja ugovora. Posle toga dugme "**Ocenite**" nestaje.
+
+### Tipovi recenzija
+- **Pozitivna** (thumbs-up) — uz tekstualni komentar.
+- **Negativna** (thumbs-down) — uz tekstualni komentar.
+
+Nema numeričkih zvezdica 1-5 — sistem je jednostavniji, binarno pozitivno/negativno, uz obavezni tekst.
+
+### Gde se vide recenzije
+Sve recenzije se prikazuju javno na profilu korisnika (`/user/{id}`). Tamo se vidi i prosečna ocena (odnos pozitivnih i negativnih) i broj aktivnih oglasa. Na stranici oglasa — sekcija "Poslednje recenzije" prikazuje recenzije vlasnika.
+
+### Kako se ostavlja recenzija
+Na profilu drugog korisnika — dugme "**Ocenite**" se pojavljuje samo ako postoji završen ugovor sa tim korisnikom u poslednjih 30 dana i još nisi ostavio recenziju za taj ugovor. Klikom se otvara forma sa izborom pozitivno/negativno i poljem za komentar.
+
+---
+
+## SEKCIJA 9: PRETRAGA I FILTRIRANJE OGLASA
+
+Stranica `/ads` je početna — ima dva moda prikaza:
+
+### Home mod (bez filtera)
+Hero banner na vrhu + levo kategorije sidebar + sekcija "Najnoviji oglasi" (9 kartica) + još 5 sekcija po kategorijama (npr. Alati, Sport, Kampovanje, Instrumenti, itd.).
+
+### Search mod (sa filterom)
+Aktivira se čim korisnik zada bilo koji filter ili klikne neku kategoriju. Levo je FiltersSidebar, desno lista rezultata + paginacija.
+
+**Dostupni filteri:**
+- **Kategorija** — izbor iz hijerarhijskog stabla.
+- **Lokacija** — grad/mesto (autocomplete).
+- **Cena min / max** — numerička polja.
+- **Interval cene** — dan / nedelja / mesec.
+- **Samo dostupni** — čekbox (filtrira oglase koji trenutno imaju slobodne termine).
+- **Ključna reč** — pretraga po naslovu i opisu.
+
+**Sortiranje:**
+- Najnoviji (default)
+- Najniža cena
+- Najviša cena
+- Najbolje ocenjeni
+
+**Paginacija:** numerisana (1, 2, 3, …), purple aktivna stranica, standardno 12 oglasa po strani. Promovisani oglasi (FEATURED/PRIORITY) se rangiraju iznad standardnih.
+
+### Sačuvani oglasi (bookmark)
+Na svakoj kartici oglasa postoji ikonica srca/bookmark — klikom se oglas dodaje u `/user/saved-ads`. Vlasnik oglasa dobija notifikaciju "Neko je sačuvao tvoj oglas" (AD_SAVED tip). Klik na istu ikonicu ponovo skida oglas iz sačuvanih.
+
+---
+
+## SEKCIJA 10: NOTIFIKACIJE
+
+### Gde se vide obaveštenja
+Dve lokacije:
+- **In-app:** stranica `/notifications` + crveni unread badge na Sidebar stavci "Obaveštenja" i na ikonici u header-u.
+- **Email:** svaka značajna akcija šalje HTML email (purple format).
+
+### Tipovi notifikacija
+- **CONTRACT_REQUESTED** — neko ti je poslao zahtev za iznajmljivanje.
+- **CONTRACT_ACCEPTED** — tvoj zahtev je prihvaćen.
+- **CONTRACT_REJECTED** — tvoj zahtev je odbijen.
+- **CONTRACT_CANCELLED** — ugovor je otkazan.
+- **CONTRACT_ACTIVE** — ugovor je aktivan (datum početka nastupio).
+- **CONTRACT_FINISHED** — ugovor je završen (možeš ostaviti recenziju).
+- **NEW_REVIEW** — neko ti je ostavio recenziju.
+- **AD_SAVED** — neko je sačuvao tvoj oglas.
+- **AD_EXPIRY_REMINDER** — oglas ističe za 2-3 dana (predlog da obnoviš).
+- **CREDIT_ADDED** — kredit je dopunjen na nalog.
+
+### Upravljanje
+Na `/notifications` dugme "**Označi sve kao pročitano**" resetuje unread brojač. Klik na pojedinačnu notifikaciju je otvara (označava pročitanom) i vodi na relevantnu stranicu.
+
+---
+
+## SEKCIJA 11: PRAVNA PITANJA (SRBIJA)
+
+### Disclaimer
+Sve informacije u ovoj sekciji su opšteg karaktera i **nisu pravni savet**. Za konkretan slučaj obavezno konsultuj advokata. Zvanični izvori zakona: **paragraf.rs**, **pravno-informacioni-sistem.rs**, **poverenik.rs** (za zaštitu podataka).
+
+### Ugovor o zakupu pokretnih stvari
+Uređuje ga **Zakon o obligacionim odnosima (ZOO)**. Ugovor između korisnika platforme (iznajmljivač stvari i vlasnik) je građanskopravni ugovor — najčešće neformalan (usmen ili preko chat-a). Za veće iznose preporučuje se pismena forma. ZOO definiše prava i obaveze obe strane — vraćanje stvari u istom stanju, odgovornost za slučajnu propast stvari, naknadu štete, raskid ugovora.
+
+### Odgovornost za oštećenje iznajmljene stvari
+Ako se stvar ošteti tokom iznajmljivanja:
+- **Obična upotreba** (normalna habanja) — iznajmljivač ne snosi štetu.
+- **Neopreznost / nemarno postupanje** — iznajmljivač nadoknađuje štetu (dokazuje vlasnik).
+- **Namerno oštećenje** — pored štete moguća i krivična odgovornost.
+- **Viša sila** (požar, poplava) — tereti vlasnika ako nije drugačije ugovoreno.
+
+Preporuka: pri primopredaji napraviti fotografije stanja stvari pre i posle.
+
+### Porez na prihod od iznajmljivanja pokretnih stvari
+Ako korisnik redovno i sistematski iznajmljuje stvari (više komada, više korisnika, kontinuirano), nadležna poreska uprava to može tretirati kao **samostalnu delatnost** — tada je potrebna registracija kao preduzetnik (može biti paušalno oporezivanje). Za povremeno iznajmljivanje sopstvene stvari primenjuju se opšti propisi o oporezivanju prihoda od kapitala/imovine. Za tačnu kategorizaciju obavezno pitati **Poresku upravu** ili računovođu.
+
+### ZZPL / GDPR — prava korisnika platforme
+- Pravo **pristupa** — šta platforma čuva o tebi.
+- Pravo **ispravke** — netačnih podataka.
+- Pravo **brisanja** ("pravo na zaborav") — brisanje naloga.
+- Pravo **prenosivosti** — export podataka u strojno-čitljivom formatu.
+- Pravo **ograničenja obrade**.
+- Pravo **pritužbe Povereniku** za informacije od javnog značaja i zaštitu podataka o ličnosti (**poverenik.rs**).
+
+Zahtevi se šalju na **izdajemiznajmljujem.rs@gmail.com**. Platforma ima rok od 30 dana da odgovori.
+
+### Raskid / otkazivanje ugovora
+Pre isteka — obe strane mogu otkazati sporazumno. Jednostrani raskid je moguć kod bitne povrede ugovora (npr. vlasnik nije predao stvar, iznajmljivač ne plaća, stvar nije u opisanom stanju). Pri sporu — prvo pokušaj dogovor, zatim medijacija, kao krajnja opcija tužba pred nadležnim osnovnim sudom po mestu prebivališta tuženog.
+
+---
+
+## SEKCIJA 12: ČESTA PITANJA (FAQ)
+
+**P: Da li je postavljanje oglasa besplatno?**
+O: Da, potpuno besplatno i bez vremenskog ograničenja (osim 30-dnevnog trajanja oglasa koje se neograničeno obnavlja).
+
+**P: Uzima li platforma proviziju od iznajmljivanja?**
+O: Ne. Platforma samo povezuje korisnike — plaćanje rentala ide van platforme između strana.
+
+**P: Kako iznajmljivač plaća vlasniku za rental?**
+O: Dogovorno — najčešće gotovinom pri preuzimanju stvari. Moguć je i prenos na račun ili bilo koji drugi način koji strane izaberu. Platforma ne posreduje.
+
+**P: Da li moram da budem verifikovan da bih postavljao oglase?**
+O: Ne, ali verifikacija (KYC) povećava poverenje drugih korisnika i verovatnoću da će prihvatiti tvoj zahtev ili iznajmiti od tebe.
+
+**P: Koliko slika mogu da dodam po oglasu?**
+O: Najviše 10, svaka do 10 MB.
+
+**P: Šta ako iznajmljivač ne vrati stvar na vreme?**
+O: Prvo kontaktiraj preko chat-a. Ako ne odgovori — pošalji mu zvaničan mejl sa zahtevom za povraćaj. Ako i dalje ne reaguje — prijavi slučaj na izdajemiznajmljujem.rs@gmail.com i po potrebi nadležnoj policiji (krivična dela protiv imovine).
+
+**P: Kako da otkažem ugovor?**
+O: Na `/user/me/contracts` klikni "Otkaži" pored ugovora. Moguće pre datuma početka. Posle početka — dogovori se sa drugom stranom ili kontaktiraj podršku.
+
+**P: Mogu li da vratim kredit u novac?**
+O: Ne. Krediti se ne konvertuju nazad u novac. Služe isključivo za promociju oglasa.
+
+**P: Da li mogu menjati oglas posle postavljanja?**
+O: Da. Na `/user/me/ads` klikni "Izmeni" — možeš menjati naslov, opis, slike, cenu, lokaciju, količinu.
+
+**P: Šta ako zaboravim lozinku?**
+O: `/forgot-password` → unesi email → stiže link za reset (važi 1 sat).
+
+**P: Da li platforma odgovara za štetu ili prevaru između korisnika?**
+O: Ne — platforma je posrednik (host), odgovornost za ispunjenje ugovora je između korisnika. Platforma pomaže kroz moderaciju, sankcionisanje prijavljenih naloga i saradnju sa organima u slučaju krivičnih dela.
+
+**P: Kako da obrišem svoj nalog?**
+O: Pošalji zahtev na izdajemiznajmljujem.rs@gmail.com sa email adresom naloga. Pre toga otkaži aktivne ugovore. Brisanje je trajno.
+
+**P: Mogu li imati više aktivnih oglasa istovremeno?**
+O: Da, nema ograničenja broja aktivnih oglasa.
+
+**P: Kako se uklanja oglas iz Sačuvanih?**
+O: Klikom na istu ikonicu srca/bookmark-a kojom si ga sačuvao — bilo na kartici oglasa, bilo na `/user/saved-ads`.
+
+**P: Da li drugi korisnici vide moju email adresu?**
+O: Ne. Email je privatan, vidi ga samo vlasnik naloga. Komunikacija ide preko chat-a na platformi.
+
+**P: Koji format slika je podržan?**
+O: Standardni web formati: JPG, PNG, WebP. Limit je 10 MB po slici.
+
+**P: Šta je "poziv na broj" pri uplati kredita?**
+O: Jedinstveni broj u formatu `10-XXXXXXXXXX` koji se generiše za svakog korisnika na `/credit` stranici — služi da platforma poveže tvoju uplatu sa tvojim nalogom. Bez tačnog poziva na broj uplata se ne može identifikovati.
+

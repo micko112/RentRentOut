@@ -234,7 +234,56 @@
   font-size: 14px;
   line-height: 1.45;
   word-wrap: break-word;
+}
+
+.msg-user .msg-bubble {
   white-space: pre-wrap;
+}
+
+.msg-bot .msg-bubble p {
+  margin: 0 0 8px;
+}
+
+.msg-bot .msg-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.msg-bot .msg-bubble h1,
+.msg-bot .msg-bubble h2,
+.msg-bot .msg-bubble h3,
+.msg-bot .msg-bubble h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 10px 0 4px;
+}
+
+.msg-bot .msg-bubble h1:first-child,
+.msg-bot .msg-bubble h2:first-child,
+.msg-bot .msg-bubble h3:first-child,
+.msg-bot .msg-bubble h4:first-child {
+  margin-top: 0;
+}
+
+.msg-bot .msg-bubble ul,
+.msg-bot .msg-bubble ol {
+  margin: 4px 0 8px;
+  padding-left: 20px;
+}
+
+.msg-bot .msg-bubble li {
+  margin-bottom: 3px;
+}
+
+.msg-bot .msg-bubble strong {
+  font-weight: 700;
+}
+
+.msg-bot .msg-bubble code {
+  background: rgba(129, 49, 129, 0.1);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 13px;
+  font-family: monospace;
 }
 
 .msg-user .msg-bubble {
