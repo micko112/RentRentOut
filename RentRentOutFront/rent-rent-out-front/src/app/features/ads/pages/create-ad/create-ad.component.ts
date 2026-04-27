@@ -46,6 +46,269 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   suggestedCategories: Category[] = [];
   isSuggestingCategories = false;
 
+  // ── Real estate ──────────────────────────────────────────────────────────
+  readonly RE_ROOT_ID = 900;
+
+  readonly reAdvertiserOptions = ['AGENCIJA', 'VLASNIK', 'INVESTITOR'];
+  readonly reAdvertiserLabels: Record<string, string> = {
+    AGENCIJA: 'Agencija', VLASNIK: 'Vlasnik', INVESTITOR: 'Investitor'
+  };
+
+  readonly reRoomOptions = [
+    { value: '0.5', label: 'Garsonjera' },
+    { value: '1.0', label: 'Jednosoban' },
+    { value: '1.5', label: 'Jednoiposoban' },
+    { value: '2.0', label: 'Dvosoban' },
+    { value: '2.5', label: 'Dvoiposoban' },
+    { value: '3.0', label: 'Trosoban' },
+    { value: '3.5', label: 'Troiposoban' },
+    { value: '4.0', label: 'Četvorosoban' },
+    { value: '4.5', label: 'Četvoroiposoban' },
+    { value: '5+',  label: 'Petosoban i veći' },
+  ];
+
+  readonly reConstructionOptions = [
+    { value: 'NOVOGRADNJA', label: 'Novogradnja' },
+    { value: 'STARA_GRADNJA', label: 'Stara gradnja' },
+  ];
+
+  readonly reConditionOptions = [
+    { value: 'IZVORNO_STANJE',      label: 'Izvorno stanje' },
+    { value: 'U_IZGRADNJI',         label: 'U izgradnji' },
+    { value: 'RENOVIRANO',          label: 'Renovirano' },
+    { value: 'POTREBNO_RENOVIRANJE', label: 'Potrebno renoviranje' },
+    { value: 'LUKSUZNO',            label: 'Luksuzno' },
+  ];
+
+  readonly reTotalFloorOptions: { value: string; label: string }[] = (() => {
+    const opts = [];
+    for (let i = 1; i <= 30; i++) {
+      const lbl = i === 1 ? '1 sprat' : i < 5 ? `${i} sprata` : `${i} spratova`;
+      opts.push({ value: String(i), label: lbl });
+    }
+    opts.push({ value: '30+', label: '30+ spratova' });
+    return opts;
+  })();
+
+  readonly reFloorOptions: { value: string; label: string }[] = (() => {
+    const specials = [
+      { value: 'PODRUM',          label: 'Podrum' },
+      { value: 'SUTEREN',         label: 'Suteren' },
+      { value: 'NISKO_PRIZEMLJE', label: 'Nisko prizemlje' },
+      { value: 'PRIZEMLJE',       label: 'Prizemlje' },
+      { value: 'VISOKO_PRIZEMLJE', label: 'Visoko prizemlje' },
+      { value: 'POTKROVLJE',      label: 'Potkrovlje' },
+    ];
+    const numbered = [];
+    for (let i = 1; i <= 30; i++) {
+      numbered.push({ value: String(i), label: `${i}. sprat` });
+    }
+    numbered.push({ value: '30+', label: '30+. sprat' });
+    return [...specials, ...numbered];
+  })();
+
+  readonly reFurnishedOptions = [
+    { value: 'NAMESTENO',     label: 'Namešteno' },
+    { value: 'POLUNAMESTENO', label: 'Polunaměšteno' },
+    { value: 'PRAZNO',        label: 'Prazno' },
+  ];
+
+  readonly reHeatingOptions = [
+    { value: 'CENTRALNO',           label: 'Centralno' },
+    { value: 'KLIMA',               label: 'Klima' },
+    { value: 'ETAZNO',              label: 'Etažno' },
+    { value: 'TOPLOTNA_PUMPA',      label: 'Toplotna pumpa' },
+    { value: 'STRUJA',              label: 'Struja' },
+    { value: 'GAS',                 label: 'Gas' },
+    { value: 'MERMERNI_RADIJATORI', label: 'Mermerni radijatori' },
+    { value: 'NORVESKI_RADIJATORI', label: 'Norveški radijatori' },
+    { value: 'CVRSTO_GORIVO',       label: 'Čvrsto gorivo' },
+    { value: 'TA_PEC',              label: 'TA peć' },
+  ];
+
+  readonly reHouseRoomOptions = [
+    { value: '1',     label: '1 soba' },
+    { value: '2',     label: '2 sobe' },
+    { value: '3',     label: '3 sobe' },
+    { value: '4',     label: '4 sobe' },
+    { value: '5_PLUS', label: '5+ soba' },
+  ];
+
+  readonly reHouseTotalFloorOptions = [
+    { value: 'PRIZEMNA', label: 'Prizemna' },
+    { value: '1',        label: '1 sprat' },
+    { value: '2',        label: '2 sprata' },
+    { value: '3+',       label: '3+ sprata' },
+  ];
+
+  readonly reLandAreaUnitOptions = [
+    { value: 'ar',     label: 'ar' },
+    { value: 'm2',     label: 'm²' },
+    { value: 'jutro',  label: 'jutro' },
+    { value: 'hektar', label: 'ha' },
+  ];
+
+  // ── Vehicle / Car ────────────────────────────────────────────────────────
+  readonly VEHICLE_ROOT_ID = 800;
+
+  readonly carBodyTypeOptions = [
+    { value: 'LIMUZINA',     label: 'Limuzina' },
+    { value: 'HECBEK',       label: 'Hečbek' },
+    { value: 'KAR',          label: 'Karavan' },
+    { value: 'SUV',          label: 'SUV / Džip' },
+    { value: 'MONOVOLUMEN',  label: 'Monovolumen' },
+    { value: 'KABRIOLET',    label: 'Kabriolet' },
+    { value: 'KUPE',         label: 'Kupe' },
+    { value: 'PIKAP',        label: 'Pikap' },
+    { value: 'KOMBI',        label: 'Kombi' },
+    { value: 'OSTALO',       label: 'Ostalo' },
+  ];
+  readonly carFuelTypeOptions = [
+    { value: 'BENZIN',     label: 'Benzin' },
+    { value: 'DIZEL',      label: 'Dizel' },
+    { value: 'TNG',        label: 'TNG' },
+    { value: 'METAN',      label: 'Metan (CNG)' },
+    { value: 'HIBRID',     label: 'Hibrid' },
+    { value: 'ELEKTRICNI', label: 'Električni' },
+    { value: 'VODIK',      label: 'Vodik' },
+  ];
+  readonly carTransmissionOptions = [
+    { value: 'MANUELNI',       label: 'Manuelni' },
+    { value: 'AUTOMATSKI',     label: 'Automatski' },
+    { value: 'POLUAUTOMATSKI', label: 'Poluautomatski' },
+  ];
+  readonly carDriveOptions = [
+    { value: 'PREDNJI', label: 'Prednji pogon' },
+    { value: 'ZADNJI',  label: 'Zadnji pogon' },
+    { value: '4X4',     label: '4x4 / AWD' },
+  ];
+  readonly carDoorsOptions = [
+    { value: '2/3', label: '2/3 vrata' },
+    { value: '4/5', label: '4/5 vrata' },
+  ];
+  readonly carSteeringWheelOptions = [
+    { value: 'LEVI',  label: 'Levi volan' },
+    { value: 'DESNI', label: 'Desni volan' },
+  ];
+  readonly carOriginOptions = [
+    { value: 'DOMACE', label: 'Domaće' },
+    { value: 'UVOZ',   label: 'Uvoz' },
+    { value: 'IZ_EU',  label: 'Iz EU' },
+  ];
+  readonly carOwnershipOptions = [
+    { value: 'PRIVATNO', label: 'Privatno' },
+    { value: 'FIRMA',    label: 'Firma' },
+    { value: 'STRANO',   label: 'Strano' },
+  ];
+  readonly carDamageOptions = [
+    { value: 'NEOSTECAN',         label: 'Neoštećen' },
+    { value: 'OSTECEN_VOZNO',     label: 'Oštećen — vozno' },
+    { value: 'OSTECEN_NEVOZNO',   label: 'Oštećen — nevozno' },
+    { value: 'RASHODOVANO',       label: 'Rashodovano' },
+  ];
+  readonly carColorOptions = [
+    { value: 'CRNA',        label: 'Crna' },
+    { value: 'BELA',        label: 'Bela' },
+    { value: 'SIVA',        label: 'Siva' },
+    { value: 'CRVENA',      label: 'Crvena' },
+    { value: 'PLAVA',       label: 'Plava' },
+    { value: 'ZELENA',      label: 'Zelena' },
+    { value: 'ZUTA',        label: 'Žuta' },
+    { value: 'NARANDZASTA', label: 'Narandžasta' },
+    { value: 'SMEDA',       label: 'Smeđa' },
+    { value: 'BORDO',       label: 'Bordo' },
+    { value: 'ZLATNA',      label: 'Zlatna' },
+    { value: 'SREBRNA',     label: 'Srebrna' },
+    { value: 'OSTALO',      label: 'Ostalo' },
+  ];
+  readonly carEmissionOptions = [
+    { value: 'EURO1', label: 'Euro 1' }, { value: 'EURO2', label: 'Euro 2' },
+    { value: 'EURO3', label: 'Euro 3' }, { value: 'EURO4', label: 'Euro 4' },
+    { value: 'EURO5', label: 'Euro 5' }, { value: 'EURO6', label: 'Euro 6' },
+  ];
+  readonly carInteriorMaterialOptions = [
+    { value: 'TKANINA',       label: 'Tkanina' },
+    { value: 'KOZA',          label: 'Koža' },
+    { value: 'VESTACKA_KOZA', label: 'Veštačka koža' },
+    { value: 'KOMBINOVANO',   label: 'Kombinovano' },
+  ];
+  readonly carInteriorColorOptions = [
+    { value: 'CRNA',  label: 'Crna' },
+    { value: 'SIVA',  label: 'Siva' },
+    { value: 'BELA',  label: 'Bela' },
+    { value: 'SMEDA', label: 'Smeđa' },
+    { value: 'BEZ',   label: 'Bež' },
+    { value: 'BORDO', label: 'Bordo' },
+  ];
+  readonly carLabelOptions = [
+    { value: 'A', label: 'A' }, { value: 'B', label: 'B' }, { value: 'C', label: 'C' },
+    { value: 'D', label: 'D' }, { value: 'E', label: 'E' }, { value: 'F', label: 'F' },
+    { value: 'G', label: 'G' },
+  ];
+  readonly carEquipmentOptions = [
+    { value: 'KLIMA',                label: 'Klima' },
+    { value: 'AUTO_KLIMA',           label: 'Automatska klima' },
+    { value: 'PANORAMSKI_KROV',      label: 'Panoramski krov' },
+    { value: 'GPS_NAVIGACIJA',       label: 'GPS navigacija' },
+    { value: 'PARKING_SENZORI_ZAD',  label: 'Parking senzori (zadnji)' },
+    { value: 'PARKING_SENZORI_PRED', label: 'Parking senzori (prednji)' },
+    { value: 'KAMERA_ZADNJA',        label: 'Kamera za vožnju unazad' },
+    { value: 'TEMPOMAT',             label: 'Tempomat' },
+    { value: 'BLUETOOTH',            label: 'Bluetooth / handsfree' },
+    { value: 'KOZNA_SEDISTA',        label: 'Kožna sedišta' },
+    { value: 'GREJANJE_SEDISTA',     label: 'Grejanje sedišta' },
+    { value: 'ELEKTRICNI_PROZORI',   label: 'Električni prozori' },
+    { value: 'ALU_FELNE',            label: 'Alu felne' },
+    { value: 'LED_SVETLA',           label: 'LED svetla' },
+    { value: 'XENON_SVETLA',         label: 'Xenon svetla' },
+    { value: 'MULTIFUNKCIJSKI_VOLAN', label: 'Multifunkcijski volan' },
+    { value: 'START_STOP',           label: 'Start-stop sistem' },
+    { value: 'HEAD_UP_DISPLAY',      label: 'Head-up display' },
+    { value: 'PRIKLJUCAK_PRIKOLICA', label: 'Priključak za prikolicu' },
+    { value: 'KROVNI_NOSAC',         label: 'Krovni nosač' },
+  ];
+
+  readonly reCommercialFeatures = [
+    { value: 'INTERNET',           label: 'Internet' },
+    { value: 'TERASA',             label: 'Terasa' },
+    { value: 'KLIMA_UREDJAJ',      label: 'Klima' },
+    { value: 'VIDEO_NADZOR',       label: 'Video nadzor' },
+    { value: 'PRISTUP_INVALIDIMA', label: 'Prilaz za invalide' },
+    { value: 'PARKING',            label: 'Parking' },
+    { value: 'ENERGETSKI_PASOS',   label: 'Energetski pasoš' },
+    { value: 'GARAZA',             label: 'Garaža' },
+    { value: 'STRUJA_PRIKLJUCAK',  label: 'Struja' },
+    { value: 'VODA',               label: 'Voda' },
+    { value: 'ASFALTIRAN_PRILAZ',  label: 'Asfaltiran prilaz' },
+    { value: 'BASTA',              label: 'Bašta' },
+    { value: 'IZLOG',              label: 'Izlog' },
+    { value: 'PET_FRIENDLY',       label: 'Pet friendly' },
+    { value: 'DEPOZIT',            label: 'Depozit' },
+  ];
+
+  readonly reHouseFeatures = [
+    { value: 'ODMAH_USELJIVO',    label: 'Odmah useljivo' },
+    { value: 'PODRUM',            label: 'Podrum' },
+    { value: 'VIDEO_NADZOR',      label: 'Video nadzor' },
+    { value: 'POMOCNI_OBJEKTI',   label: 'Pomoćni objekti' },
+    { value: 'VODA',              label: 'Voda' },
+    { value: 'INTERNET',          label: 'Internet' },
+    { value: 'INTERFON',          label: 'Interfon' },
+    { value: 'TERASA',            label: 'Terasa' },
+    { value: 'KABLOVA_TV',        label: 'Kablovska TV' },
+    { value: 'KLIMA_UREDJAJ',     label: 'Klima' },
+    { value: 'ENERGETSKI_PASOS',  label: 'Energetski pasoš' },
+    { value: 'PRISTUP_INVALIDIMA', label: 'Prilaz za invalide' },
+    { value: 'PARKING',           label: 'Parking' },
+    { value: 'GARAZA',            label: 'Garaža' },
+    { value: 'BAZEN',             label: 'Bazen' },
+    { value: 'KANALIZACIJA',      label: 'Kanalizacija' },
+    { value: 'STRUJA_PRIKLJUCAK', label: 'Struja' },
+    { value: 'ASFALTIRAN_PRILAZ', label: 'Asfaltiran prilaz' },
+    { value: 'PET_FRIENDLY',      label: 'Pet friendly' },
+    { value: 'DEPOZIT',           label: 'Depozit' },
+  ];
+
   private destroy$ = new Subject<void>();
 
   // ── Locations ───────────────────────────────────────────────────────────
@@ -64,8 +327,8 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   ];
 
   readonly stepConfig = [
-    { label: 'Naslov i kategorija' },
-    { label: 'Slike, cena i lokacija' },
+    { label: 'Kategorija' },
+    { label: 'Detalji oglasa' },
   ];
 
   private readonly catIconMap: Record<string, string> = {
@@ -130,6 +393,46 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       images:        [[]],
       pricePerWeek:  [null],
       pricePerMonth: [null],
+      // Real estate
+      advertiserType:       [null],
+      roomCount:            [null],
+      areaSize:             [null],
+      constructionType:     [null],
+      propertyCondition:    [null],
+      totalFloors:          [null],
+      floorNumber:          [null],
+      furnished:            [null],
+      heatingTypes:         [[]],
+      propertyMunicipality: [null],
+      propertyNeighborhood: [null],
+      propertyStreet:       [null],
+      landArea:             [null],
+      landAreaUnit:         ['ar'],
+      features:             [[]],
+      // Car fields
+      carBrand:            [null],
+      carModel:            [null],
+      carYear:             [null],
+      carMileage:          [null],
+      carBodyType:         [null],
+      carFuelType:         [null],
+      carTransmission:     [null],
+      carPowerKw:          [null],
+      carColor:            [null],
+      carDoors:            [null],
+      carSeats:            [null],
+      carDisplacement:     [null],
+      carEmissionClass:    [null],
+      carDrive:            [null],
+      carSteeringWheel:    [null],
+      carRegisteredUntil:  [null],
+      carCountry:          [null],
+      carOrigin:           [null],
+      carOwnership:        [null],
+      carDamage:           [null],
+      carLabel:            [null],
+      carInteriorMaterial: [null],
+      carInteriorColor:    [null],
     });
     this.form.get('title')?.valueChanges.pipe(
       debounceTime(800),
@@ -161,12 +464,10 @@ export class CreateAdComponent implements OnInit, OnDestroy {
 
   get stepValid(): boolean {
     switch (this.currentStep) {
-      case 1: return !!this.form.get('categoryId')?.value
+      case 1: return !!this.form.get('categoryId')?.value;
+      case 2: return this.selectedFiles.length > 0
                      && !this.form.get('title')?.invalid
                      && !this.form.get('description')?.invalid
-                     && this.titleLength >= 5
-                     && this.descLength >= 20;
-      case 2: return this.selectedFiles.length > 0
                      && !this.form.get('price')?.invalid
                      && !!this.form.get('currency')?.value
                      && !!this.form.get('locationId')?.value;
@@ -189,8 +490,8 @@ export class CreateAdComponent implements OnInit, OnDestroy {
 
   private markCurrentStepTouched(): void {
     const map: Record<number, string[]> = {
-      1: ['categoryId', 'title', 'description'],
-      2: ['images', 'price', 'currency', 'locationId'],
+      1: ['categoryId'],
+      2: ['title', 'description', 'images', 'price', 'currency', 'locationId'],
     };
     (map[this.currentStep] ?? []).forEach(f => this.form.get(f)?.markAsTouched());
   }
@@ -411,6 +712,60 @@ export class CreateAdComponent implements OnInit, OnDestroy {
         this.toastService.showError('Greška pri kreiranju oglasa. Pokušajte ponovo.');
       },
     });
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  REAL ESTATE
+  // ════════════════════════════════════════════════════════
+
+  private getRootCategoryId(catId: number | null): number | null {
+    if (!catId) return null;
+    let cat = this.categories.find(c => c.id === catId);
+    while (cat?.parentId) {
+      cat = this.categories.find(c => c.id === cat!.parentId);
+    }
+    return cat?.id ?? null;
+  }
+
+  get isRealEstate(): boolean {
+    return this.getRootCategoryId(this.form.get('categoryId')?.value) === this.RE_ROOT_ID;
+  }
+
+  get reSubcategoryName(): string | null {
+    if (this.selectedParentId !== this.RE_ROOT_ID) return null;
+    return this.categories.find(c => c.id === this.selectedLevel2Id)?.name ?? null;
+  }
+
+  get isHouse(): boolean { return this.reSubcategoryName === 'Kuće'; }
+  get isGarageParking(): boolean { return this.reSubcategoryName === 'Garaže i parking mesta'; }
+  get isCommercial(): boolean { return this.reSubcategoryName === 'Poslovni prostor'; }
+
+  get vehicleSubcategoryName(): string | null {
+    if (this.selectedParentId !== this.VEHICLE_ROOT_ID) return null;
+    return this.categories.find(c => c.id === this.selectedLevel2Id)?.name ?? null;
+  }
+  get isCar(): boolean { return this.vehicleSubcategoryName === 'Automobili'; }
+
+  toggleHeating(value: string): void {
+    const curr: string[] = [...(this.form.get('heatingTypes')?.value ?? [])];
+    const idx = curr.indexOf(value);
+    if (idx >= 0) curr.splice(idx, 1); else curr.push(value);
+    this.form.patchValue({ heatingTypes: curr });
+  }
+
+  isHeatingSelected(value: string): boolean {
+    return (this.form.get('heatingTypes')?.value ?? []).includes(value);
+  }
+
+  toggleFeature(value: string): void {
+    const curr: string[] = [...(this.form.get('features')?.value ?? [])];
+    const idx = curr.indexOf(value);
+    if (idx >= 0) curr.splice(idx, 1); else curr.push(value);
+    this.form.patchValue({ features: curr });
+  }
+
+  isFeatureSelected(value: string): boolean {
+    return (this.form.get('features')?.value ?? []).includes(value);
   }
 
   // ════════════════════════════════════════════════════════

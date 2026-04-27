@@ -13,15 +13,23 @@ _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.6)
 
 
+_CHROMA_DIR = os.path.join(_BASE_DIR, "chroma_db")
+
+
 def _build_vector_store():
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    if os.path.exists(_CHROMA_DIR) and os.listdir(_CHROMA_DIR):
+        print("Učitavam postojeću vektorsku bazu sa diska...")
+        store = Chroma(persist_directory=_CHROMA_DIR, embedding_function=embeddings)
+        print("Vektorska baza učitana.")
+        return store
     loader = TextLoader(os.path.join(_BASE_DIR, "baza_znanja.txt"), encoding="utf-8")
     docs = loader.load()
     splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=50)
     chunks = splitter.split_documents(docs)
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     print(f"Gradim vektorsku bazu iz {len(chunks)} chunk-ova...")
-    store = Chroma.from_documents(documents=chunks, embedding=embeddings)
-    print("Vektorska baza je gotova.")
+    store = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=_CHROMA_DIR)
+    print("Vektorska baza sačuvana na disk.")
     return store
 
 

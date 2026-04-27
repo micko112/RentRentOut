@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Polja za kuće: površina zemljišta -->
+    <changeSet id="house-land-area-32" author="micko112">
+        <addColumn tableName="ad">
+            <column name="land_area"      type="DECIMAL(10,2)"/>
+            <column name="land_area_unit" type="VARCHAR(10)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Tabela za dodatne karakteristike (višestruki izbor checkboxovima) -->
+    <changeSet id="house-features-table-32" author="micko112">
+        <createTable tableName="ad_features">
+            <column name="ad_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="feature" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+            baseTableName="ad_features"
+            baseColumnNames="ad_id"
+            constraintName="fk_ad_features_ad"
+            referencedTableName="ad"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

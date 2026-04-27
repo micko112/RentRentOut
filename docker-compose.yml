@@ -57,8 +57,11 @@ services:
     image: rentrentout-ml
     container_name: rentrentout-ml
     env_file: ./RentRentOut/.env
+    volumes:
+      - chroma_data:/app/chroma_db
     ports:
       - "8000:8000"
 
 volumes:
   mysql_data:
+  chroma_data:

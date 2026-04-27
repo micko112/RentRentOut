@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- ================================================================ -->
+    <!-- 1. Dodavanje podkategorije Automobili pod Vozila (ID=800)        -->
+    <!-- ================================================================ -->
+    <changeSet id="car-category-33" author="micko112">
+        <insert tableName="category">
+            <column name="name" value="Automobili"/>
+            <column name="parent_id" valueNumeric="800"/>
+        </insert>
+    </changeSet>
+
+    <!-- ================================================================ -->
+    <!-- 2. Kolone za detalje automobila u tabeli ad                      -->
+    <!-- ================================================================ -->
+    <changeSet id="car-ad-columns-33" author="micko112">
+        <addColumn tableName="ad">
+            <column name="car_brand"             type="VARCHAR(50)"/>
+            <column name="car_model"             type="VARCHAR(50)"/>
+            <column name="car_year"              type="INT"/>
+            <column name="car_mileage"           type="INT"/>
+            <column name="car_body_type"         type="VARCHAR(30)"/>
+            <column name="car_fuel_type"         type="VARCHAR(30)"/>
+            <column name="car_transmission"      type="VARCHAR(20)"/>
+            <column name="car_power_kw"          type="INT"/>
+            <column name="car_color"             type="VARCHAR(30)"/>
+            <column name="car_doors"             type="VARCHAR(10)"/>
+            <column name="car_seats"             type="INT"/>
+            <column name="car_displacement"      type="INT"/>
+            <column name="car_emission_class"    type="VARCHAR(20)"/>
+            <column name="car_drive"             type="VARCHAR(20)"/>
+            <column name="car_steering_wheel"    type="VARCHAR(20)"/>
+            <column name="car_registered_until"  type="VARCHAR(20)"/>
+            <column name="car_country"           type="VARCHAR(50)"/>
+            <column name="car_origin"            type="VARCHAR(30)"/>
+            <column name="car_ownership"         type="VARCHAR(30)"/>
+            <column name="car_damage"            type="VARCHAR(30)"/>
+            <column name="car_label"             type="VARCHAR(30)"/>
+            <column name="car_interior_material" type="VARCHAR(30)"/>
+            <column name="car_interior_color"    type="VARCHAR(30)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

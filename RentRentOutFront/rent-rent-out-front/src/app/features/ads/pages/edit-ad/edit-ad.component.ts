@@ -56,6 +56,216 @@ export class EditAdComponent implements OnInit, OnDestroy {
   isDragging = false;
   readonly MAX_IMAGES = 10;
 
+  // ── Real estate ──────────────────────────────────────────────────────────
+  readonly RE_ROOT_ID = 900;
+
+  readonly reAdvertiserOptions = ['AGENCIJA', 'VLASNIK', 'INVESTITOR'];
+  readonly reAdvertiserLabels: Record<string, string> = {
+    AGENCIJA: 'Agencija', VLASNIK: 'Vlasnik', INVESTITOR: 'Investitor'
+  };
+  readonly reRoomOptions = [
+    { value: '0.5', label: 'Garsonjera' }, { value: '1.0', label: 'Jednosoban' },
+    { value: '1.5', label: 'Jednoiposoban' }, { value: '2.0', label: 'Dvosoban' },
+    { value: '2.5', label: 'Dvoiposoban' }, { value: '3.0', label: 'Trosoban' },
+    { value: '3.5', label: 'Troiposoban' }, { value: '4.0', label: 'Četvorosoban' },
+    { value: '4.5', label: 'Četvoroiposoban' }, { value: '5+', label: 'Petosoban i veći' },
+  ];
+  readonly reConstructionOptions = [
+    { value: 'NOVOGRADNJA', label: 'Novogradnja' }, { value: 'STARA_GRADNJA', label: 'Stara gradnja' },
+  ];
+  readonly reConditionOptions = [
+    { value: 'IZVORNO_STANJE', label: 'Izvorno stanje' }, { value: 'U_IZGRADNJI', label: 'U izgradnji' },
+    { value: 'RENOVIRANO', label: 'Renovirano' }, { value: 'POTREBNO_RENOVIRANJE', label: 'Potrebno renoviranje' },
+    { value: 'LUKSUZNO', label: 'Luksuzno' },
+  ];
+  readonly reTotalFloorOptions: { value: string; label: string }[] = (() => {
+    const opts = [];
+    for (let i = 1; i <= 30; i++) {
+      opts.push({ value: String(i), label: i === 1 ? '1 sprat' : i < 5 ? `${i} sprata` : `${i} spratova` });
+    }
+    opts.push({ value: '30+', label: '30+ spratova' });
+    return opts;
+  })();
+  readonly reFloorOptions: { value: string; label: string }[] = (() => {
+    const s = [
+      { value: 'PODRUM', label: 'Podrum' }, { value: 'SUTEREN', label: 'Suteren' },
+      { value: 'NISKO_PRIZEMLJE', label: 'Nisko prizemlje' }, { value: 'PRIZEMLJE', label: 'Prizemlje' },
+      { value: 'VISOKO_PRIZEMLJE', label: 'Visoko prizemlje' }, { value: 'POTKROVLJE', label: 'Potkrovlje' },
+    ];
+    for (let i = 1; i <= 30; i++) s.push({ value: String(i), label: `${i}. sprat` });
+    s.push({ value: '30+', label: '30+. sprat' });
+    return s;
+  })();
+  readonly reFurnishedOptions = [
+    { value: 'NAMESTENO', label: 'Namešteno' }, { value: 'POLUNAMESTENO', label: 'Polunaměšteno' },
+    { value: 'PRAZNO', label: 'Prazno' },
+  ];
+  readonly reHeatingOptions = [
+    { value: 'CENTRALNO', label: 'Centralno' }, { value: 'KLIMA', label: 'Klima' },
+    { value: 'ETAZNO', label: 'Etažno' }, { value: 'TOPLOTNA_PUMPA', label: 'Toplotna pumpa' },
+    { value: 'STRUJA', label: 'Struja' }, { value: 'GAS', label: 'Gas' },
+    { value: 'MERMERNI_RADIJATORI', label: 'Mermerni radijatori' },
+    { value: 'NORVESKI_RADIJATORI', label: 'Norveški radijatori' },
+    { value: 'CVRSTO_GORIVO', label: 'Čvrsto gorivo' }, { value: 'TA_PEC', label: 'TA peć' },
+  ];
+
+  readonly reHouseRoomOptions = [
+    { value: '1',      label: '1 soba' },
+    { value: '2',      label: '2 sobe' },
+    { value: '3',      label: '3 sobe' },
+    { value: '4',      label: '4 sobe' },
+    { value: '5_PLUS', label: '5+ soba' },
+  ];
+
+  readonly reHouseTotalFloorOptions = [
+    { value: 'PRIZEMNA', label: 'Prizemna' },
+    { value: '1',        label: '1 sprat' },
+    { value: '2',        label: '2 sprata' },
+    { value: '3+',       label: '3+ sprata' },
+  ];
+
+  readonly reLandAreaUnitOptions = [
+    { value: 'ar',     label: 'ar' },
+    { value: 'm2',     label: 'm²' },
+    { value: 'jutro',  label: 'jutro' },
+    { value: 'hektar', label: 'ha' },
+  ];
+
+  // ── Vehicle / Car ────────────────────────────────────────────────────────
+  readonly VEHICLE_ROOT_ID = 800;
+
+  readonly carBodyTypeOptions = [
+    { value: 'LIMUZINA',    label: 'Limuzina' },
+    { value: 'HECBEK',      label: 'Hečbek' },
+    { value: 'KAR',         label: 'Karavan' },
+    { value: 'SUV',         label: 'SUV / Džip' },
+    { value: 'MONOVOLUMEN', label: 'Monovolumen' },
+    { value: 'KABRIOLET',   label: 'Kabriolet' },
+    { value: 'KUPE',        label: 'Kupe' },
+    { value: 'PIKAP',       label: 'Pikap' },
+    { value: 'KOMBI',       label: 'Kombi' },
+    { value: 'OSTALO',      label: 'Ostalo' },
+  ];
+  readonly carFuelTypeOptions = [
+    { value: 'BENZIN', label: 'Benzin' }, { value: 'DIZEL', label: 'Dizel' },
+    { value: 'TNG', label: 'TNG' }, { value: 'METAN', label: 'Metan (CNG)' },
+    { value: 'HIBRID', label: 'Hibrid' }, { value: 'ELEKTRICNI', label: 'Električni' },
+    { value: 'VODIK', label: 'Vodik' },
+  ];
+  readonly carTransmissionOptions = [
+    { value: 'MANUELNI', label: 'Manuelni' }, { value: 'AUTOMATSKI', label: 'Automatski' },
+    { value: 'POLUAUTOMATSKI', label: 'Poluautomatski' },
+  ];
+  readonly carDriveOptions = [
+    { value: 'PREDNJI', label: 'Prednji pogon' }, { value: 'ZADNJI', label: 'Zadnji pogon' },
+    { value: '4X4', label: '4x4 / AWD' },
+  ];
+  readonly carDoorsOptions = [
+    { value: '2/3', label: '2/3 vrata' }, { value: '4/5', label: '4/5 vrata' },
+  ];
+  readonly carSteeringWheelOptions = [
+    { value: 'LEVI', label: 'Levi volan' }, { value: 'DESNI', label: 'Desni volan' },
+  ];
+  readonly carOriginOptions = [
+    { value: 'DOMACE', label: 'Domaće' }, { value: 'UVOZ', label: 'Uvoz' }, { value: 'IZ_EU', label: 'Iz EU' },
+  ];
+  readonly carOwnershipOptions = [
+    { value: 'PRIVATNO', label: 'Privatno' }, { value: 'FIRMA', label: 'Firma' }, { value: 'STRANO', label: 'Strano' },
+  ];
+  readonly carDamageOptions = [
+    { value: 'NEOSTECAN',       label: 'Neoštećen' },
+    { value: 'OSTECEN_VOZNO',   label: 'Oštećen — vozno' },
+    { value: 'OSTECEN_NEVOZNO', label: 'Oštećen — nevozno' },
+    { value: 'RASHODOVANO',     label: 'Rashodovano' },
+  ];
+  readonly carColorOptions = [
+    { value: 'CRNA', label: 'Crna' }, { value: 'BELA', label: 'Bela' }, { value: 'SIVA', label: 'Siva' },
+    { value: 'CRVENA', label: 'Crvena' }, { value: 'PLAVA', label: 'Plava' }, { value: 'ZELENA', label: 'Zelena' },
+    { value: 'ZUTA', label: 'Žuta' }, { value: 'NARANDZASTA', label: 'Narandžasta' },
+    { value: 'SMEDA', label: 'Smeđa' }, { value: 'BORDO', label: 'Bordo' },
+    { value: 'ZLATNA', label: 'Zlatna' }, { value: 'SREBRNA', label: 'Srebrna' }, { value: 'OSTALO', label: 'Ostalo' },
+  ];
+  readonly carEmissionOptions = [
+    { value: 'EURO1', label: 'Euro 1' }, { value: 'EURO2', label: 'Euro 2' },
+    { value: 'EURO3', label: 'Euro 3' }, { value: 'EURO4', label: 'Euro 4' },
+    { value: 'EURO5', label: 'Euro 5' }, { value: 'EURO6', label: 'Euro 6' },
+  ];
+  readonly carInteriorMaterialOptions = [
+    { value: 'TKANINA', label: 'Tkanina' }, { value: 'KOZA', label: 'Koža' },
+    { value: 'VESTACKA_KOZA', label: 'Veštačka koža' }, { value: 'KOMBINOVANO', label: 'Kombinovano' },
+  ];
+  readonly carInteriorColorOptions = [
+    { value: 'CRNA', label: 'Crna' }, { value: 'SIVA', label: 'Siva' }, { value: 'BELA', label: 'Bela' },
+    { value: 'SMEDA', label: 'Smeđa' }, { value: 'BEZ', label: 'Bež' }, { value: 'BORDO', label: 'Bordo' },
+  ];
+  readonly carLabelOptions = [
+    { value: 'A', label: 'A' }, { value: 'B', label: 'B' }, { value: 'C', label: 'C' },
+    { value: 'D', label: 'D' }, { value: 'E', label: 'E' }, { value: 'F', label: 'F' }, { value: 'G', label: 'G' },
+  ];
+  readonly carEquipmentOptions = [
+    { value: 'KLIMA',                label: 'Klima' },
+    { value: 'AUTO_KLIMA',           label: 'Automatska klima' },
+    { value: 'PANORAMSKI_KROV',      label: 'Panoramski krov' },
+    { value: 'GPS_NAVIGACIJA',       label: 'GPS navigacija' },
+    { value: 'PARKING_SENZORI_ZAD',  label: 'Parking senzori (zadnji)' },
+    { value: 'PARKING_SENZORI_PRED', label: 'Parking senzori (prednji)' },
+    { value: 'KAMERA_ZADNJA',        label: 'Kamera za vožnju unazad' },
+    { value: 'TEMPOMAT',             label: 'Tempomat' },
+    { value: 'BLUETOOTH',            label: 'Bluetooth / handsfree' },
+    { value: 'KOZNA_SEDISTA',        label: 'Kožna sedišta' },
+    { value: 'GREJANJE_SEDISTA',     label: 'Grejanje sedišta' },
+    { value: 'ELEKTRICNI_PROZORI',   label: 'Električni prozori' },
+    { value: 'ALU_FELNE',            label: 'Alu felne' },
+    { value: 'LED_SVETLA',           label: 'LED svetla' },
+    { value: 'XENON_SVETLA',         label: 'Xenon svetla' },
+    { value: 'MULTIFUNKCIJSKI_VOLAN', label: 'Multifunkcijski volan' },
+    { value: 'START_STOP',           label: 'Start-stop sistem' },
+    { value: 'HEAD_UP_DISPLAY',      label: 'Head-up display' },
+    { value: 'PRIKLJUCAK_PRIKOLICA', label: 'Priključak za prikolicu' },
+    { value: 'KROVNI_NOSAC',         label: 'Krovni nosač' },
+  ];
+
+  readonly reCommercialFeatures = [
+    { value: 'INTERNET',           label: 'Internet' },
+    { value: 'TERASA',             label: 'Terasa' },
+    { value: 'KLIMA_UREDJAJ',      label: 'Klima' },
+    { value: 'VIDEO_NADZOR',       label: 'Video nadzor' },
+    { value: 'PRISTUP_INVALIDIMA', label: 'Prilaz za invalide' },
+    { value: 'PARKING',            label: 'Parking' },
+    { value: 'ENERGETSKI_PASOS',   label: 'Energetski pasoš' },
+    { value: 'GARAZA',             label: 'Garaža' },
+    { value: 'STRUJA_PRIKLJUCAK',  label: 'Struja' },
+    { value: 'VODA',               label: 'Voda' },
+    { value: 'ASFALTIRAN_PRILAZ',  label: 'Asfaltiran prilaz' },
+    { value: 'BASTA',              label: 'Bašta' },
+    { value: 'IZLOG',              label: 'Izlog' },
+    { value: 'PET_FRIENDLY',       label: 'Pet friendly' },
+    { value: 'DEPOZIT',            label: 'Depozit' },
+  ];
+
+  readonly reHouseFeatures = [
+    { value: 'ODMAH_USELJIVO',     label: 'Odmah useljivo' },
+    { value: 'PODRUM',             label: 'Podrum' },
+    { value: 'VIDEO_NADZOR',       label: 'Video nadzor' },
+    { value: 'POMOCNI_OBJEKTI',    label: 'Pomoćni objekti' },
+    { value: 'VODA',               label: 'Voda' },
+    { value: 'INTERNET',           label: 'Internet' },
+    { value: 'INTERFON',           label: 'Interfon' },
+    { value: 'TERASA',             label: 'Terasa' },
+    { value: 'KABLOVA_TV',         label: 'Kablovska TV' },
+    { value: 'KLIMA_UREDJAJ',      label: 'Klima' },
+    { value: 'ENERGETSKI_PASOS',   label: 'Energetski pasoš' },
+    { value: 'PRISTUP_INVALIDIMA', label: 'Prilaz za invalide' },
+    { value: 'PARKING',            label: 'Parking' },
+    { value: 'GARAZA',             label: 'Garaža' },
+    { value: 'BAZEN',              label: 'Bazen' },
+    { value: 'KANALIZACIJA',       label: 'Kanalizacija' },
+    { value: 'STRUJA_PRIKLJUCAK',  label: 'Struja' },
+    { value: 'ASFALTIRAN_PRILAZ',  label: 'Asfaltiran prilaz' },
+    { value: 'PET_FRIENDLY',       label: 'Pet friendly' },
+    { value: 'DEPOZIT',            label: 'Depozit' },
+  ];
+
   // ── Misc ────────────────────────────────────────────────────────────────
   adId!: number;
   currentAd!: Ad;
@@ -88,6 +298,44 @@ export class EditAdComponent implements OnInit, OnDestroy {
       images: [[], Validators.required],
       pricePerWeek:  [null],
       pricePerMonth: [null],
+      advertiserType:       [null],
+      roomCount:            [null],
+      areaSize:             [null],
+      constructionType:     [null],
+      propertyCondition:    [null],
+      totalFloors:          [null],
+      floorNumber:          [null],
+      furnished:            [null],
+      heatingTypes:         [[]],
+      propertyMunicipality: [null],
+      propertyNeighborhood: [null],
+      propertyStreet:       [null],
+      landArea:             [null],
+      landAreaUnit:         ['ar'],
+      features:             [[]],
+      carBrand:            [null],
+      carModel:            [null],
+      carYear:             [null],
+      carMileage:          [null],
+      carBodyType:         [null],
+      carFuelType:         [null],
+      carTransmission:     [null],
+      carPowerKw:          [null],
+      carColor:            [null],
+      carDoors:            [null],
+      carSeats:            [null],
+      carDisplacement:     [null],
+      carEmissionClass:    [null],
+      carDrive:            [null],
+      carSteeringWheel:    [null],
+      carRegisteredUntil:  [null],
+      carCountry:          [null],
+      carOrigin:           [null],
+      carOwnership:        [null],
+      carDamage:           [null],
+      carLabel:            [null],
+      carInteriorMaterial: [null],
+      carInteriorColor:    [null],
     });
 
     const paramId = this.route.snapshot.paramMap.get('id');
@@ -137,6 +385,44 @@ export class EditAdComponent implements OnInit, OnDestroy {
           images: this.existingImages,
           pricePerWeek: ad.pricePerWeek ?? null,
           pricePerMonth: ad.pricePerMonth ?? null,
+          advertiserType:       ad.advertiserType ?? null,
+          roomCount:            ad.roomCount ?? null,
+          areaSize:             ad.areaSize ?? null,
+          constructionType:     ad.constructionType ?? null,
+          propertyCondition:    ad.propertyCondition ?? null,
+          totalFloors:          ad.totalFloors ?? null,
+          floorNumber:          ad.floorNumber ?? null,
+          furnished:            ad.furnished ?? null,
+          heatingTypes:         ad.heatingTypes ?? [],
+          propertyMunicipality: ad.propertyMunicipality ?? null,
+          propertyNeighborhood: ad.propertyNeighborhood ?? null,
+          propertyStreet:       ad.propertyStreet ?? null,
+          landArea:             ad.landArea ?? null,
+          landAreaUnit:         ad.landAreaUnit ?? 'ar',
+          features:             ad.features ?? [],
+          carBrand:            ad.carBrand ?? null,
+          carModel:            ad.carModel ?? null,
+          carYear:             ad.carYear ?? null,
+          carMileage:          ad.carMileage ?? null,
+          carBodyType:         ad.carBodyType ?? null,
+          carFuelType:         ad.carFuelType ?? null,
+          carTransmission:     ad.carTransmission ?? null,
+          carPowerKw:          ad.carPowerKw ?? null,
+          carColor:            ad.carColor ?? null,
+          carDoors:            ad.carDoors ?? null,
+          carSeats:            ad.carSeats ?? null,
+          carDisplacement:     ad.carDisplacement ?? null,
+          carEmissionClass:    ad.carEmissionClass ?? null,
+          carDrive:            ad.carDrive ?? null,
+          carSteeringWheel:    ad.carSteeringWheel ?? null,
+          carRegisteredUntil:  ad.carRegisteredUntil ?? null,
+          carCountry:          ad.carCountry ?? null,
+          carOrigin:           ad.carOrigin ?? null,
+          carOwnership:        ad.carOwnership ?? null,
+          carDamage:           ad.carDamage ?? null,
+          carLabel:            ad.carLabel ?? null,
+          carInteriorMaterial: ad.carInteriorMaterial ?? null,
+          carInteriorColor:    ad.carInteriorColor ?? null,
         });
 
         this.isLoading = false;
@@ -353,6 +639,72 @@ export class EditAdComponent implements OnInit, OnDestroy {
   get selectedCurrency(): string { return this.form.get('currency')?.value ?? 'RSD'; }
   get selectedInterval(): string { return this.form.get('priceInterval')?.value ?? PriceInterval.PER_DAY; }
 
+  private getRootCategoryId(catId: number | null): number | null {
+    if (!catId) return null;
+    let cat = this.categories.find(c => c.id === catId);
+    while (cat?.parentId) {
+      cat = this.categories.find(c => c.id === cat!.parentId);
+    }
+    return cat?.id ?? null;
+  }
+
+  get isRealEstate(): boolean {
+    return this.getRootCategoryId(this.form.get('categoryId')?.value) === this.RE_ROOT_ID;
+  }
+
+  get reSubcategoryName(): string | null {
+    const catId = this.form.get('categoryId')?.value;
+    if (!catId) return null;
+    const cat = this.categories.find(c => c.id === catId);
+    if (!cat) return null;
+    if (cat.parentId === this.RE_ROOT_ID) return cat.name;
+    if (cat.parentId) {
+      const parent = this.categories.find(c => c.id === cat.parentId);
+      if (parent?.parentId === this.RE_ROOT_ID) return parent.name;
+    }
+    return null;
+  }
+
+  get isHouse(): boolean { return this.reSubcategoryName === 'Kuće'; }
+  get isGarageParking(): boolean { return this.reSubcategoryName === 'Garaže i parking mesta'; }
+  get isCommercial(): boolean { return this.reSubcategoryName === 'Poslovni prostor'; }
+
+  get vehicleSubcategoryName(): string | null {
+    const catId = this.form.get('categoryId')?.value;
+    if (!catId) return null;
+    const cat = this.categories.find(c => c.id === catId);
+    if (!cat) return null;
+    if (cat.parentId === this.VEHICLE_ROOT_ID) return cat.name;
+    if (cat.parentId) {
+      const parent = this.categories.find(c => c.id === cat.parentId);
+      if (parent?.parentId === this.VEHICLE_ROOT_ID) return parent.name;
+    }
+    return null;
+  }
+  get isCar(): boolean { return this.vehicleSubcategoryName === 'Automobili'; }
+
+  toggleHeating(value: string): void {
+    const curr: string[] = [...(this.form.get('heatingTypes')?.value ?? [])];
+    const idx = curr.indexOf(value);
+    if (idx >= 0) curr.splice(idx, 1); else curr.push(value);
+    this.form.patchValue({ heatingTypes: curr });
+  }
+
+  isHeatingSelected(value: string): boolean {
+    return (this.form.get('heatingTypes')?.value ?? []).includes(value);
+  }
+
+  toggleFeature(value: string): void {
+    const curr: string[] = [...(this.form.get('features')?.value ?? [])];
+    const idx = curr.indexOf(value);
+    if (idx >= 0) curr.splice(idx, 1); else curr.push(value);
+    this.form.patchValue({ features: curr });
+  }
+
+  isFeatureSelected(value: string): boolean {
+    return (this.form.get('features')?.value ?? []).includes(value);
+  }
+
   private ensureLocationInList(location?: Location | null): void {
     if (!location) return;
     const exists = this.locations.some(loc => loc.id === location.id);
@@ -389,6 +741,44 @@ export class EditAdComponent implements OnInit, OnDestroy {
       locationId: this.form.value.locationId,
       pricePerWeek: this.form.value.pricePerWeek,
       pricePerMonth: this.form.value.pricePerMonth,
+      advertiserType:       this.form.value.advertiserType,
+      roomCount:            this.form.value.roomCount,
+      areaSize:             this.form.value.areaSize,
+      constructionType:     this.form.value.constructionType,
+      propertyCondition:    this.form.value.propertyCondition,
+      totalFloors:          this.form.value.totalFloors,
+      floorNumber:          this.form.value.floorNumber,
+      furnished:            this.form.value.furnished,
+      heatingTypes:         this.form.value.heatingTypes,
+      propertyMunicipality: this.form.value.propertyMunicipality,
+      propertyNeighborhood: this.form.value.propertyNeighborhood,
+      propertyStreet:       this.form.value.propertyStreet,
+      landArea:             this.form.value.landArea,
+      landAreaUnit:         this.form.value.landAreaUnit,
+      features:             this.form.value.features,
+      carBrand:            this.form.value.carBrand,
+      carModel:            this.form.value.carModel,
+      carYear:             this.form.value.carYear,
+      carMileage:          this.form.value.carMileage,
+      carBodyType:         this.form.value.carBodyType,
+      carFuelType:         this.form.value.carFuelType,
+      carTransmission:     this.form.value.carTransmission,
+      carPowerKw:          this.form.value.carPowerKw,
+      carColor:            this.form.value.carColor,
+      carDoors:            this.form.value.carDoors,
+      carSeats:            this.form.value.carSeats,
+      carDisplacement:     this.form.value.carDisplacement,
+      carEmissionClass:    this.form.value.carEmissionClass,
+      carDrive:            this.form.value.carDrive,
+      carSteeringWheel:    this.form.value.carSteeringWheel,
+      carRegisteredUntil:  this.form.value.carRegisteredUntil,
+      carCountry:          this.form.value.carCountry,
+      carOrigin:           this.form.value.carOrigin,
+      carOwnership:        this.form.value.carOwnership,
+      carDamage:           this.form.value.carDamage,
+      carLabel:            this.form.value.carLabel,
+      carInteriorMaterial: this.form.value.carInteriorMaterial,
+      carInteriorColor:    this.form.value.carInteriorColor,
     };
 
     const finalizeUpdate = (images: string[]) => {

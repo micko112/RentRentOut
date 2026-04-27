@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="re-categories-rename-vikendica-34" author="micko112">
+        <!-- Preimenuj "Hale i magacini" u "Vikendica" -->
+        <sql>UPDATE category SET name = 'Vikendica' WHERE name = 'Hale i magacini' AND parent_id = 900</sql>
+        <!-- Fallback: ako changelog-31 nije preimenovao (staro ime ostalo), preimenovati direktno -->
+        <sql>UPDATE category SET name = 'Vikendica' WHERE name = 'Vikendice i brvnare' AND parent_id = 900</sql>
+    </changeSet>
+
+</databaseChangeLog>

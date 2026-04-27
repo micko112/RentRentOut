@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- ================================================================ -->
+    <!-- 1. Ažuriranje podkategorija Nekretnine (900)                     -->
+    <!-- ================================================================ -->
+    <changeSet id="real-estate-categories-31" author="micko112">
+
+        <sql>UPDATE category SET name = 'Stanovi'               WHERE name = 'Stanovi na dan'        AND parent_id = 900</sql>
+        <sql>UPDATE category SET name = 'Kuće'                  WHERE name = 'Kuće i vile'            AND parent_id = 900</sql>
+        <sql>UPDATE category SET name = 'Hale i magacini'       WHERE name = 'Vikendice i brvnare'    AND parent_id = 900</sql>
+        <sql>UPDATE category SET name = 'Poslovni prostor'      WHERE name = 'Poslovni prostori'      AND parent_id = 900</sql>
+        <sql>UPDATE category SET name = 'Garaže i parking mesta' WHERE name = 'Garaže i parking'     AND parent_id = 900</sql>
+
+        <!-- Brisanje duplikata "Stanovi (dugoročno)" - nema oglasa koji koriste ovu kategoriju -->
+        <sql splitStatements="false">
+            UPDATE ad
+            SET category_id = (SELECT id FROM (SELECT id FROM category WHERE name = 'Stanovi' AND parent_id = 900) AS tmp)
+            WHERE category_id = (SELECT id FROM (SELECT id FROM category WHERE name = 'Stanovi (dugoročno)' AND parent_id = 900) AS tmp2)
+        </sql>
+        <sql>DELETE FROM category WHERE name = 'Stanovi (dugoročno)' AND parent_id = 900</sql>
+
+    </changeSet>
+
+    <!-- ================================================================ -->
+    <!-- 2. Polja za detalje nekretnine u tabeli ad                       -->
+    <!-- ================================================================ -->
+    <changeSet id="real-estate-ad-columns-31" author="micko112">
+
+        <addColumn tableName="ad">
+            <column name="advertiser_type"       type="VARCHAR(20)"/>
+            <column name="room_count"             type="VARCHAR(10)"/>
+            <column name="area_size"              type="DECIMAL(10,2)"/>
+            <column name="construction_type"      type="VARCHAR(20)"/>
+            <column name="property_condition"     type="VARCHAR(30)"/>
+            <column name="total_floors"           type="VARCHAR(10)"/>
+            <column name="floor_number"           type="VARCHAR(30)"/>
+            <column name="furnished"              type="VARCHAR(20)"/>
+            <column name="property_municipality"  type="VARCHAR(100)"/>
+            <column name="property_neighborhood"  type="VARCHAR(100)"/>
+            <column name="property_street"        type="VARCHAR(200)"/>
+        </addColumn>
+
+    </changeSet>
+
+    <!-- ================================================================ -->
+    <!-- 3. Tabela za tip grejanja (višestruki izbor)                     -->
+    <!-- ================================================================ -->
+    <changeSet id="real-estate-heating-table-31" author="micko112">
+
+        <createTable tableName="ad_heating_type">
+            <column name="ad_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="heating_type" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="ad_heating_type"
+            baseColumnNames="ad_id"
+            constraintName="fk_ad_heating_type_ad"
+            referencedTableName="ad"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+    </changeSet>
+
+</databaseChangeLog>

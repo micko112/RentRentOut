@@ -196,7 +196,11 @@ form {
   font-size: 18px;
   font-weight: 700;
   color: var(--color-text);
-  margin-bottom: 6px;
+  margin-bottom: 20px;
+}
+
+.section-block > *:not(.section-title) {
+  margin-left: 38px;
 }
 
 .section-num {
@@ -216,7 +220,7 @@ form {
 .section-hint {
   font-size: 14px;
   color: var(--color-text-secondary);
-  margin: 0 0 20px 38px;
+  margin: 0 0 20px 0;
   line-height: 1.5;
 }
 
@@ -950,6 +954,155 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   opacity: 0.4;
   flex-shrink: 0;
   transition: color .13s, opacity .13s;
+}
+
+/* ════════════════════════════════════════════════════════
+   REAL ESTATE FIELDS
+   ════════════════════════════════════════════════════════ */
+
+.re-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+}
+.re-full { grid-column: 1 / -1; }
+
+.car-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 14px;
+}
+.car-grid input:not([type="checkbox"]),
+.car-grid select:not(.re-unit-select) {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.field-opt {
+  font-weight: 400;
+  font-size: 11px;
+  text-transform: none;
+  color: var(--color-text-muted);
+  margin-left: 4px;
+}
+
+.re-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-white);
+  font-size: 14px;
+  color: var(--color-text-body);
+  cursor: pointer;
+  appearance: auto;
+}
+.re-select:focus { outline: none; border-color: var(--color-primary); }
+
+.re-input-unit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.re-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--color-white);
+}
+.re-input:focus { outline: none; border-color: var(--color-primary); }
+.re-unit {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+.re-unit-select {
+  padding: 8px 10px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--color-white);
+  color: var(--color-text-body);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.re-unit-select:focus { outline: none; border-color: var(--color-primary); }
+
+.re-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.re-chip {
+  padding: 7px 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-white);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-text-body);
+  transition: border-color .15s, background .15s, color .15s;
+}
+.re-chip.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light, #f5ecff);
+  color: var(--color-primary);
+}
+
+.re-heating-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 8px 16px;
+}
+.re-heating-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 0;
+}
+.re-heating-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.re-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px 16px;
+}
+.re-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 0;
+}
+.re-feature-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .car-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .re-grid { grid-template-columns: 1fr; }
+  .car-grid { grid-template-columns: 1fr; }
+  .re-features-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* Level-3 chips — malo manji i blago uvučeni */

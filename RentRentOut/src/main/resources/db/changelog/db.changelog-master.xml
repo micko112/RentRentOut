@@ -51,6 +51,11 @@
     <include file="/db/changelog/db.changelog-28-fix-categories.xml"/>
     <include file="/db/changelog/db.changelog-29-fix-categories-2.xml"/>
     <include file="/db/changelog/db.changelog-30-create-identity-verification.xml"/>
+    <include file="/db/changelog/db.changelog-31-real-estate.xml"/>
+    <include file="/db/changelog/db.changelog-32-house-fields.xml"/>
+    <include file="/db/changelog/db.changelog-33-car-fields.xml"/>
+    <include file="/db/changelog/db.changelog-34-re-categories.xml"/>
+    <include file="/db/changelog/db.changelog-35-fix-nekretnine.xml"/>
 
     <!-- Onda korisnike (kojima treba lokacija) -->
     <include file="/db/changelog/db.changelog-seed-user.xml"/>

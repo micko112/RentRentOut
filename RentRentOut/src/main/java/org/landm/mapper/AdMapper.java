@@ -40,6 +40,45 @@ public class AdMapper {
         dto.setViewCount(ad.getViewCount());
         dto.setSaveCount(ad.getSaveCount());
 
+        dto.setAdvertiserType(ad.getAdvertiserType());
+        dto.setRoomCount(ad.getRoomCount());
+        dto.setAreaSize(ad.getAreaSize());
+        dto.setConstructionType(ad.getConstructionType());
+        dto.setPropertyCondition(ad.getPropertyCondition());
+        dto.setTotalFloors(ad.getTotalFloors());
+        dto.setFloorNumber(ad.getFloorNumber());
+        dto.setFurnished(ad.getFurnished());
+        dto.setHeatingTypes(ad.getHeatingTypes());
+        dto.setPropertyMunicipality(ad.getPropertyMunicipality());
+        dto.setPropertyNeighborhood(ad.getPropertyNeighborhood());
+        dto.setPropertyStreet(ad.getPropertyStreet());
+        dto.setLandArea(ad.getLandArea());
+        dto.setLandAreaUnit(ad.getLandAreaUnit());
+        dto.setFeatures(ad.getFeatures());
+        dto.setCarBrand(ad.getCarBrand());
+        dto.setCarModel(ad.getCarModel());
+        dto.setCarYear(ad.getCarYear());
+        dto.setCarMileage(ad.getCarMileage());
+        dto.setCarBodyType(ad.getCarBodyType());
+        dto.setCarFuelType(ad.getCarFuelType());
+        dto.setCarTransmission(ad.getCarTransmission());
+        dto.setCarPowerKw(ad.getCarPowerKw());
+        dto.setCarColor(ad.getCarColor());
+        dto.setCarDoors(ad.getCarDoors());
+        dto.setCarSeats(ad.getCarSeats());
+        dto.setCarDisplacement(ad.getCarDisplacement());
+        dto.setCarEmissionClass(ad.getCarEmissionClass());
+        dto.setCarDrive(ad.getCarDrive());
+        dto.setCarSteeringWheel(ad.getCarSteeringWheel());
+        dto.setCarRegisteredUntil(ad.getCarRegisteredUntil());
+        dto.setCarCountry(ad.getCarCountry());
+        dto.setCarOrigin(ad.getCarOrigin());
+        dto.setCarOwnership(ad.getCarOwnership());
+        dto.setCarDamage(ad.getCarDamage());
+        dto.setCarLabel(ad.getCarLabel());
+        dto.setCarInteriorMaterial(ad.getCarInteriorMaterial());
+        dto.setCarInteriorColor(ad.getCarInteriorColor());
+
         return dto;
     }
     public AdPreviewDto toPreviewDto(Ad ad){

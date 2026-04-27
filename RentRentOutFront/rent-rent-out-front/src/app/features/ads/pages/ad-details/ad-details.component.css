@@ -815,3 +815,86 @@ border-radius: 4px;
     font-size: 13px;
   }
 }
+
+/* ════════════════════════════════════════════════════════
+   DETALJI NEKRETNINE
+   ════════════════════════════════════════════════════════ */
+
+.re-details {
+  margin-top: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-white);
+}
+
+.re-details-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  background: #f8f4ff;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-primary, #813181);
+}
+
+.re-section-label {
+  padding: 10px 20px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  color: var(--color-text-muted);
+}
+
+.re-row-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0;
+  padding: 0 20px 12px;
+}
+
+.re-item {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.re-item-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+}
+
+.re-item-val {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-body);
+}
+
+.re-heating-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 20px 16px;
+}
+
+.re-heating-chip {
+  padding: 4px 12px;
+  border-radius: 14px;
+  background: #f5ecff;
+  border: 1px solid #e0cef0;
+  font-size: 13px;
+  color: var(--color-primary, #813181);
+  font-weight: 500;
+}
+.re-feature-chip {
+  background: #eefdf4;
+  border-color: #b7e8c8;
+  color: #256b3a;
+}

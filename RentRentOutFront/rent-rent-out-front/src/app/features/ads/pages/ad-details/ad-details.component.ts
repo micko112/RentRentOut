@@ -151,6 +151,112 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     this.seoService.reset();
   }
 
+  // ── Real estate label helpers ────────────────────────────────────────────
+  private static readonly RE_LABELS: Record<string, string> = {
+    AGENCIJA: 'Agencija', VLASNIK: 'Vlasnik', INVESTITOR: 'Investitor',
+    NOVOGRADNJA: 'Novogradnja', STARA_GRADNJA: 'Stara gradnja',
+    IZVORNO_STANJE: 'Izvorno stanje', U_IZGRADNJI: 'U izgradnji', RENOVIRANO: 'Renovirano',
+    POTREBNO_RENOVIRANJE: 'Potrebno renoviranje', LUKSUZNO: 'Luksuzno',
+    NAMESTENO: 'Namešteno', POLUNAMESTENO: 'Polunaměšteno', PRAZNO: 'Prazno',
+    PODRUM: 'Podrum', SUTEREN: 'Suteren', NISKO_PRIZEMLJE: 'Nisko prizemlje',
+    PRIZEMLJE: 'Prizemlje', VISOKO_PRIZEMLJE: 'Visoko prizemlje', POTKROVLJE: 'Potkrovlje',
+    CENTRALNO: 'Centralno', KLIMA: 'Klima', ETAZNO: 'Etažno',
+    TOPLOTNA_PUMPA: 'Toplotna pumpa', STRUJA: 'Struja', GAS: 'Gas',
+    MERMERNI_RADIJATORI: 'Mermerni radijatori', NORVESKI_RADIJATORI: 'Norveški radijatori',
+    CVRSTO_GORIVO: 'Čvrsto gorivo', TA_PEC: 'TA peć',
+    // Broj soba — stanovi
+    '0.5': 'Garsonjera', '1.0': 'Jednosoban', '1.5': 'Jednoiposoban',
+    '2.0': 'Dvosoban', '2.5': 'Dvoiposoban', '3.0': 'Trosoban',
+    '3.5': 'Troiposoban', '4.0': 'Četvorosoban', '4.5': 'Četvoroiposoban', '5+': 'Petosoban i veći',
+    // Broj soba — kuće
+    '1': '1 soba', '2': '2 sobe', '3': '3 sobe', '4': '4 sobe', '5_PLUS': '5+ soba',
+    // Spratnost — kuće
+    PRIZEMNA: 'Prizemna', '3+': '3+ sprata',
+    // Jedinice površine zemljišta
+    ar: 'ar', m2: 'm²', jutro: 'jutro', hektar: 'ha',
+    // Dodatne karakteristike
+    ODMAH_USELJIVO: 'Odmah useljivo', VIDEO_NADZOR: 'Video nadzor',
+    POMOCNI_OBJEKTI: 'Pomoćni objekti', VODA: 'Voda', INTERNET: 'Internet',
+    INTERFON: 'Interfon', TERASA: 'Terasa', KABLOVA_TV: 'Kablovska TV',
+    KLIMA_UREDJAJ: 'Klima', ENERGETSKI_PASOS: 'Energetski pasoš',
+    PRISTUP_INVALIDIMA: 'Prilaz za invalide', PARKING: 'Parking',
+    GARAZA: 'Garaža', BAZEN: 'Bazen', KANALIZACIJA: 'Kanalizacija',
+    STRUJA_PRIKLJUCAK: 'Struja', ASFALTIRAN_PRILAZ: 'Asfaltiran prilaz',
+    BASTA: 'Bašta', IZLOG: 'Izlog',
+    PET_FRIENDLY: 'Pet friendly', DEPOZIT: 'Depozit',
+    OSTALO: 'Ostalo',
+    // Automobili — karoserija
+    LIMUZINA: 'Limuzina', HECBEK: 'Hečbek', KAR: 'Karavan', SUV: 'SUV / Džip',
+    MONOVOLUMEN: 'Monovolumen', KABRIOLET: 'Kabriolet', KUPE: 'Kupe', PIKAP: 'Pikap', KOMBI: 'Kombi',
+    // Automobili — gorivo
+    BENZIN: 'Benzin', DIZEL: 'Dizel', TNG: 'TNG', METAN: 'Metan (CNG)',
+    HIBRID: 'Hibrid', ELEKTRICNI: 'Električni', VODIK: 'Vodik',
+    // Automobili — menjač
+    MANUELNI: 'Manuelni', AUTOMATSKI: 'Automatski', POLUAUTOMATSKI: 'Poluautomatski',
+    // Automobili — pogon
+    PREDNJI: 'Prednji pogon', ZADNJI: 'Zadnji pogon', '4X4': '4x4 / AWD',
+    // Automobili — vrata
+    '2/3': '2/3 vrata', '4/5': '4/5 vrata',
+    // Automobili — volan
+    LEVI: 'Levi volan', DESNI: 'Desni volan',
+    // Automobili — poreklo
+    DOMACE: 'Domaće', UVOZ: 'Uvoz', IZ_EU: 'Iz EU',
+    // Automobili — vlasništvo
+    PRIVATNO: 'Privatno', FIRMA: 'Firma', STRANO: 'Strano',
+    // Automobili — oštećenje
+    NEOSTECAN: 'Neoštećen', OSTECEN_VOZNO: 'Oštećen — vozno',
+    OSTECEN_NEVOZNO: 'Oštećen — nevozno', RASHODOVANO: 'Rashodovano',
+    // Automobili — boja
+    CRNA: 'Crna', BELA: 'Bela', SIVA: 'Siva', CRVENA: 'Crvena', PLAVA: 'Plava',
+    ZELENA: 'Zelena', ZUTA: 'Žuta', NARANDZASTA: 'Narandžasta', SMEDA: 'Smeđa',
+    ZLATNA: 'Zlatna', SREBRNA: 'Srebrna',
+    // Automobili — emisiona klasa
+    EURO1: 'Euro 1', EURO2: 'Euro 2', EURO3: 'Euro 3',
+    EURO4: 'Euro 4', EURO5: 'Euro 5', EURO6: 'Euro 6',
+    // Automobili — enterijer
+    TKANINA: 'Tkanina', KOZA: 'Koža', VESTACKA_KOZA: 'Veštačka koža', KOMBINOVANO: 'Kombinovano',
+    BEZ: 'Bež',
+    // Automobili — oprema
+    AUTO_KLIMA: 'Automatska klima',
+    PANORAMSKI_KROV: 'Panoramski krov', GPS_NAVIGACIJA: 'GPS navigacija',
+    PARKING_SENZORI_ZAD: 'Parking senzori (zadnji)', PARKING_SENZORI_PRED: 'Parking senzori (prednji)',
+    KAMERA_ZADNJA: 'Kamera za vožnju unazad', TEMPOMAT: 'Tempomat',
+    BLUETOOTH: 'Bluetooth / handsfree', KOZNA_SEDISTA: 'Kožna sedišta',
+    GREJANJE_SEDISTA: 'Grejanje sedišta', ELEKTRICNI_PROZORI: 'Električni prozori',
+    ALU_FELNE: 'Alu felne', LED_SVETLA: 'LED svetla', XENON_SVETLA: 'Xenon svetla',
+    MULTIFUNKCIJSKI_VOLAN: 'Multifunkcijski volan', START_STOP: 'Start-stop sistem',
+    HEAD_UP_DISPLAY: 'Head-up display', PRIKLJUCAK_PRIKOLICA: 'Priključak za prikolicu',
+    KROVNI_NOSAC: 'Krovni nosač',
+  };
+
+  reLabel(value: string | undefined | null): string {
+    if (!value) return '';
+    return AdDetailsComponent.RE_LABELS[value] ?? value;
+  }
+
+  reFloorLabel(value: string | undefined | null): string {
+    if (!value) return '';
+    const mapped = AdDetailsComponent.RE_LABELS[value];
+    if (mapped) return mapped;
+    const n = Number(value);
+    if (!isNaN(n)) return `${n}. sprat`;
+    return value;
+  }
+
+  reFloorsLabel(value: string | undefined | null): string {
+    if (!value) return '';
+    const mapped = AdDetailsComponent.RE_LABELS[value];
+    if (mapped) return mapped;
+    const n = Number(value);
+    if (isNaN(n)) return value;
+    return n === 1 ? '1 sprat' : n < 5 ? `${n} sprata` : `${n} spratova`;
+  }
+
+  landAreaUnitLabel(unit: string | undefined | null): string {
+    if (!unit) return '';
+    return AdDetailsComponent.RE_LABELS[unit] ?? unit;
+  }
+
   scrollThumbnails(amount: number) {
     if (this.thumbnailScrollContainer) {
       this.thumbnailScrollContainer.nativeElement.scrollBy({

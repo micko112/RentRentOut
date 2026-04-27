@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        changelog-27 je preimenovao id=900 iz "Nekretnine" u "Ostalo" i obrisao sve podkategorije.
+        Ovaj changeset vraća "Nekretnine" kao root kategoriju i dodaje pravi "Ostalo".
+    -->
+
+    <changeSet id="fix-nekretnine-rename-back-35" author="micko112">
+        <!-- id=900 vraćamo u Nekretnine -->
+        <sql>UPDATE category SET name = 'Nekretnine' WHERE id = 900</sql>
+
+        <!-- Premesti oglase iz podkategorija Prostori (parent_id=901) pod Nekretnine -->
+        <sql>UPDATE ad SET category_id = 900 WHERE category_id IN (SELECT id FROM (SELECT id FROM category WHERE parent_id = 901) AS sub)</sql>
+
+        <!-- Premesti oglase koji su u Prostori (id=901) pod Nekretnine -->
+        <sql>UPDATE ad SET category_id = 900 WHERE category_id = 901</sql>
+
+        <!-- Obriši podkategorije Prostori (fk constraint sprečava direktno brisanje roditelja) -->
+        <sql>DELETE FROM category WHERE parent_id = 901</sql>
+
+        <!-- Obriši Prostori -->
+        <sql>DELETE FROM category WHERE id = 901</sql>
+
+        <!-- Dodaj novi root "Ostalo" (auto-increment ID, parent_id=NULL → root) -->
+        <insert tableName="category">
+            <column name="name" value="Ostalo"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="fix-nekretnine-subcategories-35" author="micko112">
+        <!-- Direktne (flat) podkategorije Nekretnine. -->
+        <insert tableName="category">
+            <column name="name" value="Stanovi"/>
+            <column name="parent_id" valueNumeric="900"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Kuće"/>
+            <column name="parent_id" valueNumeric="900"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Vikendica"/>
+            <column name="parent_id" valueNumeric="900"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Sobe"/>
+            <column name="parent_id" valueNumeric="900"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Poslovni prostor"/>
+            <column name="parent_id" valueNumeric="900"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Garaže i parking mesta"/>
+            <column name="parent_id" valueNumeric="900"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Placevi i zemljište"/>
+            <column name="parent_id" valueNumeric="900"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

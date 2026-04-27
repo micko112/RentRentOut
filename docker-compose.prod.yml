@@ -57,6 +57,8 @@ services:
     container_name: rentrentout-ml
     restart: unless-stopped
     env_file: ./RentRentOut/.env
+    volumes:
+      - chroma_data:/app/chroma_db
     # Port 8000 nije eksponovan prema van — Nginx komunicira interno
 
   # ─── Nginx reverse proxy ──────────────────────────────────────────────────────
@@ -93,3 +95,4 @@ volumes:
   mysql_data:
   certbot-conf:
   certbot-www:
+  chroma_data:

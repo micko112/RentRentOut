@@ -90,6 +90,206 @@
           <p class="description">{{ ad.description }}</p>
         </div>
 
+        <!-- DETALJI NEKRETNINE -->
+        <div class="re-details" *ngIf="ad.areaSize || ad.advertiserType || ad.roomCount || ad.propertyMunicipality">
+          <div class="re-details-title">
+            <span class="material-icons-outlined">home_work</span>
+            Detalji nekretnine
+          </div>
+
+          <!-- Lokacija -->
+          <div class="re-section-label" *ngIf="ad.propertyMunicipality || ad.propertyNeighborhood || ad.propertyStreet">Lokacija</div>
+          <div class="re-row-group" *ngIf="ad.propertyMunicipality || ad.propertyNeighborhood || ad.propertyStreet">
+            <div class="re-item" *ngIf="ad.propertyMunicipality">
+              <span class="re-item-label">Deo mesta/grada</span>
+              <span class="re-item-val">{{ ad.propertyMunicipality }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.propertyNeighborhood">
+              <span class="re-item-label">Precizna lokacija</span>
+              <span class="re-item-val">{{ ad.propertyNeighborhood }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.propertyStreet">
+              <span class="re-item-label">Ulica</span>
+              <span class="re-item-val">{{ ad.propertyStreet }}</span>
+            </div>
+          </div>
+
+          <!-- Osnovne informacije -->
+          <div class="re-section-label">Osnovno</div>
+          <div class="re-row-group">
+            <div class="re-item" *ngIf="ad.advertiserType">
+              <span class="re-item-label">Oglašivač</span>
+              <span class="re-item-val">{{ reLabel(ad.advertiserType) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.roomCount">
+              <span class="re-item-label">Broj soba</span>
+              <span class="re-item-val">{{ reLabel(ad.roomCount) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.areaSize">
+              <span class="re-item-label">Površina</span>
+              <span class="re-item-val">{{ ad.areaSize }} m²</span>
+            </div>
+            <div class="re-item" *ngIf="ad.landArea">
+              <span class="re-item-label">Površina zemljišta</span>
+              <span class="re-item-val">{{ ad.landArea }} {{ landAreaUnitLabel(ad.landAreaUnit) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.constructionType">
+              <span class="re-item-label">Vrsta gradnje</span>
+              <span class="re-item-val">{{ reLabel(ad.constructionType) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.propertyCondition">
+              <span class="re-item-label">Stanje</span>
+              <span class="re-item-val">{{ reLabel(ad.propertyCondition) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.totalFloors">
+              <span class="re-item-label">Ukupna spratnost</span>
+              <span class="re-item-val">{{ reFloorsLabel(ad.totalFloors) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.floorNumber">
+              <span class="re-item-label">Sprat</span>
+              <span class="re-item-val">{{ reFloorLabel(ad.floorNumber) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.furnished">
+              <span class="re-item-label">Nameštenost</span>
+              <span class="re-item-val">{{ reLabel(ad.furnished) }}</span>
+            </div>
+          </div>
+
+          <!-- Grejanje -->
+          <div *ngIf="ad.heatingTypes && ad.heatingTypes.length > 0">
+            <div class="re-section-label">Grejanje</div>
+            <div class="re-heating-chips">
+              <span class="re-heating-chip" *ngFor="let h of ad.heatingTypes">{{ reLabel(h) }}</span>
+            </div>
+          </div>
+
+          <!-- Karakteristike -->
+          <div *ngIf="ad.features && ad.features.length > 0">
+            <div class="re-section-label">Karakteristike</div>
+            <div class="re-heating-chips">
+              <span class="re-heating-chip re-feature-chip" *ngFor="let f of ad.features">{{ reLabel(f) }}</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DETALJI AUTOMOBILA -->
+        <div class="re-details" *ngIf="ad.carBrand || ad.carModel || ad.carFuelType || ad.carYear || ad.carMileage">
+          <div class="re-details-title">
+            <span class="material-icons-outlined">directions_car</span>
+            Detalji automobila
+          </div>
+
+          <div class="re-section-label">Osnovno</div>
+          <div class="re-row-group">
+            <div class="re-item" *ngIf="ad.carBrand">
+              <span class="re-item-label">Marka</span>
+              <span class="re-item-val">{{ ad.carBrand }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carModel">
+              <span class="re-item-label">Model</span>
+              <span class="re-item-val">{{ ad.carModel }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carYear">
+              <span class="re-item-label">Godište</span>
+              <span class="re-item-val">{{ ad.carYear }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carMileage != null">
+              <span class="re-item-label">Kilometraža</span>
+              <span class="re-item-val">{{ ad.carMileage | number:'1.0-0' }} km</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carBodyType">
+              <span class="re-item-label">Karoserija</span>
+              <span class="re-item-val">{{ reLabel(ad.carBodyType) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carFuelType">
+              <span class="re-item-label">Gorivo</span>
+              <span class="re-item-val">{{ reLabel(ad.carFuelType) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carTransmission">
+              <span class="re-item-label">Menjač</span>
+              <span class="re-item-val">{{ reLabel(ad.carTransmission) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carPowerKw">
+              <span class="re-item-label">Snaga</span>
+              <span class="re-item-val">{{ ad.carPowerKw }} kW</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carDisplacement">
+              <span class="re-item-label">Kubikaža</span>
+              <span class="re-item-val">{{ ad.carDisplacement }} cm³</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carDrive">
+              <span class="re-item-label">Pogon</span>
+              <span class="re-item-val">{{ reLabel(ad.carDrive) }}</span>
+            </div>
+          </div>
+
+          <div class="re-section-label" *ngIf="ad.carColor || ad.carDoors || ad.carSeats || ad.carEmissionClass || ad.carSteeringWheel || ad.carOrigin || ad.carOwnership || ad.carDamage || ad.carInteriorMaterial || ad.carInteriorColor || ad.carRegisteredUntil || ad.carCountry || ad.carLabel">Detalji</div>
+          <div class="re-row-group" *ngIf="ad.carColor || ad.carDoors || ad.carSeats || ad.carEmissionClass || ad.carSteeringWheel || ad.carOrigin || ad.carOwnership || ad.carDamage || ad.carInteriorMaterial || ad.carInteriorColor || ad.carRegisteredUntil || ad.carCountry || ad.carLabel">
+            <div class="re-item" *ngIf="ad.carColor">
+              <span class="re-item-label">Boja</span>
+              <span class="re-item-val">{{ reLabel(ad.carColor) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carDoors">
+              <span class="re-item-label">Broj vrata</span>
+              <span class="re-item-val">{{ reLabel(ad.carDoors) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carSeats">
+              <span class="re-item-label">Broj sedišta</span>
+              <span class="re-item-val">{{ ad.carSeats }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carEmissionClass">
+              <span class="re-item-label">Emisiona klasa</span>
+              <span class="re-item-val">{{ reLabel(ad.carEmissionClass) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carSteeringWheel">
+              <span class="re-item-label">Volan</span>
+              <span class="re-item-val">{{ reLabel(ad.carSteeringWheel) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carOrigin">
+              <span class="re-item-label">Poreklo</span>
+              <span class="re-item-val">{{ reLabel(ad.carOrigin) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carOwnership">
+              <span class="re-item-label">Vlasništvo</span>
+              <span class="re-item-val">{{ reLabel(ad.carOwnership) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carDamage">
+              <span class="re-item-label">Oštećenje</span>
+              <span class="re-item-val">{{ reLabel(ad.carDamage) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carInteriorMaterial">
+              <span class="re-item-label">Enterijer</span>
+              <span class="re-item-val">{{ reLabel(ad.carInteriorMaterial) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carInteriorColor">
+              <span class="re-item-label">Boja enterijera</span>
+              <span class="re-item-val">{{ reLabel(ad.carInteriorColor) }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carRegisteredUntil">
+              <span class="re-item-label">Registrovan do</span>
+              <span class="re-item-val">{{ ad.carRegisteredUntil }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carCountry">
+              <span class="re-item-label">Zemlja reg.</span>
+              <span class="re-item-val">{{ ad.carCountry }}</span>
+            </div>
+            <div class="re-item" *ngIf="ad.carLabel">
+              <span class="re-item-label">Energetska oznaka</span>
+              <span class="re-item-val">{{ ad.carLabel }}</span>
+            </div>
+          </div>
+
+          <!-- Oprema -->
+          <div *ngIf="ad.features && ad.features.length > 0">
+            <div class="re-section-label">Oprema</div>
+            <div class="re-heating-chips">
+              <span class="re-heating-chip re-feature-chip" *ngFor="let f of ad.features">{{ reLabel(f) }}</span>
+            </div>
+          </div>
+
+        </div>
+
       </div>
       <div class="latest-reviews-section" *ngIf="latestReviews$ | async as reviews">
         <h3 *ngIf="(reviews.length > 0) && !isMyAd">Šta drugi kažu o vlasniku:</h3>

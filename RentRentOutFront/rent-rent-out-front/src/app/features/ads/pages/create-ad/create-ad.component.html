@@ -40,44 +40,14 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
       <!-- ──────────────────────────────────
-           KORAK 1 · NASLOV + KATEGORIJA + OPIS
+           KORAK 1 · KATEGORIJA
            ────────────────────────────────── -->
       <div class="step-panel" *ngIf="currentStep === 1">
-
-        <!-- NASLOV -->
-        <section class="section-block">
-          <div class="section-title">
-            <span class="section-num">1</span>
-            Naslov oglasa
-          </div>
-
-          <div class="form-field">
-            <label class="field-label">Naslov <span class="req">*</span></label>
-            <div class="counted-wrap" [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
-              <input type="text"
-                     formControlName="title"
-                     placeholder="npr. Hilti SDS+ bušilica TE-70, profesionalna"
-                     [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
-              <span class="char-count"
-                    [class.near]="titleLength > MAX_TITLE * 0.8"
-                    [class.over]="titleLength >= MAX_TITLE">{{ titleLength }}/{{ MAX_TITLE }}</span>
-            </div>
-            <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['minlength']">
-              Naslov mora imati najmanje 5 karaktera.
-            </small>
-            <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
-              Naslov je obavezan.
-            </small>
-          </div>
-
-        </section>
-
-        <div class="section-divider"></div>
 
         <!-- KATEGORIJA -->
         <section class="section-block">
           <div class="section-title">
-            <span class="section-num">2</span>
+            <span class="section-num">1</span>
             Kategorija
           </div>
           <p class="section-hint">Izaberite kategoriju koja opisuje vaš predmet</p>
@@ -127,45 +97,47 @@
           </small>
         </section>
 
-        <div class="section-divider"></div>
-
-        <!-- OPIS -->
-        <section class="section-block">
-          <div class="section-title">
-            <span class="section-num">3</span>
-            Opis oglasa
-          </div>
-
-          <div class="form-field">
-            <label class="field-label">Opis <span class="req">*</span></label>
-            <div class="counted-wrap textarea" [class.invalid]="form.get('description')?.touched && form.get('description')?.invalid">
-              <textarea formControlName="description"
-                        rows="6"
-                        placeholder="Opišite stanje predmeta, šta je uključeno u cenu, gde se preuzima i napomene..."></textarea>
-              <span class="char-count"
-                    [class.near]="descLength > MAX_DESC * 0.85"
-                    [class.over]="descLength >= MAX_DESC">{{ descLength }}/{{ MAX_DESC }}</span>
-            </div>
-            <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['minlength']">
-              Opis mora imati najmanje 20 karaktera.
-            </small>
-            <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['required']">
-              Opis je obavezan.
-            </small>
-          </div>
-        </section>
-
       </div>
 
       <!-- ──────────────────────────────────
-           KORAK 2 · SLIKE + CENA + LOKACIJA
+           KORAK 2 · NASLOV + SLIKE + CENA + LOKACIJA + OPIS
            ────────────────────────────────── -->
       <div class="step-panel" *ngIf="currentStep === 2">
+
+        <!-- NASLOV -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">1</span>
+            Naslov oglasa
+          </div>
+
+          <div class="form-field">
+            <label class="field-label">Naslov <span class="req">*</span></label>
+            <div class="counted-wrap" [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
+              <input type="text"
+                     formControlName="title"
+                     placeholder="npr. Hilti SDS+ bušilica TE-70, profesionalna"
+                     [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
+              <span class="char-count"
+                    [class.near]="titleLength > MAX_TITLE * 0.8"
+                    [class.over]="titleLength >= MAX_TITLE">{{ titleLength }}/{{ MAX_TITLE }}</span>
+            </div>
+            <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['minlength']">
+              Naslov mora imati najmanje 5 karaktera.
+            </small>
+            <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
+              Naslov je obavezan.
+            </small>
+          </div>
+
+        </section>
+
+        <div class="section-divider"></div>
 
         <!-- SLIKE -->
         <section class="section-block">
           <div class="section-title">
-            <span class="section-num">1</span>
+            <span class="section-num">2</span>
             Fotografije
           </div>
           <p class="section-hint">Dodajte do {{ MAX_IMAGES }} fotografija. Prva slika biće naslovna.</p>
@@ -220,7 +192,7 @@
         <!-- CENA -->
         <section class="section-block">
           <div class="section-title">
-            <span class="section-num">2</span>
+            <span class="section-num">3</span>
             Cena
           </div>
 
@@ -305,7 +277,7 @@
         <!-- LOKACIJA & KOLIČINA -->
         <section class="section-block">
           <div class="section-title">
-            <span class="section-num">3</span>
+            <span class="section-num">4</span>
             Lokacija i količina
           </div>
 
@@ -338,6 +310,412 @@
                 <button type="button" class="stepper-btn" (click)="increment()" [disabled]="quantity >= 999">+</button>
               </div>
             </div>
+          </div>
+        </section>
+
+        <!-- DETALJI NEKRETNINE (samo kad je kategorija Nekretnine) -->
+        <ng-container *ngIf="isRealEstate">
+
+          <div class="section-divider"></div>
+
+          <section class="section-block">
+            <div class="section-title">
+              <span class="section-num">5</span>
+              Lokacija nekretnine
+            </div>
+
+            <div class="re-grid">
+              <div class="form-field">
+                <label class="field-label">Deo mesta/grada</label>
+                <input type="text" formControlName="propertyMunicipality" placeholder="npr. Novi Beograd, Palilula...">
+              </div>
+              <div class="form-field">
+                <label class="field-label">Precizna lokacija</label>
+                <input type="text" formControlName="propertyNeighborhood" placeholder="npr. Blok 45, Centar...">
+              </div>
+              <div class="form-field re-full">
+                <label class="field-label">Ulica <span class="field-opt">(opciono)</span></label>
+                <input type="text" formControlName="propertyStreet" placeholder="npr. Bulevar kralja Aleksandra 15">
+              </div>
+            </div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <section class="section-block">
+            <div class="section-title">
+              <span class="section-num">6</span>
+              Osnovne informacije
+            </div>
+
+            <div class="re-grid">
+
+              <!-- Oglašivač -->
+              <div class="form-field re-full">
+                <label class="field-label">Oglašivač</label>
+                <div class="re-chip-group">
+                  <button type="button"
+                          *ngFor="let opt of reAdvertiserOptions"
+                          class="re-chip"
+                          [class.selected]="form.get('advertiserType')?.value === opt"
+                          (click)="form.patchValue({ advertiserType: form.get('advertiserType')?.value === opt ? null : opt })">
+                    {{ reAdvertiserLabels[opt] }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Broj soba — kuće: 1/2/3/4/5+soba · sobe, garaže, poslovni: nema -->
+              <div class="form-field" *ngIf="!isGarageParking && !isCommercial && reSubcategoryName !== 'Sobe'">
+                <label class="field-label">Broj soba</label>
+                <select formControlName="roomCount" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <ng-container *ngIf="isHouse">
+                    <option *ngFor="let opt of reHouseRoomOptions" [value]="opt.value">{{ opt.label }}</option>
+                  </ng-container>
+                  <ng-container *ngIf="!isHouse">
+                    <option *ngFor="let opt of reRoomOptions" [value]="opt.value">{{ opt.label }}</option>
+                  </ng-container>
+                </select>
+              </div>
+
+              <!-- Površina (m²) — uvek vidljiva -->
+              <div class="form-field">
+                <label class="field-label">Površina</label>
+                <div class="re-input-unit">
+                  <input type="number" formControlName="areaSize" placeholder="0" min="1" class="re-input">
+                  <span class="re-unit">m²</span>
+                </div>
+              </div>
+
+              <!-- Površina zemljišta — samo za kuće -->
+              <div class="form-field" *ngIf="isHouse">
+                <label class="field-label">Površina zemljišta</label>
+                <div class="re-input-unit">
+                  <input type="number" formControlName="landArea" placeholder="0" min="0" class="re-input">
+                  <select formControlName="landAreaUnit" class="re-unit-select">
+                    <option *ngFor="let u of reLandAreaUnitOptions" [value]="u.value">{{ u.label }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Vrsta gradnje — ne za garaže/parking -->
+              <div class="form-field" *ngIf="!isGarageParking">
+                <label class="field-label">Vrsta gradnje <span class="field-opt">(opciono)</span></label>
+                <select formControlName="constructionType" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of reConstructionOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <!-- Stanje nekretnine — ne za garaže/parking -->
+              <div class="form-field" *ngIf="!isGarageParking">
+                <label class="field-label">Stanje nekretnine <span class="field-opt">(opciono)</span></label>
+                <select formControlName="propertyCondition" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of reConditionOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <!-- Spratnost — kuće: prizemna/1/2/3+ · ostalo: 1-30+ · garaže: nema -->
+              <div class="form-field" *ngIf="!isGarageParking">
+                <label class="field-label">Spratnost objekta <span class="field-opt">(opciono)</span></label>
+                <select formControlName="totalFloors" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <ng-container *ngIf="isHouse">
+                    <option *ngFor="let opt of reHouseTotalFloorOptions" [value]="opt.value">{{ opt.label }}</option>
+                  </ng-container>
+                  <ng-container *ngIf="!isHouse">
+                    <option *ngFor="let opt of reTotalFloorOptions" [value]="opt.value">{{ opt.label }}</option>
+                  </ng-container>
+                </select>
+              </div>
+
+              <!-- Sprat — ne za kuće, garaže/parking i poslovni prostor -->
+              <div class="form-field" *ngIf="!isHouse && !isGarageParking && !isCommercial">
+                <label class="field-label">Sprat <span class="field-opt">(opciono)</span></label>
+                <select formControlName="floorNumber" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of reFloorOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <!-- Nameštenost — ne za garaže/parking -->
+              <div class="form-field" *ngIf="!isGarageParking">
+                <label class="field-label">Nameštenost <span class="field-opt">(opciono)</span></label>
+                <select formControlName="furnished" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of reFurnishedOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <!-- Grejanje — ne za garaže/parking -->
+              <div class="form-field re-full" *ngIf="!isGarageParking">
+                <label class="field-label">Grejanje <span class="field-opt">(opciono)</span></label>
+                <div class="re-heating-grid">
+                  <label *ngFor="let opt of reHeatingOptions" class="re-heating-item">
+                    <input type="checkbox"
+                           [checked]="isHeatingSelected(opt.value)"
+                           (change)="toggleHeating(opt.value)">
+                    <span>{{ opt.label }}</span>
+                  </label>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- DODATNE INFORMACIJE — za kuće i poslovni prostor -->
+          <ng-container *ngIf="isHouse || isCommercial">
+            <div class="section-divider"></div>
+            <section class="section-block">
+              <div class="section-title">
+                <span class="section-num">7</span>
+                Dodatne informacije
+              </div>
+              <div class="re-features-grid">
+                <ng-container *ngIf="isHouse">
+                  <label *ngFor="let feat of reHouseFeatures" class="re-feature-item">
+                    <input type="checkbox"
+                           [checked]="isFeatureSelected(feat.value)"
+                           (change)="toggleFeature(feat.value)">
+                    <span>{{ feat.label }}</span>
+                  </label>
+                </ng-container>
+                <ng-container *ngIf="isCommercial">
+                  <label *ngFor="let feat of reCommercialFeatures" class="re-feature-item">
+                    <input type="checkbox"
+                           [checked]="isFeatureSelected(feat.value)"
+                           (change)="toggleFeature(feat.value)">
+                    <span>{{ feat.label }}</span>
+                  </label>
+                </ng-container>
+              </div>
+            </section>
+          </ng-container>
+
+        </ng-container>
+
+        <!-- DETALJI AUTOMOBILA (samo za Automobili kategoriju) -->
+        <ng-container *ngIf="isCar">
+
+          <div class="section-divider"></div>
+
+          <section class="section-block">
+            <div class="section-title">
+              <span class="section-num">5</span>
+              Detalji automobila
+            </div>
+
+            <div class="car-grid">
+
+              <div class="form-field">
+                <label class="field-label">Marka <span class="field-opt">(opciono)</span></label>
+                <input type="text" formControlName="carBrand" placeholder="npr. Volkswagen, BMW, Toyota...">
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Model <span class="field-opt">(opciono)</span></label>
+                <input type="text" formControlName="carModel" placeholder="npr. Golf, Passat, Yaris...">
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Godište <span class="field-opt">(opciono)</span></label>
+                <input type="number" formControlName="carYear" placeholder="npr. 2019" min="1900" max="2030">
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Kilometraža <span class="field-opt">(opciono)</span></label>
+                <div class="re-input-unit">
+                  <input type="number" formControlName="carMileage" placeholder="0" min="0" class="re-input">
+                  <span class="re-unit">km</span>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Karoserija <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carBodyType" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carBodyTypeOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Gorivo <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carFuelType" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carFuelTypeOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Menjač <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carTransmission" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carTransmissionOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Snaga motora <span class="field-opt">(opciono)</span></label>
+                <div class="re-input-unit">
+                  <input type="number" formControlName="carPowerKw" placeholder="0" min="1" class="re-input">
+                  <span class="re-unit">kW</span>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Kubikaža <span class="field-opt">(opciono)</span></label>
+                <div class="re-input-unit">
+                  <input type="number" formControlName="carDisplacement" placeholder="0" min="1" class="re-input">
+                  <span class="re-unit">cm³</span>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Pogon <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carDrive" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carDriveOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Boja <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carColor" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carColorOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Broj vrata <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carDoors" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carDoorsOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Emisiona klasa <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carEmissionClass" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carEmissionOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Volan <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carSteeringWheel" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carSteeringWheelOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Poreklo <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carOrigin" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carOriginOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Vlasništvo <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carOwnership" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carOwnershipOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Oštećenje <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carDamage" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carDamageOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Enterijer — materijal <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carInteriorMaterial" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carInteriorMaterialOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Boja enterijera <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carInteriorColor" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carInteriorColorOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Broj sedišta <span class="field-opt">(opciono)</span></label>
+                <input type="number" formControlName="carSeats" placeholder="5" min="1" max="100">
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Registrovan do <span class="field-opt">(opciono)</span></label>
+                <input type="text" formControlName="carRegisteredUntil" placeholder="npr. 05/2026">
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Zemlja registracije <span class="field-opt">(opciono)</span></label>
+                <input type="text" formControlName="carCountry" placeholder="npr. Srbija, Nemačka...">
+              </div>
+
+              <div class="form-field">
+                <label class="field-label">Energetska oznaka <span class="field-opt">(opciono)</span></label>
+                <select formControlName="carLabel" class="re-select">
+                  <option [ngValue]="null">Izaberite</option>
+                  <option *ngFor="let opt of carLabelOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+
+              <!-- Oprema -->
+              <div class="form-field re-full">
+                <label class="field-label">Oprema <span class="field-opt">(opciono)</span></label>
+                <div class="re-features-grid">
+                  <label *ngFor="let feat of carEquipmentOptions" class="re-feature-item">
+                    <input type="checkbox"
+                           [checked]="isFeatureSelected(feat.value)"
+                           (change)="toggleFeature(feat.value)">
+                    <span>{{ feat.label }}</span>
+                  </label>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </ng-container>
+
+        <div class="section-divider"></div>
+
+        <!-- OPIS -->
+        <section class="section-block">
+          <div class="section-title">
+            Opis oglasa
+          </div>
+
+          <div class="form-field">
+            <label class="field-label">Opis <span class="req">*</span></label>
+            <div class="counted-wrap textarea" [class.invalid]="form.get('description')?.touched && form.get('description')?.invalid">
+              <textarea formControlName="description"
+                        rows="6"
+                        placeholder="Opišite stanje predmeta, šta je uključeno u cenu, gde se preuzima i napomene..."></textarea>
+              <span class="char-count"
+                    [class.near]="descLength > MAX_DESC * 0.85"
+                    [class.over]="descLength >= MAX_DESC">{{ descLength }}/{{ MAX_DESC }}</span>
+            </div>
+            <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['minlength']">
+              Opis mora imati najmanje 20 karaktera.
+            </small>
+            <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['required']">
+              Opis je obavezan.
+            </small>
           </div>
         </section>
 
