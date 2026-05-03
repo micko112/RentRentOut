@@ -18,11 +18,12 @@ import java.util.Set;
 public class ImageController {
 
     private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(
-        "image/jpeg", "image/png", "image/webp", "image/gif"
+        "image/jpeg", "image/png", "image/webp", "image/gif", "image/heic", "image/heif"
     );
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
-        "jpg", "jpeg", "png", "webp", "gif"
+        "jpg", "jpeg", "png", "webp", "gif", "heic", "heif"
     );
+    private static final Set<String> HEIC_EXTENSIONS = Set.of("heic", "heif");
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
     private final Cloudinary cloudinary;
@@ -45,16 +46,17 @@ public class ImageController {
             if (file.getSize() > MAX_FILE_SIZE) {
                 return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).build();
             }
-            String contentType = file.getContentType();
-            if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType.toLowerCase())) {
-                return ResponseEntity.badRequest().build();
-            }
             String originalName = file.getOriginalFilename();
             if (originalName == null || !originalName.contains(".")) {
                 return ResponseEntity.badRequest().build();
             }
             String ext = originalName.substring(originalName.lastIndexOf('.') + 1).toLowerCase();
             if (!ALLOWED_EXTENSIONS.contains(ext)) {
+                return ResponseEntity.badRequest().build();
+            }
+            String contentType = file.getContentType() != null ? file.getContentType().toLowerCase() : "";
+            // HEIC MIME type is unreliable across browsers — trust the extension
+            if (!HEIC_EXTENSIONS.contains(ext) && !ALLOWED_CONTENT_TYPES.contains(contentType)) {
                 return ResponseEntity.badRequest().build();
             }
         }
