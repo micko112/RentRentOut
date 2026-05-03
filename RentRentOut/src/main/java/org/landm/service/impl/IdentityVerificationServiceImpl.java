@@ -34,8 +34,9 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     private static final Logger log = LoggerFactory.getLogger(IdentityVerificationServiceImpl.class);
 
     private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(
-        "image/jpeg", "image/png", "image/webp"
+        "image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"
     );
+    private static final Set<String> HEIC_EXTENSIONS = Set.of("heic", "heif");
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private static final String CLOUDINARY_FOLDER = "rent-rent-out/verifications";
 
@@ -264,9 +265,11 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, fieldName + " je prevelika (max 10MB).");
         }
-        String ct = file.getContentType();
-        if (ct == null || !ALLOWED_CONTENT_TYPES.contains(ct.toLowerCase())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, fieldName + ": samo JPG, PNG ili WEBP.");
+        String originalName = file.getOriginalFilename() != null ? file.getOriginalFilename() : "";
+        String ext = originalName.contains(".") ? originalName.substring(originalName.lastIndexOf('.') + 1).toLowerCase() : "";
+        String ct = file.getContentType() != null ? file.getContentType().toLowerCase() : "";
+        if (!HEIC_EXTENSIONS.contains(ext) && !ALLOWED_CONTENT_TYPES.contains(ct)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, fieldName + ": samo JPG, PNG, WEBP ili HEIC.");
         }
     }
 
