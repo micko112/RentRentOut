@@ -1,5 +1,4 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import heic2any from 'heic2any';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -527,14 +526,9 @@ export class EditAdComponent implements OnInit, OnDestroy {
       if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
       let fileToAdd = file;
       if (isHeic) {
-        try {
-          const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
-          const blob = Array.isArray(converted) ? converted[0] : converted;
-          fileToAdd = new File([blob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
-        } catch {
-          this.toastService.showError(`"${file.name}" ne može biti konvertovan.`);
-          continue;
-        }
+        const converted = await this.convertHeic(file);
+        if (!converted) { this.toastService.showError(`"${file.name}" ne može biti prikazan.`); continue; }
+        fileToAdd = converted;
       }
       this.selectedFiles.push(fileToAdd);
       this.previewUrl.push(URL.createObjectURL(fileToAdd));
@@ -659,6 +653,27 @@ export class EditAdComponent implements OnInit, OnDestroy {
   // ════════════════════════════════════════════════════════
   //  GETTERS
   // ════════════════════════════════════════════════════════
+
+  private async convertHeic(file: File): Promise<File | null> {
+    const url = URL.createObjectURL(file);
+    const nativeOk = await new Promise<boolean>(res => {
+      const img = new Image();
+      img.onload = () => res(true);
+      img.onerror = () => res(false);
+      img.src = url;
+    });
+    URL.revokeObjectURL(url);
+    if (nativeOk) return file;
+    try {
+      const mod = await import('heic2any');
+      const fn: any = (mod as any).default ?? mod;
+      const result = await fn({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+      const blob: Blob = Array.isArray(result) ? result[0] : result;
+      return new File([blob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+    } catch {
+      return null;
+    }
+  }
 
   onDescInput(): void {
     const el = this.descEditorRef!.nativeElement;
