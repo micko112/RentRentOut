@@ -1186,6 +1186,7 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   .wizard-header  { padding: 0 12px; }
   .wizard-body    { padding: 16px 12px 80px; } /* 80px = mobile nav clearance */
   .section-block  { padding: 16px 14px; border-radius: 12px; }
+  .section-block > *:not(.section-title) { margin-left: 0; }
   .category-grid  { grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .category-btn   { padding: 10px 6px; font-size: 11px; }
   .category-icon  { font-size: 22px; }

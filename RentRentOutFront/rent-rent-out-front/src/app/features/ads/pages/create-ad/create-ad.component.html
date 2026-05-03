@@ -142,7 +142,7 @@
           </div>
           <p class="section-hint">Dodajte do {{ MAX_IMAGES }} fotografija. Prva slika biće naslovna.</p>
 
-          <input type="file" id="fileInput" multiple accept="image/*" (change)="onFileSelected($event)" hidden>
+          <input type="file" id="fileInput" multiple accept="image/*,.heic,.heif" (change)="onFileSelected($event)" hidden>
 
           <label for="fileInput"
                  class="drop-zone"

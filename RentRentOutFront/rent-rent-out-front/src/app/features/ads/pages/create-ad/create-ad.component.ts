@@ -622,7 +622,9 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     let added = 0;
     for (let i = 0; i < files.length && added < remaining; i++) {
       const file = files[i];
-      if (!file.type.match(/image\/*/)) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
+      const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+      const isHeic = ext === 'heic' || ext === 'heif';
+      if (!file.type.match(/^image\//i) && !isHeic) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
       if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
       this.selectedFiles.push(file);
       this.previewUrls.push(URL.createObjectURL(file));
