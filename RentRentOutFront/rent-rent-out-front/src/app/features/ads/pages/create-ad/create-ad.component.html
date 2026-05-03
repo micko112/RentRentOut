@@ -240,6 +240,22 @@
             </div>
           </div>
 
+          <!-- DEPOZIT -->
+          <div class="form-field" style="margin-top: 16px;">
+            <label class="field-label">
+              Depozit
+              <span class="field-hint-inline">(opcionalno)</span>
+            </label>
+            <div class="tier-input-wrap">
+              <input type="number" formControlName="deposit" placeholder="-" min="0" class="tier-input"
+                     [class.invalid]="form.get('deposit')?.touched && form.get('deposit')?.invalid">
+              <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
+            </div>
+            <small class="field-error" *ngIf="form.get('deposit')?.touched && form.get('deposit')?.invalid">
+              Depozit ne može biti negativan.
+            </small>
+          </div>
+
           <!-- TIERED PRICING -->
           <div class="tiered-pricing">
             <div class="tier-hint">Popust za duži period iznajmljivanja (opcionalno)</div>
@@ -702,10 +718,18 @@
 
           <div class="form-field">
             <label class="field-label">Opis <span class="req">*</span></label>
-            <div class="counted-wrap textarea" [class.invalid]="form.get('description')?.touched && form.get('description')?.invalid">
-              <textarea formControlName="description"
-                        rows="6"
-                        placeholder="Opišite stanje predmeta, šta je uključeno u cenu, gde se preuzima i napomene..."></textarea>
+            <div class="counted-wrap rich-editor-wrap" [class.invalid]="form.get('description')?.touched && form.get('description')?.invalid">
+              <div class="editor-toolbar">
+                <button type="button" class="fmt-btn" (click)="execFormat('bold')" title="Bold (Ctrl+B)"><strong>B</strong></button>
+                <button type="button" class="fmt-btn" (click)="execFormat('italic')" title="Italic (Ctrl+I)"><em>I</em></button>
+              </div>
+              <div #descEditor
+                   class="rich-editor"
+                   contenteditable="true"
+                   (input)="onDescInput()"
+                   (blur)="onDescBlur()"
+                   (keydown)="onDescKeydown($event)"
+                   data-placeholder="Opišite stanje predmeta, šta je uključeno u cenu, gde se preuzima i napomene..."></div>
               <span class="char-count"
                     [class.near]="descLength > MAX_DESC * 0.85"
                     [class.over]="descLength >= MAX_DESC">{{ descLength }}/{{ MAX_DESC }}</span>

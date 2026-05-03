@@ -15,7 +15,7 @@
       <label class="avatar-cam-overlay" for="bannerAvatarInput" title="Promeni sliku">
         <span class="material-icons">photo_camera</span>
       </label>
-      <input id="bannerAvatarInput" type="file" accept="image/*"
+      <input id="bannerAvatarInput" type="file" accept="image/*,.heic,.heif"
              (change)="onBannerAvatarSelected($event)" hidden />
       <div class="avatar-uploading" *ngIf="isUploadingAvatar">
         <span class="upload-spinner"></span>
@@ -83,7 +83,7 @@
             </div>
           </ng-template>
           <label class="btn-avatar-upload" for="avatarInput">Promeni sliku</label>
-          <input id="avatarInput" type="file" accept="image/*" (change)="onAvatarSelected($event)" hidden />
+          <input id="avatarInput" type="file" accept="image/*,.heic,.heif" (change)="onAvatarSelected($event)" hidden />
         </div>
 
         <div class="form-grid">

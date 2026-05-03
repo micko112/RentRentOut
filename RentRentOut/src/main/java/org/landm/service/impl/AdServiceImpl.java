@@ -94,7 +94,7 @@ public class AdServiceImpl implements AdService {
                 .orElseThrow(() -> new IllegalArgumentException("Location not found"));
         Ad adToCreate = new Ad(
                 HtmlSanitizer.sanitize(req.getTitle()),
-                HtmlSanitizer.sanitize(req.getDescription()),
+                HtmlSanitizer.sanitizeRichText(req.getDescription()),
                 req.getPrice(),
                 req.getCurrency(),
                 req.getPriceInterval(),
@@ -107,6 +107,7 @@ public class AdServiceImpl implements AdService {
                 );
         adToCreate.setPricePerWeek(req.getPricePerWeek());
         adToCreate.setPricePerMonth(req.getPricePerMonth());
+        adToCreate.setDeposit(req.getDeposit());
         adToCreate.setAdvertiserType(req.getAdvertiserType());
         adToCreate.setRoomCount(req.getRoomCount());
         adToCreate.setAreaSize(req.getAreaSize());
@@ -304,10 +305,11 @@ public class AdServiceImpl implements AdService {
         Location location = locationRepository.findById(req.getLocationId())
                 .orElseThrow(() -> new IllegalArgumentException("Location not found"));
         adToUpdate.setTitle(HtmlSanitizer.sanitize(req.getTitle()));
-        adToUpdate.setDescription(HtmlSanitizer.sanitize(req.getDescription()));
+        adToUpdate.setDescription(HtmlSanitizer.sanitizeRichText(req.getDescription()));
         adToUpdate.setPrice(req.getPrice());
         adToUpdate.setPricePerWeek(req.getPricePerWeek());
         adToUpdate.setPricePerMonth(req.getPricePerMonth());
+        adToUpdate.setDeposit(req.getDeposit());
         adToUpdate.setPriceInterval(req.getPriceInterval());
         adToUpdate.setCurrency(req.getCurrency());
         adToUpdate.setImages(req.getImages());

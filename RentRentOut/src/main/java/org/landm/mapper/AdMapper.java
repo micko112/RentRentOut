@@ -28,6 +28,7 @@ public class AdMapper {
         dto.setPrice(ad.getPrice());
         dto.setPricePerWeek(ad.getPricePerWeek());
         dto.setPricePerMonth(ad.getPricePerMonth());
+        dto.setDeposit(ad.getDeposit());
         dto.setPriceInterval(ad.getPriceInterval());
         dto.setCurrency(ad.getCurrency().toString());
         dto.setAdStatus(ad.getAdStatus());

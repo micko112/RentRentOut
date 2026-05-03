@@ -52,8 +52,10 @@ export class VerifyComponent implements OnInit {
       this.toast.showError('Slika je prevelika (maksimum 10MB).');
       return;
     }
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      this.toast.showError('Dozvoljeni formati: JPG, PNG, WEBP.');
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    const isHeic = ext === 'heic' || ext === 'heif';
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'].includes(file.type) && !isHeic) {
+      this.toast.showError('Dozvoljeni formati: JPG, PNG, WEBP, HEIC.');
       return;
     }
 

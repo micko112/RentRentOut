@@ -70,6 +70,12 @@
           </span>
         </div>
 
+        <div class="deposit-row" *ngIf="ad.deposit">
+          <span class="material-icons deposit-icon">account_balance_wallet</span>
+          <span class="deposit-label">Depozit:</span>
+          <span class="deposit-value">{{ ad.deposit | number:'1.0-0' }} {{ ad.currency === 'EUR' ? '€' : 'din' }}</span>
+        </div>
+
         <div class="meta-chips">
           <span class="meta-chip">
             <span class="material-icons">category</span>
@@ -87,7 +93,7 @@
 
         <div class="desc-block">
           <div class="desc-label">Opis</div>
-          <p class="description">{{ ad.description }}</p>
+          <div class="description" [innerHTML]="ad.description"></div>
         </div>
 
         <!-- DETALJI NEKRETNINE -->

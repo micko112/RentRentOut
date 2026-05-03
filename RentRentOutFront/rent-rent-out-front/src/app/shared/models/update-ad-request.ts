@@ -10,6 +10,7 @@
   locationId: number;
   pricePerWeek?: number;
   pricePerMonth?: number;
+  deposit?: number;
   advertiserType?: string;
   roomCount?: string;
   areaSize?: number;

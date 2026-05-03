@@ -35,6 +35,9 @@ public class Ad {
     @Column(name = "price_per_month")
     private BigDecimal pricePerMonth;
 
+    @Column(name = "deposit")
+    private BigDecimal deposit;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable=false, name="currency")
     private Currency currency = Currency.RSD;
@@ -276,6 +279,14 @@ public class Ad {
 
     public void setPricePerMonth(BigDecimal pricePerMonth) {
         this.pricePerMonth = pricePerMonth;
+    }
+
+    public BigDecimal getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(BigDecimal deposit) {
+        this.deposit = deposit;
     }
 
     public Currency getCurrency() {

@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import heic2any from 'heic2any';
 import { CommonModule } from '@angular/common';
 import { AdService } from '../../services/ad.service';
 import { Category } from '../../../../shared/models/category.model';
@@ -309,6 +310,8 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     { value: 'DEPOZIT',           label: 'Depozit' },
   ];
 
+  @ViewChild('descEditor') descEditorRef?: ElementRef<HTMLDivElement>;
+
   private destroy$ = new Subject<void>();
 
   // ── Locations ───────────────────────────────────────────────────────────
@@ -383,7 +386,11 @@ export class CreateAdComponent implements OnInit, OnDestroy {
 
     this.form = this.fb.group({
       title:         ['', [Validators.required, Validators.minLength(5), Validators.maxLength(this.MAX_TITLE)]],
-      description:   ['', [Validators.required, Validators.minLength(20), Validators.maxLength(this.MAX_DESC)]],
+      description:   ['', [
+        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length > 0 ? null : { required: true }; },
+        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length >= 20 ? null : { minlength: { requiredLength: 20 } }; },
+        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length <= this.MAX_DESC ? null : { maxlength: { requiredLength: this.MAX_DESC } }; },
+      ]],
       price:         [null, [Validators.required, Validators.min(1)]],
       currency:      ['RSD', Validators.required],
       priceInterval: [PriceInterval.PER_DAY, Validators.required],
@@ -393,6 +400,7 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       images:        [[]],
       pricePerWeek:  [null],
       pricePerMonth: [null],
+      deposit:       [null, [Validators.min(0)]],
       // Real estate
       advertiserType:       [null],
       roomCount:            [null],
@@ -477,11 +485,11 @@ export class CreateAdComponent implements OnInit, OnDestroy {
 
   nextStep(): void {
     if (!this.stepValid) { this.markCurrentStepTouched(); return; }
-    if (this.currentStep < this.totalSteps) this.currentStep++;
+    if (this.currentStep < this.totalSteps) { this.currentStep++; window.scrollTo(0, 0); }
   }
 
   prevStep(): void {
-    if (this.currentStep > 1) this.currentStep--;
+    if (this.currentStep > 1) { this.currentStep--; window.scrollTo(0, 0); }
   }
 
   goToStep(step: number): void {
@@ -617,7 +625,7 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     if (e.dataTransfer?.files) this.addFiles(e.dataTransfer.files);
   }
 
-  private addFiles(files: FileList): void {
+  private async addFiles(files: FileList): Promise<void> {
     const remaining = this.MAX_IMAGES - this.selectedFiles.length;
     let added = 0;
     for (let i = 0; i < files.length && added < remaining; i++) {
@@ -626,8 +634,19 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       const isHeic = ext === 'heic' || ext === 'heif';
       if (!file.type.match(/^image\//i) && !isHeic) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
       if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
-      this.selectedFiles.push(file);
-      this.previewUrls.push(URL.createObjectURL(file));
+      let fileToAdd = file;
+      if (isHeic) {
+        try {
+          const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+          const blob = Array.isArray(converted) ? converted[0] : converted;
+          fileToAdd = new File([blob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+        } catch {
+          this.toastService.showError(`"${file.name}" ne može biti konvertovan.`);
+          continue;
+        }
+      }
+      this.selectedFiles.push(fileToAdd);
+      this.previewUrls.push(URL.createObjectURL(fileToAdd));
       added++;
     }
     this.form.patchValue({ images: this.previewUrls });
@@ -774,8 +793,31 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   //  GETTERS
   // ════════════════════════════════════════════════════════
 
+  onDescInput(): void {
+    const el = this.descEditorRef!.nativeElement;
+    const text = el.innerText.replace(/^\s+|\s+$/g, '');
+    this.form.get('description')?.setValue(text ? el.innerHTML : '', { emitEvent: false });
+    this.form.get('description')?.markAsDirty();
+  }
+
+  onDescBlur(): void { this.form.get('description')?.markAsTouched(); }
+
+  onDescKeydown(e: KeyboardEvent): void {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b') { e.preventDefault(); this.execFormat('bold'); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'i') { e.preventDefault(); this.execFormat('italic'); }
+  }
+
+  execFormat(cmd: 'bold' | 'italic'): void {
+    document.execCommand(cmd, false);
+    this.descEditorRef?.nativeElement.focus();
+    this.onDescInput();
+  }
+
   get titleLength(): number      { return this.form.get('title')?.value?.length ?? 0; }
-  get descLength(): number       { return this.form.get('description')?.value?.length ?? 0; }
+  get descLength(): number {
+    const raw = this.form.get('description')?.value ?? '';
+    return raw.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').length;
+  }
   get quantity(): number         { return this.form.get('totalQuantity')?.value ?? 1; }
   get selectedCurrency(): string { return this.form.get('currency')?.value ?? 'RSD'; }
   get selectedInterval(): string { return this.form.get('priceInterval')?.value ?? PriceInterval.PER_DAY; }

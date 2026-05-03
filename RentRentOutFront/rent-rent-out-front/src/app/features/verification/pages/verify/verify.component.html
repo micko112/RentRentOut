@@ -70,7 +70,7 @@
         </label>
         <div class="slot-box" [class.has-file]="docFrontPreview">
           <ng-container *ngIf="!docFrontPreview; else frontPreview">
-            <input type="file" accept="image/jpeg,image/png,image/webp"
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
                    (change)="onFileSelected($event, 'docFront')" hidden #frontInput>
             <button type="button" class="upload-btn" (click)="frontInput.click()">
               <span class="material-icons-outlined">cloud_upload</span>
@@ -93,7 +93,7 @@
         </label>
         <div class="slot-box" [class.has-file]="docBackPreview">
           <ng-container *ngIf="!docBackPreview; else backPreview">
-            <input type="file" accept="image/jpeg,image/png,image/webp"
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
                    (change)="onFileSelected($event, 'docBack')" hidden #backInput>
             <button type="button" class="upload-btn" (click)="backInput.click()">
               <span class="material-icons-outlined">cloud_upload</span>
@@ -116,7 +116,7 @@
         </label>
         <div class="slot-box" [class.has-file]="selfiePreview">
           <ng-container *ngIf="!selfiePreview; else selfiePreviewTpl">
-            <input type="file" accept="image/jpeg,image/png,image/webp"
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
                    (change)="onFileSelected($event, 'selfie')" hidden #selfieInput>
             <button type="button" class="upload-btn" (click)="selfieInput.click()">
               <span class="material-icons-outlined">cloud_upload</span>

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import org.landm.entity.Enums.Currency;
 import org.landm.entity.Enums.PriceInterval;
@@ -25,6 +26,8 @@ public class CreateAdRequestDto {
     private BigDecimal price;
     private BigDecimal pricePerWeek;
     private BigDecimal pricePerMonth;
+    @PositiveOrZero
+    private BigDecimal deposit;
     @NotNull
     private Currency currency;
     @NotNull
@@ -94,6 +97,14 @@ public class CreateAdRequestDto {
 
     public void setPricePerMonth(BigDecimal pricePerMonth) {
         this.pricePerMonth = pricePerMonth;
+    }
+
+    public BigDecimal getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(BigDecimal deposit) {
+        this.deposit = deposit;
     }
 
     public Currency getCurrency() {

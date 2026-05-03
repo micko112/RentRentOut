@@ -1,4 +1,5 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import heic2any from 'heic2any';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -46,6 +47,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
   locationSearch = '';
   showLocationDropdown = false;
 
+  @ViewChild('descEditor') descEditorRef?: ElementRef<HTMLDivElement>;
   @ViewChild('locTriggerRef') locTriggerRef!: ElementRef;
   locDropdownStyle: {[key: string]: string} = {};
 
@@ -288,7 +290,11 @@ export class EditAdComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(this.MAX_TITLE)]],
-      description: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(this.MAX_DESC)]],
+      description: ['', [
+        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length > 0 ? null : { required: true }; },
+        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length >= 20 ? null : { minlength: { requiredLength: 20 } }; },
+        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length <= this.MAX_DESC ? null : { maxlength: { requiredLength: this.MAX_DESC } }; },
+      ]],
       price: [null, [Validators.required, Validators.min(1)]],
       currency: ['RSD', [Validators.required]],
       priceInterval: [PriceInterval.PER_DAY, Validators.required],
@@ -298,6 +304,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
       images: [[], Validators.required],
       pricePerWeek:  [null],
       pricePerMonth: [null],
+      deposit:       [null, [Validators.min(0)]],
       advertiserType:       [null],
       roomCount:            [null],
       areaSize:             [null],
@@ -385,6 +392,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
           images: this.existingImages,
           pricePerWeek: ad.pricePerWeek ?? null,
           pricePerMonth: ad.pricePerMonth ?? null,
+          deposit: ad.deposit ?? null,
           advertiserType:       ad.advertiserType ?? null,
           roomCount:            ad.roomCount ?? null,
           areaSize:             ad.areaSize ?? null,
@@ -423,6 +431,12 @@ export class EditAdComponent implements OnInit, OnDestroy {
           carLabel:            ad.carLabel ?? null,
           carInteriorMaterial: ad.carInteriorMaterial ?? null,
           carInteriorColor:    ad.carInteriorColor ?? null,
+        });
+
+        setTimeout(() => {
+          if (this.descEditorRef?.nativeElement) {
+            this.descEditorRef.nativeElement.innerHTML = ad.description ?? '';
+          }
         });
 
         this.isLoading = false;
@@ -501,16 +515,29 @@ export class EditAdComponent implements OnInit, OnDestroy {
     if (e.dataTransfer?.files) this.addFiles(e.dataTransfer.files);
   }
 
-  private addFiles(files: FileList): void {
+  private async addFiles(files: FileList): Promise<void> {
     const totalExisting = this.existingImages.length + this.selectedFiles.length;
     const remaining = this.MAX_IMAGES - totalExisting;
     let added = 0;
     for (let i = 0; i < files.length && added < remaining; i++) {
       const file = files[i];
-      if (!file.type.match(/image\/*/)) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
+      const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+      const isHeic = ext === 'heic' || ext === 'heif';
+      if (!file.type.match(/^image\//i) && !isHeic) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
       if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
-      this.selectedFiles.push(file);
-      this.previewUrl.push(URL.createObjectURL(file));
+      let fileToAdd = file;
+      if (isHeic) {
+        try {
+          const converted = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.85 });
+          const blob = Array.isArray(converted) ? converted[0] : converted;
+          fileToAdd = new File([blob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+        } catch {
+          this.toastService.showError(`"${file.name}" ne može biti konvertovan.`);
+          continue;
+        }
+      }
+      this.selectedFiles.push(fileToAdd);
+      this.previewUrl.push(URL.createObjectURL(fileToAdd));
       added++;
     }
     this.syncImagesControl();
@@ -633,8 +660,31 @@ export class EditAdComponent implements OnInit, OnDestroy {
   //  GETTERS
   // ════════════════════════════════════════════════════════
 
+  onDescInput(): void {
+    const el = this.descEditorRef!.nativeElement;
+    const text = el.innerText.replace(/^\s+|\s+$/g, '');
+    this.form.get('description')?.setValue(text ? el.innerHTML : '', { emitEvent: false });
+    this.form.get('description')?.markAsDirty();
+  }
+
+  onDescBlur(): void { this.form.get('description')?.markAsTouched(); }
+
+  onDescKeydown(e: KeyboardEvent): void {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b') { e.preventDefault(); this.execFormat('bold'); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'i') { e.preventDefault(); this.execFormat('italic'); }
+  }
+
+  execFormat(cmd: 'bold' | 'italic'): void {
+    document.execCommand(cmd, false);
+    this.descEditorRef?.nativeElement.focus();
+    this.onDescInput();
+  }
+
   get titleLength(): number      { return this.form.get('title')?.value?.length ?? 0; }
-  get descLength(): number       { return this.form.get('description')?.value?.length ?? 0; }
+  get descLength(): number {
+    const raw = this.form.get('description')?.value ?? '';
+    return raw.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').length;
+  }
   get quantity(): number         { return this.form.get('totalQuantity')?.value ?? 1; }
   get selectedCurrency(): string { return this.form.get('currency')?.value ?? 'RSD'; }
   get selectedInterval(): string { return this.form.get('priceInterval')?.value ?? PriceInterval.PER_DAY; }
@@ -741,6 +791,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
       locationId: this.form.value.locationId,
       pricePerWeek: this.form.value.pricePerWeek,
       pricePerMonth: this.form.value.pricePerMonth,
+      deposit: this.form.value.deposit,
       advertiserType:       this.form.value.advertiserType,
       roomCount:            this.form.value.roomCount,
       areaSize:             this.form.value.areaSize,

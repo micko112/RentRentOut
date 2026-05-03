@@ -17,6 +17,7 @@ public class AdDto {
     private BigDecimal price;
     private BigDecimal pricePerWeek;
     private BigDecimal pricePerMonth;
+    private BigDecimal deposit;
 
     private String currency;
     private PriceInterval priceInterval;
@@ -83,6 +84,14 @@ public class AdDto {
 
     public void setPricePerMonth(BigDecimal pricePerMonth) {
         this.pricePerMonth = pricePerMonth;
+    }
+
+    public BigDecimal getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(BigDecimal deposit) {
+        this.deposit = deposit;
     }
 
     public PriceInterval getPriceInterval() {

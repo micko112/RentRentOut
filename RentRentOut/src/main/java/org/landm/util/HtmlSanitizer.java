@@ -15,4 +15,11 @@ public class HtmlSanitizer {
         if (input == null) return null;
         return Jsoup.clean(input, Safelist.none());
     }
+
+    public static String sanitizeRichText(String input) {
+        if (input == null) return null;
+        Safelist safelist = new Safelist()
+            .addTags("strong", "em", "b", "i", "br", "div", "p");
+        return Jsoup.clean(input, safelist);
+    }
 }

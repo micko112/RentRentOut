@@ -24,6 +24,7 @@ viewCount?: number;
 saved?: boolean;
 pricePerWeek?: number;
 pricePerMonth?: number;
+deposit?: number;
 
 // Detalji nekretnine
 advertiserType?: string;
