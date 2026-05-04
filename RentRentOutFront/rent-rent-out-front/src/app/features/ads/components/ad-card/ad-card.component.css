@@ -352,6 +352,10 @@
   .listing-card.list-view .listing-title {
     font-size: 15px;
   }
+
+  .listing-card.list-view .listing-description {
+    display: none;
+  }
 }
 
 @media (max-width: 400px) {

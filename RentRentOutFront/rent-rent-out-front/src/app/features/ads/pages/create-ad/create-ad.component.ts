@@ -2,7 +2,7 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { AdService } from '../../services/ad.service';
 import { Category } from '../../../../shared/models/category.model';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PriceInterval } from '../../../../shared/models/price-interval.enum';
 import { CategoryService } from '../../services/category.service';
 import { LocationService } from '../../services/location.service';
@@ -386,9 +386,9 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       title:         ['', [Validators.required, Validators.minLength(5), Validators.maxLength(this.MAX_TITLE)]],
       description:   ['', [
-        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length > 0 ? null : { required: true }; },
-        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length >= 20 ? null : { minlength: { requiredLength: 20 } }; },
-        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length <= this.MAX_DESC ? null : { maxlength: { requiredLength: this.MAX_DESC } }; },
+        (c: AbstractControl) => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length > 0 ? null : { required: true }; },
+        (c: AbstractControl) => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length >= 20 ? null : { minlength: { requiredLength: 20 } }; },
+        (c: AbstractControl) => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length <= this.MAX_DESC ? null : { maxlength: { requiredLength: this.MAX_DESC } }; },
       ]],
       price:         [null, [Validators.required, Validators.min(1)]],
       currency:      ['RSD', Validators.required],
@@ -624,7 +624,7 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     if (e.dataTransfer?.files) this.addFiles(e.dataTransfer.files);
   }
 
-  private async addFiles(files: FileList): Promise<void> {
+  private addFiles(files: FileList): void {
     const remaining = this.MAX_IMAGES - this.selectedFiles.length;
     let added = 0;
     for (let i = 0; i < files.length && added < remaining; i++) {
@@ -633,21 +633,15 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       const isHeic = ext === 'heic' || ext === 'heif';
       if (!file.type.match(/^image\//i) && !isHeic) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
       if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
-      let fileToAdd = file;
-      if (isHeic) {
-        const converted = await this.convertHeic(file);
-        if (!converted) { this.toastService.showError(`"${file.name}" ne može biti prikazan.`); continue; }
-        fileToAdd = converted;
-      }
-      this.selectedFiles.push(fileToAdd);
-      this.previewUrls.push(URL.createObjectURL(fileToAdd));
+      this.selectedFiles.push(file);
+      this.previewUrls.push(isHeic ? '__heic__' : URL.createObjectURL(file));
       added++;
     }
     this.form.patchValue({ images: this.previewUrls });
   }
 
   removeImage(index: number): void {
-    URL.revokeObjectURL(this.previewUrls[index]);
+    if (this.previewUrls[index] !== '__heic__') URL.revokeObjectURL(this.previewUrls[index]);
     this.selectedFiles.splice(index, 1);
     this.previewUrls.splice(index, 1);
     this.form.patchValue({ images: this.previewUrls });
@@ -787,27 +781,6 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   //  GETTERS
   // ════════════════════════════════════════════════════════
 
-  private async convertHeic(file: File): Promise<File | null> {
-    const url = URL.createObjectURL(file);
-    const nativeOk = await new Promise<boolean>(res => {
-      const img = new Image();
-      img.onload = () => res(true);
-      img.onerror = () => res(false);
-      img.src = url;
-    });
-    URL.revokeObjectURL(url);
-    if (nativeOk) return file;
-    try {
-      const mod = await import('heic2any');
-      const fn: any = (mod as any).default ?? mod;
-      const result = await fn({ blob: file, toType: 'image/jpeg', quality: 0.85 });
-      const blob: Blob = Array.isArray(result) ? result[0] : result;
-      return new File([blob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
-    } catch {
-      return null;
-    }
-  }
-
   onDescInput(): void {
     const el = this.descEditorRef!.nativeElement;
     const text = el.innerText.replace(/^\s+|\s+$/g, '');
@@ -840,6 +813,6 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.previewUrls.forEach(url => URL.revokeObjectURL(url));
+    this.previewUrls.filter(u => u !== '__heic__').forEach(url => URL.revokeObjectURL(url));
   }
 }

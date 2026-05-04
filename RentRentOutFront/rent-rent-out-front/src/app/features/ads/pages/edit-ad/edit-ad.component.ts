@@ -1,6 +1,6 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {AdService} from '../../services/ad.service';
 import {CategoryService} from '../../services/category.service';
@@ -11,11 +11,12 @@ import {ToastService} from '../../../../shared/services/toast.service';
 import {Ad} from '../../../../shared/models/ad.model';
 import {UpdateAdRequest} from '../../../../shared/models/update-ad-request';
 import {Location} from '../../../../shared/models/location.model';
+import {CityPickerComponent, CityPickerOption} from '../../../../shared/components/city-picker/city-picker.component';
 
 @Component({
   selector: 'app-edit-ad',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CityPickerComponent],
   templateUrl: './edit-ad.component.html',
   styleUrl: './edit-ad.component.css'
 })
@@ -32,6 +33,12 @@ export class EditAdComponent implements OnInit, OnDestroy {
 
   // ── Categories ──────────────────────────────────────────────────────────
   categories: Category[] = [];
+  parentCategories: Category[] = [];
+  childCategories: Category[] = [];
+  grandchildCategories: Category[] = [];
+  selectedParentId: number | null = null;
+  selectedLevel2Id: number | null = null;
+  private pendingCategoryId: number | null = null;
 
   // ── Price intervals ─────────────────────────────────────────────────────
   readonly priceIntervalOptions = [
@@ -42,13 +49,9 @@ export class EditAdComponent implements OnInit, OnDestroy {
 
   // ── Locations ───────────────────────────────────────────────────────────
   locations: Location[] = [];
-  filteredLocations: Location[] = [];
-  locationSearch = '';
-  showLocationDropdown = false;
+  initialLocationId: number | null = null;
 
   @ViewChild('descEditor') descEditorRef?: ElementRef<HTMLDivElement>;
-  @ViewChild('locTriggerRef') locTriggerRef!: ElementRef;
-  locDropdownStyle: {[key: string]: string} = {};
 
   // ── Images ──────────────────────────────────────────────────────────────
   selectedFiles: File[] = [];
@@ -109,43 +112,52 @@ export class EditAdComponent implements OnInit, OnDestroy {
     { value: 'NORVESKI_RADIJATORI', label: 'Norveški radijatori' },
     { value: 'CVRSTO_GORIVO', label: 'Čvrsto gorivo' }, { value: 'TA_PEC', label: 'TA peć' },
   ];
-
   readonly reHouseRoomOptions = [
-    { value: '1',      label: '1 soba' },
-    { value: '2',      label: '2 sobe' },
-    { value: '3',      label: '3 sobe' },
-    { value: '4',      label: '4 sobe' },
+    { value: '1',      label: '1 soba' }, { value: '2', label: '2 sobe' },
+    { value: '3',      label: '3 sobe' }, { value: '4', label: '4 sobe' },
     { value: '5_PLUS', label: '5+ soba' },
   ];
-
   readonly reHouseTotalFloorOptions = [
-    { value: 'PRIZEMNA', label: 'Prizemna' },
-    { value: '1',        label: '1 sprat' },
-    { value: '2',        label: '2 sprata' },
-    { value: '3+',       label: '3+ sprata' },
+    { value: 'PRIZEMNA', label: 'Prizemna' }, { value: '1', label: '1 sprat' },
+    { value: '2', label: '2 sprata' }, { value: '3+', label: '3+ sprata' },
+  ];
+  readonly reLandAreaUnitOptions = [
+    { value: 'ar', label: 'ar' }, { value: 'm2', label: 'm²' },
+    { value: 'jutro', label: 'jutro' }, { value: 'hektar', label: 'ha' },
   ];
 
-  readonly reLandAreaUnitOptions = [
-    { value: 'ar',     label: 'ar' },
-    { value: 'm2',     label: 'm²' },
-    { value: 'jutro',  label: 'jutro' },
-    { value: 'hektar', label: 'ha' },
+  readonly reCommercialFeatures = [
+    { value: 'INTERNET', label: 'Internet' }, { value: 'TERASA', label: 'Terasa' },
+    { value: 'KLIMA_UREDJAJ', label: 'Klima' }, { value: 'VIDEO_NADZOR', label: 'Video nadzor' },
+    { value: 'PRISTUP_INVALIDIMA', label: 'Prilaz za invalide' }, { value: 'PARKING', label: 'Parking' },
+    { value: 'ENERGETSKI_PASOS', label: 'Energetski pasoš' }, { value: 'GARAZA', label: 'Garaža' },
+    { value: 'STRUJA_PRIKLJUCAK', label: 'Struja' }, { value: 'VODA', label: 'Voda' },
+    { value: 'ASFALTIRAN_PRILAZ', label: 'Asfaltiran prilaz' }, { value: 'BASTA', label: 'Bašta' },
+    { value: 'IZLOG', label: 'Izlog' }, { value: 'PET_FRIENDLY', label: 'Pet friendly' },
+    { value: 'DEPOZIT', label: 'Depozit' },
+  ];
+  readonly reHouseFeatures = [
+    { value: 'ODMAH_USELJIVO', label: 'Odmah useljivo' }, { value: 'PODRUM', label: 'Podrum' },
+    { value: 'VIDEO_NADZOR', label: 'Video nadzor' }, { value: 'POMOCNI_OBJEKTI', label: 'Pomoćni objekti' },
+    { value: 'VODA', label: 'Voda' }, { value: 'INTERNET', label: 'Internet' },
+    { value: 'INTERFON', label: 'Interfon' }, { value: 'TERASA', label: 'Terasa' },
+    { value: 'KABLOVA_TV', label: 'Kablovska TV' }, { value: 'KLIMA_UREDJAJ', label: 'Klima' },
+    { value: 'ENERGETSKI_PASOS', label: 'Energetski pasoš' }, { value: 'PRISTUP_INVALIDIMA', label: 'Prilaz za invalide' },
+    { value: 'PARKING', label: 'Parking' }, { value: 'GARAZA', label: 'Garaža' },
+    { value: 'BAZEN', label: 'Bazen' }, { value: 'KANALIZACIJA', label: 'Kanalizacija' },
+    { value: 'STRUJA_PRIKLJUCAK', label: 'Struja' }, { value: 'ASFALTIRAN_PRILAZ', label: 'Asfaltiran prilaz' },
+    { value: 'PET_FRIENDLY', label: 'Pet friendly' }, { value: 'DEPOZIT', label: 'Depozit' },
   ];
 
   // ── Vehicle / Car ────────────────────────────────────────────────────────
   readonly VEHICLE_ROOT_ID = 800;
 
   readonly carBodyTypeOptions = [
-    { value: 'LIMUZINA',    label: 'Limuzina' },
-    { value: 'HECBEK',      label: 'Hečbek' },
-    { value: 'KAR',         label: 'Karavan' },
-    { value: 'SUV',         label: 'SUV / Džip' },
-    { value: 'MONOVOLUMEN', label: 'Monovolumen' },
-    { value: 'KABRIOLET',   label: 'Kabriolet' },
-    { value: 'KUPE',        label: 'Kupe' },
-    { value: 'PIKAP',       label: 'Pikap' },
-    { value: 'KOMBI',       label: 'Kombi' },
-    { value: 'OSTALO',      label: 'Ostalo' },
+    { value: 'LIMUZINA', label: 'Limuzina' }, { value: 'HECBEK', label: 'Hečbek' },
+    { value: 'KAR', label: 'Karavan' }, { value: 'SUV', label: 'SUV / Džip' },
+    { value: 'MONOVOLUMEN', label: 'Monovolumen' }, { value: 'KABRIOLET', label: 'Kabriolet' },
+    { value: 'KUPE', label: 'Kupe' }, { value: 'PIKAP', label: 'Pikap' },
+    { value: 'KOMBI', label: 'Kombi' }, { value: 'OSTALO', label: 'Ostalo' },
   ];
   readonly carFuelTypeOptions = [
     { value: 'BENZIN', label: 'Benzin' }, { value: 'DIZEL', label: 'Dizel' },
@@ -174,10 +186,8 @@ export class EditAdComponent implements OnInit, OnDestroy {
     { value: 'PRIVATNO', label: 'Privatno' }, { value: 'FIRMA', label: 'Firma' }, { value: 'STRANO', label: 'Strano' },
   ];
   readonly carDamageOptions = [
-    { value: 'NEOSTECAN',       label: 'Neoštećen' },
-    { value: 'OSTECEN_VOZNO',   label: 'Oštećen — vozno' },
-    { value: 'OSTECEN_NEVOZNO', label: 'Oštećen — nevozno' },
-    { value: 'RASHODOVANO',     label: 'Rashodovano' },
+    { value: 'NEOSTECAN', label: 'Neoštećen' }, { value: 'OSTECEN_VOZNO', label: 'Oštećen — vozno' },
+    { value: 'OSTECEN_NEVOZNO', label: 'Oštećen — nevozno' }, { value: 'RASHODOVANO', label: 'Rashodovano' },
   ];
   readonly carColorOptions = [
     { value: 'CRNA', label: 'Crna' }, { value: 'BELA', label: 'Bela' }, { value: 'SIVA', label: 'Siva' },
@@ -204,67 +214,16 @@ export class EditAdComponent implements OnInit, OnDestroy {
     { value: 'D', label: 'D' }, { value: 'E', label: 'E' }, { value: 'F', label: 'F' }, { value: 'G', label: 'G' },
   ];
   readonly carEquipmentOptions = [
-    { value: 'KLIMA',                label: 'Klima' },
-    { value: 'AUTO_KLIMA',           label: 'Automatska klima' },
-    { value: 'PANORAMSKI_KROV',      label: 'Panoramski krov' },
-    { value: 'GPS_NAVIGACIJA',       label: 'GPS navigacija' },
-    { value: 'PARKING_SENZORI_ZAD',  label: 'Parking senzori (zadnji)' },
-    { value: 'PARKING_SENZORI_PRED', label: 'Parking senzori (prednji)' },
-    { value: 'KAMERA_ZADNJA',        label: 'Kamera za vožnju unazad' },
-    { value: 'TEMPOMAT',             label: 'Tempomat' },
-    { value: 'BLUETOOTH',            label: 'Bluetooth / handsfree' },
-    { value: 'KOZNA_SEDISTA',        label: 'Kožna sedišta' },
-    { value: 'GREJANJE_SEDISTA',     label: 'Grejanje sedišta' },
-    { value: 'ELEKTRICNI_PROZORI',   label: 'Električni prozori' },
-    { value: 'ALU_FELNE',            label: 'Alu felne' },
-    { value: 'LED_SVETLA',           label: 'LED svetla' },
-    { value: 'XENON_SVETLA',         label: 'Xenon svetla' },
-    { value: 'MULTIFUNKCIJSKI_VOLAN', label: 'Multifunkcijski volan' },
-    { value: 'START_STOP',           label: 'Start-stop sistem' },
-    { value: 'HEAD_UP_DISPLAY',      label: 'Head-up display' },
-    { value: 'PRIKLJUCAK_PRIKOLICA', label: 'Priključak za prikolicu' },
-    { value: 'KROVNI_NOSAC',         label: 'Krovni nosač' },
-  ];
-
-  readonly reCommercialFeatures = [
-    { value: 'INTERNET',           label: 'Internet' },
-    { value: 'TERASA',             label: 'Terasa' },
-    { value: 'KLIMA_UREDJAJ',      label: 'Klima' },
-    { value: 'VIDEO_NADZOR',       label: 'Video nadzor' },
-    { value: 'PRISTUP_INVALIDIMA', label: 'Prilaz za invalide' },
-    { value: 'PARKING',            label: 'Parking' },
-    { value: 'ENERGETSKI_PASOS',   label: 'Energetski pasoš' },
-    { value: 'GARAZA',             label: 'Garaža' },
-    { value: 'STRUJA_PRIKLJUCAK',  label: 'Struja' },
-    { value: 'VODA',               label: 'Voda' },
-    { value: 'ASFALTIRAN_PRILAZ',  label: 'Asfaltiran prilaz' },
-    { value: 'BASTA',              label: 'Bašta' },
-    { value: 'IZLOG',              label: 'Izlog' },
-    { value: 'PET_FRIENDLY',       label: 'Pet friendly' },
-    { value: 'DEPOZIT',            label: 'Depozit' },
-  ];
-
-  readonly reHouseFeatures = [
-    { value: 'ODMAH_USELJIVO',     label: 'Odmah useljivo' },
-    { value: 'PODRUM',             label: 'Podrum' },
-    { value: 'VIDEO_NADZOR',       label: 'Video nadzor' },
-    { value: 'POMOCNI_OBJEKTI',    label: 'Pomoćni objekti' },
-    { value: 'VODA',               label: 'Voda' },
-    { value: 'INTERNET',           label: 'Internet' },
-    { value: 'INTERFON',           label: 'Interfon' },
-    { value: 'TERASA',             label: 'Terasa' },
-    { value: 'KABLOVA_TV',         label: 'Kablovska TV' },
-    { value: 'KLIMA_UREDJAJ',      label: 'Klima' },
-    { value: 'ENERGETSKI_PASOS',   label: 'Energetski pasoš' },
-    { value: 'PRISTUP_INVALIDIMA', label: 'Prilaz za invalide' },
-    { value: 'PARKING',            label: 'Parking' },
-    { value: 'GARAZA',             label: 'Garaža' },
-    { value: 'BAZEN',              label: 'Bazen' },
-    { value: 'KANALIZACIJA',       label: 'Kanalizacija' },
-    { value: 'STRUJA_PRIKLJUCAK',  label: 'Struja' },
-    { value: 'ASFALTIRAN_PRILAZ',  label: 'Asfaltiran prilaz' },
-    { value: 'PET_FRIENDLY',       label: 'Pet friendly' },
-    { value: 'DEPOZIT',            label: 'Depozit' },
+    { value: 'KLIMA', label: 'Klima' }, { value: 'AUTO_KLIMA', label: 'Automatska klima' },
+    { value: 'PANORAMSKI_KROV', label: 'Panoramski krov' }, { value: 'GPS_NAVIGACIJA', label: 'GPS navigacija' },
+    { value: 'PARKING_SENZORI_ZAD', label: 'Parking senzori (zadnji)' }, { value: 'PARKING_SENZORI_PRED', label: 'Parking senzori (prednji)' },
+    { value: 'KAMERA_ZADNJA', label: 'Kamera za vožnju unazad' }, { value: 'TEMPOMAT', label: 'Tempomat' },
+    { value: 'BLUETOOTH', label: 'Bluetooth / handsfree' }, { value: 'KOZNA_SEDISTA', label: 'Kožna sedišta' },
+    { value: 'GREJANJE_SEDISTA', label: 'Grejanje sedišta' }, { value: 'ELEKTRICNI_PROZORI', label: 'Električni prozori' },
+    { value: 'ALU_FELNE', label: 'Alu felne' }, { value: 'LED_SVETLA', label: 'LED svetla' },
+    { value: 'XENON_SVETLA', label: 'Xenon svetla' }, { value: 'MULTIFUNKCIJSKI_VOLAN', label: 'Multifunkcijski volan' },
+    { value: 'START_STOP', label: 'Start-stop sistem' }, { value: 'HEAD_UP_DISPLAY', label: 'Head-up display' },
+    { value: 'PRIKLJUCAK_PRIKOLICA', label: 'Priključak za prikolicu' }, { value: 'KROVNI_NOSAC', label: 'Krovni nosač' },
   ];
 
   // ── Misc ────────────────────────────────────────────────────────────────
@@ -274,9 +233,26 @@ export class EditAdComponent implements OnInit, OnDestroy {
   isSubmitting = false;
 
   readonly stepConfig = [
-    { label: 'Kategorija i opis' },
-    { label: 'Slike, cena i lokacija' },
+    { label: 'Kategorija' },
+    { label: 'Detalji oglasa' },
   ];
+
+  private readonly catIconMap: Record<string, string> = {
+    alat: 'build', bušil: 'build', mašin: 'settings',
+    vozil: 'directions_car', automobil: 'directions_car', motor: 'two_wheeler', bicikl: 'pedal_bike',
+    elektronika: 'laptop', kompjuter: 'laptop', telefon: 'smartphone',
+    sport: 'sports_soccer', fitnes: 'fitness_center', ski: 'downhill_skiing',
+    muzik: 'music_note', instrument: 'music_note',
+    knjig: 'menu_book',
+    kuhin: 'kitchen',
+    namešt: 'chair',
+    bašta: 'tools_power_drill',
+    kuća: 'home',
+    proslave: 'celebration',
+    nekretnine: 'home_work',
+    kamp: 'landscape', planin: 'landscape',
+    foto: 'photo_camera', kamera: 'photo_camera', video: 'videocam',
+  };
 
   constructor(private adService: AdService,
               private categoryService: CategoryService,
@@ -290,9 +266,9 @@ export class EditAdComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(this.MAX_TITLE)]],
       description: ['', [
-        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length > 0 ? null : { required: true }; },
-        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length >= 20 ? null : { minlength: { requiredLength: 20 } }; },
-        c => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length <= this.MAX_DESC ? null : { maxlength: { requiredLength: this.MAX_DESC } }; },
+        (c: AbstractControl) => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length > 0 ? null : { required: true }; },
+        (c: AbstractControl) => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length >= 20 ? null : { minlength: { requiredLength: 20 } }; },
+        (c: AbstractControl) => { const t = (c.value ?? '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim(); return t.length <= this.MAX_DESC ? null : { maxlength: { requiredLength: this.MAX_DESC } }; },
       ]],
       price: [null, [Validators.required, Validators.min(1)]],
       currency: ['RSD', [Validators.required]],
@@ -319,29 +295,14 @@ export class EditAdComponent implements OnInit, OnDestroy {
       landArea:             [null],
       landAreaUnit:         ['ar'],
       features:             [[]],
-      carBrand:            [null],
-      carModel:            [null],
-      carYear:             [null],
-      carMileage:          [null],
-      carBodyType:         [null],
-      carFuelType:         [null],
-      carTransmission:     [null],
-      carPowerKw:          [null],
-      carColor:            [null],
-      carDoors:            [null],
-      carSeats:            [null],
-      carDisplacement:     [null],
-      carEmissionClass:    [null],
-      carDrive:            [null],
-      carSteeringWheel:    [null],
-      carRegisteredUntil:  [null],
-      carCountry:          [null],
-      carOrigin:           [null],
-      carOwnership:        [null],
-      carDamage:           [null],
-      carLabel:            [null],
-      carInteriorMaterial: [null],
-      carInteriorColor:    [null],
+      carBrand:            [null], carModel:            [null], carYear:             [null],
+      carMileage:          [null], carBodyType:         [null], carFuelType:         [null],
+      carTransmission:     [null], carPowerKw:          [null], carColor:            [null],
+      carDoors:            [null], carSeats:            [null], carDisplacement:     [null],
+      carEmissionClass:    [null], carDrive:            [null], carSteeringWheel:    [null],
+      carRegisteredUntil:  [null], carCountry:          [null], carOrigin:           [null],
+      carOwnership:        [null], carDamage:           [null], carLabel:            [null],
+      carInteriorMaterial: [null], carInteriorColor:    [null],
     });
 
     const paramId = this.route.snapshot.paramMap.get('id');
@@ -354,30 +315,27 @@ export class EditAdComponent implements OnInit, OnDestroy {
     }
 
     this.categoryService.getAll().subscribe({
-      next: (cats) => { this.categories = cats; },
-      error: () => { this.toastService.showError('Greska pri ucitavanju kategorija.'); }
+      next: cats => {
+        this.categories = cats;
+        this.parentCategories = cats.filter(c => !c.parentId);
+        if (this.pendingCategoryId) {
+          this.applyExistingCategory(this.pendingCategoryId);
+          this.pendingCategoryId = null;
+        }
+      },
+      error: () => this.toastService.showError('Greška pri učitavanju kategorija.')
     });
 
     this.locationService.getAll().subscribe({
-      next: (locs) => {
-        this.locations = locs;
-        this.filteredLocations = locs.slice(0, 30);
-      },
-      error: () => { this.toastService.showError('Greska pri ucitavanju lokacija.'); }
+      next: locs => { this.locations = locs; },
+      error: () => this.toastService.showError('Greška pri učitavanju lokacija.')
     });
 
     this.adService.getAdById(this.adId).subscribe({
       next: (ad) => {
         this.currentAd = ad;
         this.existingImages = [...(ad.images || [])];
-        this.ensureLocationInList(ad.location);
-
-        // Pre-fill location search display
-        if (ad.location) {
-          this.locationSearch = ad.location.municipality
-            ? `${ad.location.city}, ${ad.location.municipality}`
-            : ad.location.city;
-        }
+        this.initialLocationId = ad.location?.id ?? null;
 
         this.form.patchValue({
           title: ad.title,
@@ -407,28 +365,17 @@ export class EditAdComponent implements OnInit, OnDestroy {
           landArea:             ad.landArea ?? null,
           landAreaUnit:         ad.landAreaUnit ?? 'ar',
           features:             ad.features ?? [],
-          carBrand:            ad.carBrand ?? null,
-          carModel:            ad.carModel ?? null,
-          carYear:             ad.carYear ?? null,
-          carMileage:          ad.carMileage ?? null,
-          carBodyType:         ad.carBodyType ?? null,
-          carFuelType:         ad.carFuelType ?? null,
-          carTransmission:     ad.carTransmission ?? null,
-          carPowerKw:          ad.carPowerKw ?? null,
-          carColor:            ad.carColor ?? null,
-          carDoors:            ad.carDoors ?? null,
-          carSeats:            ad.carSeats ?? null,
-          carDisplacement:     ad.carDisplacement ?? null,
-          carEmissionClass:    ad.carEmissionClass ?? null,
-          carDrive:            ad.carDrive ?? null,
-          carSteeringWheel:    ad.carSteeringWheel ?? null,
-          carRegisteredUntil:  ad.carRegisteredUntil ?? null,
-          carCountry:          ad.carCountry ?? null,
-          carOrigin:           ad.carOrigin ?? null,
-          carOwnership:        ad.carOwnership ?? null,
-          carDamage:           ad.carDamage ?? null,
-          carLabel:            ad.carLabel ?? null,
-          carInteriorMaterial: ad.carInteriorMaterial ?? null,
+          carBrand:            ad.carBrand ?? null, carModel:            ad.carModel ?? null,
+          carYear:             ad.carYear ?? null,  carMileage:          ad.carMileage ?? null,
+          carBodyType:         ad.carBodyType ?? null, carFuelType:      ad.carFuelType ?? null,
+          carTransmission:     ad.carTransmission ?? null, carPowerKw:   ad.carPowerKw ?? null,
+          carColor:            ad.carColor ?? null, carDoors:            ad.carDoors ?? null,
+          carSeats:            ad.carSeats ?? null, carDisplacement:     ad.carDisplacement ?? null,
+          carEmissionClass:    ad.carEmissionClass ?? null, carDrive:    ad.carDrive ?? null,
+          carSteeringWheel:    ad.carSteeringWheel ?? null, carRegisteredUntil: ad.carRegisteredUntil ?? null,
+          carCountry:          ad.carCountry ?? null, carOrigin:           ad.carOrigin ?? null,
+          carOwnership:        ad.carOwnership ?? null, carDamage:         ad.carDamage ?? null,
+          carLabel:            ad.carLabel ?? null, carInteriorMaterial:  ad.carInteriorMaterial ?? null,
           carInteriorColor:    ad.carInteriorColor ?? null,
         });
 
@@ -438,10 +385,16 @@ export class EditAdComponent implements OnInit, OnDestroy {
           }
         });
 
+        if (this.categories.length > 0 && ad.category?.id) {
+          this.applyExistingCategory(ad.category.id);
+        } else if (ad.category?.id) {
+          this.pendingCategoryId = ad.category.id;
+        }
+
         this.isLoading = false;
       },
       error: () => {
-        this.toastService.showError('Ne mogu da ucitam oglas.');
+        this.toastService.showError('Ne mogu da učitam oglas.');
         this.router.navigate(['/user/me/ads']);
       }
     });
@@ -457,29 +410,24 @@ export class EditAdComponent implements OnInit, OnDestroy {
 
   get stepValid(): boolean {
     switch (this.currentStep) {
-      case 1:
-        return !!this.form.get('categoryId')?.value
-          && !this.form.get('title')?.invalid
-          && !this.form.get('description')?.invalid
-          && this.titleLength >= 5
-          && this.descLength >= 20;
-      case 2:
-        return (this.existingImages.length > 0 || this.selectedFiles.length > 0)
-          && !this.form.get('price')?.invalid
-          && !!this.form.get('currency')?.value
-          && !!this.form.get('locationId')?.value;
-      default:
-        return false;
+      case 1: return !!this.form.get('categoryId')?.value;
+      case 2: return (this.existingImages.length > 0 || this.selectedFiles.length > 0)
+                     && !this.form.get('title')?.invalid
+                     && !this.form.get('description')?.invalid
+                     && !this.form.get('price')?.invalid
+                     && !!this.form.get('currency')?.value
+                     && !!this.form.get('locationId')?.value;
+      default: return false;
     }
   }
 
   nextStep(): void {
     if (!this.stepValid) { this.markCurrentStepTouched(); return; }
-    if (this.currentStep < this.totalSteps) this.currentStep++;
+    if (this.currentStep < this.totalSteps) { this.currentStep++; window.scrollTo(0, 0); }
   }
 
   prevStep(): void {
-    if (this.currentStep > 1) this.currentStep--;
+    if (this.currentStep > 1) { this.currentStep--; window.scrollTo(0, 0); }
   }
 
   goToStep(step: number): void {
@@ -488,17 +436,80 @@ export class EditAdComponent implements OnInit, OnDestroy {
 
   private markCurrentStepTouched(): void {
     const map: Record<number, string[]> = {
-      1: ['categoryId', 'title', 'description'],
-      2: ['images', 'price', 'currency', 'locationId'],
+      1: ['categoryId'],
+      2: ['title', 'description', 'images', 'price', 'currency', 'locationId'],
     };
     (map[this.currentStep] ?? []).forEach(f => this.form.get(f)?.markAsTouched());
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  CATEGORIES — 3 levels
+  // ════════════════════════════════════════════════════════
+
+  getCategoryIcon(name: string): string {
+    const lower = name.toLowerCase();
+    for (const [key, icon] of Object.entries(this.catIconMap)) {
+      if (lower.includes(key)) return icon;
+    }
+    return 'inventory_2';
+  }
+
+  selectParentCategory(cat: Category): void {
+    this.selectedParentId = cat.id;
+    this.selectedLevel2Id = null;
+    this.childCategories = this.categories.filter(c => c.parentId === cat.id);
+    this.grandchildCategories = [];
+    if (this.childCategories.length === 0) {
+      this.form.patchValue({ categoryId: cat.id });
+    } else {
+      this.form.patchValue({ categoryId: null });
+    }
+  }
+
+  selectChildCategory(cat: Category): void {
+    this.selectedLevel2Id = cat.id;
+    this.grandchildCategories = this.categories.filter(c => c.parentId === cat.id);
+    if (this.grandchildCategories.length === 0) {
+      this.form.patchValue({ categoryId: cat.id });
+    } else {
+      this.form.patchValue({ categoryId: null });
+    }
+  }
+
+  selectGrandchildCategory(cat: Category): void {
+    this.form.patchValue({ categoryId: cat.id });
+  }
+
+  isParentSelected(cat: Category): boolean     { return this.selectedParentId === cat.id; }
+  isChildSelected(cat: Category): boolean      { return this.selectedLevel2Id === cat.id; }
+  isGrandchildSelected(cat: Category): boolean { return this.form.get('categoryId')?.value === cat.id; }
+
+  private applyExistingCategory(categoryId: number): void {
+    const cat = this.categories.find(c => c.id === categoryId);
+    if (!cat) return;
+    if (!cat.parentId) {
+      this.selectParentCategory(cat);
+    } else {
+      const parent = this.categories.find(c => c.id === cat.parentId);
+      if (!parent) return;
+      if (!parent.parentId) {
+        this.selectParentCategory(parent);
+        this.selectChildCategory(cat);
+      } else {
+        const grandparent = this.categories.find(c => c.id === parent.parentId);
+        if (!grandparent) return;
+        this.selectParentCategory(grandparent);
+        this.selectChildCategory(parent);
+        this.selectGrandchildCategory(cat);
+      }
+    }
   }
 
   // ════════════════════════════════════════════════════════
   //  IMAGES (drag-drop)
   // ════════════════════════════════════════════════════════
 
-  onFileSelected(event: Event) {
+  onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files) this.addFiles(input.files);
     input.value = '';
@@ -514,7 +525,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
     if (e.dataTransfer?.files) this.addFiles(e.dataTransfer.files);
   }
 
-  private async addFiles(files: FileList): Promise<void> {
+  private addFiles(files: FileList): void {
     const totalExisting = this.existingImages.length + this.selectedFiles.length;
     const remaining = this.MAX_IMAGES - totalExisting;
     let added = 0;
@@ -524,14 +535,8 @@ export class EditAdComponent implements OnInit, OnDestroy {
       const isHeic = ext === 'heic' || ext === 'heif';
       if (!file.type.match(/^image\//i) && !isHeic) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
       if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
-      let fileToAdd = file;
-      if (isHeic) {
-        const converted = await this.convertHeic(file);
-        if (!converted) { this.toastService.showError(`"${file.name}" ne može biti prikazan.`); continue; }
-        fileToAdd = converted;
-      }
-      this.selectedFiles.push(fileToAdd);
-      this.previewUrl.push(URL.createObjectURL(fileToAdd));
+      this.selectedFiles.push(file);
+      this.previewUrl.push(isHeic ? '__heic__' : URL.createObjectURL(file));
       added++;
     }
     this.syncImagesControl();
@@ -543,7 +548,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
   }
 
   removeNewImage(index: number): void {
-    URL.revokeObjectURL(this.previewUrl[index]);
+    if (this.previewUrl[index] !== '__heic__') URL.revokeObjectURL(this.previewUrl[index]);
     this.selectedFiles.splice(index, 1);
     this.previewUrl.splice(index, 1);
     this.syncImagesControl();
@@ -551,7 +556,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
 
   private syncImagesControl(): void {
     const combined = [...this.existingImages, ...this.previewUrl];
-    this.form.patchValue({images: combined});
+    this.form.patchValue({ images: combined });
     this.form.get('images')?.updateValueAndValidity();
   }
 
@@ -563,61 +568,8 @@ export class EditAdComponent implements OnInit, OnDestroy {
   //  LOCATION
   // ════════════════════════════════════════════════════════
 
-  onLocationFocus(): void {
-    this.showLocationDropdown = true;
-    this.filteredLocations = this.locations.slice(0, 30);
-    if (this.locTriggerRef) {
-      const rect = this.locTriggerRef.nativeElement.getBoundingClientRect();
-      this.locDropdownStyle = {
-        top: (rect.bottom + 4) + 'px',
-        left: rect.left + 'px',
-        minWidth: rect.width + 'px',
-        width: Math.max(rect.width, 480) + 'px'
-      };
-    }
-  }
-
-  @HostListener('document:mousedown', ['$event'])
-  onOutsideLocClick(event: MouseEvent): void {
-    if (!this.showLocationDropdown) return;
-    const trigger = this.locTriggerRef?.nativeElement;
-    if (trigger && !trigger.closest('.loc-wrapper')?.contains(event.target as Node)) {
-      this.showLocationDropdown = false;
-    }
-  }
-
-  onLocationInput(event: Event): void {
-    const q = (event.target as HTMLInputElement).value;
-    this.locationSearch = q;
-    this.showLocationDropdown = true;
-    this.form.patchValue({ locationId: null });
-    const lower = q.toLowerCase();
-    this.filteredLocations = (lower
-      ? this.locations.filter(l =>
-          l.city.toLowerCase().includes(lower) ||
-          (l.municipality ?? '').toLowerCase().includes(lower))
-      : this.locations
-    ).slice(0, 30);
-  }
-
-  selectLocation(loc: Location): void {
-    this.form.patchValue({ locationId: loc.id });
-    this.locationSearch = loc.municipality ? `${loc.city}, ${loc.municipality}` : loc.city;
-    this.showLocationDropdown = false;
-  }
-
-  hideLocationDropdown(): void { /* no-op, handled by mousedown */ }
-
-  clearLocation(): void {
-    this.form.patchValue({ locationId: null });
-    this.locationSearch = '';
-  }
-
-  getSelectedLocationDisplay(): string {
-    const id = this.form.get('locationId')?.value;
-    if (!id) return '';
-    const loc = this.locations.find(l => l.id === id);
-    return loc ? (loc.municipality ? `${loc.city}, ${loc.municipality}` : loc.city) : '';
+  onLocationChange(option: CityPickerOption | null): void {
+    this.form.patchValue({ locationId: option?.locationId ?? null });
   }
 
   // ════════════════════════════════════════════════════════
@@ -653,27 +605,6 @@ export class EditAdComponent implements OnInit, OnDestroy {
   // ════════════════════════════════════════════════════════
   //  GETTERS
   // ════════════════════════════════════════════════════════
-
-  private async convertHeic(file: File): Promise<File | null> {
-    const url = URL.createObjectURL(file);
-    const nativeOk = await new Promise<boolean>(res => {
-      const img = new Image();
-      img.onload = () => res(true);
-      img.onerror = () => res(false);
-      img.src = url;
-    });
-    URL.revokeObjectURL(url);
-    if (nativeOk) return file;
-    try {
-      const mod = await import('heic2any');
-      const fn: any = (mod as any).default ?? mod;
-      const result = await fn({ blob: file, toType: 'image/jpeg', quality: 0.85 });
-      const blob: Blob = Array.isArray(result) ? result[0] : result;
-      return new File([blob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
-    } catch {
-      return null;
-    }
-  }
 
   onDescInput(): void {
     const el = this.descEditorRef!.nativeElement;
@@ -730,9 +661,9 @@ export class EditAdComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  get isHouse(): boolean { return this.reSubcategoryName === 'Kuće'; }
+  get isHouse(): boolean         { return this.reSubcategoryName === 'Kuće'; }
   get isGarageParking(): boolean { return this.reSubcategoryName === 'Garaže i parking mesta'; }
-  get isCommercial(): boolean { return this.reSubcategoryName === 'Poslovni prostor'; }
+  get isCommercial(): boolean    { return this.reSubcategoryName === 'Poslovni prostor'; }
 
   get vehicleSubcategoryName(): string | null {
     const catId = this.form.get('categoryId')?.value;
@@ -770,20 +701,12 @@ export class EditAdComponent implements OnInit, OnDestroy {
     return (this.form.get('features')?.value ?? []).includes(value);
   }
 
-  private ensureLocationInList(location?: Location | null): void {
-    if (!location) return;
-    const exists = this.locations.some(loc => loc.id === location.id);
-    if (!exists) {
-      this.locations = [...this.locations, location];
-    }
-  }
-
   // ════════════════════════════════════════════════════════
   //  SUBMIT
   // ════════════════════════════════════════════════════════
 
   ngOnDestroy(): void {
-    this.previewUrl.forEach(url => URL.revokeObjectURL(url));
+    this.previewUrl.filter(u => u !== '__heic__').forEach(url => URL.revokeObjectURL(url));
   }
 
   onSubmit(): void {
@@ -822,28 +745,17 @@ export class EditAdComponent implements OnInit, OnDestroy {
       landArea:             this.form.value.landArea,
       landAreaUnit:         this.form.value.landAreaUnit,
       features:             this.form.value.features,
-      carBrand:            this.form.value.carBrand,
-      carModel:            this.form.value.carModel,
-      carYear:             this.form.value.carYear,
-      carMileage:          this.form.value.carMileage,
-      carBodyType:         this.form.value.carBodyType,
-      carFuelType:         this.form.value.carFuelType,
-      carTransmission:     this.form.value.carTransmission,
-      carPowerKw:          this.form.value.carPowerKw,
-      carColor:            this.form.value.carColor,
-      carDoors:            this.form.value.carDoors,
-      carSeats:            this.form.value.carSeats,
-      carDisplacement:     this.form.value.carDisplacement,
-      carEmissionClass:    this.form.value.carEmissionClass,
-      carDrive:            this.form.value.carDrive,
-      carSteeringWheel:    this.form.value.carSteeringWheel,
-      carRegisteredUntil:  this.form.value.carRegisteredUntil,
-      carCountry:          this.form.value.carCountry,
-      carOrigin:           this.form.value.carOrigin,
-      carOwnership:        this.form.value.carOwnership,
-      carDamage:           this.form.value.carDamage,
-      carLabel:            this.form.value.carLabel,
-      carInteriorMaterial: this.form.value.carInteriorMaterial,
+      carBrand:            this.form.value.carBrand, carModel:            this.form.value.carModel,
+      carYear:             this.form.value.carYear,  carMileage:          this.form.value.carMileage,
+      carBodyType:         this.form.value.carBodyType, carFuelType:      this.form.value.carFuelType,
+      carTransmission:     this.form.value.carTransmission, carPowerKw:   this.form.value.carPowerKw,
+      carColor:            this.form.value.carColor, carDoors:            this.form.value.carDoors,
+      carSeats:            this.form.value.carSeats, carDisplacement:     this.form.value.carDisplacement,
+      carEmissionClass:    this.form.value.carEmissionClass, carDrive:    this.form.value.carDrive,
+      carSteeringWheel:    this.form.value.carSteeringWheel, carRegisteredUntil: this.form.value.carRegisteredUntil,
+      carCountry:          this.form.value.carCountry, carOrigin:           this.form.value.carOrigin,
+      carOwnership:        this.form.value.carOwnership, carDamage:         this.form.value.carDamage,
+      carLabel:            this.form.value.carLabel, carInteriorMaterial:  this.form.value.carInteriorMaterial,
       carInteriorColor:    this.form.value.carInteriorColor,
     };
 
@@ -853,20 +765,15 @@ export class EditAdComponent implements OnInit, OnDestroy {
         this.toastService.showError('Morate ostaviti bar jednu sliku.');
         return;
       }
-
-      const payload: UpdateAdRequest = {
-        ...basePayload,
-        images
-      };
-
+      const payload: UpdateAdRequest = { ...basePayload, images };
       this.adService.updateAd(this.adId, payload).subscribe({
         next: (updatedAd) => {
-          this.toastService.showSuccess('Oglas uspesno izmenjen.');
+          this.toastService.showSuccess('Oglas uspešno izmenjen.');
           this.router.navigate(['/ads', updatedAd.id]);
         },
         error: () => {
           this.isSubmitting = false;
-          this.toastService.showError('Greska pri izmeni oglasa.');
+          this.toastService.showError('Greška pri izmeni oglasa.');
         }
       });
     };
@@ -878,7 +785,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.isSubmitting = false;
-          this.toastService.showError('Greska pri upload-u slika.');
+          this.toastService.showError('Greška pri upload-u slika.');
         }
       });
     } else {

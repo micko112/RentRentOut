@@ -162,7 +162,11 @@
           <div class="image-grid" *ngIf="selectedFiles.length > 0">
             <div class="img-cell" *ngFor="let url of previewUrls; let i = index">
               <div class="img-inner">
-                <img [src]="url" [alt]="'Slika ' + (i + 1)">
+                <img *ngIf="url !== '__heic__'" [src]="url" [alt]="'Slika ' + (i + 1)">
+                <div *ngIf="url === '__heic__'" class="heic-placeholder">
+                  <span class="material-icons">image</span>
+                  <span class="heic-name">{{ selectedFiles[i]?.name }}</span>
+                </div>
                 <div class="cover-badge" *ngIf="i === 0"><span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> Naslovna</div>
                 <div class="img-overlay">
                   <button type="button" class="img-btn cover-btn" *ngIf="i !== 0"
