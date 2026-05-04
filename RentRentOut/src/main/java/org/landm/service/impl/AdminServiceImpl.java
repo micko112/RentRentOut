@@ -189,6 +189,17 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
+    public String toggleIdentified(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        boolean newState = !user.isIdentified();
+        user.setIdentified(newState);
+        userRepository.save(user);
+        return newState ? "verified" : "unverified";
+    }
+
+    @Override
+    @Transactional
     public void markReportReviewed(Long reportId) {
         AdReport report = adReportRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Prijava nije pronađena."));

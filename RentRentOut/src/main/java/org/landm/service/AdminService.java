@@ -22,4 +22,5 @@ public interface AdminService {
     Page<UserCreditSummaryDto> getUserCreditSummaries(String search, Pageable pageable);
     Page<AdReportDto> getReports(boolean onlyUnreviewed, Pageable pageable);
     void markReportReviewed(Long reportId);
+    String toggleIdentified(Long userId);
 }

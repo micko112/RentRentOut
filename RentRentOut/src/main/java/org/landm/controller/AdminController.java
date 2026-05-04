@@ -66,6 +66,11 @@ public class AdminController {
         return ResponseEntity.ok(adminService.toggleUserEnabled(id));
     }
 
+    @PatchMapping("/users/{id}/toggle-identified")
+    public ResponseEntity<String> toggleIdentified(@PathVariable Long id) {
+        return ResponseEntity.ok(adminService.toggleIdentified(id));
+    }
+
     // ── Contracts ──────────────────────────────────────────
 
     @GetMapping("/contracts")

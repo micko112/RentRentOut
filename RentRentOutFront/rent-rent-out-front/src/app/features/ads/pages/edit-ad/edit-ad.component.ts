@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -260,7 +260,8 @@ export class EditAdComponent implements OnInit, OnDestroy {
               private fb: FormBuilder,
               private route: ActivatedRoute,
               private router: Router,
-              private toastService: ToastService) {}
+              private toastService: ToastService,
+              private cdRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -379,12 +380,6 @@ export class EditAdComponent implements OnInit, OnDestroy {
           carInteriorColor:    ad.carInteriorColor ?? null,
         });
 
-        setTimeout(() => {
-          if (this.descEditorRef?.nativeElement) {
-            this.descEditorRef.nativeElement.innerHTML = ad.description ?? '';
-          }
-        });
-
         if (this.categories.length > 0 && ad.category?.id) {
           this.applyExistingCategory(ad.category.id);
         } else if (ad.category?.id) {
@@ -392,6 +387,10 @@ export class EditAdComponent implements OnInit, OnDestroy {
         }
 
         this.isLoading = false;
+        this.cdRef.detectChanges();
+        if (this.descEditorRef?.nativeElement) {
+          this.descEditorRef.nativeElement.innerHTML = ad.description ?? '';
+        }
       },
       error: () => {
         this.toastService.showError('Ne mogu da učitam oglas.');

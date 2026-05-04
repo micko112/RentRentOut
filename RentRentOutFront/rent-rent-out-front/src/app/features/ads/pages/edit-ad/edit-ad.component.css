@@ -338,7 +338,7 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   color: var(--color-text-muted);
   pointer-events: none;
 }
-.rich-editor > * + * { margin-top: 10px; }
+.rich-editor > * + * { margin-top: 16px; }
 
 /* Char counters */
 .counted-wrap {
