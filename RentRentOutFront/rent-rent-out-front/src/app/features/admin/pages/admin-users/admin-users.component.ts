@@ -26,6 +26,8 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   currentPage = 0;
   searchQuery = '';
 
+  identifyingIds = new Set<number>();
+
   // Credit modal
   showCreditModal = false;
   creditUser: User | null = null;
@@ -101,6 +103,23 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       this.currentPage++;
       this.loadUsers();
     }
+  }
+
+  toggleIdentified(user: User) {
+    if (this.identifyingIds.has(user.id)) return;
+    this.identifyingIds.add(user.id);
+    this.adminService.toggleIdentified(user.id).subscribe({
+      next: () => {
+        user.identified = !user.identified;
+        const msg = user.identified ? 'Korisnik je verifikovan.' : 'Verifikacija je uklonjena.';
+        this.toastService.showSuccess(msg);
+        this.identifyingIds.delete(user.id);
+      },
+      error: () => {
+        this.toastService.showError('Greška pri promeni verifikacije.');
+        this.identifyingIds.delete(user.id);
+      }
+    });
   }
 
   openCreditModal(user: User) {

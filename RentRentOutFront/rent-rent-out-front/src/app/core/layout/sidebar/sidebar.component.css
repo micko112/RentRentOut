@@ -310,14 +310,8 @@
   line-height: 1;
 }
 
-/* Verified dot — zelena tačka pored "Verifikacija" linka kad je korisnik verifikovan */
-.verified-dot {
-  margin-left: auto;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #6ecf7e;
-  box-shadow: 0 0 0 2px rgba(110, 207, 126, 0.25);
+.nav-icon-verified {
+  color: #22c55e !important;
 }
 
 /* Footer */

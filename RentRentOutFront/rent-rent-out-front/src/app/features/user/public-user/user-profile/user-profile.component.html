@@ -12,9 +12,9 @@
         <div class="details">
           <h1>
             {{ data.userInfo?.displayName }}
-            <span *ngIf="data.userInfo?.identified" class="verified-badge" title="Verifikovan korisnik">
+            <span *ngIf="data.userInfo?.identified" class="badge-identified">
               <span class="material-icons">verified</span>
-              Verifikovan
+              <span class="tooltip">Ovaj nalog je verifikovan</span>
             </span>
           </h1>
           <p class="meta-info">

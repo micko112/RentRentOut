@@ -77,6 +77,10 @@ export class AdminService {
     return this.http.patch(`${this.url}/users/${userId}/disable`, {}, { responseType: 'text' });
   }
 
+  toggleIdentified(userId: number): Observable<string> {
+    return this.http.patch(`${this.url}/users/${userId}/toggle-identified`, {}, { responseType: 'text' });
+  }
+
   suspendAd(adId: number): Observable<string> {
     return this.http.patch(`${this.url}/ads/${adId}/suspend`, {}, { responseType: 'text' });
   }

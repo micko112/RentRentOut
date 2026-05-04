@@ -13,12 +13,15 @@ import {UserService} from '../../../user/services/user.service';
 import {AuthService} from '../../../auth/services/auth.service';
 import {RentalCalendarComponent} from '../../components/rental-calendar/rental-calendar.component';
 import {ReportModalComponent} from '../../components/report-modal/report-modal.component';
-import { SeoService } from '../../../../core/services/seo.service';
+import {SeoService} from '../../../../core/services/seo.service';
+import {FormsModule} from '@angular/forms';
+import {PromotionService} from '../../services/promotion.service';
+import {PromotionModalComponent} from '../../components/promotion-modal/promotion-modal.component';
 
 @Component({
   selector: 'app-ad-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, InitialsPipe, ReviewCardComponent, RentalCalendarComponent, ReportModalComponent],
+  imports: [CommonModule, RouterLink, FormsModule, InitialsPipe, ReviewCardComponent, RentalCalendarComponent, ReportModalComponent, PromotionModalComponent],
   templateUrl: './ad-details.component.html',
   styleUrl: './ad-details.component.css'
 })
@@ -43,6 +46,17 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
   reportOpen: boolean = false;
 
+  showPromoModal = false;
+  renewingInProgress = false;
+  showDeleteModal = false;
+  deleteReason = '';
+  readonly deleteReasons = [
+    'Više ne izdajem ovaj predmet',
+    'Pronašao/la sam zakupca na drugom mestu',
+    'Oglas sadrži grešku',
+    'Ostalo'
+  ];
+
   @ViewChild('thumbnailScroll') thumbnailScrollContainer!: ElementRef;
 
   constructor(
@@ -54,6 +68,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private authService: AuthService,
     private seoService: SeoService,
+    private promotionService: PromotionService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
@@ -303,6 +318,40 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
         adTitle: this.currentAd.title,
         receiverName: this.currentAd.owner.displayName
       }
+    });
+  }
+
+  renewAd(): void {
+    if (this.renewingInProgress || !this.currentAd) return;
+    this.renewingInProgress = true;
+    this.promotionService.renewAd(this.currentAd.id).subscribe({
+      next: () => {
+        this.toastService.showSuccess('Oglas je obnovljen na 30 dana.');
+        this.renewingInProgress = false;
+      },
+      error: () => {
+        this.toastService.showError('Greška pri obnovi oglasa.');
+        this.renewingInProgress = false;
+      }
+    });
+  }
+
+  openPromoModal(): void  { this.showPromoModal = true;  }
+  closePromoModal(): void { this.showPromoModal = false; }
+
+  openDeleteModal(): void  { this.showDeleteModal = true;  }
+  closeDeleteModal(): void { this.showDeleteModal = false; this.deleteReason = ''; }
+
+  confirmDelete(): void {
+    if (!this.currentAd || !this.deleteReason) return;
+    const id = this.currentAd.id;
+    this.closeDeleteModal();
+    this.adService.deleteAd(id).subscribe({
+      next: () => {
+        this.toastService.showSuccess('Uspešno ste obrisali oglas!');
+        this.router.navigate(['/user/me/ads']);
+      },
+      error: () => this.toastService.showError('Greška pri brisanju oglasa.')
     });
   }
 

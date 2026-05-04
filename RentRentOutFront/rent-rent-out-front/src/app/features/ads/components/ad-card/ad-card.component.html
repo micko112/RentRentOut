@@ -32,7 +32,7 @@
   <div class="listing-info">
     <div class="text-area">
       <a class="listing-title" [routerLink]="['/ads', ad.id]" (click)="$event.stopPropagation()">{{ ad.title }}</a>
-      <div class="listing-description" *ngIf="viewMode === 'list'">{{ ad.description }}</div>
+      <div class="listing-description" *ngIf="viewMode === 'list'">{{ plainDescription }}</div>
     </div>
     <div class="listing-location" *ngIf="!ad.municipality">{{ ad.city }} </div>
     <div class="listing-location" *ngIf="ad.municipality">{{ ad.city }} | {{ ad.municipality }}</div>

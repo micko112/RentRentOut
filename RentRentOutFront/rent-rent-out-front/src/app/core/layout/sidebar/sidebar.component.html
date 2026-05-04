@@ -57,9 +57,8 @@
         <span class="nav-label">Kredit</span>
       </a>
       <a routerLink="/verify" routerLinkActive="active" title="Verifikacija">
-        <span class="material-icons nav-icon">verified_user</span>
+        <span class="material-icons nav-icon" [class.nav-icon-verified]="user.identified">verified_user</span>
         <span class="nav-label">Verifikacija</span>
-        <span *ngIf="user.identified" class="verified-dot" title="Verifikovan"></span>
       </a>
       <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" title="Moj Nalog">
         <span class="material-icons nav-icon">manage_accounts</span>

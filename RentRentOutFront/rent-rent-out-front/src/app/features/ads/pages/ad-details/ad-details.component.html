@@ -4,9 +4,19 @@
     <!-- LEVA KOLONA: Slike i Informacije -->
     <div class="left-column">
       <div class="my-ad-options" *ngIf="isMyAd">
-        <div class="buttons">
-          <button class="park" [routerLink]="['/ads', ad.id, 'edit']">
-            <span class="material-icons" style="font-size:16px;vertical-align:middle;margin-right:4px">edit</span>Izmeni
+        <div class="action-btns">
+          <button class="btn-action btn-renew" (click)="renewAd()" [disabled]="renewingInProgress">
+            <span class="material-icons">refresh</span>
+            {{ renewingInProgress ? 'Obnavljanje...' : 'Obnovi' }}
+          </button>
+          <button class="btn-action btn-promote" (click)="openPromoModal()">
+            <span class="material-icons">campaign</span> Promoviši
+          </button>
+          <button class="btn-action btn-edit" [routerLink]="['/ads/edit', currentAd?.id]">
+            <span class="material-icons">edit</span> Izmeni
+          </button>
+          <button class="btn-action btn-delete" (click)="openDeleteModal()">
+            <span class="material-icons">delete_outline</span> Obriši
           </button>
         </div>
       </div>
@@ -373,13 +383,10 @@
               <div class="name-row">
                 <a class="user-name" [routerLink]="['/user', ad.owner.id]">{{ ad.owner.displayName }}</a>
 
-                <!-- Zelena kvačica ako je identified = true -->
-                <span class="badge-identified" *ngIf="ad.owner.identified" title="Identifikovan korisnik">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path>
-          </svg>
-          <span class="tooltip">Proveren</span>
-        </span>
+                <span class="badge-identified" *ngIf="ad.owner.identified">
+                  <span class="material-icons">verified</span>
+                  <span class="tooltip">Ovaj nalog je verifikovan</span>
+                </span>
               </div>
 
               <!-- LOKACIJA I ČLANSTVO -->
@@ -445,6 +452,34 @@
   [adId]="currentAd.id"
   (closed)="reportOpen = false">
 </app-report-modal>
+
+<app-promotion-modal
+  *ngIf="showPromoModal && currentAd"
+  [adId]="currentAd.id"
+  [adTitle]="currentAd.title"
+  (closed)="closePromoModal()"
+  (activated)="closePromoModal()">
+</app-promotion-modal>
+
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <span class="material-icons modal-icon">delete_outline</span>
+      <h3>Brisanje oglasa</h3>
+    </div>
+    <p class="modal-subtitle">Razlog za brisanje oglasa "{{ currentAd?.title }}"</p>
+    <div class="reason-list">
+      <label class="reason-option" *ngFor="let reason of deleteReasons">
+        <input type="radio" name="deleteReason" [value]="reason" [(ngModel)]="deleteReason">
+        <span>{{ reason }}</span>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" (click)="closeDeleteModal()">Odustanite</button>
+      <button class="btn-modal-delete" (click)="confirmDelete()" [disabled]="!deleteReason">Obrišite oglas</button>
+    </div>
+  </div>
+</div>
 
 <div class="image-overlay" *ngIf="isOverlayOpen" (click)="closeOverlay()">
   <button class="close-btn" (click)="closeOverlay()">&times;</button>

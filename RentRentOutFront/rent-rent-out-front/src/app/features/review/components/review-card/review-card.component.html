@@ -3,7 +3,12 @@
 <div class="review-card" [ngClass]="review.reviewType === 'POSITIVE' ? 'positive-card' : 'negative-card'">
   <!-- 1. RED: Ime i Datum -->
   <div class="card-top-row">
-    <a class="reviewer-name" [routerLink]="['/user', review.reviewer.id]">{{ review.reviewer.displayName || 'Korisnik' }}</a>
+    <span class="reviewer-row">
+      <a class="reviewer-name" [routerLink]="['/user', review.reviewer.id]">{{ review.reviewer.displayName || 'Korisnik' }}</a>
+      <span *ngIf="review.reviewer.identified" class="badge-identified" title="Ovaj nalog je verifikovan">
+        <span class="material-icons">verified</span>
+      </span>
+    </span>
     <span class="date">{{ (review.createdAt | date:'dd.MM.yyyy.') || '—' }}</span>
   </div>
 

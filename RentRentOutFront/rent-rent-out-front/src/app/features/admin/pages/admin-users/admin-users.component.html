@@ -20,6 +20,7 @@
           <th>Uloga</th>
           <th>Status</th>
           <th>Akcija</th>
+          <th>Verifikacija</th>
           <th>Kredit</th>
         </tr>
       </thead>
@@ -49,6 +50,16 @@
               [class.disable]="user.enabled"
               (click)="toggleUser(user)">
               {{ user.enabled ? 'Deaktiviraj' : 'Aktiviraj' }}
+            </button>
+          </td>
+          <td>
+            <button
+              class="btn-identify"
+              [class.verified]="user.identified"
+              [disabled]="identifyingIds.has(user.id)"
+              (click)="toggleIdentified(user)">
+              <span class="material-icons">{{ user.identified ? 'verified' : 'verified_user' }}</span>
+              {{ user.identified ? 'Ukloni' : 'Verifikuj' }}
             </button>
           </td>
           <td class="credit-cell">

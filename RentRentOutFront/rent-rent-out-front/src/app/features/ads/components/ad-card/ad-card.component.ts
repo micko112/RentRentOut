@@ -28,6 +28,11 @@ export class AdCardComponent implements OnInit {
     this.isSaved = this.ad.saved ?? false;
   }
 
+  get plainDescription(): string {
+    if (!this.ad.description) return '';
+    return this.ad.description.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+  }
+
   get imageUrl(): string {
     if (this.ad.thumbnail) {
       return this.ad.thumbnail;

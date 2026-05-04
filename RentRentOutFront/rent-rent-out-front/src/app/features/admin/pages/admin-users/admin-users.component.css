@@ -134,6 +134,37 @@
   &:hover { opacity: 0.8; }
 }
 
+.btn-identify {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  color: #555;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  .material-icons { font-size: 16px; }
+
+  &.verified {
+    background: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+  }
+
+  &:not(.verified):hover {
+    background: #e0f2fe;
+    border-color: #38bdf8;
+    color: #0369a1;
+  }
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
 .pagination {
   display: flex;
   align-items: center;
