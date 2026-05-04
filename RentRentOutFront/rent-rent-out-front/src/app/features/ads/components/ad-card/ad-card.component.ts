@@ -42,6 +42,12 @@ export class AdCardComponent implements OnInit {
 
   handleImageError(event: Event) {
     const img = event.target as HTMLImageElement;
+    const src = img.src;
+    if (src && /\.(heic|heif)(\?.*)?$/i.test(src)) {
+      img.onerror = () => { img.src = 'assets/images/placeholder.png'; img.onerror = null; };
+      img.src = src.replace(/\.(heic|heif)(\?.*)?$/i, '.jpg');
+      return;
+    }
     img.src = 'assets/images/placeholder.png';
     img.onerror = null;
   }

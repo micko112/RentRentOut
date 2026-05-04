@@ -66,7 +66,8 @@ public class ImageController {
             try {
                 Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
                         "folder", "rent-rent-out",
-                        "resource_type", "image"
+                        "resource_type", "image",
+                        "format", "jpg"
                 ));
                 fileUrls.add((String) uploadResult.get("secure_url"));
             } catch (IOException e) {

@@ -387,10 +387,6 @@ export class EditAdComponent implements OnInit, OnDestroy {
         }
 
         this.isLoading = false;
-        this.cdRef.detectChanges();
-        if (this.descEditorRef?.nativeElement) {
-          this.descEditorRef.nativeElement.innerHTML = ad.description ?? '';
-        }
       },
       error: () => {
         this.toastService.showError('Ne mogu da učitam oglas.');
@@ -422,7 +418,16 @@ export class EditAdComponent implements OnInit, OnDestroy {
 
   nextStep(): void {
     if (!this.stepValid) { this.markCurrentStepTouched(); return; }
-    if (this.currentStep < this.totalSteps) { this.currentStep++; window.scrollTo(0, 0); }
+    if (this.currentStep < this.totalSteps) {
+      this.currentStep++;
+      window.scrollTo(0, 0);
+      if (this.currentStep === 2) {
+        this.cdRef.detectChanges();
+        if (this.descEditorRef?.nativeElement) {
+          this.descEditorRef.nativeElement.innerHTML = this.form.get('description')?.value ?? '';
+        }
+      }
+    }
   }
 
   prevStep(): void {
