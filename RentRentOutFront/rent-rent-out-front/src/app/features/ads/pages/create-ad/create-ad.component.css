@@ -408,7 +408,7 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
 }
 
 /* Podkategorije */
-.subcategory-section { margin-top: 4px; }
+.subcategory-section { margin-top: 24px; }
 .sub-label {
   font-size: 13px;
   font-weight: 700;

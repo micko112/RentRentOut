@@ -13,24 +13,9 @@
 
       <div class="header-center">
         <h1>Izmeni oglas</h1>
-        <div class="step-pills">
-          <span *ngFor="let s of stepConfig; let i = index"
-                class="step-pill"
-                [class.active]="currentStep === i + 1"
-                [class.done]="currentStep > i + 1"
-                (click)="goToStep(i + 1)">
-            <span class="pill-num">{{ currentStep > i + 1 ? '✓' : i + 1 }}</span>
-            {{ s.label }}
-          </span>
-        </div>
       </div>
-
-      <div class="step-counter">{{ currentStep }}/{{ totalSteps }}</div>
     </div>
 
-    <div class="progress-track">
-      <div class="progress-fill" [style.width.%]="stepProgress"></div>
-    </div>
   </header>
 
   <!-- ══════════════════════════════════════
@@ -45,11 +30,9 @@
     <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()">
 
       <!-- ──────────────────────────────────
-           KORAK 1 · KATEGORIJA
+           KATEGORIJA
            ────────────────────────────────── -->
-      <div class="step-panel" *ngIf="currentStep === 1">
-
-        <section class="section-block">
+      <section class="section-block">
           <div class="section-title">
             <span class="section-num">1</span>
             Kategorija
@@ -101,12 +84,7 @@
           </small>
         </section>
 
-      </div>
-
-      <!-- ──────────────────────────────────
-           KORAK 2 · NASLOV + SLIKE + CENA + LOKACIJA + OPIS
-           ────────────────────────────────── -->
-      <div class="step-panel" *ngIf="currentStep === 2">
+      <div class="section-divider"></div>
 
         <!-- NASLOV -->
         <section class="section-block">
@@ -748,32 +726,15 @@
           </div>
         </section>
 
-      </div>
-
       <!-- ══════════════════════════════════════
            NAVIGACIJA
            ══════════════════════════════════════ -->
       <div class="wizard-nav">
-        <button type="button" class="btn-prev" (click)="prevStep()" *ngIf="currentStep > 1">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Nazad
-        </button>
-
         <div class="nav-right">
-          <a class="btn-cancel" routerLink="/user/me/ads" *ngIf="currentStep === 1">Odustani</a>
-
-          <button type="button" class="btn-next" (click)="nextStep()" *ngIf="currentStep < totalSteps">
-            Dalje
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          <a class="btn-cancel" routerLink="/user/me/ads">Odustani</a>
 
           <button type="submit"
                   class="btn-submit"
-                  *ngIf="currentStep === totalSteps"
                   [disabled]="isSubmitting || form.invalid">
             <span class="submit-spinner" *ngIf="isSubmitting"></span>
             {{ isSubmitting ? 'Čuvam...' : 'Sačuvaj izmene' }}
