@@ -955,6 +955,22 @@ border-radius: 4px;
   }
 }
 
+@media (max-width: 900px) and (orientation: landscape) {
+  .gallery {
+    height: 190px;
+    gap: 6px;
+  }
+
+  .thumbnail-list {
+    width: 52px;
+  }
+
+  .thumbnail-list .thumbnail {
+    width: 52px;
+    height: 52px;
+  }
+}
+
 /* ════════════════════════════════════════════════════════
    DETALJI NEKRETNINE
    ════════════════════════════════════════════════════════ */

@@ -67,5 +67,5 @@
 
 <app-cookie-banner></app-cookie-banner>
 <app-toast></app-toast>
-<app-support-widget *ngIf="!(isAdmin$ | async)"></app-support-widget>
+<app-support-widget *ngIf="showSupportWidget$ | async"></app-support-widget>
 <app-footer></app-footer>

@@ -1,3 +1,6 @@
+<!-- Backdrop (mobile only) -->
+<div class="support-backdrop" *ngIf="isOpen" (click)="close()"></div>
+
 <!-- Floating bubble -->
 <button class="support-fab" (click)="toggle()" [attr.aria-label]="isOpen ? 'Sakrij podršku' : 'Otvori podršku'">
   <span class="material-icons" *ngIf="!isOpen">chat</span>
@@ -6,6 +9,9 @@
 
 <!-- Floater panel -->
 <div class="support-panel" *ngIf="isOpen">
+
+  <!-- Drag handle (mobile only) -->
+  <div class="sheet-handle"></div>
 
   <!-- Header -->
   <header class="panel-header">

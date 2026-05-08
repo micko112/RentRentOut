@@ -12,18 +12,6 @@
   padding-right: 15px;
 }
 
-@media (min-width: 1600px) {
-  .main-app-wrapper:not(.has-sidebar) .page-content {
-    max-width: 1400px;
-  }
-}
-
-@media (min-width: 1920px) {
-  .main-app-wrapper:not(.has-sidebar) .page-content {
-    max-width: 1560px;
-  }
-}
-
 .page-content {
   flex: 1;
   min-width: 0;
@@ -45,24 +33,6 @@
 @media (min-width: 1401px) {
   .main-app-wrapper.sidebar-collapsed {
     gap: 185px;
-  }
-}
-
-@media (min-width: 1600px) {
-  .main-app-wrapper {
-    gap: 220px;
-  }
-  .main-app-wrapper.sidebar-collapsed {
-    gap: 220px;
-  }
-}
-
-@media (min-width: 1920px) {
-  .main-app-wrapper {
-    gap: 260px;
-  }
-  .main-app-wrapper.sidebar-collapsed {
-    gap: 260px;
   }
 }
 

@@ -66,6 +66,10 @@ export class AppComponent implements OnInit {
     map(url => url.startsWith('/admin'))
   );
 
+  showSupportWidget$ = this.route$.pipe(
+    map(url => !url.startsWith('/admin') && !url.startsWith('/messages'))
+  );
+
   onMobileSearch(term: string): void {
     if (term.trim()) {
       this.router.navigate(['/ads'], { queryParams: { keyword: term.trim() } });

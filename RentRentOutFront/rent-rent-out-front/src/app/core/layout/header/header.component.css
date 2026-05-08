@@ -154,34 +154,6 @@
 /* Mobile akcije — sakrivene na desktopu */
 .mobile-actions { display: none; }
 
-@media (min-width: 1600px) {
-  .site-header { padding: 40px 60px; }
-  .logo .logo-img { width: 225px; height: auto; }
-  .search-bar { height: 52px; }
-  .search-bar input { font-size: 15px; }
-  .search-bar input::placeholder { font-size: 15px; }
-  .search-bar .search-btn { font-size: 16px; padding: 10px 28px; }
-  .user-actions { gap: 12px; }
-  .user-actions .btn-post-ad,
-  .user-actions .btn-profile,
-  .user-actions .auth-button { padding: 13px 32px; font-size: 16px; }
-  .user-actions .btn-admin { padding: 13px 22px; font-size: 15px; }
-}
-
-@media (min-width: 1920px) {
-  .site-header { padding: 46px 100px; }
-  .logo .logo-img { width: 250px; height: auto; }
-  .search-bar { height: 58px; }
-  .search-bar input { font-size: 16px; }
-  .search-bar input::placeholder { font-size: 16px; }
-  .search-bar .search-btn { font-size: 17px; padding: 12px 32px; }
-  .user-actions { gap: 14px; }
-  .user-actions .btn-post-ad,
-  .user-actions .btn-profile,
-  .user-actions .auth-button { padding: 15px 38px; font-size: 17px; }
-  .user-actions .btn-admin { padding: 15px 26px; font-size: 16px; }
-}
-
 @media (max-width: 1400px) {
   .user-actions .btn-post-ad { margin-right: 0; }
   .user-actions .auth-button,

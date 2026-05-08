@@ -83,22 +83,76 @@
   &:hover { opacity: 0.88; }
 }
 
+@media (max-width: 900px) {
+  .cookie-banner {
+    bottom: 60px; /* iznad mobile nav bara */
+  }
+}
+
 @media (max-width: 640px) {
   .cookie-banner {
     flex-direction: column;
     align-items: flex-start;
-    padding: 14px 16px;
-    /* Podignuto zbog mobile nav bara */
-    padding-bottom: calc(14px + 60px);
+    padding: 12px 14px;
+    border-radius: 12px 12px 0 0;
+    gap: 10px;
   }
 
   .cookie-actions {
     width: 100%;
+    gap: 8px;
   }
 
   .btn-decline,
   .btn-accept {
     flex: 1;
+    text-align: center;
+    padding: 7px 12px;
+  }
+
+  .cookie-text {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cookie-banner {
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .cookie-icon {
+    display: none;
+  }
+
+  .cookie-content {
+    min-width: 0;
+  }
+
+  .cookie-text {
+    font-size: 11px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .cookie-actions {
+    flex-direction: column;
+    width: auto;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .btn-decline,
+  .btn-accept {
+    flex: unset;
+    padding: 6px 12px;
+    font-size: 12px;
+    white-space: nowrap;
     text-align: center;
   }
 }
