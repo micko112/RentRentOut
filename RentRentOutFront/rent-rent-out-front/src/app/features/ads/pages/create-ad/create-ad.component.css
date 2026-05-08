@@ -18,6 +18,20 @@
   overflow-x: hidden;
 }
 
+@media (min-width: 1600px) {
+  .wizard-page {
+    margin-left: -220px;
+    width: calc(100% + 220px);
+  }
+}
+
+@media (min-width: 1920px) {
+  .wizard-page {
+    margin-left: -260px;
+    width: calc(100% + 260px);
+  }
+}
+
 /* ════════════════════════════════════════════════════════
    HEADER
    ════════════════════════════════════════════════════════ */

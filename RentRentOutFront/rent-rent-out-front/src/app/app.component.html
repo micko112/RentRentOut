@@ -2,7 +2,7 @@
 <app-navbar></app-navbar>
 
 <!-- Mobile search bar (ispod headera, sticky, ≤768px) -->
-<div class="mobile-search-bar" *ngIf="showSidebar$ | async">
+<div class="mobile-search-bar" *ngIf="showMobileSearch$ | async">
   <div class="msb-input-wrap">
     <span class="material-icons msb-search-icon">search</span>
     <input type="text"

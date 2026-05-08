@@ -41,7 +41,8 @@
     <div *ngFor="let n of filtered"
          class="notif-item"
          [class.unread]="!n.isRead"
-         (click)="markAsRead(n)">
+         [class.clickable]="!!getRouterLink(n)"
+         (click)="handleNotifClick(n)">
 
       <!-- Icon -->
       <div class="notif-icon" [attr.data-color]="getColor(n.type)">
@@ -61,12 +62,7 @@
       <!-- Right side -->
       <div class="notif-right">
         <div class="unread-dot" *ngIf="!n.isRead" title="Nepročitano"></div>
-        <a *ngIf="getRouterLink(n) as link"
-           [routerLink]="link"
-           class="notif-link"
-           (click)="$event.stopPropagation()">
-          Pogledaj →
-        </a>
+        <span *ngIf="getRouterLink(n)" class="notif-arrow">→</span>
       </div>
 
     </div>

@@ -32,6 +32,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# Školski materijali
+ZA_GIT_IGNORE/
+
 # Lični/interni fajlovi (beleške, slučajevi korišćenja, skice)
 sk.txt
 sk*.txt
@@ -39,3 +42,4 @@ sk*.txt
 slucajevi koriscenja.txt
 *.notes.txt
 RentRentOutMl/baza_znanja.txt
+/

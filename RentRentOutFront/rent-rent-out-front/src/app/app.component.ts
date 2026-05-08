@@ -53,6 +53,15 @@ export class AppComponent implements OnInit {
     })
   );
 
+  showMobileSearch$ = this.route$.pipe(
+    map(url => {
+      if (url.startsWith('/admin')) return false;
+      if (this.NO_SIDEBAR_ROUTES.some(r => url.startsWith(r))) return false;
+      if (url.startsWith('/messages')) return false;
+      return true;
+    })
+  );
+
   isAdmin$ = this.route$.pipe(
     map(url => url.startsWith('/admin'))
   );

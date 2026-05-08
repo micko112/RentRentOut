@@ -95,6 +95,7 @@
 
 .info-box {
   display: flex;
+  align-items: flex-start;
   gap: 14px;
   padding: 16px 18px;
   background: #f5ecff;

@@ -110,7 +110,7 @@ def generate_node(state):
     user_ctx_block = f"\nKontekst korisnika:\n{user_context}" if user_context else ""
     history_block = f"\nPrethodni razgovor:\n{history}" if history else ""
 
-    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com.
+    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina: alata, kamera, opreme, vozila, stanova, kuća i svega ostalog.
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak, jasan i prijateljski. Ne koristi emojije.{user_ctx_block}{history_block}
 
 Na osnovu KONTEKSTA odgovori na PITANJE korisnika:
@@ -137,11 +137,11 @@ def escalate_node(state):
     history_block = f"\nPrethodni razgovor:\n{history}" if history else ""
     context_block = f"\nDelimično relevantan kontekst iz baze:\n{context}" if context else ""
 
-    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com.
+    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina: alata, kamera, opreme, vozila, stanova, kuća i svega ostalog.
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak, jasan i prijateljski. Ne koristi emojije.
 
 U bazi znanja nisi našao direktan odgovor na pitanje korisnika. Uradi sledeće:
-1) Ako je pitanje vezano za platformu ili iznajmljivanje, pokušaj da pomogneš na osnovu opšteg znanja, ali jasno naglasi da nisi siguran u detalje.
+1) Ako je pitanje vezano za platformu ili iznajmljivanje (bilo koje vrste predmeta ili nekretnine), pokušaj da pomogneš na osnovu opšteg znanja, ali jasno naglasi da nisi siguran u detalje.
 2) Ako je pitanje potpuno van teme (politika, recepti, itd.), ljubazno odbij i vrati korisnika na temu platforme.
 3) Za specifična pitanja gde ti treba potvrda, predloži kontakt na izdajemiznajmljujem.rs@gmail.com.{user_ctx_block}{history_block}{context_block}
 
@@ -160,9 +160,9 @@ def chat_node(state):
     history = "\n".join(state.get("chat_history", [])[-10:])
     history_block = f"\nPrethodni razgovor:\n{history}" if history else ""
 
-    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com.
+    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina (alati, kamere, oprema, vozila, stanovi, kuće, i sl.).
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak i prijateljski. Ne koristi emojije.
-Baviš se isključivo pitanjima o platformi i pravnim temama vezanim za iznajmljivanje.
+Baviš se isključivo pitanjima o platformi i temama vezanim za iznajmljivanje svih vrsta predmeta ili nekretnina.
 Ako pitanje nije vezano za tu temu, ljubazno odbij i vrati korisnika na temu platforme.{history_block}
 
 Korisnik: {question}

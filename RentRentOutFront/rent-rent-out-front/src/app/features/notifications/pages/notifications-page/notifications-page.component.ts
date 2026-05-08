@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NotificationsService } from '../../services/notifications.service';
 import { AppNotification } from '../../../../shared/models/notification.model';
 import { ToastService } from '../../../../shared/services/toast.service';
@@ -37,7 +37,8 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private notificationsService: NotificationsService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -72,12 +73,15 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
   getIcon(type: string): string  { return this.typeConfig[type]?.icon  ?? '🔔'; }
   getColor(type: string): string { return this.typeConfig[type]?.color ?? 'gray'; }
 
-  markAsRead(n: AppNotification): void {
-    if (n.isRead) return;
-    n.isRead = true;
-    this.notificationsService.markOneAsRead(n.id).subscribe({
-      error: () => { n.isRead = false; }
-    });
+  handleNotifClick(n: AppNotification): void {
+    if (!n.isRead) {
+      n.isRead = true;
+      this.notificationsService.markOneAsRead(n.id).subscribe({
+        error: () => { n.isRead = false; }
+      });
+    }
+    const link = this.getRouterLink(n);
+    if (link) this.router.navigate(link);
   }
 
   markAllAsRead(): void {

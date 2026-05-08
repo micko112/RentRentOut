@@ -179,6 +179,20 @@ body.drawer-open {
   gap: 20px;
   animation: fadeIn 0.4s ease-out;
 }
+
+@media (min-width: 1600px) {
+  .grid-layout {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .grid-layout {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 28px;
+  }
+}
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
