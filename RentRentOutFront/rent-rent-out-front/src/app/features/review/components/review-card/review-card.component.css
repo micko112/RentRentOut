@@ -124,7 +124,31 @@
 /* Responzivnost za telefone */
 @media (max-width: 600px) {
   .qa-grid {
-    grid-template-columns: 1fr; /* Na telefonima pitanja idu jedno ispod drugog */
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .qa-item {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .qa-item .question {
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+
+  .qa-item .question::after {
+    content: ':';
+  }
+
+  .qa-item .answer {
+    font-size: 13px;
+  }
+
+  .comment-box {
+    display: block;
+    width: 100%;
   }
 }

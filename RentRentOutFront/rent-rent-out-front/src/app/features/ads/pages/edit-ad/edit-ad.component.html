@@ -211,6 +211,7 @@
             <div class="form-field flex-grow">
               <label class="field-label">Iznos <span class="req">*</span></label>
               <input type="number"
+                     inputmode="decimal"
                      formControlName="price"
                      placeholder="0"
                      min="1"
@@ -253,7 +254,7 @@
               <span class="field-hint-inline">(opcionalno)</span>
             </label>
             <div class="tier-input-wrap">
-              <input type="number" formControlName="deposit" placeholder="-" min="0" class="tier-input"
+              <input type="number" inputmode="decimal" formControlName="deposit" placeholder="-" min="0" class="tier-input"
                      [class.invalid]="form.get('deposit')?.touched && form.get('deposit')?.invalid">
               <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
             </div>
@@ -274,7 +275,7 @@
                 </div>
               </div>
               <div class="tier-input-wrap">
-                <input type="number" formControlName="pricePerWeek" placeholder="-" min="1" class="tier-input">
+                <input type="number" inputmode="decimal" formControlName="pricePerWeek" placeholder="-" min="1" class="tier-input">
                 <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
               </div>
             </div>
@@ -287,7 +288,7 @@
                 </div>
               </div>
               <div class="tier-input-wrap">
-                <input type="number" formControlName="pricePerMonth" placeholder="-" min="1" class="tier-input">
+                <input type="number" inputmode="decimal" formControlName="pricePerMonth" placeholder="-" min="1" class="tier-input">
                 <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
               </div>
             </div>
@@ -398,7 +399,7 @@
               <div class="form-field">
                 <label class="field-label">Površina</label>
                 <div class="re-input-unit">
-                  <input type="number" formControlName="areaSize" placeholder="0" min="1" class="re-input">
+                  <input type="number" inputmode="decimal" formControlName="areaSize" placeholder="0" min="1" class="re-input">
                   <span class="re-unit">m²</span>
                 </div>
               </div>
@@ -406,7 +407,7 @@
               <div class="form-field" *ngIf="isHouse">
                 <label class="field-label">Površina zemljišta</label>
                 <div class="re-input-unit">
-                  <input type="number" formControlName="landArea" placeholder="0" min="0" class="re-input">
+                  <input type="number" inputmode="decimal" formControlName="landArea" placeholder="0" min="0" class="re-input">
                   <select formControlName="landAreaUnit" class="re-unit-select">
                     <option *ngFor="let u of reLandAreaUnitOptions" [value]="u.value">{{ u.label }}</option>
                   </select>
@@ -522,13 +523,13 @@
 
               <div class="form-field">
                 <label class="field-label">Godište <span class="field-opt">(opciono)</span></label>
-                <input type="number" formControlName="carYear" placeholder="npr. 2019" min="1900" max="2030">
+                <input type="number" inputmode="numeric" formControlName="carYear" placeholder="npr. 2019" min="1900" max="2030">
               </div>
 
               <div class="form-field">
                 <label class="field-label">Kilometraža <span class="field-opt">(opciono)</span></label>
                 <div class="re-input-unit">
-                  <input type="number" formControlName="carMileage" placeholder="0" min="0" class="re-input">
+                  <input type="number" inputmode="numeric" formControlName="carMileage" placeholder="0" min="0" class="re-input">
                   <span class="re-unit">km</span>
                 </div>
               </div>
@@ -560,7 +561,7 @@
               <div class="form-field">
                 <label class="field-label">Snaga motora <span class="field-opt">(opciono)</span></label>
                 <div class="re-input-unit">
-                  <input type="number" formControlName="carPowerKw" placeholder="0" min="1" class="re-input">
+                  <input type="number" inputmode="numeric" formControlName="carPowerKw" placeholder="0" min="1" class="re-input">
                   <span class="re-unit">kW</span>
                 </div>
               </div>
@@ -568,7 +569,7 @@
               <div class="form-field">
                 <label class="field-label">Kubikaža <span class="field-opt">(opciono)</span></label>
                 <div class="re-input-unit">
-                  <input type="number" formControlName="carDisplacement" placeholder="0" min="1" class="re-input">
+                  <input type="number" inputmode="numeric" formControlName="carDisplacement" placeholder="0" min="1" class="re-input">
                   <span class="re-unit">cm³</span>
                 </div>
               </div>

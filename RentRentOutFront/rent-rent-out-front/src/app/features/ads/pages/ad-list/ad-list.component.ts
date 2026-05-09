@@ -54,19 +54,19 @@ export class AdListComponent implements OnInit, OnDestroy {
   }> = [];
 
   private readonly HOME_CATEGORIES = [
-    { id: 200, displayName: 'Tehnologija i uređaji',        icon: 'devices'       },
-    { id: 300, displayName: 'Oprema za film i fotografiju', icon: 'photo_camera'  },
-    { id: 100, displayName: 'Alati i oruđa',                icon: 'construction'  },
-    { id: 600, displayName: 'Događaji i zurke',             icon: 'celebration'   },
-    { id: 700, displayName: 'Prevoz i oprema za prirodu',   icon: 'explore'       },
+    { id: 200, displayName: 'Elektronika',         icon: 'devices'       },
+    { id: 300, displayName: 'Foto i video',        icon: 'photo_camera'  },
+    { id: 100, displayName: 'Alati i oprema',      icon: 'construction'  },
+    { id: 600, displayName: 'Događaji i zurke',    icon: 'celebration'   },
+    { id: 700, displayName: 'Sport i rekreacija',  icon: 'sports'        },
   ];
 
   readonly mobileCategoryStrip = [
-    { id: 200, shortName: 'Tehnika',   icon: 'devices'       },
-    { id: 300, shortName: 'Foto',      icon: 'photo_camera'  },
-    { id: 100, shortName: 'Alati',     icon: 'construction'  },
-    { id: 600, shortName: 'Događaji',  icon: 'celebration'   },
-    { id: 700, shortName: 'Prevoz',    icon: 'explore'       },
+    { id: 200, shortName: 'Elektronika', icon: 'devices'       },
+    { id: 300, shortName: 'Foto',        icon: 'photo_camera'  },
+    { id: 100, shortName: 'Alati',       icon: 'construction'  },
+    { id: 600, shortName: 'Događaji',    icon: 'celebration'   },
+    { id: 700, shortName: 'Sport',       icon: 'sports'        },
   ];
 
   readonly popularCities = [
