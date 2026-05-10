@@ -87,6 +87,37 @@
       box-shadow: 0 4px 10px var(--color-accent-shadow);
     }
   }
+
+  .search-filter-sep {
+    width: 1px;
+    height: 22px;
+    background: #ddd;
+    flex-shrink: 0;
+    margin: 0 2px;
+  }
+
+  .search-filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #777;
+    flex-shrink: 0;
+    margin-right: 2px;
+    transition: background 0.15s, color 0.15s;
+
+    .material-icons { font-size: 20px; }
+
+    &:hover {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+  }
 }
 
 .search-bar:focus-within {

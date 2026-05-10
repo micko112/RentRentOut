@@ -13,13 +13,9 @@
     </div>
   </div>
 
-  <!-- ── Mobile filter bar (900px–769px) ── -->
-  <div class="mobile-filter-bar">
-    <button class="mobile-filter-btn" (click)="toggleMobileFilters()">
-      <span class="material-icons">tune</span>
-      {{ isSearchMode ? 'Filteri' : 'Kategorije' }}
-    </button>
-    <div class="mobile-sort-wrap" *ngIf="isSearchMode">
+  <!-- ── Mobile sort bar (900px–769px, samo u search modu) ── -->
+  <div class="mobile-filter-bar" *ngIf="isSearchMode">
+    <div class="mobile-sort-wrap">
       <select class="mobile-sort-select" (change)="onSortChange($event)">
         <option value="id,desc">Najnovije</option>
         <option value="price,asc">Najjeftinije</option>

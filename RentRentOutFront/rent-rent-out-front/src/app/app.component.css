@@ -1,7 +1,7 @@
 .main-app-wrapper {
   display: flex;
   align-items: flex-start;
-  gap: 185px;
+  gap: 40px;
 }
 
 .main-app-wrapper:not(.has-sidebar) .page-content {
@@ -16,7 +16,7 @@
   flex: 1;
   min-width: 0;
   padding-top: 0;
-  padding-right: 20px;
+  padding-right: 60px;
 }
 
 .main-app-wrapper.is-admin .page-content {
@@ -25,32 +25,53 @@
   margin: 0;
 }
 
-/* Sidebar skupljen — na velikom ekranu sačuvaj gap, sadržaj se pomeri samo malo */
+/* Sidebar skupljen */
 .main-app-wrapper.sidebar-collapsed {
   gap: 16px;
-}
-
-@media (min-width: 1401px) {
-  .main-app-wrapper.sidebar-collapsed {
-    gap: 185px;
-  }
 }
 
 @media (max-width: 1400px) {
   .main-app-wrapper {
     gap: 24px;
   }
+  .page-content { padding-right: 40px; }
 }
 
 @media (max-width: 1200px) {
   .main-app-wrapper {
     gap: 16px;
   }
+  .page-content { padding-right: 28px; }
 }
 
 @media (max-width: 1000px) {
   .main-app-wrapper {
     gap: 12px;
+  }
+  .page-content { padding-right: 20px; }
+}
+
+/* ── Faza 2 (1481–1730px): sadržaj prati desnu ivicu, levi gap raste ── */
+@media (min-width: 1481px) {
+  .main-app-wrapper { gap: 0; }
+  .page-content {
+    flex: 1;
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: 60px;
+    padding-right: 20px;
+  }
+}
+
+/* ── Faza 3 (>1730px): originalni gap, breathing room na desnoj strani ── */
+@media (min-width: 1731px) {
+  .main-app-wrapper { gap: 185px; }
+  .page-content {
+    flex: 1;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-right: 60px;
   }
 }
 
@@ -210,9 +231,9 @@
     display: flex;
     align-items: center;
     border: 1.5px solid #ddd;
-    border-radius: 10px;
+    border-radius: 24px;
     height: 40px;
-    padding: 0 8px;
+    padding: 0 12px;
     background: #fafafa;
     transition: border-color 0.15s;
 
@@ -244,14 +265,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     flex-shrink: 0;
     border: none;
     background: transparent;
     cursor: pointer;
     color: var(--color-primary);
-    border-radius: 8px;
+    border-radius: 50%;
     transition: background 0.15s;
 
     .material-icons { font-size: 22px; }
