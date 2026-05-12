@@ -1,6 +1,6 @@
 <div class="saved-ads-container">
   <div class="header-row">
-    <h2>Sačuvani oglasi</h2>
+    <h2>Sačuvani oglasi ({{ adsPage?.totalElements ?? 0 }})</h2>
   </div>
 
   <div *ngIf="isLoading" class="loading-state">
@@ -9,11 +9,14 @@
 
   <ng-container *ngIf="!isLoading">
     <ng-container *ngIf="adsPage && adsPage.totalElements > 0; else noAds">
-      <div class="ads-grid">
+      <div class="ads-list">
         <app-ad-card
           *ngFor="let ad of adsPage.content"
           [ad]="ad"
-          viewMode="grid">
+          viewMode="list">
+          <button class="btn-message" (click)="$event.stopPropagation(); sendMessage(ad.id)">
+            <span class="material-icons">chat_bubble_outline</span> Pošalji poruku
+          </button>
         </app-ad-card>
       </div>
 

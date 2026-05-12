@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {AdPreview, Page} from '../../../../shared/models/adPreview.model';
 import {AdService} from '../../../ads/services/ad.service';
 import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component';
@@ -21,7 +21,7 @@ export class SavedAdsComponent implements OnInit, OnDestroy {
   pageSize: number = 12;
   private destroy$ = new Subject<void>();
 
-  constructor(private adService: AdService, private toastService: ToastService) {}
+  constructor(private adService: AdService, private toastService: ToastService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadSavedAds(0);
@@ -49,5 +49,9 @@ export class SavedAdsComponent implements OnInit, OnDestroy {
 
   goToPage(pageIndex: number): void {
     this.loadSavedAds(pageIndex);
+  }
+
+  sendMessage(adId: number): void {
+    this.router.navigate(['/messages'], { queryParams: { newChatAdId: adId } });
   }
 }

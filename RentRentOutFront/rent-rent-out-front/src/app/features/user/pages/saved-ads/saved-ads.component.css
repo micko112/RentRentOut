@@ -1,17 +1,22 @@
 .saved-ads-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 920px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 
   h2 {
     font-size: 22px;
     font-weight: 700;
-    color: #212121;
+    color: var(--color-accent);
     margin: 0;
   }
 }
@@ -23,10 +28,32 @@
   font-size: 16px;
 }
 
-.ads-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+.ads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Dugme projektuovano u listing-stats */
+.btn-message {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: auto;
+  padding: 6px 12px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+
+  .material-icons { font-size: 15px; }
+
+  &:hover { background: var(--color-primary-hover); }
 }
 
 .empty-state {
@@ -69,9 +96,7 @@
   text-decoration: none;
   transition: background 0.2s ease;
 
-  &:hover {
-    background: var(--color-primary-hover);
-  }
+  &:hover { background: var(--color-primary-hover); }
 }
 
 .pagination-wrapper {
@@ -79,7 +104,7 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-top: 32px;
+  margin-top: 4px;
 }
 
 .page-btn {
@@ -109,34 +134,9 @@
   color: #555;
 }
 
-@media (max-width: 768px) {
-  .ads-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 14px;
-  }
-}
-
 @media (max-width: 480px) {
-  .ads-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
+  .header-row h2 { font-size: 18px; }
 
-  .header-row {
-    margin-bottom: 16px;
-  }
-
-  .header-row h2 {
-    font-size: 18px;
-  }
-
-  .pagination-wrapper {
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  .page-btn {
-    padding: 8px 14px;
-    font-size: 13px;
-  }
+  .pagination-wrapper { gap: 10px; }
+  .page-btn { padding: 8px 14px; font-size: 13px; }
 }

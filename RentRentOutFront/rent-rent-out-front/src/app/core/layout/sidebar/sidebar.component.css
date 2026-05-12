@@ -5,6 +5,7 @@
   align-self: flex-start;
   height: calc(100vh - 142px);
   flex-shrink: 0;
+  z-index: 101;
 }
 
 @media (max-width: 1200px) {

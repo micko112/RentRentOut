@@ -14,11 +14,11 @@
       <input type="text" placeholder="Sve što zamislite.. "
         [(ngModel)]="searchTerm"
         (keyup.enter)="onSearch()">
-      <button class="search-btn" (click)="onSearch()">Traži</button>
       <div class="search-filter-sep"></div>
       <button class="search-filter-btn" (click)="triggerMobileFilter()" title="Filteri">
         <span class="material-icons">tune</span>
       </button>
+      <button class="search-btn" (click)="onSearch()">Traži</button>
     </div>
 
     <!-- DESKTOP: user actions -->
