@@ -21,12 +21,6 @@
   }
 }
 
-@media (max-width: 1400px) {
-  :host:not(.mobile-drawer-mode) {
-    display: none;
-  }
-}
-
 @media (max-width: 900px) {
   :host {
     display: none;

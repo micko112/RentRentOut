@@ -1,5 +1,6 @@
 package org.landm.dto.notification;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
 public class NotificationDto {
@@ -8,6 +9,7 @@ public class NotificationDto {
     private String type;
     private String title;
     private String message;
+    @JsonProperty("isRead")
     private boolean isRead;
     private Long relatedEntityId;
     private String relatedEntityType;

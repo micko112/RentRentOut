@@ -34,8 +34,7 @@
   .main-app-wrapper {
     gap: 24px;
   }
-  /* sidebar je overlay u ovom opsegu — dodan mali levi razmak */
-  .page-content { padding-right: 40px; padding-left: 20px; }
+  .page-content { padding-right: 40px; }
 }
 
 @media (max-width: 1200px) {
@@ -50,30 +49,6 @@
     gap: 12px;
   }
   .page-content { padding-right: 20px; }
-}
-
-/* ── Faza 2 (1481–1730px): sadržaj prati desnu ivicu, levi gap raste ── */
-@media (min-width: 1481px) {
-  .main-app-wrapper { gap: 0; }
-  .page-content {
-    flex: 1;
-    max-width: 1300px;
-    margin-left: auto;
-    margin-right: 60px;
-    padding-right: 20px;
-  }
-}
-
-/* ── Faza 3 (>1730px): originalni gap, breathing room na desnoj strani ── */
-@media (min-width: 1731px) {
-  .main-app-wrapper { gap: 185px; }
-  .page-content {
-    flex: 1;
-    max-width: none;
-    margin-left: 0;
-    margin-right: 0;
-    padding-right: 60px;
-  }
 }
 
 @media (max-width: 900px) {
@@ -287,13 +262,13 @@
 }
 
 /* ═══════════════════════════════════════════════════
-   SIDEBAR OVERLAY (levo, ≤1400px; desno na ≤768px)
+   SIDEBAR OVERLAY (mobilni, ≤768px — panel s desne strane)
    ═══════════════════════════════════════════════════ */
 .mobile-sidebar-overlay {
   display: none;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 768px) {
   .mobile-sidebar-overlay {
     display: block;
     position: fixed;
@@ -310,33 +285,18 @@
     pointer-events: auto;
   }
 
-  /* Desktop (769px–1400px): panel s leve strane */
   .mobile-sidebar-panel {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 220px;
-    height: 100%;
-    background: var(--color-white);
-    transform: translateX(-100%);
-    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .mobile-sidebar-overlay.open .mobile-sidebar-panel {
-    transform: translateX(0);
-  }
-}
-
-/* Na ≤768px: panel s desne strane (mobilni) */
-@media (max-width: 768px) {
-  .mobile-sidebar-panel {
-    left: auto;
     right: 0;
     width: 85%;
     max-width: 340px;
+    height: 100%;
+    background: var(--color-white);
     transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .mobile-sidebar-overlay.open .mobile-sidebar-panel {

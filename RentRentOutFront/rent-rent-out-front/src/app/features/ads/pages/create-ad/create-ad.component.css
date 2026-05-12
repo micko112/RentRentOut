@@ -1212,34 +1212,18 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   .progress-track { margin: 0 -32px; }
 }
 
-/* Faza 2 (1481–1730px): sadržaj prati desnu ivicu, wizard bez ekstenzije */
-@media (min-width: 1481px) {
-  .wizard-page {
-    margin-left: 0;
-    width: 100%;
-  }
-}
-
-/* Faza 3 (>1730px): originalni gap 185px, wizard pokriva gap */
-@media (min-width: 1731px) {
-  .wizard-page {
-    margin-left: -185px;
-    width: calc(100% + 185px);
-  }
-}
-
-/* ── ≤1400px: sidebar je overlay, nema gap-a — wizard ne proširuje levo ── */
+/* ── ≤1400px: gap 24px ── */
 @media (max-width: 1400px) {
   .wizard-page {
-    margin-left: 0;
-    width: 100%;
+    margin-left: -24px;
+    width: calc(100% + 24px);
   }
 }
 
 @media (max-width: 1200px) {
   .wizard-page {
-    margin-left: 0;
-    width: 100%;
+    margin-left: -16px;
+    width: calc(100% + 16px);
   }
   .wizard-header { padding: 0 24px; top: 102px; }
   .wizard-body   { padding: 24px 24px 280px; }
@@ -1249,8 +1233,8 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
 
 @media (max-width: 1000px) {
   .wizard-page {
-    margin-left: 0;
-    width: 100%;
+    margin-left: -12px;
+    width: calc(100% + 12px);
   }
   .wizard-header { padding: 0 20px; top: 90px; }
   .wizard-body   { padding: 20px 20px 260px; }

@@ -185,35 +185,6 @@
 /* Mobile akcije — sakrivene na desktopu */
 .mobile-actions { display: none; }
 
-/* Hamburger vidljiv na 769px–1400px (sidebar je overlay u tom opsegu) */
-@media (max-width: 1400px) and (min-width: 769px) {
-  .mobile-actions {
-    display: flex;
-    align-items: center;
-  }
-  /* Sakrij bookmark dugme — dostupno kroz sidebar overlay */
-  .mobile-actions .mobile-icon-btn:not(.mobile-icon-btn--menu) {
-    display: none;
-  }
-
-  .mobile-icon-btn--menu {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: #444;
-    transition: background 0.15s, color 0.15s;
-
-    .material-icons { font-size: 24px; }
-    &:hover { background: #f5f5f5; color: var(--color-primary); }
-  }
-}
-
 @media (max-width: 1400px) {
   .user-actions .btn-post-ad { margin-right: 0; }
   .user-actions .auth-button,

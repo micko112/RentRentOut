@@ -3,7 +3,9 @@
   flex-direction: column;
   gap: 24px;
   padding-bottom: 40px;
-  max-width: 860px;
+  max-width: 920px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 /* Balance Card */
