@@ -240,7 +240,7 @@
 /* ── LIST VIEW ── */
 .listing-card.list-view {
   width: 100%;
-  height: 140px;
+  height: 160px;
   flex-direction: row;
 
   .image-wrapper {

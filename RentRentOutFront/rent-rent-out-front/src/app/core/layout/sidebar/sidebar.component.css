@@ -21,6 +21,12 @@
   }
 }
 
+@media (max-width: 1400px) {
+  :host:not(.mobile-drawer-mode) {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   :host {
     display: none;
@@ -303,6 +309,7 @@
   min-width: 18px;
   height: 18px;
   border-radius: 9px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -346,6 +353,15 @@
   border: none;
   border-left: 1px solid var(--color-border);
   box-shadow: none;
+}
+
+/* Desktop drawer (769px+): otvara se s leve strane */
+@media (min-width: 769px) {
+  :host.mobile-drawer-mode .sidebar {
+    border-left: none;
+    border-right: 1px solid var(--color-border);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
+  }
 }
 
 /* X dugme u mobile draweru */

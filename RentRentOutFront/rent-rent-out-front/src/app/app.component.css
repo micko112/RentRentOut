@@ -34,7 +34,8 @@
   .main-app-wrapper {
     gap: 24px;
   }
-  .page-content { padding-right: 40px; }
+  /* sidebar je overlay u ovom opsegu — dodan mali levi razmak */
+  .page-content { padding-right: 40px; padding-left: 20px; }
 }
 
 @media (max-width: 1200px) {
@@ -198,6 +199,7 @@
     min-width: 16px;
     height: 16px;
     border-radius: 8px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -285,20 +287,19 @@
 }
 
 /* ═══════════════════════════════════════════════════
-   MOBILE SIDEBAR OVERLAY (desno, ≤768px)
+   SIDEBAR OVERLAY (levo, ≤1400px; desno na ≤768px)
    ═══════════════════════════════════════════════════ */
 .mobile-sidebar-overlay {
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1400px) {
   .mobile-sidebar-overlay {
     display: block;
     position: fixed;
     inset: 0;
-    /* Viši od headera (99999) da prekrije i header */
     z-index: 100001;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.45);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -309,18 +310,33 @@
     pointer-events: auto;
   }
 
+  /* Desktop (769px–1400px): panel s leve strane */
   .mobile-sidebar-panel {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 85%;
-    max-width: 340px;
+    left: 0;
+    width: 220px;
     height: 100%;
     background: var(--color-white);
-    transform: translateX(100%);
+    transform: translateX(-100%);
     transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
     overflow-x: hidden;
+  }
+
+  .mobile-sidebar-overlay.open .mobile-sidebar-panel {
+    transform: translateX(0);
+  }
+}
+
+/* Na ≤768px: panel s desne strane (mobilni) */
+@media (max-width: 768px) {
+  .mobile-sidebar-panel {
+    left: auto;
+    right: 0;
+    width: 85%;
+    max-width: 340px;
+    transform: translateX(100%);
   }
 
   .mobile-sidebar-overlay.open .mobile-sidebar-panel {

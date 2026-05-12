@@ -46,7 +46,8 @@
   right: 24px;
   width: 400px;
   height: 704px;
-  max-height: calc(100vh - 120px);
+  /* 142px header + 100px bottom offset + 20px margin */
+  max-height: calc(100vh - 262px);
   background: var(--support-bg);
   border-radius: 20px;
   box-shadow: var(--support-shadow);
@@ -389,6 +390,20 @@
 /* Backdrop — skriven na desktopu */
 .support-backdrop {
   display: none;
+}
+
+/* Header 102px na ≤1200px */
+@media (max-width: 1200px) {
+  .support-panel {
+    max-height: calc(100vh - 222px);
+  }
+}
+
+/* Header 90px na ≤1000px */
+@media (max-width: 1000px) {
+  .support-panel {
+    max-height: calc(100vh - 210px);
+  }
 }
 
 /* Desktop: fab malo viši iznad mobile nav-a kada postoji */
