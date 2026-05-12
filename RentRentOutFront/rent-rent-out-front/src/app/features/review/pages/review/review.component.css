@@ -7,6 +7,9 @@
   font-family: Arial, sans-serif;
 }
 
+@media (min-width: 1921px) { .reviews-page-container { max-width: 1080px; } }
+@media (min-width: 2800px) { .reviews-page-container { max-width: 1200px; } }
+
 .type-btn.positive-btn.active {
   background: var(--color-success-light);
   color: #2e7d32;

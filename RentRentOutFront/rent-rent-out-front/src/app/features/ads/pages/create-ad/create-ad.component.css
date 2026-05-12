@@ -1285,3 +1285,13 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   .step-indicator { font-size: 12px; padding: 4px 10px; }
   .ppc-value      { font-size: 20px; }
 }
+
+/* ── 27" (1921px+): gap 48px, padding-right 80px ── */
+@media (min-width: 1921px) {
+  .wizard-page { margin-left: -48px; width: calc(100% + 48px + 80px); }
+}
+
+/* ── 30" (2800px+): gap 64px, padding-right 100px ── */
+@media (min-width: 2800px) {
+  .wizard-page { margin-left: -64px; width: calc(100% + 64px + 100px); }
+}

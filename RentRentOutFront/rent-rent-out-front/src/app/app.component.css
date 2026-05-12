@@ -4,6 +4,18 @@
   gap: 40px;
 }
 
+/* ── 27" (QHD, 2560px+) ─────────────────────── */
+@media (min-width: 1921px) {
+  .main-app-wrapper { gap: 48px; }
+  .page-content { padding-right: 80px; }
+}
+
+/* ── 30" (4K+, 2800px+) ─────────────────────── */
+@media (min-width: 2800px) {
+  .main-app-wrapper { gap: 64px; }
+  .page-content { padding-right: 100px; }
+}
+
 .main-app-wrapper:not(.has-sidebar) .page-content {
   max-width: 1180px;
   width: 100%;

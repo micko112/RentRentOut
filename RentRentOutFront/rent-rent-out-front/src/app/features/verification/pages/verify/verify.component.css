@@ -4,6 +4,9 @@
   padding: 24px 20px 60px;
 }
 
+@media (min-width: 1921px) { .verify-page { max-width: 1080px; } }
+@media (min-width: 2800px) { .verify-page { max-width: 1200px; } }
+
 .page-header h1 {
   display: flex;
   align-items: center;

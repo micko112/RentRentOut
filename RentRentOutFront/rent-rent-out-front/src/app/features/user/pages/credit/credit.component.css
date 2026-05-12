@@ -8,6 +8,9 @@
   margin: 0 auto;
 }
 
+@media (min-width: 1921px) { .credit-page { max-width: 1080px; } }
+@media (min-width: 2800px) { .credit-page { max-width: 1200px; } }
+
 /* Balance Card */
 .balance-card {
   display: flex;

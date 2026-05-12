@@ -7,6 +7,9 @@
   margin: 0 auto;
 }
 
+@media (min-width: 1921px) { .my-ads-container { max-width: 1080px; } }
+@media (min-width: 2800px) { .my-ads-container { max-width: 1200px; } }
+
 .header-row {
   display: flex;
   justify-content: space-between;

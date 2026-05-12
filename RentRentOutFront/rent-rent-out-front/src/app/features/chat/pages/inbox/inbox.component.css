@@ -31,6 +31,14 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
+@media (min-width: 1921px) {
+  .chat-container { max-width: 1900px; }
+}
+
+@media (min-width: 2800px) {
+  .chat-container { max-width: 2300px; }
+}
+
 /* =========================================
    2. LEVA STRANA (LISTA SOBA)
    ========================================= */

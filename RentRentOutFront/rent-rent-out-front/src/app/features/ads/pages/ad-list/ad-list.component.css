@@ -5,6 +5,28 @@
   margin: 0 auto;
 }
 
+/* ── 27" ── */
+@media (min-width: 1921px) {
+  .container { max-width: 1900px; }
+  .filter-panel { width: 300px; }
+  .grid-layout { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+  .home-sections { max-width: 1570px; }
+  .hero-title { font-size: 28px; }
+  .section-title { font-size: 22px; }
+  .ads-display-area .page-title { font-size: 28px; }
+}
+
+/* ── 30" ── */
+@media (min-width: 2800px) {
+  .container { max-width: 2300px; }
+  .filter-panel { width: 330px; }
+  .grid-layout { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 24px; }
+  .home-sections { max-width: 1950px; }
+  .hero-title { font-size: 32px; }
+  .section-title { font-size: 24px; }
+  .ads-display-area .page-title { font-size: 32px; }
+}
+
 /* =========================================
    HERO BANNER
    ========================================= */
