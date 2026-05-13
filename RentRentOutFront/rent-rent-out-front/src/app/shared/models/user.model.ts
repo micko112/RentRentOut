@@ -6,7 +6,7 @@ export interface User{
   avatarUrl:  string;
   identified:  boolean;
   credit:  number;
-  location: string;
+  locationDisplay?: string;
   locationId?: number;
   currency: string;
   phoneNumber: string;

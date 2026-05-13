@@ -19,7 +19,12 @@ public class UpdateUserDto {
 	@Size(max = 2000)
 	private String avatarUrl;
 
+	private Long locationId;
+
     public UpdateUserDto() {}
+
+	public Long getLocationId() { return locationId; }
+	public void setLocationId(Long locationId) { this.locationId = locationId; }
 
 	public String getDescription() { return description; }
 	public void setDescription(String description) { this.description = description; }

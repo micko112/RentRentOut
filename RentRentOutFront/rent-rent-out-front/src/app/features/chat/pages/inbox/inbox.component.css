@@ -324,6 +324,28 @@
     padding: 10px 14px;
     font-size: 14px;
   }
+
+  /* Kartica ugovora — naslov oglasa u 2-3 reda */
+  .message-content-wrapper { max-width: 95%; }
+
+  .contract-card {
+    padding: 10px 14px;
+  }
+
+  .contract-card-row {
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+  }
+
+  .contract-card-row .contract-card-value {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    width: 100%;
+    font-size: 13px;
+  }
 }
 
 /* Header u chatu */
@@ -619,6 +641,9 @@
   font-size: 13px;
   color: var(--color-text-dark);
   font-weight: 500;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 .contract-price-value {

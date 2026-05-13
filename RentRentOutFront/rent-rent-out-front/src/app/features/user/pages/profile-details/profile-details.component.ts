@@ -7,6 +7,9 @@ import {AuthService} from '../../../auth/services/auth.service';
 import {RouterModule} from '@angular/router';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ToastService} from '../../../../shared/services/toast.service';
+import {LocationService} from '../../../ads/services/location.service';
+import {Location} from '../../../../shared/models/location.model';
+import {CityPickerComponent, CityPickerOption} from '../../../../shared/components/city-picker/city-picker.component';
 
 @Component({
   selector: 'app-profile-details',
@@ -14,7 +17,8 @@ import {ToastService} from '../../../../shared/services/toast.service';
   imports: [
     CommonModule,
     RouterModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CityPickerComponent
   ],
   templateUrl: './profile-details.component.html',
   styleUrl: './profile-details.component.css'
@@ -36,10 +40,14 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   selectedAvatarFile: File | null = null;
   isUploadingAvatar = false;
 
+  locations: Location[] = [];
+  selectedLocationId: number | null = null;
+
   constructor(private userService: UserService,
               private authService: AuthService,
               private fb: FormBuilder,
-              private toastService: ToastService) {
+              private toastService: ToastService,
+              private locationService: LocationService) {
   }
 
   ngOnInit() {
@@ -57,10 +65,13 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       newPassword: ['', [Validators.required, Validators.minLength(8)]]
     });
 
+    this.locationService.getAll().subscribe(locs => { this.locations = locs; });
+
     this.user$ = this.authService.currentUser$;
     this.userSub = this.user$.subscribe(user => {
       if (!user) return;
       this.currentUser = user;
+      this.selectedLocationId = user.locationId ?? null;
       this.profileForm.patchValue({
         firstname: user.firstname,
         lastname: user.lastname,
@@ -82,11 +93,16 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
     this.selectedAvatarFile = null;
   }
 
+  onLocationChange(option: CityPickerOption | null): void {
+    this.selectedLocationId = option?.locationId ?? null;
+  }
+
   cancelEdit(): void {
     this.isEditing = false;
     this.avatarPreview = null;
     this.selectedAvatarFile = null;
     if (this.currentUser) {
+      this.selectedLocationId = this.currentUser.locationId ?? null;
       this.profileForm.patchValue({
         firstname: this.currentUser.firstname,
         lastname: this.currentUser.lastname,
@@ -160,7 +176,8 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   private saveProfile(avatarUrl?: string): void {
     const payload = {
       ...this.profileForm.value,
-      avatarUrl: avatarUrl || null
+      avatarUrl: avatarUrl || null,
+      locationId: this.selectedLocationId ?? 0
     };
 
     this.userService.updateMe(payload).subscribe({

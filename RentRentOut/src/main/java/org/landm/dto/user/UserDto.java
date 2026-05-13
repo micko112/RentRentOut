@@ -15,6 +15,7 @@ public class UserDto {
     private BigDecimal credit;
     private LocationDto locationDto;
     private Long locationId;
+    private String locationDisplay;
     private String currency;
     private String phoneNumber;
     private int positiveReviews;
@@ -149,5 +150,13 @@ public class UserDto {
 
     public void setLocationId(Long locationId) {
         this.locationId = locationId;
+    }
+
+    public String getLocationDisplay() {
+        return locationDisplay;
+    }
+
+    public void setLocationDisplay(String locationDisplay) {
+        this.locationDisplay = locationDisplay;
     }
 }

@@ -33,6 +33,10 @@ public class UserMapper {
         dto.setEnabled(user.isEnabled());
         if (user.getLocation() != null) {
             dto.setLocationId(user.getLocation().getId());
+            String city = user.getLocation().getCity();
+            String muni = user.getLocation().getMunicipality();
+            boolean showMuni = muni != null && !muni.isBlank() && !muni.equals(city);
+            dto.setLocationDisplay(showMuni ? city + ", " + muni : city);
         }
         return dto;
     }

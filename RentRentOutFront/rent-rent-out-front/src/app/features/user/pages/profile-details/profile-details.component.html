@@ -61,6 +61,10 @@
           <span class="info-value">{{ user.description || 'Nema opisa' }}</span>
         </div>
         <div class="info-item">
+          <span class="info-label">Lokacija</span>
+          <span class="info-value">{{ user.locationDisplay || 'Nije uneta' }}</span>
+        </div>
+        <div class="info-item">
           <span class="info-label">Valuta</span>
           <span class="info-value">{{ user.currency || 'RSD' }}</span>
         </div>
@@ -102,6 +106,15 @@
           <div class="form-row">
             <label>Telefon</label>
             <input type="text" formControlName="phoneNumber" placeholder="+381 6x xxx-xxxx" />
+          </div>
+          <div class="form-row form-row--full">
+            <label>Lokacija</label>
+            <app-city-picker
+              [locations]="locations"
+              [initialLocationId]="selectedLocationId"
+              placeholder="Izaberite grad"
+              (selectionChange)="onLocationChange($event)">
+            </app-city-picker>
           </div>
           <div class="form-row">
             <label>Valuta</label>

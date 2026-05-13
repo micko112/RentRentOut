@@ -233,6 +233,10 @@
   gap: 5px;
 }
 
+.form-row--full {
+  grid-column: 1 / -1;
+}
+
 .form-row label {
   font-size: 11px;
   text-transform: uppercase;

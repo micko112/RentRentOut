@@ -32,13 +32,16 @@
     </div>
 
     <div class="custom-amount-wrap" *ngIf="showCustom">
-      <input
-        type="number"
-        class="custom-amount-input"
-        [(ngModel)]="customAmount"
-        placeholder="Unesite iznos (min. 100 RSD)"
-        min="100"
-        step="100" />
+      <div class="custom-amount-row">
+        <input
+          type="number"
+          class="custom-amount-input"
+          [(ngModel)]="customAmount"
+          placeholder="Iznos (min. 100)"
+          min="100"
+          step="100" />
+        <span class="custom-amount-currency">RSD</span>
+      </div>
     </div>
 
     <!-- Payment data table -->

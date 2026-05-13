@@ -6,4 +6,5 @@ export interface UpdateUserRequest {
   description?: string;
   phoneNumber?: string;
   avatarUrl?: string;
+  locationId?: number | null;
 }

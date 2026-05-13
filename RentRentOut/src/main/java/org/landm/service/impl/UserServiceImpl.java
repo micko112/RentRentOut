@@ -23,6 +23,8 @@ import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
 import org.landm.exception.WrongCredentialsException;
 import org.landm.mapper.UserMapper;
+import org.landm.entity.Location;
+import org.landm.repository.LocationRepository;
 import org.landm.repository.RoleRepository;
 import org.landm.repository.UserRepository;
 import org.landm.security.JwtUtil;
@@ -60,6 +62,7 @@ public class UserServiceImpl implements UserService {
     private final EmailVerificationService emailVerificationService;
 	private final AdService adService;
 	private final ReviewService reviewService;
+	private final LocationRepository locationRepository;
 	private final RestTemplate restTemplate = new RestTemplate();
 
 	@Value("${google.client-id}")
@@ -77,7 +80,8 @@ public class UserServiceImpl implements UserService {
 	public UserServiceImpl(UserRepository userRepository,
 						   PasswordEncoder passwordEncoder, UserMapper userMapper,
 						   JwtUtil jwtUtil, RoleRepository roleRepository,
-						   EmailVerificationService emailVerificationService, AdService adService, ReviewService reviewService) {
+						   EmailVerificationService emailVerificationService, AdService adService, ReviewService reviewService,
+						   LocationRepository locationRepository) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -87,6 +91,7 @@ public class UserServiceImpl implements UserService {
 		this.emailVerificationService = emailVerificationService;
 		this.adService = adService;
 		this.reviewService = reviewService;
+		this.locationRepository = locationRepository;
 	}
 
     @Transactional
@@ -218,6 +223,13 @@ public class UserServiceImpl implements UserService {
 				user.setCurrency(Currency.valueOf(editUserDto.getCurrency()));
 			} catch (IllegalArgumentException e) {
 				throw new IllegalArgumentException("Nepoznata valuta: " + editUserDto.getCurrency());
+			}
+		}
+		if (editUserDto.getLocationId() != null) {
+			if (editUserDto.getLocationId() == 0) {
+				user.setLocation(null);
+			} else {
+				locationRepository.findById(editUserDto.getLocationId()).ifPresent(user::setLocation);
 			}
 		}
 		try {

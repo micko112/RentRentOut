@@ -32,6 +32,7 @@
   .reviewer-row {
     display: inline-flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 4px;
   }
 
@@ -45,6 +46,16 @@
     display: inline-flex;
     align-items: center;
     .material-icons { font-size: 16px; color: #22c55e; }
+  }
+
+  .reviewer-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-left: 4px;
+    .material-icons { font-size: 13px; }
   }
 
   .date {

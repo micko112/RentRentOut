@@ -8,6 +8,9 @@
       <span *ngIf="review.reviewer.identified" class="badge-identified" title="Ovaj nalog je verifikovan">
         <span class="material-icons">verified</span>
       </span>
+      <span class="reviewer-location" *ngIf="review.reviewer.locationDisplay">
+        <span class="material-icons">location_on</span>{{ review.reviewer.locationDisplay }}
+      </span>
     </span>
     <span class="date">{{ (review.createdAt | date:'dd.MM.yyyy.') || '—' }}</span>
   </div>
