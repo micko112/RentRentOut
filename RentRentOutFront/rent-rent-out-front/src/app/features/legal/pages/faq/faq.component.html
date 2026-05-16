@@ -1,0 +1,39 @@
+<div class="faq-page">
+
+  <div class="faq-hero">
+    <h1>Česta pitanja (FAQ)</h1>
+    <p>Odgovori na najčešća pitanja o platformi IzdajemIznajmljujem.</p>
+  </div>
+
+  <div class="faq-container">
+
+    <div class="faq-group" *ngFor="let group of groups">
+      <div class="group-header">
+        <span class="material-icons">{{ group.icon }}</span>
+        <h2>{{ group.title }}</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let item of group.items" [class.open]="item.open">
+          <button class="faq-question" (click)="toggle(group, item)">
+            <span>{{ item.q }}</span>
+            <span class="material-icons faq-chevron">{{ item.open ? 'expand_less' : 'expand_more' }}</span>
+          </button>
+          <div class="faq-answer" *ngIf="item.open">
+            <p>{{ item.a }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-cta">
+      <span class="material-icons">help_outline</span>
+      <div>
+        <strong>Niste pronašli odgovor?</strong>
+        <p>Pišite nam na <a href="mailto:izdajemiznajmljujem.rs@gmail.com">izdajemiznajmljujem.rs&#64;gmail.com</a> — odgovaramo u roku od 1–2 radna dana.</p>
+      </div>
+    </div>
+
+  </div>
+
+</div>

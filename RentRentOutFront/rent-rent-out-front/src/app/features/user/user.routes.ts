@@ -23,13 +23,13 @@ export const USER_ROUTES: Routes = [
         path: 'contracts',
         component: ContractsComponent
       },
-      { path: 'notifications', component: PlaceholderPageComponent, data: { title: 'Obaveštenja' } },
+      { path: 'notifications', redirectTo: '/notifications', pathMatch: 'full' },
       { path: 'reviews', component: PlaceholderPageComponent, data: { title: 'Moje ocene' } },
       { path: 'following', component: PlaceholderPageComponent, data: { title: 'Pratim' } },
       { path: 'saved-searches', component: PlaceholderPageComponent, data: { title: 'Sačuvane pretrage' } },
       { path: 'address-book', component: PlaceholderPageComponent, data: { title: 'Adresar' } },
-      { path: 'credit', component: PlaceholderPageComponent, data: { title: 'Kredit' } },
-      { path: 'settings', component: PlaceholderPageComponent, data: { title: 'Moj nalog / Podešavanja' } },
+      { path: 'credit', redirectTo: '/credit', pathMatch: 'full' },
+      { path: 'settings', redirectTo: '/user/me', pathMatch: 'full' },
       {
         path: '',
         component: ProfileDetailsComponent

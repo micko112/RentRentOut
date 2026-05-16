@@ -16,6 +16,7 @@ import {PrivacyPolicyComponent} from './features/legal/pages/privacy-policy/priv
 import {TermsOfServiceComponent} from './features/legal/pages/terms-of-service/terms-of-service.component';
 import {HowItWorksComponent} from './features/legal/pages/how-it-works/how-it-works.component';
 import {ContactComponent} from './features/legal/pages/contact/contact.component';
+import {FaqComponent} from './features/legal/pages/faq/faq.component';
 import {CreditComponent} from './features/user/pages/credit/credit.component';
 import {VerifyComponent} from './features/verification/pages/verify/verify.component';
 import {NotFoundComponent} from './shared/pages/not-found/not-found.component';
@@ -44,6 +45,7 @@ export const routes: Routes = [
   {path: 'terms-of-service', component: TermsOfServiceComponent},
   {path: 'how-it-works', component: HowItWorksComponent},
   {path: 'contact', component: ContactComponent},
+  {path: 'faq', component: FaqComponent},
   {path: 'credit', component: CreditComponent, canActivate: [authGuard]},
   {path: 'verify', component: VerifyComponent, canActivate: [authGuard]},
 

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="37-garderoba-category" author="micko112">
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-1: Garderoba (nova glavna kategorija)                       -->
+        <!-- ================================================================ -->
+        <insert tableName="category">
+            <column name="id" valueNumeric="10000"/>
+            <column name="name" value="Garderoba"/>
+        </insert>
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-2: Podkategorije Garderobe                                 -->
+        <!-- ================================================================ -->
+        <insert tableName="category">
+            <column name="name" value="Venčanice i svečane haljine"/>
+            <column name="parent_id" valueNumeric="10000"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Odela i smokinge"/>
+            <column name="parent_id" valueNumeric="10000"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Kostimi i tematska odeća"/>
+            <column name="parent_id" valueNumeric="10000"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Folklorna nošnja"/>
+            <column name="parent_id" valueNumeric="10000"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Obuća"/>
+            <column name="parent_id" valueNumeric="10000"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Torbice i dodaci"/>
+            <column name="parent_id" valueNumeric="10000"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Ostala garderoba"/>
+            <column name="parent_id" valueNumeric="10000"/>
+        </insert>
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-3: Venčanice i svečane haljine                             -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Venčanica', id FROM category WHERE name = 'Venčanice i svečane haljine' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Večernja haljina', id FROM category WHERE name = 'Venčanice i svečane haljine' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Koktel haljina', id FROM category WHERE name = 'Venčanice i svečane haljine' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Haljina za maturu', id FROM category WHERE name = 'Venčanice i svečane haljine' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Haljina za krštenje i pričest', id FROM category WHERE name = 'Venčanice i svečane haljine' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Haljina za veridbu', id FROM category WHERE name = 'Venčanice i svečane haljine' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Deveruška haljina', id FROM category WHERE name = 'Venčanice i svečane haljine' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostalo u svečanim haljinama', id FROM category WHERE name = 'Venčanice i svečane haljine' AND parent_id = 10000</sql>
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-3: Odela i smokinge                                         -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Muško odelo', id FROM category WHERE name = 'Odela i smokinge' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Smoking', id FROM category WHERE name = 'Odela i smokinge' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Frak', id FROM category WHERE name = 'Odela i smokinge' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Svečana košulja', id FROM category WHERE name = 'Odela i smokinge' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Prsluk', id FROM category WHERE name = 'Odela i smokinge' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Leptir mašna i kravata', id FROM category WHERE name = 'Odela i smokinge' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostalo u odelima', id FROM category WHERE name = 'Odela i smokinge' AND parent_id = 10000</sql>
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-3: Kostimi i tematska odeća                                -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Halloween kostim', id FROM category WHERE name = 'Kostimi i tematska odeća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Karnevalski kostim', id FROM category WHERE name = 'Kostimi i tematska odeća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Dečiji kostim', id FROM category WHERE name = 'Kostimi i tematska odeća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Superjunački kostim', id FROM category WHERE name = 'Kostimi i tematska odeća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Istorijski kostim', id FROM category WHERE name = 'Kostimi i tematska odeća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Tematski kostim', id FROM category WHERE name = 'Kostimi i tematska odeća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostali kostimi', id FROM category WHERE name = 'Kostimi i tematska odeća' AND parent_id = 10000</sql>
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-3: Folklorna nošnja                                         -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Srpska narodna nošnja', id FROM category WHERE name = 'Folklorna nošnja' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Nošnja za kolo i folklor', id FROM category WHERE name = 'Folklorna nošnja' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Regionalna nošnja', id FROM category WHERE name = 'Folklorna nošnja' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostala folklorna nošnja', id FROM category WHERE name = 'Folklorna nošnja' AND parent_id = 10000</sql>
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-3: Obuća                                                   -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Svadbene cipele', id FROM category WHERE name = 'Obuća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Štikle i elegantna obuća', id FROM category WHERE name = 'Obuća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Muška elegantna obuća', id FROM category WHERE name = 'Obuća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Čizme', id FROM category WHERE name = 'Obuća' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostala obuća', id FROM category WHERE name = 'Obuća' AND parent_id = 10000</sql>
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-3: Torbice i dodaci                                        -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Svadbena torbica', id FROM category WHERE name = 'Torbice i dodaci' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Nakit i bižuterija', id FROM category WHERE name = 'Torbice i dodaci' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Veo i ukras za kosu', id FROM category WHERE name = 'Torbice i dodaci' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Rukavice', id FROM category WHERE name = 'Torbice i dodaci' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostali dodaci', id FROM category WHERE name = 'Torbice i dodaci' AND parent_id = 10000</sql>
+
+        <!-- ================================================================ -->
+        <!-- LEVEL-3: Ostala garderoba                                        -->
+        <!-- ================================================================ -->
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Bunda i kaput', id FROM category WHERE name = 'Ostala garderoba' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Jakna', id FROM category WHERE name = 'Ostala garderoba' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Muška odeća', id FROM category WHERE name = 'Ostala garderoba' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ženska odeća', id FROM category WHERE name = 'Ostala garderoba' AND parent_id = 10000</sql>
+        <sql splitStatements="false">INSERT INTO category (name, parent_id) SELECT 'Ostalo u garderobi', id FROM category WHERE name = 'Ostala garderoba' AND parent_id = 10000</sql>
+
+    </changeSet>
+
+</databaseChangeLog>

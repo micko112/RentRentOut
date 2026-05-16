@@ -252,6 +252,9 @@ export class EditAdComponent implements OnInit, OnDestroy {
     nekretnine: 'home_work',
     kamp: 'landscape', planin: 'landscape',
     foto: 'photo_camera', kamera: 'photo_camera', video: 'videocam',
+    garderob: 'checkroom', venčanic: 'checkroom', halj: 'checkroom',
+    odelo: 'checkroom', smoking: 'checkroom', kostim: 'checkroom',
+    nošnj: 'checkroom', obuć: 'checkroom', torbic: 'checkroom',
   };
 
   constructor(private adService: AdService,
