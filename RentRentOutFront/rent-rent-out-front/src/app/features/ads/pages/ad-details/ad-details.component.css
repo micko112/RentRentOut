@@ -1,12 +1,25 @@
 .container {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 0;
+}
+
+/* ── 27" ── */
+@media (min-width: 1921px) {
+  .container { max-width: 1500px; }
+}
+
+/* ── 30" ── */
+@media (min-width: 2800px) {
+  .container { max-width: 1800px; }
 }
 
 .main-layout {
   display: flex;
   flex-wrap: wrap;
-  gap: 40px
+  gap: 32px;
+  align-items: flex-start;
 }
 .my-ad-options {
   width: 100%;
@@ -151,9 +164,8 @@
   &:disabled { opacity: .5; cursor: not-allowed; }
 }
 .left-column {
-  width: 750px;
-  max-width: 100%;
-  flex-shrink: 1;
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
 }
@@ -275,9 +287,12 @@
 }
 /*--------------------------------DESNA KOLONA ----------------------------------------------------*/
 .right-column {
-  flex: 1;
+  width: 380px;
+  flex-shrink: 0;
+  flex-grow: 0;
   position: sticky;
-  min-width: 320px;
+  top: 142px;
+  align-self: flex-start;
 }
 .right-column-container {
   border: 0 solid var(--color-border);
@@ -873,6 +888,28 @@ border-radius: 4px;
 }
 
 /* ─── Responsive ─────────────────────────────────────── */
+
+/* ── 27" ── */
+@media (min-width: 1921px) {
+  .right-column { top: 190px; }
+  .main-layout  { gap: 36px; }
+}
+
+/* ── 30" ── */
+@media (min-width: 2800px) {
+  .right-column { top: 220px; }
+  .main-layout  { gap: 44px; }
+}
+
+@media (max-width: 1400px) {
+  .main-layout { gap: 28px; }
+}
+
+@media (max-width: 1200px) {
+  .main-layout { gap: 24px; }
+  .right-column { top: 102px; }
+}
+
 @media (max-width: 1100px) {
   .left-column {
     width: 100%;
@@ -881,15 +918,20 @@ border-radius: 4px;
 
   .right-column {
     width: 100%;
-    min-width: 0;
-    flex: 1 1 100%;
+    flex-shrink: 1;
+    flex-grow: 1;
     position: static;
+    align-self: auto;
   }
 
   .main-layout {
     flex-direction: column;
     gap: 24px;
   }
+}
+
+@media (max-width: 1000px) {
+  .main-layout { gap: 20px; }
 }
 
 @media (max-width: 768px) {
@@ -1064,3 +1106,44 @@ border-radius: 4px;
   border-color: #b7e8c8;
   color: #256b3a;
 }
+
+/* ─── Share buttons ─── */
+.share-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.share-label {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.share-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: opacity .2s, transform .2s;
+
+  svg { width: 21px; height: 21px; }
+
+  &:hover { opacity: .85; transform: scale(1.08); }
+}
+
+.share-wa { background: #25D366; }
+.share-fb { background: #1877F2; }

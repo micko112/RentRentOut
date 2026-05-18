@@ -1,5 +1,10 @@
 export interface SendMessageRequest {
   adId: number;
   receiverId: number;
-  content: string;
+  content?: string;
+  messageType?: 'REGULAR' | 'IMAGE' | 'LOCATION';
+  imageUrl?: string;
+  locationLat?: number;
+  locationLng?: number;
+  locationLabel?: string;
 }

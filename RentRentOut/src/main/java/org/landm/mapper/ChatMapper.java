@@ -41,6 +41,10 @@ public class ChatMapper {
         dto.setMessageType(m.getMessageType().name());
         dto.setRelatedContractId(m.getRelatedContractId());
         dto.setCreatedAt(m.getCreatedAt());
+        dto.setImageUrl(m.getImageUrl());
+        dto.setLocationLat(m.getLocationLat());
+        dto.setLocationLng(m.getLocationLng());
+        dto.setLocationLabel(m.getLocationLabel());
 
         if (m.getMessageType() == MessageType.CONTRACT_REQUEST && m.getRelatedContractId() != null) {
             rentalContractRepository.findById(m.getRelatedContractId()).ifPresent(contract -> {
@@ -72,12 +76,22 @@ public class ChatMapper {
         List<Message> messages = c.getMessages();
         if(!messages.isEmpty()) {
             Message lastMessage = messages.get(messages.size() - 1);
-            dto.setLastMessagePreview(lastMessage.getContent());
+            dto.setLastMessagePreview(previewFor(lastMessage));
         }
 
 
         long unread = messageRepository.countUnreadForConversation(c.getId(), myUserId);
         dto.setUnreadCount((int) unread);
         return dto;
+    }
+
+    private String previewFor(Message m) {
+        if (m == null) return "";
+        switch (m.getMessageType()) {
+            case IMAGE:    return "📷 Slika";
+            case LOCATION: return "📍 Lokacija";
+            case CONTRACT_REQUEST: return "Zahtev za iznajmljivanje";
+            default:       return m.getContent() != null ? m.getContent() : "";
+        }
     }
 }

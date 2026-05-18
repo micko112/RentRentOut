@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import {Page} from '../../../shared/models/adPreview.model';
 import {ConversationPreview} from '../../../shared/models/conversation-preview.model';
 import {SendMessageRequest} from '../../../shared/models/send-message-request.model';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +30,12 @@ export class ChatService {
 
   getUnreadCount(): Observable<number> {
     return this.http.get<number>(`${this.url}/unread-count`);
+  }
+
+  uploadChatImage(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('files', file);
+    return this.http.post<string[]>(`${API_BASE_URL}/images/upload`, formData)
+      .pipe(map(urls => urls && urls.length > 0 ? urls[0] : ''));
   }
 }

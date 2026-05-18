@@ -548,6 +548,210 @@
   cursor: not-allowed;
 }
 
+/* =========================================
+   ATTACHMENT DUGMAD (slika, lokacija)
+   ========================================= */
+.file-input-hidden { display: none; }
+
+.btn-attach {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-white);
+  color: var(--color-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  transition: background-color .15s, color .15s;
+  flex-shrink: 0;
+}
+
+.btn-attach:hover:not(:disabled) {
+  background: var(--color-primary-bg, #f5ecff);
+}
+
+.btn-attach .material-icons { font-size: 22px; }
+
+.btn-attach:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.attach-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border-medium);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+/* =========================================
+   SLIKA U PORUCI
+   ========================================= */
+.image-bubble {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--color-white);
+  max-width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+.image-bubble img {
+  display: block;
+  max-width: 280px;
+  max-height: 320px;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.message-time-image {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, .45);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+/* =========================================
+   LOKACIJA U PORUCI
+   ========================================= */
+.location-bubble {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-white);
+  border-radius: 14px;
+  overflow: hidden;
+  max-width: 320px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+  transition: transform .15s, box-shadow .15s;
+}
+
+.location-bubble:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .12);
+}
+
+.sent .location-bubble { background: var(--color-secondary-message); }
+
+.location-map-mock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 130px;
+  background:
+    linear-gradient(135deg, #ece4f5 25%, transparent 25%) -10px 0/20px 20px,
+    linear-gradient(225deg, #ece4f5 25%, transparent 25%) -10px 0/20px 20px,
+    linear-gradient(315deg, #ece4f5 25%, transparent 25%) 0 0/20px 20px,
+    linear-gradient(45deg, #ece4f5 25%, transparent 25%) 0 0/20px 20px,
+    var(--color-primary-bg, #f5ecff);
+}
+
+.location-pin {
+  color: var(--color-primary);
+  font-size: 48px;
+  filter: drop-shadow(0 2px 4px rgba(129, 49, 129, 0.25));
+}
+
+.location-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+}
+
+.location-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.location-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.location-sub {
+  font-size: 11px;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.location-bubble .message-time {
+  position: static;
+  font-size: 10px;
+  color: rgba(0, 0, 0, .4);
+  font-weight: 600;
+}
+
+/* =========================================
+   IMAGE LIGHTBOX
+   ========================================= */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .85);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.lightbox img {
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .6);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .15);
+  color: #fff;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.lightbox-close:hover { background: rgba(255, 255, 255, .25); }
+
+@media (max-width: 480px) {
+  .btn-attach {
+    width: 38px;
+    height: 38px;
+    margin-right: 4px;
+  }
+  .btn-attach .material-icons { font-size: 20px; }
+  .image-bubble img { max-width: 220px; }
+  .location-bubble { max-width: 260px; }
+  .location-map-mock { height: 100px; }
+}
+
 
 /* =========================================
    SISTEMSKE PORUKE (notifikacije u chatu)

@@ -58,6 +58,7 @@
     <include file="/db/changelog/db.changelog-35-fix-nekretnine.xml"/>
     <include file="/db/changelog/db.changelog-36-add-deposit-to-ad.xml"/>
     <include file="/db/changelog/db.changelog-37-garderoba-category.xml"/>
+    <include file="/db/changelog/db.changelog-38-add-message-attachments.xml"/>
 
     <!-- Onda korisnike (kojima treba lokacija) -->
     <include file="/db/changelog/db.changelog-seed-user.xml"/>

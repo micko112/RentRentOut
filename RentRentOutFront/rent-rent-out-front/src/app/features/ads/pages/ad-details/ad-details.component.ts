@@ -117,6 +117,17 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  get waShareUrl(): string {
+    if (!isPlatformBrowser(this.platformId)) return '#';
+    const text = `Pogledaj ovaj oglas: ${window.location.href}`;
+    return `https://wa.me/?text=${encodeURIComponent(text)}`;
+  }
+
+  get fbShareUrl(): string {
+    if (!isPlatformBrowser(this.platformId)) return '#';
+    return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+  }
+
   openReport() {
     this.reportOpen = true;
   }

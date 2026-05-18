@@ -4,6 +4,7 @@ package org.landm.entity;
 import jakarta.persistence.*;
 import org.landm.entity.Enums.MessageType;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public class Message {
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "is_read", nullable = false)
@@ -35,6 +36,18 @@ public class Message {
 
     @Column(name = "related_contract_id")
     private Long relatedContractId;
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
+    @Column(name = "location_lat", precision = 10, scale = 7)
+    private BigDecimal locationLat;
+
+    @Column(name = "location_lng", precision = 10, scale = 7)
+    private BigDecimal locationLng;
+
+    @Column(name = "location_label", length = 255)
+    private String locationLabel;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -106,6 +119,38 @@ public class Message {
 
     public void setRelatedContractId(Long relatedContractId) {
         this.relatedContractId = relatedContractId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public BigDecimal getLocationLat() {
+        return locationLat;
+    }
+
+    public void setLocationLat(BigDecimal locationLat) {
+        this.locationLat = locationLat;
+    }
+
+    public BigDecimal getLocationLng() {
+        return locationLng;
+    }
+
+    public void setLocationLng(BigDecimal locationLng) {
+        this.locationLng = locationLng;
+    }
+
+    public String getLocationLabel() {
+        return locationLabel;
+    }
+
+    public void setLocationLabel(String locationLabel) {
+        this.locationLabel = locationLabel;
     }
 
     public LocalDateTime getCreatedAt() {

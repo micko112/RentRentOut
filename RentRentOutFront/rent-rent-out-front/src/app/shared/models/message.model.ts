@@ -4,7 +4,7 @@ export interface Message {
   senderId: number;
   content: string;
   read: boolean;
-  messageType: 'REGULAR' | 'SYSTEM' | 'CONTRACT_REQUEST';
+  messageType: 'REGULAR' | 'SYSTEM' | 'CONTRACT_REQUEST' | 'IMAGE' | 'LOCATION';
   relatedContractId?: number;
   createdAt: string; // ISO datum
   _temp?: boolean;
@@ -15,6 +15,14 @@ export interface Message {
   contractEndDate?: string;
   contractTotalPrice?: number;
   contractCurrency?: string;
+
+  // IMAGE
+  imageUrl?: string;
+
+  // LOCATION
+  locationLat?: number;
+  locationLng?: number;
+  locationLabel?: string;
 }
 export interface MessageGroup {
   dateLabel: string; // Npr. "Danas", "Juče", "15.03.2026."

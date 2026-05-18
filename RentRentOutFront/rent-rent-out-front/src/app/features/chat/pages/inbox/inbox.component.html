@@ -148,6 +148,41 @@
                 </div>
               </div>
 
+              <!-- Slika -->
+              <div class="message-row"
+                   *ngIf="msg.messageType === 'IMAGE'"
+                   [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
+                <div class="message-content-wrapper">
+                  <div class="image-bubble" (click)="openImage(msg.imageUrl)">
+                    <img [src]="msg.imageUrl" alt="Slika u poruci" loading="lazy">
+                    <span class="message-time-image">{{ msg.createdAt | date:'HH:mm' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lokacija -->
+              <div class="message-row"
+                   *ngIf="msg.messageType === 'LOCATION'"
+                   [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
+                <div class="message-content-wrapper">
+                  <a class="location-bubble"
+                     [href]="mapLinkFor(msg)"
+                     target="_blank"
+                     rel="noopener noreferrer">
+                    <div class="location-map-mock">
+                      <span class="material-icons location-pin">place</span>
+                    </div>
+                    <div class="location-footer">
+                      <div class="location-text">
+                        <span class="location-label">{{ msg.locationLabel || 'Deljena lokacija' }}</span>
+                        <span class="location-sub">Otvori u Mapama</span>
+                      </div>
+                      <span class="message-time">{{ msg.createdAt | date:'HH:mm' }}</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+
             </ng-container>
 
           </ng-container>
@@ -156,6 +191,28 @@
 
         <!-- 3. Dno (Polje za kucanje) -->
         <div class="chat-input-area">
+          <input #imageFileInput
+                 type="file"
+                 accept="image/*,.heic,.heif"
+                 class="file-input-hidden"
+                 (change)="onImageSelected($event)">
+
+          <button type="button"
+                  class="btn-attach"
+                  title="Pošalji sliku"
+                  [disabled]="isUploadingImage"
+                  (click)="triggerImagePicker(imageFileInput)">
+            <span class="material-icons" *ngIf="!isUploadingImage">image</span>
+            <span class="attach-spinner" *ngIf="isUploadingImage"></span>
+          </button>
+
+          <button type="button"
+                  class="btn-attach"
+                  title="Pošalji lokaciju"
+                  (click)="openLocationPicker()">
+            <span class="material-icons">place</span>
+          </button>
+
           <input type="text"
                  placeholder="Napišite poruku..."
                  [(ngModel)]="newMessageContent"
@@ -180,5 +237,19 @@
     </div>
     <!-- /chat-and-calendar-layout -->
   </main>
+
+  <!-- Location picker modal -->
+  <app-location-picker-modal
+    *ngIf="showLocationPicker"
+    [defaultLocationId]="myLocationId"
+    (picked)="onLocationPicked($event)"
+    (closed)="closeLocationPicker()">
+  </app-location-picker-modal>
+
+  <!-- Image lightbox -->
+  <div class="lightbox" *ngIf="lightboxImage" (click)="closeLightbox()">
+    <button class="lightbox-close" (click)="closeLightbox()" aria-label="Zatvori">&times;</button>
+    <img [src]="lightboxImage" alt="Slika" (click)="$event.stopPropagation()">
+  </div>
 
 </div>

@@ -20,6 +20,14 @@ public class MessageDto {
     private BigDecimal contractTotalPrice;
     private String contractCurrency;
 
+    // Populated only for IMAGE messages
+    private String imageUrl;
+
+    // Populated only for LOCATION messages
+    private BigDecimal locationLat;
+    private BigDecimal locationLng;
+    private String locationLabel;
+
     public Long getId() {
         return id;
     }
@@ -98,4 +106,16 @@ public class MessageDto {
 
     public String getContractCurrency() { return contractCurrency; }
     public void setContractCurrency(String contractCurrency) { this.contractCurrency = contractCurrency; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public BigDecimal getLocationLat() { return locationLat; }
+    public void setLocationLat(BigDecimal locationLat) { this.locationLat = locationLat; }
+
+    public BigDecimal getLocationLng() { return locationLng; }
+    public void setLocationLng(BigDecimal locationLng) { this.locationLng = locationLng; }
+
+    public String getLocationLabel() { return locationLabel; }
+    public void setLocationLabel(String locationLabel) { this.locationLabel = locationLabel; }
 }

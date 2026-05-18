@@ -54,14 +54,40 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional
     public MessageDto sendMessage(SendMessageRequestDto request, Long senderId) {
-        if (request.getContent() == null || request.getContent().isBlank()) {
-            throw new IllegalArgumentException("Poruka ne sme biti prazna.");
-        }
-        if (request.getContent().length() > 5000) {
-            throw new IllegalArgumentException("Poruka ne sme biti duža od 5000 karaktera.");
-        }
         if (request.getReceiverId() == null || request.getAdId() == null) {
             throw new IllegalArgumentException("receiverId i adId su obavezni.");
+        }
+
+        MessageType type;
+        try {
+            type = request.getMessageType() == null || request.getMessageType().isBlank()
+                    ? MessageType.REGULAR
+                    : MessageType.valueOf(request.getMessageType());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Nepoznat tip poruke.");
+        }
+        if (type != MessageType.REGULAR && type != MessageType.IMAGE && type != MessageType.LOCATION) {
+            throw new IllegalArgumentException("Nedozvoljen tip poruke.");
+        }
+
+        if (type == MessageType.REGULAR) {
+            if (request.getContent() == null || request.getContent().isBlank()) {
+                throw new IllegalArgumentException("Poruka ne sme biti prazna.");
+            }
+            if (request.getContent().length() > 5000) {
+                throw new IllegalArgumentException("Poruka ne sme biti duža od 5000 karaktera.");
+            }
+        } else if (type == MessageType.IMAGE) {
+            if (request.getImageUrl() == null || request.getImageUrl().isBlank()) {
+                throw new IllegalArgumentException("imageUrl je obavezan za IMAGE poruku.");
+            }
+            if (!isAllowedImageUrl(request.getImageUrl())) {
+                throw new IllegalArgumentException("Nedozvoljen izvor slike.");
+            }
+        } else { // LOCATION
+            if (request.getLocationLat() == null || request.getLocationLng() == null) {
+                throw new IllegalArgumentException("Koordinate su obavezne za LOCATION poruku.");
+            }
         }
 
         User sender = userRepository.findById(senderId).orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -79,8 +105,31 @@ public class ChatServiceImpl implements ChatService {
             conv = new Conversation(ad, sender, receiver);
             conv = conversationRepository.save(conv);
         }
-        String sanitizedContent = HtmlSanitizer.sanitize(request.getContent());
-        Message message = new Message(conv, sender, sanitizedContent);
+
+        Message message = new Message();
+        message.setConversation(conv);
+        message.setSender(sender);
+        message.setMessageType(type);
+
+        String pushPreview;
+        if (type == MessageType.REGULAR) {
+            String sanitizedContent = HtmlSanitizer.sanitize(request.getContent());
+            message.setContent(sanitizedContent);
+            pushPreview = sanitizedContent.length() > 80
+                    ? sanitizedContent.substring(0, 80) + "..."
+                    : sanitizedContent;
+        } else if (type == MessageType.IMAGE) {
+            message.setImageUrl(request.getImageUrl());
+            pushPreview = "📷 Poslata je slika";
+        } else {
+            message.setLocationLat(request.getLocationLat());
+            message.setLocationLng(request.getLocationLng());
+            if (request.getLocationLabel() != null && !request.getLocationLabel().isBlank()) {
+                message.setLocationLabel(HtmlSanitizer.sanitize(request.getLocationLabel()));
+            }
+            pushPreview = "📍 Poslata je lokacija";
+        }
+
         messageRepository.save(message);
 
         conv.setUpdatedAt(LocalDateTime.now());
@@ -89,12 +138,15 @@ public class ChatServiceImpl implements ChatService {
         notificationService.sendPushNotification(
             receiver.getId(),
             "Nova poruka od " + sender.getFirstname(),
-            sanitizedContent.length() > 80
-                ? sanitizedContent.substring(0, 80) + "..."
-                : sanitizedContent
+            pushPreview
         );
 
         return chatMapper.toMessageDto(message);
+    }
+
+    private boolean isAllowedImageUrl(String url) {
+        String trimmed = url.trim().toLowerCase();
+        return trimmed.startsWith("https://res.cloudinary.com/");
     }
 
     @Override

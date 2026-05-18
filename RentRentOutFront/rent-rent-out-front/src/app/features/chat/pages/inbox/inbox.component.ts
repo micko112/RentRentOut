@@ -14,11 +14,13 @@ import {AdService} from '../../../ads/services/ad.service';
 import {Ad} from '../../../../shared/models/ad.model';
 import {RentalCalendarComponent} from '../../../ads/components/rental-calendar/rental-calendar.component';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {LocationPickerModalComponent, SelectedLocation} from '../../components/location-picker-modal/location-picker-modal.component';
+import {ToastService} from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-inbox',
   standalone: true,
-  imports: [CommonModule, FormsModule, InitialsPipe, RouterLink, RentalCalendarComponent],
+  imports: [CommonModule, FormsModule, InitialsPipe, RouterLink, RentalCalendarComponent, LocationPickerModalComponent],
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.css']
 })
@@ -39,7 +41,15 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   messages: Message[] =[];
   newMessageContent: string = '';
   myUserId: number | null = null;
+  myLocationId: number | null = null;
   isLoadingMessages = false;
+
+  // Attachments
+  isUploadingImage = false;
+  showLocationPicker = false;
+
+  // Image lightbox
+  lightboxImage: string | null = null;
 
   private messageSub!: Subscription;
   private pollSub!: Subscription;
@@ -61,7 +71,8 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     private adService: AdService,
     private route: ActivatedRoute,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -69,11 +80,13 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     const user = this.authService.currentUserValue;
     if (user && user.id) {
       this.myUserId = user.id;
+      this.myLocationId = user.locationId ?? null;
     }
 
     this.userSub = this.authService.currentUser$.subscribe(u => {
       if (u && u.id) {
         this.myUserId = u.id;
+        this.myLocationId = u.locationId ?? null;
       }
     });
 
@@ -209,14 +222,100 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     const request = {
       adId: this.activeConversation.adId,
       receiverId: this.activeConversation.otherParticipant.id,
+      messageType: 'REGULAR' as const,
       content
     };
 
     this.newMessageContent = '';
 
-    this.appendOptimisticMessage(content);
+    this.appendOptimisticMessage({ content, messageType: 'REGULAR' });
     // Send via WebSocket
     this.websocketService.sendMessage('/app/chat.send', request);
+  }
+
+  triggerImagePicker(fileInput: HTMLInputElement): void {
+    if (this.isUploadingImage) return;
+    fileInput.value = '';
+    fileInput.click();
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0 || !this.activeConversation) return;
+
+    const file = input.files[0];
+    input.value = '';
+
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
+    if (!allowed.includes(file.type.toLowerCase()) && !/\.(heic|heif)$/i.test(file.name)) {
+      this.toast.showError('Nedozvoljen format slike.');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      this.toast.showError('Slika je veća od 10MB.');
+      return;
+    }
+
+    this.isUploadingImage = true;
+    this.chatService.uploadChatImage(file).subscribe({
+      next: (url) => {
+        this.isUploadingImage = false;
+        if (!url || !this.activeConversation) return;
+        this.appendOptimisticMessage({ imageUrl: url, messageType: 'IMAGE' });
+        this.websocketService.sendMessage('/app/chat.send', {
+          adId: this.activeConversation.adId,
+          receiverId: this.activeConversation.otherParticipant.id,
+          messageType: 'IMAGE',
+          imageUrl: url,
+        });
+      },
+      error: () => {
+        this.isUploadingImage = false;
+        this.toast.showError('Greška pri otpremanju slike.');
+      }
+    });
+  }
+
+  openLocationPicker(): void {
+    if (!this.activeConversation) return;
+    this.showLocationPicker = true;
+  }
+
+  closeLocationPicker(): void {
+    this.showLocationPicker = false;
+  }
+
+  onLocationPicked(loc: SelectedLocation): void {
+    if (!this.activeConversation) return;
+    this.showLocationPicker = false;
+
+    this.appendOptimisticMessage({
+      messageType: 'LOCATION',
+      locationLat: loc.lat,
+      locationLng: loc.lng,
+      locationLabel: loc.label,
+    });
+    this.websocketService.sendMessage('/app/chat.send', {
+      adId: this.activeConversation.adId,
+      receiverId: this.activeConversation.otherParticipant.id,
+      messageType: 'LOCATION',
+      locationLat: loc.lat,
+      locationLng: loc.lng,
+      locationLabel: loc.label,
+    });
+  }
+
+  openImage(url: string | undefined): void {
+    if (!url) return;
+    this.lightboxImage = url;
+  }
+
+  closeLightbox(): void {
+    this.lightboxImage = null;
+  }
+
+  mapLinkFor(msg: Message): string {
+    return `https://www.google.com/maps?q=${msg.locationLat},${msg.locationLng}`;
   }
 
   ngAfterViewChecked() {
@@ -301,15 +400,19 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
   }
 
-  private appendOptimisticMessage(content: string): void {
+  private appendOptimisticMessage(partial: Partial<Message> & { messageType: Message['messageType'] }): void {
     if (!this.activeConversation) return;
     const tempMsg: Message = {
       id: -Date.now(),
       conversationId: this.activeConversation.id,
       senderId: this.myUserId || 0,
-      content,
+      content: partial.content ?? '',
       read: true,
-      messageType: 'REGULAR',
+      messageType: partial.messageType,
+      imageUrl: partial.imageUrl,
+      locationLat: partial.locationLat,
+      locationLng: partial.locationLng,
+      locationLabel: partial.locationLabel,
       createdAt: new Date().toISOString()
     };
     (tempMsg as any)._temp = true;
@@ -319,12 +422,18 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   private removeOptimisticDuplicate(msg: Message): void {
-    const idx = this.messages.findIndex(m =>
-      (m as any)._temp &&
-      m.senderId === msg.senderId &&
-      m.content === msg.content &&
-      (m.conversationId === msg.conversationId || m.conversationId === 0)
-    );
+    const idx = this.messages.findIndex(m => {
+      if (!(m as any)._temp) return false;
+      if (m.senderId !== msg.senderId) return false;
+      if (m.messageType !== msg.messageType) return false;
+      const sameConv = m.conversationId === msg.conversationId || m.conversationId === 0;
+      if (!sameConv) return false;
+      if (msg.messageType === 'IMAGE') return m.imageUrl === msg.imageUrl;
+      if (msg.messageType === 'LOCATION') {
+        return m.locationLat === msg.locationLat && m.locationLng === msg.locationLng;
+      }
+      return m.content === msg.content;
+    });
     if (idx >= 0) {
       this.messages.splice(idx, 1);
     }

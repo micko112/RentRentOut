@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="38-add-message-image-url" author="claude">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="message"/>
+            <not>
+                <columnExists tableName="message" columnName="image_url"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="message">
+            <column name="image_url" type="VARCHAR(500)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="38-add-message-location-columns" author="claude">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="message"/>
+            <not>
+                <columnExists tableName="message" columnName="location_lat"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="message">
+            <column name="location_lat" type="DECIMAL(10,7)"/>
+            <column name="location_lng" type="DECIMAL(10,7)"/>
+            <column name="location_label" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="38-message-content-nullable" author="claude">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="message"/>
+            <columnExists tableName="message" columnName="content"/>
+        </preConditions>
+        <dropNotNullConstraint tableName="message" columnName="content" columnDataType="TEXT"/>
+    </changeSet>
+
+</databaseChangeLog>
