@@ -1,0 +1,53 @@
+<div class="modal-backdrop" (click)="close()"></div>
+
+<div class="modal">
+  <button class="close-btn" (click)="close()" aria-label="Zatvori">&times;</button>
+  <h3 class="modal-title">Pošalji lokaciju</h3>
+  <p class="modal-sub">Izaberite lokaciju koju želite da pošaljete.</p>
+
+  <!-- Predlog: lokacija korisnika (kao na KupujemProdajem) -->
+  <div class="suggested-row" *ngIf="defaultLocation">
+    <div class="suggested-info">
+      <span class="material-icons suggested-icon">my_location</span>
+      <div class="suggested-text">
+        <span class="suggested-label">Tvoja lokacija</span>
+        <span class="suggested-value">{{ formatLabel(defaultLocation) }}</span>
+      </div>
+    </div>
+    <button type="button" class="btn-use-mine" (click)="useDefault()">Pošalji</button>
+  </div>
+
+  <div class="search-box">
+    <span class="material-icons">search</span>
+    <input type="text"
+           placeholder="Pretraži grad ili opštinu..."
+           [(ngModel)]="search"
+           (ngModelChange)="applyFilter()">
+  </div>
+
+  <div class="locations-list" *ngIf="!loading">
+    <button type="button"
+            *ngFor="let loc of filtered"
+            class="location-item"
+            [class.selected]="selectedId === loc.id"
+            (click)="select(loc)">
+      <span class="material-icons">place</span>
+      <span class="loc-name">{{ formatLabel(loc) }}</span>
+    </button>
+
+    <div *ngIf="filtered.length === 0" class="empty-state">
+      Nema rezultata za "{{ search }}"
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">Učitavanje...</div>
+
+  <div class="modal-actions">
+    <button class="btn-cancel" (click)="close()">Odustani</button>
+    <button class="btn-submit"
+            [disabled]="!selectedId"
+            (click)="confirm()">
+      Pošalji lokaciju
+    </button>
+  </div>
+</div>
