@@ -1,4 +1,4 @@
-# IzdajemiZnajmljujem
+# IzdajemIznajmljujem
 
 A full-stack peer-to-peer rental marketplace where users can list items for rent and book rentals from others. Live at **[izdajemiznajmljujem.com](https://izdajemiznajmljujem.com)**.
 
