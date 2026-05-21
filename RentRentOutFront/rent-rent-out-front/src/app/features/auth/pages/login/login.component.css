@@ -133,35 +133,65 @@ hr {
   padding: 0;
 }
 
-.google-btn-wrapper {
+.divider {
   display: flex;
-  justify-content: center;
-  margin: 12px 0;
+  align-items: center;
+  gap: 12px;
+  color: #888;
+  font-size: 13px;
+  margin: 20px 0 16px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
 }
 
 .social-btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   width: 100%;
-  padding: 10px;
+  padding: 12px 14px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
   color: var(--color-white);
-  margin-top: 8px;
+  margin-top: 10px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s;
   &:hover {
-    opacity: 0.88;
-    transition: opacity 0.2s;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
   }
+}
+
+.google-btn-custom {
+  background-color: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  margin-top: 0;
+  font-weight: 600;
+  font-size: 15px;
+  &:hover {
+    background-color: #f8f9fa;
+    border-color: #c6c9cc;
+  }
+}
+
+.g-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .facebook-btn {
   background-color: var(--color-facebook);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
 }
 
 .fb-icon {

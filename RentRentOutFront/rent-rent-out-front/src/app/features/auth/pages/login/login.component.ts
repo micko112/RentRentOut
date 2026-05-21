@@ -57,6 +57,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   }
 
+  triggerGoogleLogin(): void {
+    const gbtn = document.querySelector('#google-btn [role="button"]') as HTMLElement | null;
+    if (gbtn) {
+      gbtn.click();
+    } else if (typeof google !== 'undefined') {
+      google.accounts.id.prompt();
+    } else {
+      this.toastService.showError('Google prijava nije dostupna.');
+    }
+  }
+
   handleGoogleResponse(response: any): void {
     this.authService.googleLogin(response.credential).subscribe({
       next: () => {
