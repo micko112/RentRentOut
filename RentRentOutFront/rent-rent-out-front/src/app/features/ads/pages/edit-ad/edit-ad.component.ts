@@ -554,6 +554,18 @@ export class EditAdComponent implements OnInit, OnDestroy {
     this.syncImagesControl();
   }
 
+  handleExistingImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    const src = img.src;
+    if (src && /\.(heic|heif)(\?.*)?$/i.test(src)) {
+      img.onerror = () => { img.src = 'assets/images/placeholder.png'; img.onerror = null; };
+      img.src = src.replace(/\.(heic|heif)(\?.*)?$/i, '.jpg');
+      return;
+    }
+    img.src = 'assets/images/placeholder.png';
+    img.onerror = null;
+  }
+
   removeNewImage(index: number): void {
     if (this.previewUrl[index] !== '__heic__') URL.revokeObjectURL(this.previewUrl[index]);
     this.selectedFiles.splice(index, 1);

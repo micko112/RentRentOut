@@ -39,10 +39,34 @@
             &#9660;
           </button>
         </div>
-        <div class="main-image-wrapper" (click)="openOverlay()" style="cursor: zoom-in">
+        <div class="main-image-wrapper" (click)="openOverlay()"
+             (touchstart)="onTouchStart($event)"
+             (touchmove)="onTouchMove($event)"
+             (touchend)="onTouchEnd($event)"
+             style="cursor: zoom-in">
           <img [src]="selectedImageUrl"
                (error)="handleImageError($event)"
                alt="Glavna slika: {{ ad.title }}">
+          <button type="button" class="mobile-nav-arrow prev"
+                  *ngIf="ad.images && ad.images.length > 1"
+                  (click)="prevMainImage($event)"
+                  aria-label="Prethodna slika">
+            <span class="material-icons">chevron_left</span>
+          </button>
+          <button type="button" class="mobile-nav-arrow next"
+                  *ngIf="ad.images && ad.images.length > 1"
+                  (click)="nextMainImage($event)"
+                  aria-label="Sledeća slika">
+            <span class="material-icons">chevron_right</span>
+          </button>
+        </div>
+      </div>
+      <div class="mobile-thumbnail-strip" *ngIf="ad.images && ad.images.length > 1">
+        <div class="mobile-thumb"
+             *ngFor="let imageUrl of ad.images"
+             (click)="selectImage(imageUrl)"
+             [class.active]="imageUrl === selectedImageUrl">
+          <img [src]="imageUrl" (error)="handleImageError($event)" alt="Mala slika">
         </div>
       </div>
       <div class="info">

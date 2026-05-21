@@ -170,6 +170,14 @@
   flex-direction: column;
 }
 
+@media (max-width: 1920px) {
+  .left-column { max-width: 920px; }
+}
+
+@media (max-width: 1080px) {
+  .left-column { max-width: 100%; }
+}
+
 .gallery {
   display: flex;
   flex-direction: row; /* Thumbnails levo, velika slika desno */
@@ -247,6 +255,7 @@
 
 /* Glavna velika slika (Desna strana galerije) */
 .main-image-wrapper {
+  position: relative;
   flex-grow: 1; /* Popunjava sav preostali prostor pored thumbnails-a */
   height: 100%; /* Prati visinu galerije (450px) */
   background-color: var(--color-surface-alt);
@@ -257,9 +266,61 @@
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
+}
+
+/* Strelice unutar glavne slike — samo mobile */
+.mobile-nav-arrow {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  z-index: 5;
+  padding: 0;
+}
+.mobile-nav-arrow.prev { left: 10px; }
+.mobile-nav-arrow.next { right: 10px; }
+.mobile-nav-arrow .material-icons { font-size: 26px; }
+
+/* Horizontalna traka thumbnailova — samo mobile */
+.mobile-thumbnail-strip {
+  display: none;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-top: -18px;
+  margin-bottom: 20px;
+  padding: 4px 2px;
+}
+.mobile-thumbnail-strip::-webkit-scrollbar { display: none; }
+.mobile-thumb {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.mobile-thumb.active { border-color: var(--color-primary); }
+.mobile-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .reviews-list {
@@ -290,8 +351,6 @@
   width: 380px;
   flex-shrink: 0;
   flex-grow: 0;
-  position: sticky;
-  top: 142px;
   align-self: flex-start;
 }
 .right-column-container {
@@ -726,7 +785,7 @@
   width: 100vw;
   height: 100vh;
   background-color: var(--overlay-image);
-z-index: 9999;
+z-index: 100000;
 display: flex;
   align-items: center;
   justify-content: center;
@@ -891,13 +950,11 @@ border-radius: 4px;
 
 /* ── 27" ── */
 @media (min-width: 1921px) {
-  .right-column { top: 190px; }
   .main-layout  { gap: 36px; }
 }
 
 /* ── 30" ── */
 @media (min-width: 2800px) {
-  .right-column { top: 220px; }
   .main-layout  { gap: 44px; }
 }
 
@@ -907,7 +964,6 @@ border-radius: 4px;
 
 @media (max-width: 1200px) {
   .main-layout { gap: 24px; }
-  .right-column { top: 102px; }
 }
 
 @media (max-width: 1100px) {
@@ -920,7 +976,6 @@ border-radius: 4px;
     width: 100%;
     flex-shrink: 1;
     flex-grow: 1;
-    position: static;
     align-self: auto;
   }
 
@@ -968,6 +1023,12 @@ border-radius: 4px;
   .right-column-container {
     border-radius: 12px;
   }
+}
+
+@media (max-width: 900px) {
+  .mobile-nav-arrow { display: flex; }
+  .mobile-thumbnail-strip { display: flex; }
+  .thumbnail-column { display: none; }
 }
 
 @media (max-width: 480px) {

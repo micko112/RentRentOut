@@ -145,7 +145,7 @@
             <!-- Existing images -->
             <div class="img-cell" *ngFor="let url of existingImages; let i = index">
               <div class="img-inner">
-                <img [src]="url" [alt]="'Postojeća slika ' + (i + 1)">
+                <img [src]="url" [alt]="'Postojeća slika ' + (i + 1)" (error)="handleExistingImageError($event)">
                 <div class="cover-badge" *ngIf="i === 0 && previewUrl.length === 0">
                   <span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> Naslovna
                 </div>

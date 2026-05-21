@@ -136,6 +136,52 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     this.selectedImageUrl = imageUrl;
   }
 
+  prevMainImage(event?: Event) {
+    if (event) event.stopPropagation();
+    if (!this.currentAd?.images?.length) return;
+    const len = this.currentAd.images.length;
+    const idx = this.currentAd.images.indexOf(this.selectedImageUrl!);
+    const next = idx === -1 ? 0 : (idx - 1 + len) % len;
+    this.selectedImageUrl = this.currentAd.images[next];
+  }
+
+  nextMainImage(event?: Event) {
+    if (event) event.stopPropagation();
+    if (!this.currentAd?.images?.length) return;
+    const len = this.currentAd.images.length;
+    const idx = this.currentAd.images.indexOf(this.selectedImageUrl!);
+    const next = idx === -1 ? 0 : (idx + 1) % len;
+    this.selectedImageUrl = this.currentAd.images[next];
+  }
+
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private touchMoved = false;
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+    this.touchStartY = event.touches[0].clientY;
+    this.touchMoved = false;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    const dx = Math.abs(event.touches[0].clientX - this.touchStartX);
+    const dy = Math.abs(event.touches[0].clientY - this.touchStartY);
+    if (dx > 10 && dx > dy) this.touchMoved = true;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    if (!this.touchMoved) return;
+    const dx = event.changedTouches[0].clientX - this.touchStartX;
+    const dy = Math.abs(event.changedTouches[0].clientY - this.touchStartY);
+    if (Math.abs(dx) > 40 && Math.abs(dx) > dy) {
+      event.stopPropagation();
+      event.preventDefault();
+      if (dx < 0) this.nextMainImage();
+      else this.prevMainImage();
+    }
+  }
+
   handleImageError(event: Event) {
     const img = event.target as HTMLImageElement;
     const src = img.src;
@@ -149,6 +195,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
   }
 
   openOverlay() {
+    if (this.touchMoved) { this.touchMoved = false; return; }
     if (!this.currentAd || !this.currentAd.images || this.currentAd.images.length === 0) {
       return;
     }
