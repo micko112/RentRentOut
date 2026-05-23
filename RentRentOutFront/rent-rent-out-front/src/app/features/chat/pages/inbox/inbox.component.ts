@@ -278,7 +278,14 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   openLocationPicker(): void {
     if (!this.activeConversation) return;
-    this.showLocationPicker = true;
+    const u = this.authService.currentUserValue;
+    if (!u?.locationDisplay) {
+      this.toast.showError('Niste postavili lokaciju u profilu.');
+      return;
+    }
+    const text = u.address ? `${u.locationDisplay}, ${u.address}` : u.locationDisplay;
+    const prefix = this.newMessageContent && !this.newMessageContent.endsWith(' ') ? ' ' : '';
+    this.newMessageContent = (this.newMessageContent || '') + prefix + text;
   }
 
   closeLocationPicker(): void {

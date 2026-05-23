@@ -65,6 +65,10 @@
           <span class="info-value">{{ user.locationDisplay || 'Nije uneta' }}</span>
         </div>
         <div class="info-item">
+          <span class="info-label">Adresa</span>
+          <span class="info-value">{{ user.address || 'Nije uneta' }}</span>
+        </div>
+        <div class="info-item">
           <span class="info-label">Valuta</span>
           <span class="info-value">{{ user.currency || 'RSD' }}</span>
         </div>
@@ -112,9 +116,14 @@
             <app-city-picker
               [locations]="locations"
               [initialLocationId]="selectedLocationId"
+              [priorityCity]="userCity"
               placeholder="Izaberite grad"
               (selectionChange)="onLocationChange($event)">
             </app-city-picker>
+          </div>
+          <div class="form-row form-row--full">
+            <label>Adresa <span class="optional-hint">(opciono — privatna, vidiš samo ti)</span></label>
+            <input type="text" formControlName="address" placeholder="Npr. Bulevar Kralja Aleksandra 73" maxlength="255" />
           </div>
           <div class="form-row">
             <label>Valuta</label>

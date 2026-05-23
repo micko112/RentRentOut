@@ -6,6 +6,7 @@ import { AdSearchCriteria } from '../../../../shared/models/adSearchCriteria';
 import { Location } from '../../../../shared/models/location.model';
 import { CityPickerComponent, CityPickerOption } from '../../../../shared/components/city-picker/city-picker.component';
 import { AdService } from '../../services/ad.service';
+import { AuthService } from '../../../auth/services/auth.service';
 import { Subject, switchMap, takeUntil, debounceTime, catchError, of } from 'rxjs';
 
 @Component({
@@ -73,7 +74,13 @@ export class FiltersSidebarComponent implements OnInit, OnDestroy {
   private filterChanges$ = new Subject<void>();
   private destroy$       = new Subject<void>();
 
-  constructor(private adService: AdService) {}
+  constructor(private adService: AdService, private authService: AuthService) {}
+
+  get userCity(): string | null {
+    const userLocId = this.authService.currentUserValue?.locationId;
+    if (!userLocId || !this._locations.length) return null;
+    return this._locations.find(l => l.id === userLocId)?.city ?? null;
+  }
 
   ngOnInit(): void {
     this.filterChanges$.pipe(

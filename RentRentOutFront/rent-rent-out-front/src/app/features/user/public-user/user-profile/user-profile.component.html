@@ -6,8 +6,11 @@
     <div class="profile-header-top">
       <!-- Levo: info o korisniku -->
       <div class="user-info-section">
-        <div class="avatar-large">
-          {{ data.userInfo?.displayName | initials }}
+        <div class="avatar-large" [class.has-image]="data.userInfo?.avatarUrl">
+          <img *ngIf="data.userInfo?.avatarUrl; else avatarInitials"
+               [src]="data.userInfo?.avatarUrl"
+               [alt]="data.userInfo?.displayName" />
+          <ng-template #avatarInitials>{{ data.userInfo?.displayName | initials }}</ng-template>
         </div>
         <div class="details">
           <h1>

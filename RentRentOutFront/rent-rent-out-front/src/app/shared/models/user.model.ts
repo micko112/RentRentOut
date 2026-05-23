@@ -10,6 +10,7 @@ export interface User{
   locationId?: number;
   currency: string;
   phoneNumber: string;
+  address?: string;
   description: string;
   positiveReviews: number;
   negativeReviews: number;

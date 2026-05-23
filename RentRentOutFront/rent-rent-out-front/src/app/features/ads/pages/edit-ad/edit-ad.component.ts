@@ -12,6 +12,7 @@ import {Ad} from '../../../../shared/models/ad.model';
 import {UpdateAdRequest} from '../../../../shared/models/update-ad-request';
 import {Location} from '../../../../shared/models/location.model';
 import {CityPickerComponent, CityPickerOption} from '../../../../shared/components/city-picker/city-picker.component';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-edit-ad',
@@ -264,7 +265,14 @@ export class EditAdComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private router: Router,
               private toastService: ToastService,
-              private cdRef: ChangeDetectorRef) {}
+              private cdRef: ChangeDetectorRef,
+              private authService: AuthService) {}
+
+  get userCity(): string | null {
+    const userLocId = this.authService.currentUserValue?.locationId;
+    if (!userLocId || !this.locations.length) return null;
+    return this.locations.find(l => l.id === userLocId)?.city ?? null;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group({

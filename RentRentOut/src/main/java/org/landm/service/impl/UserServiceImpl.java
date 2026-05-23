@@ -217,6 +217,9 @@ public class UserServiceImpl implements UserService {
 		if (editUserDto.getPhoneNumber() != null) {
 			user.setPhoneNumber(editUserDto.getPhoneNumber().isBlank() ? null : editUserDto.getPhoneNumber());
 		}
+		if (editUserDto.getAddress() != null) {
+			user.setAddress(editUserDto.getAddress().isBlank() ? null : editUserDto.getAddress().trim());
+		}
 		if (editUserDto.getAvatarUrl() != null) user.setAvatarUrl(editUserDto.getAvatarUrl());
 		if (editUserDto.getCurrency() != null) {
 			try {

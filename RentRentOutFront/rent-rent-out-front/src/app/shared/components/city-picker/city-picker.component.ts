@@ -26,6 +26,7 @@ export class CityPickerComponent implements OnChanges {
   @Input() placeholder = 'Svi gradovi';
   @Input() initialLocationId: number | null = null;
   @Input() isInvalid = false;
+  @Input() priorityCity: string | null = null;
 
   @Output() selectionChange = new EventEmitter<CityPickerOption | null>();
 
@@ -58,8 +59,17 @@ export class CityPickerComponent implements OnChanges {
 
   get allOptions(): CityPickerOption[] {
     const result: CityPickerOption[] = [];
+    const priority = this.priorityCity?.trim().toLowerCase() || null;
     const uniqueCities = Array.from(new Set(this.locations.map(l => l.city)))
-      .sort((a, b) => a.localeCompare(b, 'sr'));
+      .sort((a, b) => {
+        if (priority) {
+          const aP = a.toLowerCase() === priority;
+          const bP = b.toLowerCase() === priority;
+          if (aP && !bP) return -1;
+          if (!aP && bP) return 1;
+        }
+        return a.localeCompare(b, 'sr');
+      });
 
     for (const city of uniqueCities) {
       const cityLocs = this.locations
@@ -87,7 +97,11 @@ export class CityPickerComponent implements OnChanges {
   get filteredOptions(): CityPickerOption[] {
     const search = this.citySearch.trim().toLowerCase();
     if (!search) return this.allOptions;
-    return this.allOptions.filter(o => o.label.toLowerCase().includes(search));
+    const tokens = search.split(/\s+/).filter(t => t.length > 0);
+    return this.allOptions.filter(o => {
+      const haystack = o.label.toLowerCase().replace(/\|/g, ' ');
+      return tokens.every(t => haystack.includes(t));
+    });
   }
 
   get columnSortedOptions(): CityPickerOption[] {

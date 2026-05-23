@@ -43,6 +43,11 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   locations: Location[] = [];
   selectedLocationId: number | null = null;
 
+  get userCity(): string | null {
+    if (!this.currentUser?.locationId || !this.locations.length) return null;
+    return this.locations.find(l => l.id === this.currentUser!.locationId)?.city ?? null;
+  }
+
   constructor(private userService: UserService,
               private authService: AuthService,
               private fb: FormBuilder,
@@ -57,7 +62,8 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       currency: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
-      phoneNumber: ['']
+      phoneNumber: [''],
+      address: ['', [Validators.maxLength(255)]]
     });
 
     this.passwordForm = this.fb.group({
@@ -78,7 +84,8 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
         email: user.email,
         currency: user.currency || 'RSD',
         description: user.description || '',
-        phoneNumber: user.phoneNumber || ''
+        phoneNumber: user.phoneNumber || '',
+        address: user.address || ''
       });
     });
   }
@@ -109,7 +116,8 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
         email: this.currentUser.email,
         currency: this.currentUser.currency || 'RSD',
         description: this.currentUser.description || '',
-        phoneNumber: this.currentUser.phoneNumber || ''
+        phoneNumber: this.currentUser.phoneNumber || '',
+        address: this.currentUser.address || ''
       });
     }
   }

@@ -317,6 +317,12 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   locations: Location[] = [];
   initialLocationId: number | null = null;
 
+  get userCity(): string | null {
+    const userLocId = this.authService.currentUserValue?.locationId;
+    if (!userLocId || !this.locations.length) return null;
+    return this.locations.find(l => l.id === userLocId)?.city ?? null;
+  }
+
   // ── Form ────────────────────────────────────────────────────────────────
   form!: FormGroup;
   readonly MAX_TITLE = 100;

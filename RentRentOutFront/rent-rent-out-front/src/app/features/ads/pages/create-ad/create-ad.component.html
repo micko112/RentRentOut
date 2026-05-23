@@ -311,6 +311,7 @@
                 [allowCityOnly]="false"
                 placeholder="Pretraži grad ili opštinu..."
                 [initialLocationId]="initialLocationId"
+                [priorityCity]="userCity"
                 [isInvalid]="!!(form.get('locationId')?.touched && !form.get('locationId')?.value)"
                 (selectionChange)="onLocationChange($event)">
               </app-city-picker>

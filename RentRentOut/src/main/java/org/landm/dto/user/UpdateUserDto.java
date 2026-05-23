@@ -16,6 +16,8 @@ public class UpdateUserDto {
 	private String description;
 	@Size(max = 30)
 	private String phoneNumber;
+	@Size(max = 255)
+	private String address;
 	@Size(max = 2000)
 	private String avatarUrl;
 
@@ -31,6 +33,9 @@ public class UpdateUserDto {
 
 	public String getPhoneNumber() { return phoneNumber; }
 	public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+	public String getAddress() { return address; }
+	public void setAddress(String address) { this.address = address; }
 
 	public String getAvatarUrl() { return avatarUrl; }
 	public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }

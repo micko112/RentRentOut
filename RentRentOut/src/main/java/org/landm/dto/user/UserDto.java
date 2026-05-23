@@ -18,6 +18,7 @@ public class UserDto {
     private String locationDisplay;
     private String currency;
     private String phoneNumber;
+    private String address;
     private int positiveReviews;
     private int negativeReviews;
     private String role;
@@ -158,5 +159,13 @@ public class UserDto {
 
     public void setLocationDisplay(String locationDisplay) {
         this.locationDisplay = locationDisplay;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
