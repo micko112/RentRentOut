@@ -2,7 +2,6 @@ package org.landm.security;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 public class PhoneNumberConverterTest {
@@ -14,7 +13,7 @@ public class PhoneNumberConverterTest {
     @BeforeEach
     void setUp() {
         converter = new PhoneNumberConverter();
-        ReflectionTestUtils.setField(PhoneNumberConverter.class, "encriptionKey", TEST_KEY);
+        converter.setKey(TEST_KEY);
     }
 
     @Test
