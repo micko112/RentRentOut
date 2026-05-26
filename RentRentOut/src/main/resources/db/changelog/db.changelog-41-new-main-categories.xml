@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!--
+        Dodavanje 3 nove glavne kategorije:
+          1000 - Audio/video i rasveta (profi/event-grade)
+          1100 - Medicinska oprema
+          1200 - Oprema za bebe i decu
+
+        Plus preimenovanje 1018 "Pametni zvučnik" → "Smart zvučnik".
+        Plus premeštanje postojeće grane "500.Oprema za decu" pod 1200.
+    -->
+
+    <changeSet id="41-rename-pametni-zvucnik" author="landm">
+        <sql>UPDATE category SET name = 'Smart zvučnik' WHERE id = 1018</sql>
+    </changeSet>
+
+    <changeSet id="41-create-audio-video-rasveta" author="landm">
+        <insert tableName="category">
+            <column name="id" valueNumeric="1000"/>
+            <column name="name" value="Audio/video i rasveta"/>
+        </insert>
+        <insert tableName="category"><column name="name" value="Razglas i ozvučenje"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="DJ oprema"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="Mikrofoni"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="Klavijature i bend instrumenti"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="Video projektori i LED ekrani za događaje"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="Scenska rasveta"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="Profi rasveta za snimanja"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="Kablovi, stativi i postolja"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="Bend kao paket (live act)"/><column name="parent_id" valueNumeric="1000"/></insert>
+        <insert tableName="category"><column name="name" value="Ostalo u audio/video"/><column name="parent_id" valueNumeric="1000"/></insert>
+    </changeSet>
+
+    <changeSet id="41-create-medicinska-oprema" author="landm">
+        <insert tableName="category">
+            <column name="id" valueNumeric="1100"/>
+            <column name="name" value="Medicinska oprema"/>
+        </insert>
+        <insert tableName="category"><column name="name" value="Invalidska kolica"/><column name="parent_id" valueNumeric="1100"/></insert>
+        <insert tableName="category"><column name="name" value="Hodalice i štapovi"/><column name="parent_id" valueNumeric="1100"/></insert>
+        <insert tableName="category"><column name="name" value="Bolnički kreveti"/><column name="parent_id" valueNumeric="1100"/></insert>
+        <insert tableName="category"><column name="name" value="Oprema za rehabilitaciju"/><column name="parent_id" valueNumeric="1100"/></insert>
+        <insert tableName="category"><column name="name" value="Inhalatori i koncentratori kiseonika"/><column name="parent_id" valueNumeric="1100"/></insert>
+        <insert tableName="category"><column name="name" value="Aparati za pritisak i merenje"/><column name="parent_id" valueNumeric="1100"/></insert>
+        <insert tableName="category"><column name="name" value="Pomagala za starije"/><column name="parent_id" valueNumeric="1100"/></insert>
+        <insert tableName="category"><column name="name" value="Ostalo u medicinskoj opremi"/><column name="parent_id" valueNumeric="1100"/></insert>
+    </changeSet>
+
+    <changeSet id="41-create-bebe-i-decu" author="landm">
+        <insert tableName="category">
+            <column name="id" valueNumeric="1200"/>
+            <column name="name" value="Oprema za bebe i decu"/>
+        </insert>
+        <!--
+            Premesti postojeću granu "500.Oprema za decu" pod 1200.
+            Sve nasleđene level-3 (Autosedište, Bebi monitor, Nosiljka, Kolica...)
+            automatski idu sa njom jer su vezane po ID-u, ne po imenu.
+        -->
+        <sql>UPDATE category SET parent_id = 1200 WHERE name = 'Oprema za decu' AND parent_id = 500</sql>
+
+        <!-- Nova podkategorija koja ne postoji u premeštenoj grani -->
+        <insert tableName="category"><column name="name" value="Atrakcije za rođendane"/><column name="parent_id" valueNumeric="1200"/></insert>
+    </changeSet>
+
+</databaseChangeLog>

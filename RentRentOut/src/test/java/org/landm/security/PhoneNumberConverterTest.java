@@ -21,6 +21,7 @@ public class PhoneNumberConverterTest {
         assertThat(converter.convertToDatabaseColumn(null)).isNull();
     }
 
+
     @Test
     void roundTrip_originalNumberIsReturned() {
         String original = "+381641234567";
@@ -30,6 +31,8 @@ public class PhoneNumberConverterTest {
         assertThat(decrypted).isEqualTo(original);
         assertThat(encrypted).isNotEqualTo(original); // proof it was encrypted
     }
+
+
 
     @Test
     void encryption_sameInput_producesDifferentCiphertexts() {
