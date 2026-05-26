@@ -60,6 +60,7 @@
     <include file="/db/changelog/db.changelog-37-garderoba-category.xml"/>
     <include file="/db/changelog/db.changelog-38-add-message-attachments.xml"/>
     <include file="/db/changelog/db.changelog-39-add-address-to-user.xml"/>
+    <include file="/db/changelog/db.changelog-40-create-ad-template.xml"/>
 
     <!-- Onda korisnike (kojima treba lokacija) -->
     <include file="/db/changelog/db.changelog-seed-user.xml"/>

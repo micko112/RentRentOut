@@ -1,22 +1,24 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AdService } from '../../services/ad.service';
 import { Category } from '../../../../shared/models/category.model';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PriceInterval } from '../../../../shared/models/price-interval.enum';
 import { CategoryService } from '../../services/category.service';
 import { LocationService } from '../../services/location.service';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { Location } from '../../../../shared/models/location.model';
 import { CityPickerComponent, CityPickerOption } from '../../../../shared/components/city-picker/city-picker.component';
 import { AuthService } from '../../../auth/services/auth.service';
+import { AdTemplate, AdTemplateService } from '../../services/ad-template.service';
 
 
 @Component({
   selector: 'app-create-ad',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, CityPickerComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CityPickerComponent],
   standalone: true,
   templateUrl: './create-ad.component.html',
   styleUrl: './create-ad.component.css'
@@ -27,6 +29,11 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   currentStep = 1;
   readonly totalSteps = 2;
   isSubmitting = false;
+
+  // ── Template state ──────────────────────────────────────────────────────
+  saveTemplateModalOpen = false;
+  templateName = '';
+  isSavingTemplate = false;
 
   // ── Images ──────────────────────────────────────────────────────────────
   selectedFiles: File[] = [];
@@ -366,7 +373,9 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private toastService: ToastService,
+    private adTemplateService: AdTemplateService,
   ) {}
 
   ngOnInit(): void {
@@ -374,8 +383,14 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       next: cats => {
         this.categories = cats;
         this.parentCategories = cats.filter(c => !c.parentId);
+        this.tryApplyTemplateFromUrl();
       },
       error: () => this.toastService.showError('Greška pri učitavanju kategorija.'),
+    });
+
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      const id = Number(params['template']);
+      if (id && this.categories.length) this.applyTemplateById(id);
     });
 
     this.locationService.getAll().subscribe({
@@ -493,7 +508,18 @@ export class CreateAdComponent implements OnInit, OnDestroy {
 
   nextStep(): void {
     if (!this.stepValid) { this.markCurrentStepTouched(); return; }
-    if (this.currentStep < this.totalSteps) { this.currentStep++; window.scrollTo(0, 0); }
+    if (this.currentStep < this.totalSteps) {
+      this.currentStep++;
+      window.scrollTo(0, 0);
+      if (this.currentStep === 2) setTimeout(() => this.populateDescEditor());
+    }
+  }
+
+  private populateDescEditor(): void {
+    const html = this.form.get('description')?.value;
+    if (this.descEditorRef && html && !this.descEditorRef.nativeElement.innerHTML.trim()) {
+      this.descEditorRef.nativeElement.innerHTML = html;
+    }
   }
 
   prevStep(): void {
@@ -728,6 +754,121 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       error: () => {
         this.isSubmitting = false;
         this.toastService.showError('Greška pri kreiranju oglasa. Pokušajte ponovo.');
+      },
+    });
+  }
+
+  // ════════════════════════════════════════════════════════
+  //  TEMPLATES
+  // ════════════════════════════════════════════════════════
+
+  /** Polja koja se snimaju u šablon (sve osim slika i runtime stanja). */
+  private readonly TEMPLATE_FIELDS = [
+    'title', 'description', 'price', 'currency', 'priceInterval',
+    'categoryId', 'locationId', 'totalQuantity',
+    'pricePerWeek', 'pricePerMonth', 'deposit',
+    'advertiserType', 'roomCount', 'areaSize', 'constructionType', 'propertyCondition',
+    'totalFloors', 'floorNumber', 'furnished', 'heatingTypes',
+    'propertyMunicipality', 'propertyNeighborhood', 'propertyStreet',
+    'landArea', 'landAreaUnit', 'features',
+    'carBrand', 'carModel', 'carYear', 'carMileage', 'carBodyType', 'carFuelType',
+    'carTransmission', 'carPowerKw', 'carColor', 'carDoors', 'carSeats',
+    'carDisplacement', 'carEmissionClass', 'carDrive', 'carSteeringWheel',
+    'carRegisteredUntil', 'carCountry', 'carOrigin', 'carOwnership',
+    'carDamage', 'carLabel', 'carInteriorMaterial', 'carInteriorColor',
+  ];
+
+  private tryApplyTemplateFromUrl(): void {
+    const id = Number(this.route.snapshot.queryParamMap.get('template'));
+    if (id) this.applyTemplateById(id);
+  }
+
+  private applyTemplateById(id: number): void {
+    this.adTemplateService.ensureLoaded();
+    const cached = this.adTemplateService.get(id);
+    if (cached) {
+      this.applyTemplate(cached);
+      return;
+    }
+    // Sačekaj da se lista učita pa probaj ponovo
+    this.adTemplateService.list$.pipe(
+      filter(list => list.length > 0),
+      take(1),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      const t = this.adTemplateService.get(id);
+      if (t) this.applyTemplate(t);
+    });
+  }
+
+  private applyTemplate(t: AdTemplate): void {
+    const data = t.data ?? {};
+    const patch: { [key: string]: any } = {};
+    for (const field of this.TEMPLATE_FIELDS) {
+      if (data[field] !== undefined) patch[field] = data[field];
+    }
+    this.form.patchValue(patch);
+
+    // Postavi HTML opisa u contenteditable polje (ako je view već renderovan)
+    setTimeout(() => {
+      if (this.descEditorRef && data['description']) {
+        this.descEditorRef.nativeElement.innerHTML = data['description'];
+      }
+    });
+
+    // Podesi kategorijsko stablo da reflektuje izabranu kategoriju
+    const catId = data['categoryId'];
+    if (catId) {
+      const cat = this.categories.find(c => c.id === catId);
+      if (cat) this.applySuggestedCategory(cat);
+    }
+
+    // Lokacija — postaviti initialLocationId da CityPicker pokaže izabran grad
+    if (data['locationId']) {
+      this.initialLocationId = data['locationId'];
+    }
+
+    this.toastService.showSuccess(`Šablon "${t.name}" učitan.`);
+  }
+
+  openSaveTemplateModal(): void {
+    this.templateName = this.form.get('title')?.value?.toString().slice(0, 80) ?? '';
+    this.saveTemplateModalOpen = true;
+  }
+
+  closeSaveTemplateModal(): void {
+    this.saveTemplateModalOpen = false;
+    this.templateName = '';
+    this.isSavingTemplate = false;
+  }
+
+  saveAsTemplate(): void {
+    const name = this.templateName.trim();
+    if (!name) {
+      this.toastService.showError('Unesite naziv šablona.');
+      return;
+    }
+    if (!this.form.get('categoryId')?.value) {
+      this.toastService.showError('Izaberite kategoriju pre čuvanja šablona.');
+      return;
+    }
+
+    const data: { [key: string]: any } = {};
+    for (const field of this.TEMPLATE_FIELDS) {
+      const v = this.form.get(field)?.value;
+      if (v !== null && v !== undefined && v !== '') data[field] = v;
+    }
+
+    this.isSavingTemplate = true;
+    this.adTemplateService.create({ name, data }).subscribe({
+      next: () => {
+        this.toastService.showSuccess(`Šablon "${name}" sačuvan.`);
+        this.closeSaveTemplateModal();
+      },
+      error: (err) => {
+        this.isSavingTemplate = false;
+        const msg = err?.error?.error ?? 'Greška pri čuvanju šablona.';
+        this.toastService.showError(msg);
       },
     });
   }

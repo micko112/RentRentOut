@@ -23,7 +23,46 @@
 
     <!-- DESKTOP: user actions -->
     <div class="user-actions" *ngIf="currentUser$ | async as user; else notLoggedIn">
-      <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
+
+      <!-- Split button: Postavi oglas + dropdown šablona -->
+      <div class="post-ad-group">
+        <button class="btn-post-ad btn-post-ad--main" (click)="createAd()">+ Postavi oglas</button>
+        <button class="btn-post-ad btn-post-ad--caret"
+                (click)="toggleTemplatesMenu($event)"
+                [class.is-open]="templatesMenuOpen"
+                title="Šabloni">
+          <span class="material-icons">{{ templatesMenuOpen ? 'arrow_drop_up' : 'arrow_drop_down' }}</span>
+        </button>
+
+        <div class="templates-dropdown" *ngIf="templatesMenuOpen">
+          <div class="templates-dropdown__header">
+            <span class="material-icons">bookmarks</span>
+            Šabloni
+          </div>
+
+          <ng-container *ngIf="(templates$ | async) as templates">
+            <div *ngIf="templates.length === 0" class="templates-dropdown__empty">
+              Nemate sačuvane šablone.<br>
+              <small>Kreirajte šablon iz forme za novi oglas.</small>
+            </div>
+
+            <ul *ngIf="templates.length > 0" class="templates-dropdown__list">
+              <li *ngFor="let t of templates" class="template-row" (click)="useTemplate(t)">
+                <div class="template-row__info">
+                  <div class="template-row__name">{{ t.name }}</div>
+                  <div class="template-row__meta" *ngIf="t.data?.['title']">{{ t.data['title'] }}</div>
+                </div>
+                <button class="template-row__delete"
+                        (click)="deleteTemplate($event, t)"
+                        title="Obriši šablon">
+                  <span class="material-icons">delete_outline</span>
+                </button>
+              </li>
+            </ul>
+          </ng-container>
+        </div>
+      </div>
+
       <button *ngIf="user.role === 'ROLE_ADMIN'" class="btn-admin" (click)="adminPanel()">Admin Panel</button>
       <button class="btn-profile" (click)="myProfile()">Moj Profil</button>
       <button class="auth-button" (click)="logout()">Odjavi se</button>

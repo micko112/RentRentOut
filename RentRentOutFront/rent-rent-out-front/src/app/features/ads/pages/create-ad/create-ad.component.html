@@ -765,6 +765,15 @@
         <div class="nav-right">
           <a class="btn-cancel" routerLink=".." *ngIf="currentStep === 1">Odustani</a>
 
+          <button type="button"
+                  class="btn-save-template"
+                  *ngIf="currentStep === totalSteps"
+                  (click)="openSaveTemplateModal()"
+                  title="Sačuvaj trenutne podatke kao šablon za buduće oglase">
+            <span class="material-icons">bookmark_add</span>
+            Sačuvaj kao šablon
+          </button>
+
           <button type="button" class="btn-next" (click)="nextStep()" *ngIf="currentStep < totalSteps">
             Dalje
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -784,5 +793,45 @@
 
     </form>
   </main>
+
+  <!-- ══════════════════════════════════════
+       SAVE TEMPLATE MODAL
+       ══════════════════════════════════════ -->
+  <div class="template-modal-backdrop" *ngIf="saveTemplateModalOpen" (click)="closeSaveTemplateModal()">
+    <div class="template-modal" (click)="$event.stopPropagation()">
+      <div class="template-modal__header">
+        <span class="material-icons">bookmark_add</span>
+        <h3>Sačuvaj šablon</h3>
+        <button class="template-modal__close" type="button" (click)="closeSaveTemplateModal()" title="Zatvori">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      <div class="template-modal__body">
+        <p class="template-modal__hint">
+          Šablon će sačuvati sve trenutne podatke iz forme (osim slika).
+          Kasnije možete brzo kreirati novi oglas iz dropdown menija u zaglavlju.
+        </p>
+        <label class="field-label">Naziv šablona <span class="req">*</span></label>
+        <input type="text"
+               class="template-modal__input"
+               [(ngModel)]="templateName"
+               placeholder="npr. Trambolina 3m"
+               maxlength="80"
+               (keyup.enter)="saveAsTemplate()"
+               autofocus>
+        <small class="template-modal__counter">{{ templateName.length }}/80</small>
+      </div>
+      <div class="template-modal__footer">
+        <button type="button" class="btn-cancel-modal" (click)="closeSaveTemplateModal()">Odustani</button>
+        <button type="button"
+                class="btn-save-modal"
+                [disabled]="isSavingTemplate || !templateName.trim()"
+                (click)="saveAsTemplate()">
+          <span class="submit-spinner" *ngIf="isSavingTemplate"></span>
+          {{ isSavingTemplate ? 'Čuvam...' : 'Sačuvaj' }}
+        </button>
+      </div>
+    </div>
+  </div>
 
 </div>

@@ -121,6 +121,8 @@ public class SecurityConfig {
 						.requestMatchers("/api/promotions/admin/**").hasRole("ADMIN")
 						.requestMatchers("/api/promotions/**").authenticated()
 
+						.requestMatchers("/api/templates/**").authenticated()
+
 
 						.anyRequest().authenticated()
 	            )
