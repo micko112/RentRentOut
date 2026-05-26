@@ -8,7 +8,7 @@ import { PriceInterval } from '../../../../shared/models/price-interval.enum';
 import { CategoryService } from '../../services/category.service';
 import { LocationService } from '../../services/location.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { debounceTime, distinctUntilChanged, filter, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Observable, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { Location } from '../../../../shared/models/location.model';
 import { CityPickerComponent, CityPickerOption } from '../../../../shared/components/city-picker/city-picker.component';
@@ -318,6 +318,10 @@ export class CreateAdComponent implements OnInit, OnDestroy {
 
   @ViewChild('descEditor') descEditorRef?: ElementRef<HTMLDivElement>;
 
+  // Templates panel state
+  templatesPanelOpen = false;
+  templates$!: Observable<AdTemplate[]>;
+
   private destroy$ = new Subject<void>();
 
   // ── Locations ───────────────────────────────────────────────────────────
@@ -364,6 +368,9 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     garderob: 'checkroom', venčanic: 'checkroom', halj: 'checkroom',
     odelo: 'checkroom', smoking: 'checkroom', kostim: 'checkroom',
     nošnj: 'checkroom', obuć: 'checkroom', torbic: 'checkroom',
+    audio: 'graphic_eq', rasveta: 'wb_incandescent',
+    medicin: 'medical_services', invalid: 'accessible',
+    beb: 'child_care', decu: 'child_care', deca: 'child_care',
   };
 
   constructor(
@@ -379,6 +386,8 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.templates$ = this.adTemplateService.list$;
+
     this.categoryService.getAll().subscribe({
       next: cats => {
         this.categories = cats;
@@ -392,6 +401,13 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       const id = Number(params['template']);
       if (id && this.categories.length) this.applyTemplateById(id);
     });
+
+    // Load templates list (header dropdown uklonjen, lista se sada koristi u Step 1 panelu)
+    this.authService.currentUser$.pipe(
+      filter(u => !!u),
+      take(1),
+      takeUntil(this.destroy$)
+    ).subscribe(() => this.adTemplateService.ensureLoaded());
 
     this.locationService.getAll().subscribe({
       next: locs => { this.locations = locs; },
@@ -579,6 +595,24 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   isParentSelected(cat: Category): boolean   { return this.selectedParentId === cat.id; }
   isChildSelected(cat: Category): boolean    { return this.selectedLevel2Id === cat.id; }
   isGrandchildSelected(cat: Category): boolean { return this.form.get('categoryId')?.value === cat.id; }
+
+  // ════════════════════════════════════════════════════════
+  //  TEMPLATES PANEL (Step 1)
+  // ════════════════════════════════════════════════════════
+
+  useTemplate(t: AdTemplate): void {
+    this.templatesPanelOpen = false;
+    this.applyTemplate(t);
+  }
+
+  deleteTemplate(event: MouseEvent, t: AdTemplate): void {
+    event.stopPropagation();
+    if (!confirm(`Obrisati šablon "${t.name}"?`)) return;
+    this.adTemplateService.delete(t.id).subscribe({
+      next: () => this.toastService.showSuccess('Šablon obrisan.'),
+      error: () => this.toastService.showError('Greška pri brisanju šablona.'),
+    });
+  }
 
   getCategoryPath(cat: Category): string {
     const parts: string[] = [cat.name];

@@ -44,6 +44,37 @@
            ────────────────────────────────── -->
       <div class="step-panel" *ngIf="currentStep === 1">
 
+        <!-- ŠABLONI PANEL (samo ako ima sačuvanih) -->
+        <ng-container *ngIf="(templates$ | async) as templates">
+          <section class="templates-panel" *ngIf="templates.length > 0">
+            <button type="button"
+                    class="templates-toggle"
+                    [class.is-open]="templatesPanelOpen"
+                    (click)="templatesPanelOpen = !templatesPanelOpen">
+              <span class="material-icons templates-toggle__icon">bookmarks</span>
+              <span class="templates-toggle__text">Imam sačuvane šablone ({{ templates.length }})</span>
+              <span class="material-icons templates-toggle__caret">{{ templatesPanelOpen ? 'expand_less' : 'expand_more' }}</span>
+            </button>
+
+            <div class="templates-list" *ngIf="templatesPanelOpen">
+              <p class="templates-list__hint">Klikni na šablon da popuniš formu sa sačuvanim podacima.</p>
+              <div *ngFor="let t of templates" class="template-row" (click)="useTemplate(t)">
+                <span class="template-row__icon material-icons">play_circle</span>
+                <div class="template-row__info">
+                  <div class="template-row__name">{{ t.name }}</div>
+                  <div class="template-row__meta" *ngIf="t.data?.['title']">{{ t.data['title'] }}</div>
+                </div>
+                <button type="button"
+                        class="template-row__delete"
+                        (click)="deleteTemplate($event, t)"
+                        title="Obriši šablon">
+                  <span class="material-icons">delete_outline</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </ng-container>
+
         <!-- KATEGORIJA -->
         <section class="section-block">
           <div class="section-title">
