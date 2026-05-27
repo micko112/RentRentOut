@@ -17,15 +17,19 @@ _CHROMA_DIR = os.path.join(_BASE_DIR, "chroma_db")
 
 def _build_vector_store():
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    
     if os.path.exists(_CHROMA_DIR) and os.listdir(_CHROMA_DIR):
         print("Loading existing vector store from disk...")
         store = Chroma(persist_directory=_CHROMA_DIR, embedding_function=embeddings)
         print("Vector store loaded.")
         return store
+    
     loader = TextLoader(os.path.join(_BASE_DIR, "baza_znanja.txt"), encoding="utf-8")
     docs = loader.load()
+    
     splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=50)
     chunks = splitter.split_documents(docs)
+    
     print(f"Building vector store from {len(chunks)} chunks...")
     store = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=_CHROMA_DIR)
     print("Vector store saved to disk.")

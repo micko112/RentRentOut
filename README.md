@@ -1,183 +1,399 @@
+<div align="center">
+
+<img src="docs/screenshots/hero-banner.png" alt="IzdajemIznajmljujem — banner" width="100%" />
+
 # IzdajemIznajmljujem
 
-A full-stack peer-to-peer rental marketplace where users can list items for rent and book rentals from others. Live at **[izdajemiznajmljujem.com](https://izdajemiznajmljujem.com)**.
+**Full-stack peer-to-peer rental marketplace** sa AI preporukama kategorija, RAG chatbotom, real-time chat-om i sistemom monetizacije.
+
+[![Live](https://img.shields.io/badge/live-izdajemiznajmljujem.com-813181?style=for-the-badge)](https://izdajemiznajmljujem.com)
+[![Backend](https://img.shields.io/badge/Spring%20Boot-3.2.4-6DB33F?style=for-the-badge&logo=spring)](https://spring.io/projects/spring-boot)
+[![Frontend](https://img.shields.io/badge/Angular-19.2-DD0031?style=for-the-badge&logo=angular)](https://angular.dev)
+[![Database](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)](https://www.mysql.com)
+[![ML](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=for-the-badge&logo=pytorch)](https://pytorch.org)
+[![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](#licenca)
+
+[**🌐 Live demo**](https://izdajemiznajmljujem.com) · [**📚 Wiki**](wiki/Home.md) · [**🛠 API docs**](http://localhost:8080/swagger-ui.html) · [**🧠 ML notebook**](RentRentOutML/ai_service/Neural_Network_for_Category_Recommendation.ipynb) · [**🤖 Chatbot notebook**](RentRentOutML/ai_service/LLM_Chatbot.ipynb)
+
+</div>
 
 ---
 
-## Features
+## 📸 Screenshots
 
-### Core
-- **Ad listings** — Create, edit and browse rental listings with image galleries (up to 10 photos via Cloudinary), tiered pricing (daily/weekly/monthly), location and availability calendar
-- **Search & filtering** — Filter by category, city, price range and rental interval; sort by newest / cheapest / most expensive; debounced preview count in filter sidebar
-- **Rental contracts** — Full lifecycle: `REQUESTED → ACCEPTED → ACTIVE → FINISHED / CANCELLED`; automatic status transitions via scheduled job
-- **Rental calendar** — Visual availability calendar embedded in ad details and chat; owners can block dates manually
-- **Real-time chat** — WebSocket (STOMP) messaging; system messages auto-generated on contract events; contract request card in chat thread
-- **Review system** — Mutual rating after completed rentals (up to 30 days post-contract); requires a shared finished contract; 3-question form (payment, communication, agreement) → POSITIVE / NEGATIVE
-- **In-app notifications** — Contract events, new reviews and saved-ad alerts; unread badge in sidebar
-- **Save / bookmark** ads with live save-count tracking
+<table>
+<tr>
+<td width="50%">
+<img src="docs/screenshots/home.png" alt="Početna stranica" />
+<p align="center"><b>Početna</b> — hero banner + 5 kategorija + najnoviji oglasi</p>
+</td>
+<td width="50%">
+<img src="docs/screenshots/ad-details.png" alt="Detalji oglasa" />
+<p align="center"><b>Detalji oglasa</b> — galerija, cena, kalendar dostupnosti</p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="docs/screenshots/chat.png" alt="Chat inbox" />
+<p align="center"><b>Real-time chat</b> — STOMP/WebSocket + sistemske poruke</p>
+</td>
+<td width="50%">
+<img src="docs/screenshots/create-ad.png" alt="Wizard za kreiranje oglasa" />
+<p align="center"><b>Wizard</b> — 2-step kreiranje sa AI preporukom kategorije</p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<img src="docs/screenshots/search-filters.png" alt="Pretraga sa filterima" />
+<p align="center"><b>Pretraga</b> — debounced filteri + sortiranje + paginacija</p>
+</td>
+<td width="50%">
+<img src="docs/screenshots/admin-dashboard.png" alt="Admin dashboard" />
+<p align="center"><b>Admin</b> — 6 stat kartica, moderacija, krediti</p>
+</td>
+</tr>
+</table>
 
-### User & Auth
-- **Authentication** — HttpOnly cookie JWT (XSS-safe, no localStorage); `access_token` (15 min) + `refresh_token` (7 days); auto-refresh on 401
-- **Social login** — Google (GIS button), Facebook SDK, Apple identity token
-- **Email verification** + password reset via HTML email
-- **Phone number encryption** — AES-256/CBC in DB; masked in public API (`06x / xxx-xxxx`), revealed only on authenticated request
-- **User profiles** — Public profile with ads tab + reviews tab (filterable by role / sentiment); avatar upload via Cloudinary
-- **Rate limiting** — Bucket4j per-IP throttling on auth and social login endpoints
+> Slike koje fale ubaci u [`docs/screenshots/`](docs/screenshots/README.md) — lista je tamo dokumentovana.
 
-### Monetisation
-- **Promotion system** — Three packages: Featured (500 RSD / 7 days, rank 3), Priority (250 RSD / 3 days, rank 2), Highlighted (100 RSD / 30 days, visual only); promotes ads to top of search results
-- **Credit system** — Platform credits; admin tops up via admin panel; deducted on promotion activation; full transaction history
-- **Ad expiry** — Ads active for 30 days; free renewal any time; email reminder 3 days before expiry; automatic archival at 03:00 daily
+---
+
+## 📑 Sadržaj
+
+- [O projektu](#-o-projektu)
+- [Ključne funkcionalnosti](#-ključne-funkcionalnosti)
+- [Tech stack](#-tech-stack)
+- [Arhitektura](#-arhitektura)
+- [Struktura repozitorijuma](#-struktura-repozitorijuma)
+- [Pokretanje lokalno](#-pokretanje-lokalno)
+- [Konfiguracija](#-konfiguracija)
+- [ML servis](#-ml-servis--ai-preporuke--chatbot)
+- [Testiranje](#-testiranje)
+- [Deployment](#-deployment)
+- [Dokumentacija (Wiki)](#-dokumentacija-wiki)
+- [Slučajevi korišćenja](#-slučajevi-korišćenja)
+- [Licenca](#-licenca)
+
+---
+
+## 🎯 O projektu
+
+**IzdajemIznajmljujem** je platforma na kojoj korisnici iznajmljuju i izdaju stvari (alate, foto opremu, sportsku opremu, opremu za proslave, vozila itd.) drugima na dnevnoj/nedeljnoj/mesečnoj osnovi. Live na **[izdajemiznajmljujem.com](https://izdajemiznajmljujem.com)**.
+
+Projekat je full-stack monorepo sa **četiri servisa**:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  Nginx (HTTPS :443, Let's Encrypt)              │
+└──────┬─────────────────┬──────────────────┬────────────────────┘
+       │                 │                  │
+   /api, /ws          /predict, /chat       /
+       │                 │                  │
+┌──────▼──────┐    ┌─────▼──────┐    ┌──────▼──────┐
+│ Spring Boot │    │  FastAPI   │    │  Angular 19 │
+│   :8080     │    │ ML service │    │     SPA     │
+│             │    │   :8000    │    │             │
+└──────┬──────┘    └────────────┘    └─────────────┘
+       │
+┌──────▼──────┐
+│  MySQL 8.0  │
+│   :3306     │
+└─────────────┘
+```
+
+---
+
+## ✨ Ključne funkcionalnosti
+
+### Marketplace
+- **Oglasi** — kreiranje, izmena, brisanje, galerija do 10 slika (Cloudinary), tiered pricing (dan/nedelja/mesec), depozit, lokacija
+- **Pretraga & filteri** — kategorija, grad, opseg cene, interval; sortiranje (najnoviji / najjeftiniji / najskuplji); debounced (350ms) preview broja rezultata
+- **Hijerarhijske kategorije** — 3 nivoa (oko 700 leaf kategorija)
+- **Specijalizovana polja** — `Nekretnine`, `Vozila`, `Garderoba` imaju dodatne atribute u zavisnosti od tipa
+- **Ad templates** — sačuvani šabloni oglasa za brže ponovno postavljanje
+- **Save / bookmark** sa live save-count tracking-om
+- **Ad views** — beleženje pregleda po korisniku/IP (sa unique constraint-om)
+
+### Ugovori & kalendar
+- **Lifecycle** — `REQUESTED → ACCEPTED → ACTIVE → FINISHED / CANCELLED`
+- **Scheduler** — automatske tranzicije statusa (`RentalContractScheduler`)
+- **Rental calendar** — standalone Angular komponenta, ugrađena u `AdDetails` i `Inbox`; vlasnici blokiraju datume
+
+### Chat & notifikacije
+- **WebSocket (STOMP)** — `JwtChannelInterceptor` autentikuje konekciju kratkoživećim `wsToken`-om
+- **Tri tipa poruka** — `REGULAR`, `SYSTEM` (centrirani sivi bubble), `CONTRACT_REQUEST` (rich kartica sa ikonama)
+- **Attachments** — slanje fajlova kroz chat (Cloudinary)
+- **Notifications** — `CONTRACT_REQUESTED/ACCEPTED/REJECTED/CANCELLED/ACTIVE/FINISHED`, `NEW_REVIEW`, `AD_SAVED`
+- **Push notifikacije** — `PushSubscription` entity, Web Push API
+- **Polling fallback** — 5s polling kad WS padne
+- **Unread badge** — chat + notifikacije, sinhronizovan kroz `NotificationService`
+
+### Autentikacija & sigurnost
+- **HttpOnly cookie JWT** — `access_token` (15 min) + `refresh_token` (7 dana), auto-refresh na 401
+- **Social login** — Google (GIS), Facebook (FB SDK), Apple (identity token)
+- **Email verifikacija + password reset** kroz HTML email
+- **Identity verification** — admin verifikuje pravu identitet korisnika (`IdentityVerification` entity)
+- **AES-256 šifrovanje telefona** — `PhoneNumberConverter` (CBC + random IV); maskiran u javnim API-jima (`06x / xxx-xxxx`)
+- **Rate limiting** — Bucket4j per-IP na auth endpointima
+- **XSS** — jsoup sanitizacija; HttpOnly cookies (token nikad nije u JS-u)
+- **HTTP headers** — `X-Frame-Options: DENY`, HSTS 1god, CSP
+
+### Monetizacija
+| Paket | Cena | Trajanje | Rank | Efekt |
+|---|---|---|---|---|
+| **Featured** | 500 RSD | 7 dana | 3 | Vrh pretrage |
+| **Priority** | 250 RSD | 3 dana | 2 | Ispred standardnih |
+| **Highlighted** | 100 RSD | 30 dana | 0 | Vizuelni highlight |
+
+- **Kredit sistem** — `CreditTransaction` istorija, admin tops up
+- **Ad expiry** — 30 dana, automatski archival u 03:00, email reminder 2–3 dana pre isteka
+- **Renewal** — besplatno obnavljanje na 30 dana
+
+### AI / ML
+- **🧠 Auto-suggest kategorije** — PyTorch MLP (4 sloja, 644 izlazne klase) sa **97.90% tačnosti** na test setu; Angular wizard debounce 800ms → FastAPI `/api/predict-category`
+- **🤖 RAG Chatbot** — LangChain + Chroma + GPT-4o-mini; `baza_znanja.txt` indeksiran sa OpenAI embeddings; LangGraph router za relevance check
+- **TF-IDF + PyTorch** — `tfidf_vectorizer.pkl` + `rentrentout_model.pth` + `label_encoder.pkl`
 
 ### Admin
-- **Dashboard** — 6 stat cards: users, total ads, active ads, contracts, active contracts, pending reports
-- **User management** — List, enable/disable accounts, add credit
-- **Ad management** — List, suspend/activate
-- **Reports** — View ad reports (filter unreviewed), mark as reviewed; unreviewed count shown on dashboard
+- **Dashboard** — 6 stat kartica (korisnici, oglasi, aktivni oglasi, ugovori, aktivni ugovori, neobrađene prijave)
+- **Moderacija** — korisnici (enable/disable, dodaj kredit), oglasi (suspend/activate), prijave (mark reviewed), identity verifications
+- **Reports** — `AdReport` (5 razloga + napomena), duplikat guard, filter "samo neobrađene"
 
-### Platform
-- **HTML emails** — Purple-themed table-based layout; all in Serbian; 7 templates: verification, password reset, contract request/accept/reject, credit added, ad expiry reminder
-- **SEO** — Dynamic `<title>` + Open Graph + Twitter Card meta on ad detail pages; `sitemap.xml` generated from all active ad IDs; `robots.txt`
-- **Cookie consent** — GDPR banner; GA4 loaded only after consent; `localStorage`-persisted choice
-- **Legal pages** — Privacy policy, Terms of service, How it works, Contact (GDPR requests)
-- **PWA** — `manifest.webmanifest` with `theme_color: #813181`, standalone display, icons
-- **Monitoring** — Sentry (backend: `sentry-spring-boot-starter-jakarta`; frontend: `@sentry/angular`)
-- **Analytics** — Google Analytics 4 (`G-GYYJSDLKLB`), loaded dynamically on cookie consent
+### Platform & SEO
+- **HTML email-ovi** — purple table-based template, XSS-safe; 7 šablona (verifikacija, reset lozinke, contract request/accept/reject, credit added, expiry reminder)
+- **SEO** — dinamički `<title>`, OG, Twitter card; `sitemap.xml` iz svih aktivnih oglasa; `robots.txt`
+- **PWA** — `manifest.webmanifest`, theme_color `#813181`, standalone
+- **GDPR** — cookie banner, GA4 lazy loaded posle pristanka, privacy policy, ToS
+- **Sentry** — backend (`sentry-spring-boot-starter-jakarta`) + frontend (`@sentry/angular`)
+- **Internacionalizacija** — interfejs i svi email-ovi na srpskom (latinica)
 
 ---
 
-## Tech Stack
+## 🛠 Tech stack
 
 ### Backend
-
-| Layer | Technology |
+| Layer | Tehnologija |
 |---|---|
 | Framework | Spring Boot 3.2.4 (Java 17, Maven) |
-| Database | MySQL 8.0 + Liquibase migrations |
-| ORM | Spring Data JPA (Hibernate) |
-| Security | Spring Security, JJWT 0.11.5 |
+| Database | MySQL 8.0 + **Liquibase** (41+ migracija) |
+| ORM | Spring Data JPA (Hibernate) + JPA Specifications |
+| Security | Spring Security 6, JJWT 0.11.5 |
 | WebSocket | Spring WebSocket + STOMP |
 | Images | Cloudinary SDK |
 | Rate limiting | Bucket4j 8.10.1 |
 | Social auth | Google API Client 2.2.0, Nimbus JOSE JWT 9.37.3 (Apple) |
-| XSS sanitization | jsoup 1.18.1 |
-| Monitoring | Sentry Spring Boot Starter |
-| API Docs | springdoc-openapi (Swagger UI at `/swagger-ui.html`) |
+| XSS | jsoup 1.18.1 |
+| Monitoring | Sentry |
+| API Docs | springdoc-openapi (Swagger UI) |
+| Scheduler | Spring `@Scheduled` |
+| Mail | Spring Mail (Gmail SMTP) |
 
 ### Frontend
-
-| Layer | Technology |
+| Layer | Tehnologija |
 |---|---|
-| Framework | Angular 19.2 (TypeScript 5.7) |
-| Styling | Custom CSS (no UI framework) |
-| Icons | Google Material Icons / Material Symbols Outlined |
+| Framework | Angular 19.2 (TypeScript 5.7), standalone components, lazy modules |
+| Styling | Custom CSS (no UI framework), purple `#813181` + green `#6ecf7e` |
+| Icons | Material Icons / Material Symbols Outlined |
 | WebSocket | @stomp/rx-stomp 2.3 |
 | Reactive | RxJS 7.8 |
+| Mobile | Capacitor (`capacitor.config.ts`) |
+| SSR | Angular Universal (`server.ts`) |
 | Monitoring | @sentry/angular 10 |
 
-### Infrastructure
-
-| Component | Details |
+### ML / AI
+| Komponenta | Tehnologija |
 |---|---|
-| Hosting | Hetzner CX22 VPS (Ubuntu 22.04) |
-| Reverse proxy | Nginx |
-| SSL | Let's Encrypt (auto-renewal cron at 03:00) |
+| Web framework | FastAPI + Uvicorn |
+| Deep learning | PyTorch 2.x (CPU) |
+| Feature extraction | scikit-learn TF-IDF (10000 features, 1-2 ngrams) |
+| Serialization | joblib |
+| LLM | OpenAI GPT-4o-mini |
+| Embeddings | OpenAI text-embedding-3-small |
+| Vector store | Chroma (persistent) |
+| Agent framework | LangChain + LangGraph |
+
+### Infrastruktura
+| Komponenta | Detalji |
+|---|---|
+| Hosting | Hetzner CX22 VPS (Ubuntu 22.04) — `178.104.97.101` |
+| Reverse proxy | Nginx (HTTPS :443) |
+| SSL | Let's Encrypt (auto-renewal cron @ 03:00) |
 | Containers | Docker Compose |
-| Images | Cloudinary (cloud: `drwxucq4m`) |
+| Images CDN | Cloudinary (`drwxucq4m`) |
 | Mail | Gmail SMTP (`izdajemiznajmljujem.rs@gmail.com`) |
-| Backups | Daily MySQL dump at 02:00, gzip, 14-day rotation |
+| Backups | Daily MySQL gzip dump @ 02:00, 14-day rotation |
+| Analytics | Google Analytics 4 (`G-GYYJSDLKLB`) |
 
 ---
 
-## Architecture
+## 🏛 Arhitektura
+
+### Visok nivo
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                     Nginx (HTTPS :443)                   │
-│   /api/* → backend   /ws → backend   /* → frontend      │
-└────────────────────┬────────────────────────────────────┘
-                     │
-        ┌────────────┴────────────┐
-        │                        │
-┌───────▼────────┐      ┌────────▼───────┐
-│  Angular SPA   │      │  Spring Boot   │
-│  :4200 / Nginx │      │  :8080         │
-│                │      │                │
-│ Feature modules│      │ REST API       │
-│ Lazy-loaded    │      │ WebSocket /ws  │
-└────────────────┘      └────────┬───────┘
-                                 │
-                        ┌────────▼───────┐
-                        │   MySQL 8.0    │
-                        │   :3306        │
-                        └────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                   Nginx (HTTPS :443)                            │
+│  /api/*              → backend:8080                             │
+│  /ws                 → backend:8080 (WebSocket upgrade)         │
+│  /api/predict-category → ml-service:8000                        │
+│  /api/chatbot        → ml-service:8000                          │
+│  /sitemap.xml        → backend:8080                             │
+│  /*                  → frontend (Angular dist)                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Backend Package Structure
+### Backend slojevi
 
 ```
-org.landm/
-├── controller/     # REST endpoints + WebSocket controller
-├── service/        # Business logic (interfaces + impl/)
-├── repository/     # Spring Data JPA repositories
-├── entity/         # JPA entities + Enums
-├── dto/            # Request/response DTOs (grouped by feature)
-├── mapper/         # Entity ↔ DTO mappers
-├── security/       # JWT, filters, WebSocket interceptor, phone AES encryption
-├── config/         # CORS, WebSocket, mail config
-└── exception/      # Custom exceptions
+Controller  ──▶  Service (interface + impl)  ──▶  Repository (JPA)  ──▶  Entity / MySQL
+   │                       │
+   │                       └──▶  HtmlEmailService, CloudinaryService, RestClient → ML
+   │
+   └──▶  DTO (mapper.entity↔DTO)
 ```
 
-### Frontend Structure
+### Bezbednosni stack
+
+- `SecurityConfig` — JWT filter chain, custom 401 `AuthenticationEntryPoint`
+- `JwtFilter` — čita `access_token` cookie (fallback Authorization header)
+- `JwtChannelInterceptor` — STOMP autentikacija sa `wsToken`
+- `RateLimitFilter` — Bucket4j per-IP
+- `PhoneNumberConverter` — AES-256/CBC, random IV prepended
+
+Detaljnije: [`wiki/Authentication-and-Security.md`](wiki/Authentication-and-Security.md)
+
+---
+
+## 📁 Struktura repozitorijuma
 
 ```
-src/app/
-├── core/
-│   ├── config/        # API endpoints, RxStomp config
-│   ├── layout/        # App shell (Header, Navbar, Sidebar, Footer)
-│   └── services/      # NotificationService (chat unread badge)
-├── shared/            # TypeScript models, Toast, SkeletonCard, pipes
-└── features/          # Lazy-loaded modules
-    ├── auth/          # Login, Register (ToS checkbox), email verify, password reset
-    ├── ads/           # Listings, details, create/edit wizard, RentalCalendar, PromotionModal
-    ├── chat/          # Real-time inbox (3-column: conversations | messages | calendar)
-    ├── user/          # Profile, my-ads (expiry + promo badges), saved-ads, contracts, credit
-    ├── review/        # Rating form + review cards
-    ├── notifications/ # Notification center
-    ├── legal/         # Privacy policy, Terms of service, How it works, Contact
-    └── admin/         # Dashboard, users, ads, contracts, reports, credits
+Rent Rent Out/
+├── README.md                       ← ova datoteka
+├── CLAUDE.md                       ← interna dokumentacija (za Claude Code)
+├── docker-compose.yml              ← lokalna konfiguracija (4 servisa)
+├── docker-compose.prod.yml         ← produkcija
+├── nginx.prod.conf                 ← Nginx reverse proxy
+├── backup.sh                       ← MySQL backup skripta
+├── mysql-init/                     ← inicijalni MySQL init skripte
+├── slucajevi koriscenja.txt        ← 72 use case-a
+│
+├── RentRentOut/                    ← 🔷 Spring Boot backend
+│   ├── pom.xml
+│   ├── Dockerfile
+│   └── src/main/
+│       ├── java/org/landm/
+│       │   ├── Main.java
+│       │   ├── controller/         ← 21 REST + 1 WS controller
+│       │   ├── service/            ← interface + impl/
+│       │   ├── repository/         ← Spring Data JPA
+│       │   ├── entity/             ← 21 JPA entity + Enums/
+│       │   ├── dto/                ← request/response DTOs
+│       │   ├── mapper/             ← Entity ↔ DTO
+│       │   ├── security/           ← JwtFilter, JwtUtil, PhoneNumberConverter
+│       │   ├── config/             ← WebSocketConfig, MailConfig
+│       │   ├── scheduler/          ← RentalContractScheduler
+│       │   ├── specification/      ← JPA Specifications za pretragu
+│       │   ├── helper/             ← Utility
+│       │   └── exception/          ← Custom exceptions
+│       └── resources/
+│           ├── application.properties           ← .gitignored (local)
+│           ├── application-docker.properties
+│           ├── application-prod.properties
+│           └── db/changelog/                    ← 41+ Liquibase migracija
+│
+├── RentRentOutFront/               ← 🔴 Angular frontend
+│   └── rent-rent-out-front/
+│       ├── package.json
+│       ├── angular.json
+│       ├── capacitor.config.ts     ← Capacitor (mobile)
+│       ├── proxy.conf.json         ← dev proxy /api + /ws + /api/predict-category
+│       ├── nginx.conf              ← prod nginx za Angular dist
+│       ├── server.ts               ← Angular Universal SSR
+│       ├── Dockerfile
+│       ├── public/                 ← static assets
+│       └── src/app/
+│           ├── core/
+│           │   ├── config/         ← API endpoints, RxStomp config
+│           │   ├── layout/         ← Header, Navbar, Sidebar, Footer
+│           │   └── services/       ← NotificationService
+│           ├── shared/             ← TypeScript models, Toast, pipes, CookieConsentService
+│           └── features/           ← lazy-loaded modules
+│               ├── auth/           ← login, register (ToS), verify, reset
+│               ├── ads/            ← list, details, create-edit wizard, RentalCalendar, PromotionModal, ReportModal
+│               ├── chat/           ← 3-column inbox
+│               ├── user/           ← profile, my-ads, saved-ads, contracts, credit
+│               ├── review/         ← rating form + cards
+│               ├── notifications/  ← notification center
+│               ├── verification/   ← identity verification flow
+│               ├── support/        ← chatbot + kontakt
+│               ├── legal/          ← privacy, ToS, how-it-works, contact
+│               └── admin/          ← dashboard, users, ads, contracts, reports, credits, verifications
+│
+├── RentRentOutML/                  ← 🟢 Python AI servis
+│   └── ai_service/
+│       ├── main.py                                                ← FastAPI app
+│       ├── chatbot.py                                             ← LangGraph RAG agent
+│       ├── baza_znanja.txt                                        ← chatbot knowledge base
+│       ├── rentrentout_model.pth                                  ← PyTorch weights
+│       ├── tfidf_vectorizer.pkl
+│       ├── label_encoder.pkl
+│       ├── test_modela.py
+│       ├── requirements.txt
+│       ├── Dockerfile
+│       ├── Neural_Network_for_Category_Recommendation.ipynb       ← 🧠 trening notebook
+│       ├── LLM_Chatbot.ipynb                                      ← 🤖 chatbot notebook
+│       └── LLM Colab.ipynb
+│
+├── docs/screenshots/               ← slike za README + Wiki
+└── wiki/                           ← GitHub Wiki stranice
+    ├── Home.md
+    ├── Architecture.md
+    ├── Backend.md
+    ├── Frontend.md
+    ├── Database-Schema.md
+    ├── ML-Service.md
+    ├── Chatbot.md
+    ├── Authentication-and-Security.md
+    ├── API-Reference.md
+    ├── Promotion-System.md
+    ├── Deployment.md
+    ├── Configuration.md
+    └── Use-Cases.md
 ```
 
 ---
 
-## Getting Started
+## 🚀 Pokretanje lokalno
 
-### Prerequisites
+### Preduslov
 
-- Java 17+
-- Node.js 20+ / npm
-- MySQL 8.0 (or Docker)
+- Docker + Docker Compose **ili**
+- Java 17+, Node.js 20+, MySQL 8.0, Python 3.11
 
-### Option 1 — Docker Compose (recommended)
+### Opcija 1 — Docker Compose (preporučeno)
 
 ```bash
-git clone https://github.com/your-username/rent-rent-out.git
-cd rent-rent-out
+git clone https://github.com/micko112/RentRentOut.git
+cd RentRentOut
 docker-compose up --build
 ```
 
-Services:
-- Frontend: http://localhost:4200
-- Backend API: http://localhost:8080
-- Swagger UI: http://localhost:8080/swagger-ui.html
+Servisi:
+| URL | Opis |
+|---|---|
+| http://localhost:4200 | Angular frontend |
+| http://localhost:8080 | Spring Boot API |
+| http://localhost:8080/swagger-ui.html | Swagger UI |
+| http://localhost:8000 | FastAPI ML servis (`/docs` za OpenAPI) |
+| localhost:3306 | MySQL |
 
-### Option 2 — Manual
+### Opcija 2 — Manuelno
 
 **Backend**
 
 ```bash
 cd RentRentOut
-# Create src/main/resources/application.properties (see Configuration)
+# Kreiraj src/main/resources/application.properties (vidi Konfiguraciju)
 mvn spring-boot:run
 ```
 
@@ -186,14 +402,22 @@ mvn spring-boot:run
 ```bash
 cd RentRentOutFront/rent-rent-out-front
 npm install
-npm start   # proxies /api and /ws → localhost:8080
+npm start   # proxira /api, /ws, /api/predict-category → localhost:8080/8000
+```
+
+**ML servis**
+
+```bash
+cd RentRentOutML/ai_service
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
 ---
 
-## Configuration
+## ⚙️ Konfiguracija
 
-The backend requires `application.properties` (local) or environment variables. Minimum required:
+Backend zahteva `application.properties` (lokalno) ili env varijable u produkciji.
 
 ```properties
 # Database
@@ -207,10 +431,10 @@ jwt.expiration=900000
 jwt.refresh-expiration=604800000
 
 # Cookies
-app.cookie.secure=false           # true in production (HTTPS)
+app.cookie.secure=false           # true u produkciji (HTTPS)
 app.cookie.domain=localhost
 
-# Phone encryption
+# Phone encryption (AES-256, 32 chars)
 encryption.phone-key=<32-char-random-key>
 
 # Cloudinary
@@ -224,80 +448,105 @@ spring.mail.port=587
 spring.mail.username=...
 spring.mail.password=...
 
-# Frontend base URL (for CORS + email links)
+# Frontend base URL (za CORS + email linkove)
 app.frontend.base-url=http://localhost:4200
 
-# Sentry (optional)
+# ML servis
+ai.service.url=http://localhost:8000
+
+# Sentry (opciono)
 sentry.dsn=...
 sentry.traces-sample-rate=0.1
 sentry.environment=local
 ```
 
-> **Production**: `application.properties` is in `.gitignore`. The server uses `application-prod.properties` with `--spring.profiles.active=prod`. Sensitive values are in `/opt/app/RentRentOut/.env`.
+Detaljnije po servisu: [`wiki/Configuration.md`](wiki/Configuration.md).
 
 ---
 
-## Authentication Flow
+## 🧠 ML servis — AI preporuke + chatbot
 
-1. Login → sets two **HttpOnly cookies**: `access_token` (15 min) + `refresh_token` (7 days)
-2. Login response JSON contains `wsToken` (short-lived) — stored **in-memory only** for WebSocket STOMP auth header
-3. `errorInterceptor` catches 401 → calls `POST /api/auth/refresh` (refresh cookie sent automatically) → retries original request
-4. Logout → `POST /api/auth/logout` clears both cookies (`maxAge=0`)
+Dva odvojena AI feature-a, oba serviraju se iz `RentRentOutML/ai_service/`:
 
----
+### 1. Auto-suggest kategorije (PyTorch MLP)
 
-## API Overview
+Kada korisnik kuca naslov oglasa u wizard-u, model real-time predlaže kategoriju iz kataloga od ~700 leaf kategorija.
 
-| Resource | Endpoints |
-|---|---|
-| Auth | `POST /api/auth/login`, `/refresh`, `/logout`, `GET /api/auth/ws-token` |
-| Users | `GET/PUT /api/user/me`, `GET /api/user/{id}`, `GET /api/user/{id}/phone` |
-| Ads | `GET/POST /api/ads`, `GET/PUT/DELETE /api/ads/{id}`, `GET /api/ads/search` |
-| Contracts | `GET/POST /api/contracts`, `PATCH /api/contracts/{id}/status` |
-| Reviews | `POST /api/reviews`, `GET /api/user/{id}/reviews`, `GET /api/reviews/contract-with/{userId}` |
-| Chat | `GET /api/chat/conversations`, `GET /api/chat/{id}/messages`, `GET /api/chat/unread-count` |
-| WebSocket | `STOMP /ws` → `/queue/messages`, `/queue/notifications` |
-| Notifications | `GET /api/notifications`, `PATCH /api/notifications/{id}/read`, `PATCH /api/notifications/read-all` |
-| Promotions | `GET /api/promotions/packages`, `POST /api/promotions/activate`, `POST /api/promotions/renew/{adId}`, `GET /api/promotions/credit` |
-| Reports | `POST /api/ads/{id}/report` |
-| Categories | `GET /api/categories` |
-| Locations | `GET /api/locations` |
-| Admin | `GET /api/admin/stats`, `/users`, `/ads`, `/contracts`, `/reports`, `POST /api/promotions/admin/credit` |
-| SEO | `GET /sitemap.xml` |
-
-Full interactive docs: `/swagger-ui.html` (when running locally).
-
----
-
-## Database Migrations
-
-Schema managed with **Liquibase**. Files in:
-
+**Pipeline:**
 ```
-RentRentOut/src/main/resources/db/changelog/
+Angular wizard (debounce 800ms)
+   │  GET /api/categories/suggest?title=...
+   ▼
+Spring Boot (CategoryServiceImpl.suggestCategory)
+   │  POST http://ml-service:8000/api/predict-category  { "title": "..." }
+   ▼
+FastAPI (main.py)
+   │  clean_text → TF-IDF → MLP forward pass → argmax → label_encoder.inverse_transform
+   ▼
+{ "predicted_category_id": 1322 }
 ```
 
-Changesets 1–24 are applied. **Never edit existing changesets** — always add new numbered XML files.
+**Arhitektura modela:**
+| Sloj | Ulaz → Izlaz | Aktivacija | Dropout |
+|---|---|---|---|
+| 1 | TF-IDF (10000) → 512 | ReLU | 30% |
+| 2 | 512 → 256 | ReLU | 20% |
+| 3 | 256 → 128 | ReLU | 10% |
+| 4 | 128 → 644 klasa | — (CrossEntropy) | — |
+
+**Tačnost:** **97.90%** na test setu (20% od 12880 sintetičkih oglasa).
+
+Trening notebook: [`Neural_Network_for_Category_Recommendation.ipynb`](RentRentOutML/ai_service/Neural_Network_for_Category_Recommendation.ipynb) — 5 faza: Data Engineering → NLP Preprocesiranje → Arhitektura → Trening → Serijalizacija. Detaljnije u [`wiki/ML-Service.md`](wiki/ML-Service.md).
+
+### 2. RAG Chatbot (LangChain + Chroma + GPT-4o-mini)
+
+Chatbot odgovara na pitanja o platformi koristeći **retrieval-augmented generation**.
+
+**Pipeline (LangGraph):**
+```
+Korisničko pitanje
+   │
+   ▼
+ROUTER (LLM) — proverava da li je pitanje relevantno za platformu
+   │
+   ├── nije relevantno → END (učtivo odbije)
+   │
+   └── relevantno
+        ▼
+     RETRIEVER (Chroma) — top-3 chunk-a iz baza_znanja.txt
+        ▼
+     GENERATOR (GPT-4o-mini) — odgovor sa kontekstom
+        ▼
+     END
+```
+
+Notebook: [`LLM_Chatbot.ipynb`](RentRentOutML/ai_service/LLM_Chatbot.ipynb). Detaljnije: [`wiki/Chatbot.md`](wiki/Chatbot.md).
 
 ---
 
-## Running Tests
+## 🧪 Testiranje
 
 ```bash
-# Backend (57 unit tests)
+# Backend
 cd RentRentOut
-mvn test
+mvn test                              # ceo skup
+mvn test -Dtest=AdServiceImplTest    # jedan test
 
 # Frontend
 cd RentRentOutFront/rent-rent-out-front
 npm test
+ng test --include='**/auth.service.spec.ts'
+
+# ML servis (jednostavan smoke test)
+cd RentRentOutML/ai_service
+python test_modela.py
 ```
 
 ---
 
-## Deployment
+## 🚢 Deployment
 
-Production on Hetzner VPS (`/opt/app/`):
+Produkcija na Hetzner CX22 VPS u `/opt/app/`:
 
 ```bash
 cd /opt/app
@@ -305,16 +554,67 @@ git pull
 docker compose -f docker-compose.prod.yml up --build -d
 ```
 
-SSL auto-renewed by cron at 03:00. DB backed up daily at 02:00 (`backup.sh`, 14-day rotation).
+- **SSL** auto-renewed cron-om u 03:00 (`/opt/app/renew-ssl.sh`)
+- **Backup** dnevno u 02:00 (`backup.sh`, 14-day rotacija)
+- **Env** u `/opt/app/RentRentOut/.env` (symlink na `/opt/app/.env`)
+
+Detaljnije: [`wiki/Deployment.md`](wiki/Deployment.md).
 
 ---
 
-## Use Cases
+## 📚 Dokumentacija (Wiki)
 
-72 use cases across 8 domains — see [`slucajevi koriscenja.txt`](slucajevi%20koriscenja.txt).
+Sve detalje, dijagrame i objašnjenja po komponentama imaš u `wiki/` folderu (ujedno se može push-ovati u GitHub Wiki):
+
+| Stranica | Sadržaj |
+|---|---|
+| [Home](wiki/Home.md) | Uvodna stranica Wikija — navigacija |
+| [Architecture](wiki/Architecture.md) | Visok-nivo dijagrami, request flow, slojevi |
+| [Backend](wiki/Backend.md) | Spring Boot detalji, package layout, scheduleri, email |
+| [Frontend](wiki/Frontend.md) | Angular feature moduli, layout breakpoint-i, RxJS pattern-i |
+| [Database Schema](wiki/Database-Schema.md) | 21 entity, ERD, Liquibase migracije |
+| [ML Service](wiki/ML-Service.md) | PyTorch MLP, TF-IDF, trening pipeline, evaluacija |
+| [Chatbot](wiki/Chatbot.md) | LangGraph + Chroma RAG arhitektura |
+| [Authentication and Security](wiki/Authentication-and-Security.md) | JWT cookie flow, AES-256 telefon, rate limiting |
+| [API Reference](wiki/API-Reference.md) | REST + WS endpoint-i (Swagger linkovi) |
+| [Promotion System](wiki/Promotion-System.md) | Paketi, kredit, transakcije, expiry job |
+| [Deployment](wiki/Deployment.md) | VPS, Nginx, SSL, backup, env varijable |
+| [Configuration](wiki/Configuration.md) | Sve env varijable po servisu |
+| [Use Cases](wiki/Use-Cases.md) | 72 use case-a (autentikacija, oglasi, ugovori, chat, ...) |
+
+**Kako objaviti u GitHub Wiki:**
+```bash
+git clone https://github.com/micko112/RentRentOut.wiki.git
+cp wiki/*.md RentRentOut.wiki/
+cd RentRentOut.wiki
+git add . && git commit -m "Initial wiki" && git push
+```
 
 ---
 
-## License
+## 📋 Slučajevi korišćenja
 
-MIT
+**72 use case-a** organizovana u 8 domena. Pun spisak: [`slucajevi koriscenja.txt`](slucajevi%20koriscenja.txt) ili [`wiki/Use-Cases.md`](wiki/Use-Cases.md).
+
+| Domen | Broj | Primer |
+|---|---|---|
+| Autentikacija | 8 | Registracija, social login, password reset |
+| Oglasi | 12 | Kreiranje sa AI preporukom, izmena, brisanje, save |
+| Pretraga | 6 | Filteri, sortiranje, paginacija |
+| Ugovori | 9 | Zahtev, prihvatanje, otkazivanje, finish |
+| Chat | 7 | WS poruke, attachments, sistemske kartice |
+| Recenzije | 4 | 30-day prozor, mutualna ocena |
+| Monetizacija | 8 | Promocije, kredit, expiry |
+| Admin | 10 | Dashboard, moderacija, prijave, identity verifications |
+
+---
+
+## 📜 Licenca
+
+[MIT](LICENSE)
+
+---
+
+<div align="center">
+Made with 💜 in Belgrade — <a href="https://izdajemiznajmljujem.com">izdajemiznajmljujem.com</a>
+</div>
