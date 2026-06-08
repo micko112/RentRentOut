@@ -17,19 +17,19 @@ _CHROMA_DIR = os.path.join(_BASE_DIR, "chroma_db")
 
 def _build_vector_store():
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-    
+
     if os.path.exists(_CHROMA_DIR) and os.listdir(_CHROMA_DIR):
         print("Loading existing vector store from disk...")
         store = Chroma(persist_directory=_CHROMA_DIR, embedding_function=embeddings)
         print("Vector store loaded.")
         return store
-    
+
     loader = TextLoader(os.path.join(_BASE_DIR, "baza_znanja.txt"), encoding="utf-8")
     docs = loader.load()
-    
+
     splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=50)
     chunks = splitter.split_documents(docs)
-    
+
     print(f"Building vector store from {len(chunks)} chunks...")
     store = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=_CHROMA_DIR)
     print("Vector store saved to disk.")
@@ -63,7 +63,10 @@ Pitanje: {question}
 
 Odgovori ISKLJUČIVO jednom rečju: retrieve ili chat."""
     decision = llm.invoke(prompt).content.strip().lower()
-    return "retrieve_node" if "retrieve" in decision else "chat_node"
+    if "retrieve" in decision:
+        return "retrieve_node"
+    else:
+        return "chat_node"
 
 
 def retrieve_node(state):
@@ -76,7 +79,10 @@ Preformuliši pitanje na 3 različita načina (sinonimi, profesionalniji rečnik
 Vrati ISKLJUČIVO ta 3 pitanja, svako u novom redu, bez dodatnog teksta ili rednih brojeva."""
 
     expanded_text = llm.invoke(expansion_prompt).content.strip()
-    queries = [q.strip() for q in expanded_text.split("\n") if q.strip()]
+    queries = []
+    for q in expanded_text.split("\n"):
+        if q.strip():
+            queries.append(q.strip())
     queries.append(question)
 
     all_docs = []
@@ -102,7 +108,17 @@ PITANJE: {question}
 
 Odgovori ISKLJUČIVO sa: yes ili no."""
     decision = llm.invoke(prompt).content.strip().lower()
-    return {"is_relevant": "yes" if "yes" in decision else "no"}
+    if "yes" in decision:
+        return {"is_relevant": "yes"}
+    else:
+        return {"is_relevant": "no"}
+
+
+def check_relevance(state):
+    if state["is_relevant"] == "yes":
+        return "generate_node"
+    else:
+        return "escalate_node"
 
 
 def generate_node(state):
@@ -111,8 +127,15 @@ def generate_node(state):
     user_context = state.get("user_context", "")
     history = "\n".join(state.get("chat_history", [])[-10:])
 
-    user_ctx_block = f"\nKontekst korisnika:\n{user_context}" if user_context else ""
-    history_block = f"\nPrethodni razgovor:\n{history}" if history else ""
+    if user_context:
+        user_ctx_block = f"\nKontekst korisnika:\n{user_context}"
+    else:
+        user_ctx_block = ""
+
+    if history:
+        history_block = f"\nPrethodni razgovor:\n{history}"
+    else:
+        history_block = ""
 
     prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina: alata, kamera, opreme, vozila, stanova, kuća i svega ostalog.
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak, jasan i prijateljski. Ne koristi emojije.{user_ctx_block}{history_block}
@@ -137,9 +160,20 @@ def escalate_node(state):
     user_context = state.get("user_context", "")
     history = "\n".join(state.get("chat_history", [])[-10:])
 
-    user_ctx_block = f"\nKontekst korisnika:\n{user_context}" if user_context else ""
-    history_block = f"\nPrethodni razgovor:\n{history}" if history else ""
-    context_block = f"\nDelimično relevantan kontekst iz baze:\n{context}" if context else ""
+    if user_context:
+        user_ctx_block = f"\nKontekst korisnika:\n{user_context}"
+    else:
+        user_ctx_block = ""
+
+    if history:
+        history_block = f"\nPrethodni razgovor:\n{history}"
+    else:
+        history_block = ""
+
+    if context:
+        context_block = f"\nDelimično relevantan kontekst iz baze:\n{context}"
+    else:
+        context_block = ""
 
     prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina: alata, kamera, opreme, vozila, stanova, kuća i svega ostalog.
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak, jasan i prijateljski. Ne koristi emojije.
@@ -162,7 +196,11 @@ ODGOVOR:"""
 def chat_node(state):
     question = state["question"]
     history = "\n".join(state.get("chat_history", [])[-10:])
-    history_block = f"\nPrethodni razgovor:\n{history}" if history else ""
+
+    if history:
+        history_block = f"\nPrethodni razgovor:\n{history}"
+    else:
+        history_block = ""
 
     prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina (alati, kamere, oprema, vozila, stanovi, kuće, i sl.).
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak i prijateljski. Ne koristi emojije.
@@ -177,10 +215,6 @@ Bot:"""
         "answer": answer,
         "chat_history": [f"Korisnik: {question}", f"Bot: {answer}"],
     }
-
-
-def check_relevance(state):
-    return "generate_node" if state["is_relevant"] == "yes" else "escalate_node"
 
 
 workflow = StateGraph(AgentState)
