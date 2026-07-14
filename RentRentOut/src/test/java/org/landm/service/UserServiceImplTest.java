@@ -54,12 +54,15 @@ public class UserServiceImplTest {
         User user = new User();
         user.setId(5L);
 
+        UserDto expected = new UserDto();
+        expected.setId(5L);
+
         when(userRepository.findById(5L)).thenReturn(Optional.of(user));
-        when(userMapper.toDto(user)).thenReturn(userMapper.toDto(user));
+        when(userMapper.toDto(user)).thenReturn(expected);
 
         UserDto dto = userService.getMe(5L);
-        assertThat(dto.getId()).isEqualTo(5L);
         assertThat(dto).isNotNull();
+        assertThat(dto.getId()).isEqualTo(5L);
     }
     @Test
     void getMe_Fail(){

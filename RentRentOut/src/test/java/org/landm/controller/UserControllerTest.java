@@ -4,6 +4,7 @@ package org.landm.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.landm.dto.user.UserDto;
+import org.landm.mapper.UserMapper;
 import org.landm.security.JwtUtil;
 import org.landm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class UserControllerTest {
     private UserService userService;
     @MockBean
     private JwtUtil jwtUtil;
+    @MockBean
+    private UserMapper userMapper;
 
     private RequestPostProcessor authAs(String userId) {
         return request -> {
