@@ -44,4 +44,10 @@ slucajevi koriscenja.txt
 RentRentOutMl/baza_znanja.txt
 RentRentOutML/ai_service/chatbot_notebook_text.txt
 RentRentOutML/ai_service/chatbot_notebook_text.txt
+
+# Chatbot - ne commit tajne ni logove
+RentRentOutML/ai_service/openAPI_key.txt
+RentRentOutML/ai_service/chatbot_logs.jsonl
+RentRentOutML/ai_service/.env
+CLAUDE.md
 /

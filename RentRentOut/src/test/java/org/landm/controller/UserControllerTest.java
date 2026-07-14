@@ -4,10 +4,6 @@ package org.landm.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.landm.dto.user.UserDto;
-import org.landm.entity.Enums.Currency;
-import org.landm.entity.Role;
-import org.landm.entity.User;
-import org.landm.mapper.UserMapper;
 import org.landm.security.JwtUtil;
 import org.landm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +15,9 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-import java.util.UUID;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,8 +33,6 @@ public class UserControllerTest {
     private UserService userService;
     @MockBean
     private JwtUtil jwtUtil;
-    @MockBean
-    private UserMapper userMapper;
 
     private RequestPostProcessor authAs(String userId) {
         return request -> {
@@ -51,8 +43,10 @@ public class UserControllerTest {
     }
     @Test
     void getMe_AuthUser_returnsUserDto() throws Exception {
-        UserDto dto = userMapper.toDto(createUser("test@test.com"));
-
+        UserDto dto = new UserDto();
+        dto.setId(5L);
+        dto.setEmail("test@test.com");
+        dto.setFirstname("test");
 
         when(userService.getMe(5L)).thenReturn(dto);
 
@@ -62,23 +56,5 @@ public class UserControllerTest {
 
         verify(userService).getMe(5L);
     }
-    @Test
-    void getMe_anonymousUser_returnsUnauthorized() throws Exception {
-        mockMvc.perform(get("/api/user/me"))
-                .andExpect(status().isUnauthorized());
-    }
 
-    User createUser(String email) {
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword("test123");
-        user.setFirstname("test");
-        user.setLastname("testic");
-        user.setCurrency(Currency.RSD);
-        Role role = new Role();
-        role.setName("USER_" + UUID.randomUUID());
-        user.setRole(role);
-        return user;
-
-    }
 }

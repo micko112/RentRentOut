@@ -9,6 +9,12 @@
   "lang": "sr",
   "icons": [
     {
+      "src": "assets/images/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
       "src": "favicon.ico",
       "sizes": "48x48",
       "type": "image/x-icon"

@@ -229,9 +229,9 @@ workflow.add_conditional_edges(
 )
 workflow.add_edge("retrieve_node", "grade_node")
 workflow.add_conditional_edges(
-    "grade_node",
-    check_relevance,
-    {"generate_node": "generate_node", "escalate_node": "escalate_node"},
+    "grade_node", # source
+    check_relevance,    # path
+    {"generate_node": "generate_node", "escalate_node": "escalate_node"}, #path map
 )
 workflow.add_edge("generate_node", END)
 workflow.add_edge("escalate_node", END)

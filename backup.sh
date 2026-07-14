@@ -35,3 +35,13 @@ echo "[$(date)] Backup finished: $BACKUP_DIR/$FILENAME ($(du -sh "$BACKUP_DIR/$F
 # Obrisi backup-ove starije od DAYS_TO_KEEP dana
 find "$BACKUP_DIR" -name "rentrentout_*.sql.gz" -mtime "+$DAYS_TO_KEEP" -delete
 echo "[$(date)] Cleanup done. Keeping last $DAYS_TO_KEEP days."
+
+# Cron: 0 2 * * * /opt/app/backup.sh   → svaki dan u 02:00
+FILENAME="rentrentout_$(date +%F_%H-%M-%S).sql.gz"
+
+docker exec "$(docker ps -qf 'name=db')" \
+  mysqldump --single-transaction --routines --triggers "$DB_NAME" \
+  | gzip > "$BACKUP_DIR/$FILENAME"
+
+# Zadrži samo poslednjih 14 dana
+find "$BACKUP_DIR" -name "rentrentout_*.sql.gz" -mtime +14 -delete

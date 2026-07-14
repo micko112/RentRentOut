@@ -61,7 +61,7 @@ public class ReviewServiceImplTest {
         assertThat(result).isEqualTo(ReviewType.POSITIVE);
     }
 
-    // ─── findContractWithUser() — needs mocks ────────────────────────────
+
 
     @Test
     void findContractWithUser_noFinishedContracts_returnsNull() {

@@ -42,10 +42,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           req.url.includes('/auth/logout')  ||
           req.url.includes('/user/login');
 
-        // Interni "tihi" refresh pozivi — nikad ne redirectuju
         if (isSilent) return throwError(() => err);
 
-        // Startup /user/me: pokušaj refresh jednom, bez redirecta na failure
         if (isUserMe) {
           if (isRetry) return throwError(() => err);
           return http.post('/api/auth/refresh', {}, {
@@ -60,7 +58,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           );
         }
 
-        // Ostali endpointi: pokušaj refresh jednom, pa redirect na login
+
         if (!isAuthEndpoint && !isRetry) {
           return http.post('/api/auth/refresh', {}, { withCredentials: true }).pipe(
             switchMap(() => next(req.clone({

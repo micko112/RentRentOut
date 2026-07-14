@@ -1,14 +1,13 @@
 package org.landm.service.impl;
 
 import jakarta.persistence.OptimisticLockException;
-import java.util.stream.Collectors;
-import org.springframework.transaction.annotation.Transactional;
 import org.landm.dto.rentalContract.CreateRentalContractRequestDto;
 import org.landm.dto.rentalContract.RentalContractDto;
 import org.landm.dto.rentalContract.RentalContractSearchDto;
 import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.entity.Ad;
 import org.landm.entity.Enums.ContractStatus;
+import org.landm.entity.Enums.NotificationType;
 import org.landm.entity.RentalContract;
 import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
@@ -16,7 +15,6 @@ import org.landm.mapper.RentalContractMapper;
 import org.landm.repository.AdRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
-import org.landm.entity.Enums.NotificationType;
 import org.landm.service.ChatService;
 import org.landm.service.NotificationPersistenceService;
 import org.landm.service.NotificationService;
@@ -31,12 +29,14 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RentalContractServiceImpl implements RentalContractService {
@@ -127,10 +127,7 @@ public class RentalContractServiceImpl implements RentalContractService {
     
     @Transactional
     @Override
-    public RentalContractDto updateStatus(Long contractId, UpdateRentalContractStatusRequestDto req, 
-    		Long userId) {
-
-
+    public RentalContractDto updateStatus(Long contractId, UpdateRentalContractStatusRequestDto req, Long userId) {
         RentalContract contract = rentalContractRepository.findByIdPessWriteLock(contractId);
         if(contract == null) throw new IllegalArgumentException("Contract not found.");
 
@@ -139,24 +136,19 @@ public class RentalContractServiceImpl implements RentalContractService {
         ContractStatus oldStatus = contract.getContractStatus();
         ContractStatus newStatus = req.getNewStatus();
 
-
-
         if (!isValidTransition(oldStatus, newStatus)) {
             throw new IllegalStateException("Promena statusa nije dozvoljena.");
         }
-
         if (newStatus == ContractStatus.ACCEPTED || newStatus == ContractStatus.FINISHED
         		|| newStatus == ContractStatus.CANCELLED || newStatus == ContractStatus.ACTIVE
         		|| newStatus == ContractStatus.REJECTED
         		|| newStatus == ContractStatus.CANCELLED_AFTER_ACCEPT) {
             changeStatus(contract, req.getNewStatus(), userId);
         }
-
         if (newStatus == ContractStatus.REQUESTED) {
             handleCounterOffer(contract, req, userId);
             contract.setContractStatus(newStatus);
 
-            // Obavesti drugu stranu o kontra-ponudi
             User counterOfferSender = userRepository.findById(userId)
                     .orElseThrow(() -> new UserNotFoundException("User not found"));
             User owner = contract.getAd().getOwner();
@@ -178,7 +170,7 @@ public class RentalContractServiceImpl implements RentalContractService {
             );
         }
 
-		return rentalContractMapper.toDto(rentalContractRepository.save(contract)); //bolje je da se sacuva
+		return rentalContractMapper.toDto(rentalContractRepository.save(contract));
     }
 
     private static class Event{

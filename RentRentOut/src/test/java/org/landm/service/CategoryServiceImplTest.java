@@ -72,8 +72,6 @@ public class CategoryServiceImplTest {
                 .hasMessageContaining("Category not found");
     }
 
-    // ─── get() ────────────────────────────────────────────────────────────
-
     @Test
     void get_nonExistentId_throws() {
         when(categoryRepository.findById(123L)).thenReturn(Optional.empty());

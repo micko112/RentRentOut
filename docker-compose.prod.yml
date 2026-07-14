@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME:-rent_rent_out}
       MYSQL_ROOT_HOST: '%'
-    # Port 3306 nije eksponovan prema van — dostupan samo interno
+
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -21,45 +21,33 @@ services:
 
   # ─── Spring Boot backend ─────────────────────────────────────────────────────
   backend:
-    build:
-      context: ./RentRentOut
-      dockerfile: Dockerfile
-    image: rentrentout-backend
+    image: ghcr.io/${IMAGE_OWNER:-micko112}/rentrentout-backend:${IMAGE_TAG:-latest}
     container_name: rentrentout-backend
     restart: unless-stopped
     env_file: ./RentRentOut/.env
     environment:
       SPRING_PROFILES_ACTIVE: prod
       DB_HOST: mysql
-    # Port 8080 nije eksponovan prema van — Nginx komunicira interno
     depends_on:
       mysql:
         condition: service_healthy
 
   # ─── Angular frontend ─────────────────────────────────────────────────────────
   frontend:
-    build:
-      context: ./RentRentOutFront/rent-rent-out-front
-      dockerfile: Dockerfile
-    image: rentrentout-frontend
+    image: ghcr.io/${IMAGE_OWNER:-micko112}/rentrentout-frontend:${IMAGE_TAG:-latest}
     container_name: rentrentout-frontend
     restart: unless-stopped
-    # Port 80 nije eksponovan prema van — Nginx komunicira interno
     depends_on:
       - backend
 
   # ─── ML servis (predlaganje kategorija) ──────────────────────────────────────
   ml-service:
-    build:
-      context: ./RentRentOutML/ai_service
-      dockerfile: Dockerfile
-    image: rentrentout-ml
+    image: ghcr.io/${IMAGE_OWNER:-micko112}/rentrentout-ml:${IMAGE_TAG:-latest}
     container_name: rentrentout-ml
     restart: unless-stopped
     env_file: ./RentRentOut/.env
     volumes:
       - chroma_data:/app/chroma_db
-    # Port 8000 nije eksponovan prema van — Nginx komunicira interno
 
   # ─── Nginx reverse proxy ──────────────────────────────────────────────────────
   nginx:
@@ -78,7 +66,6 @@ services:
       - frontend
 
   # ─── Certbot (SSL) ────────────────────────────────────────────────────────────
-  # Pokreni jednom da dobiješ sertifikat:
   #   docker-compose -f docker-compose.prod.yml run --rm certbot
   certbot:
     image: certbot/certbot
