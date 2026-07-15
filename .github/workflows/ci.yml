@@ -128,7 +128,7 @@ jobs:
           command_timeout: 20m
           script: |
             cd /opt/app
-            ./deploy.sh ${{ github.sha }}
+            bash deploy.sh ${{ github.sha }}
 
       - name: Smoke test
         run: |
