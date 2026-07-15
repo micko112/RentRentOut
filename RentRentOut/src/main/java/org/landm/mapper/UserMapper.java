@@ -32,6 +32,7 @@ public class UserMapper {
             dto.setRole(user.getRole().getName());
         }
         dto.setEnabled(user.isEnabled());
+        dto.setCreatedAt(user.getCreatedAt());
         if (user.getLocation() != null) {
             dto.setLocationId(user.getLocation().getId());
             String city = user.getLocation().getCity();

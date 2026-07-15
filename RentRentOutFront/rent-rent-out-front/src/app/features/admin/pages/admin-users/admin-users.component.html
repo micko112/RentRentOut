@@ -18,6 +18,7 @@
           <th>Ime i prezime</th>
           <th>Email</th>
           <th>Uloga</th>
+          <th>Registrovan</th>
           <th>Status</th>
           <th>Akcija</th>
           <th>Verifikacija</th>
@@ -37,6 +38,12 @@
             <span class="badge" [class.admin]="user.role === 'ROLE_ADMIN'">
               {{ user.role === 'ROLE_ADMIN' ? 'Admin' : 'Korisnik' }}
             </span>
+          </td>
+          <td class="created-at">
+            <span *ngIf="user.createdAt; else noDate" [title]="user.createdAt | date:'dd.MM.yyyy HH:mm'">
+              {{ user.createdAt | date:'dd.MM.yyyy.' }}
+            </span>
+            <ng-template #noDate><span class="muted">—</span></ng-template>
           </td>
           <td>
             <span class="status-dot" [class.active]="user.enabled" [class.inactive]="!user.enabled">

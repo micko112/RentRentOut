@@ -10,8 +10,8 @@
 
 @media (max-width: 1200px) {
   :host {
-    top: 102px;
-    height: calc(100vh - 102px);
+    top: 120px;
+    height: calc(100vh - 120px);
   }
 }
 

@@ -195,6 +195,14 @@
   gap: 8px;
 }
 
+.created-at {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.created-at .muted { color: var(--color-text-muted); }
+
 .credit-balance {
   font-size: 13px;
   font-weight: 600;

@@ -16,4 +16,5 @@ export interface User{
   negativeReviews: number;
   role: string;
   enabled: boolean;
+  createdAt?: string;
 }

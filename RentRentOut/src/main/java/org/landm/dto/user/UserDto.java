@@ -3,6 +3,7 @@ package org.landm.dto.user;
 import org.landm.dto.LocationDto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class UserDto {
 
@@ -24,6 +25,15 @@ public class UserDto {
     private String role;
     private boolean enabled;
     private String description;
+    private LocalDateTime createdAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public String getRole() {
         return role;
