@@ -495,6 +495,33 @@
       </div>
     </div>
   </div>
+
+  <!-- Sticky bottom action bar (mobile ≤ 768px) -->
+  <div class="mobile-cta-bar" *ngIf="!isMyAd">
+    <div class="mcb-price">
+      <span class="mcb-price-value">{{ ad.price | number:'1.0-0' }} {{ ad.currency === 'EUR' ? '€' : 'din' }}</span>
+      <span class="mcb-price-unit">
+        <ng-container [ngSwitch]="ad.priceInterval">
+          <ng-container *ngSwitchCase="'PER_HOUR'">/sat</ng-container>
+          <ng-container *ngSwitchCase="'PER_DAY'">/dan</ng-container>
+          <ng-container *ngSwitchCase="'PER_MONTH'">/mesec</ng-container>
+        </ng-container>
+      </span>
+    </div>
+    <button class="mcb-btn-cta" (click)="startChat()">
+      <span class="material-icons">chat</span>
+      Pošalji poruku
+    </button>
+  </div>
+
+  <div class="mobile-cta-bar mobile-cta-bar--my" *ngIf="isMyAd">
+    <button class="mcb-btn-secondary" [routerLink]="['/ads/edit', currentAd?.id]">
+      <span class="material-icons">edit</span> Izmeni
+    </button>
+    <button class="mcb-btn-cta" (click)="openPromoModal()">
+      <span class="material-icons">campaign</span> Promoviši
+    </button>
+  </div>
 </div>
 
 <app-report-modal
@@ -531,7 +558,10 @@
   </div>
 </div>
 
-<div class="image-overlay" *ngIf="isOverlayOpen" (click)="closeOverlay()">
+<div class="image-overlay" *ngIf="isOverlayOpen"
+     (click)="closeOverlay()"
+     (touchstart)="onOverlayTouchStart($event)"
+     (touchend)="onOverlayTouchEnd($event)">
   <button class="close-btn" (click)="closeOverlay()">&times;</button>
 
   <button class="nav-btn prev-btn"

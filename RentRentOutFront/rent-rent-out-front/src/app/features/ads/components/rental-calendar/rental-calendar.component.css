@@ -201,6 +201,20 @@
       font-size: 14px;
       color: rgba(30, 30, 30, 0.88);
     }
+
+    .price-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-top: 4px;
+      align-items: center;
+    }
+
+    .price-line {
+      font-size: 13px;
+      color: rgba(30, 30, 30, 0.78);
+      line-height: 1.3;
+    }
   }
 
   .request-btn {

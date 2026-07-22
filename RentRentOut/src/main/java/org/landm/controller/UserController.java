@@ -1,5 +1,6 @@
 package org.landm.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.landm.dto.requestDto.DepositRequestDto;
@@ -51,6 +52,18 @@ public class UserController {
         response.addHeader("Set-Cookie", buildCookie("refresh_token", refreshToken, refreshExpiration / 1000).toString());
     }
 
+    private boolean isMobileClient(HttpServletRequest request) {
+        String platform = request.getHeader("X-Client-Platform");
+        return "mobile".equalsIgnoreCase(platform);
+    }
+
+    private void addTokensForMobile(HttpServletRequest request, Map<String, Object> res, User user) {
+        if (isMobileClient(request)) {
+            res.put("accessToken",  jwtUtil.generateAccessToken(user));
+            res.put("refreshToken", jwtUtil.generateRefreshToken(user));
+        }
+    }
+
     private ResponseCookie buildCookie(String name, String value, long maxAgeSeconds) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
@@ -86,17 +99,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginUserRequestDto req, HttpServletResponse response) {
+    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginUserRequestDto req, HttpServletRequest request, HttpServletResponse response) {
         User user = userService.login(req);
         setAuthCookies(response, user);
         Map<String, Object> res = new HashMap<>();
         res.put("user", userMapper.toDto(user));
         res.put("wsToken", jwtUtil.generateToken(user));
+        addTokensForMobile(request, res, user);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/google-login")
-    public ResponseEntity<Map<String, Object>> googleLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
+    public ResponseEntity<Map<String, Object>> googleLogin(@RequestBody Map<String, String> body, HttpServletRequest request, HttpServletResponse response) {
         String idToken = body.get("idToken");
         if (idToken == null || idToken.isBlank()) return ResponseEntity.badRequest().build();
         User user = userService.googleLogin(idToken);
@@ -104,11 +118,12 @@ public class UserController {
         Map<String, Object> res = new HashMap<>();
         res.put("user", userMapper.toDto(user));
         res.put("wsToken", jwtUtil.generateToken(user));
+        addTokensForMobile(request, res, user);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/facebook-login")
-    public ResponseEntity<Map<String, Object>> facebookLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
+    public ResponseEntity<Map<String, Object>> facebookLogin(@RequestBody Map<String, String> body, HttpServletRequest request, HttpServletResponse response) {
         String accessToken = body.get("accessToken");
         if (accessToken == null || accessToken.isBlank()) return ResponseEntity.badRequest().build();
         User user = userService.facebookLogin(accessToken);
@@ -116,11 +131,12 @@ public class UserController {
         Map<String, Object> res = new HashMap<>();
         res.put("user", userMapper.toDto(user));
         res.put("wsToken", jwtUtil.generateToken(user));
+        addTokensForMobile(request, res, user);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/apple-login")
-    public ResponseEntity<Map<String, Object>> appleLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
+    public ResponseEntity<Map<String, Object>> appleLogin(@RequestBody Map<String, String> body, HttpServletRequest request, HttpServletResponse response) {
         String identityToken = body.get("identityToken");
         if (identityToken == null || identityToken.isBlank()) return ResponseEntity.badRequest().build();
         User user = userService.appleLogin(identityToken);
@@ -128,6 +144,7 @@ public class UserController {
         Map<String, Object> res = new HashMap<>();
         res.put("user", userMapper.toDto(user));
         res.put("wsToken", jwtUtil.generateToken(user));
+        addTokensForMobile(request, res, user);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
     

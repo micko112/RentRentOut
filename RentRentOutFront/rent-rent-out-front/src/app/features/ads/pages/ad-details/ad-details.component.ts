@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild} from '@angular/core';
 import {Ad} from '../../../../shared/models/ad.model';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {map, Observable, switchMap, tap} from 'rxjs';
@@ -223,6 +223,29 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
   closeOverlay() {
     this.isOverlayOpen = false;
     if (isPlatformBrowser(this.platformId)) document.body.style.overflow = '';
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    if (!this.isOverlayOpen) return;
+    if (event.key === 'ArrowRight')      this.nextImage(event);
+    else if (event.key === 'ArrowLeft')  this.previousImage(event);
+    else if (event.key === 'Escape')     this.closeOverlay();
+  }
+
+  // Swipe (touch) navigacija u overlay-u
+  private overlayTouchStartX: number | null = null;
+  onOverlayTouchStart(e: TouchEvent): void {
+    if (e.touches.length === 1) this.overlayTouchStartX = e.touches[0].clientX;
+  }
+  onOverlayTouchEnd(e: TouchEvent): void {
+    if (this.overlayTouchStartX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    const dx = endX - this.overlayTouchStartX;
+    this.overlayTouchStartX = null;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0) this.nextImage(e);
+    else        this.previousImage(e);
   }
 
   ngOnDestroy(): void {

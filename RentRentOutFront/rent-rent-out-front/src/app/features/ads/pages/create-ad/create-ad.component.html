@@ -175,6 +175,15 @@
 
           <input type="file" id="fileInput" multiple accept="image/*,.heic,.heif" (change)="onFileSelected($event)" hidden>
 
+          <div *ngIf="platform.isNative" class="mobile-photo-actions" style="display:flex;gap:12px;margin-bottom:12px;">
+            <button type="button" class="btn btn-outline" style="flex:1" (click)="takePhoto('camera')">
+              <span class="material-icons" style="vertical-align:middle;font-size:20px">photo_camera</span> Fotografiši
+            </button>
+            <button type="button" class="btn btn-outline" style="flex:1" (click)="takePhoto('gallery')">
+              <span class="material-icons" style="vertical-align:middle;font-size:20px">photo_library</span> Galerija
+            </button>
+          </div>
+
           <label for="fileInput"
                  class="drop-zone"
                  [class.dragging]="isDragging"

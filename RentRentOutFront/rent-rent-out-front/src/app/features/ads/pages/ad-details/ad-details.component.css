@@ -1208,3 +1208,107 @@ border-radius: 4px;
 
 .share-wa { background: #25D366; }
 .share-fb { background: #1877F2; }
+
+/* ═══════════════════════════════════════════════════
+   MOBILE STICKY BOTTOM CTA BAR (≤ 768px)
+   ═══════════════════════════════════════════════════ */
+.mobile-cta-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-cta-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px)); /* iznad bottom nav-a */
+    z-index: 8500;
+    background: #fff;
+    border-top: 1px solid var(--color-border);
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px) * 0);
+    box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .mcb-price {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex-shrink: 0;
+  }
+
+  .mcb-price-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1.1;
+  }
+
+  .mcb-price-unit {
+    font-size: 12px;
+    color: var(--color-text-light);
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .mcb-btn-cta {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    height: 46px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+
+    .material-icons { font-size: 18px; }
+  }
+
+  .mcb-btn-cta:active {
+    background: var(--color-primary-hover, #6d2a6d);
+    transform: scale(0.97);
+  }
+
+  .mcb-btn-secondary {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #fff;
+    color: var(--color-primary);
+    border: 1.5px solid var(--color-primary);
+    border-radius: 24px;
+    height: 46px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    .material-icons { font-size: 18px; }
+  }
+
+  .mobile-cta-bar--my {
+    justify-content: space-between;
+  }
+
+  /* Sakrij originalno "Pošalji poruku" dugme jer imamo sticky CTA */
+  .btn-message {
+    display: none;
+  }
+
+  /* Padding-bottom kontejnera da sadržaj ne bude ispod sticky bar-a */
+  .container {
+    padding-bottom: 78px;
+  }
+}
+

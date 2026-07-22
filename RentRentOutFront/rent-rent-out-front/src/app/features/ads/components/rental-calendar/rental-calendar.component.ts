@@ -151,32 +151,78 @@ export class RentalCalendarComponent implements OnChanges, OnDestroy {
   }
 
   private calculateTieredPrice(days: number): number {
-    if (!this.ad) return 0;
+    return this.buildBreakdown(days).total;
+  }
+
+  /**
+   * Vraca kompleksnu razbijenu cenu za prikaz breakdown-a.
+   * Primer: "1 nedelja x 50 = 50 + 2 dana x 10 = 20 → ukupno 70"
+   */
+  buildBreakdown(days: number): { total: number; parts: { label: string; unitPrice: number; qty: number; sub: number }[] } {
+    if (!this.ad || days <= 0) return { total: 0, parts: [] };
+    const parts: { label: string; unitPrice: number; qty: number; sub: number }[] = [];
+    let total = 0;
+    let remaining = days;
     const interval = this.ad.priceInterval;
+
     if (interval === 'PER_MONTH') {
-      const months = days / 30;
-      if (this.ad.pricePerMonth && months >= 1) {
-        return Math.round(months * this.ad.pricePerMonth);
-      }
-    }
-    if (interval === 'PER_DAY') {
-      if (this.ad.pricePerMonth && days >= 30) {
-        const months = Math.floor(days / 30);
-        const remainingDays = days % 30;
-        if (this.ad.pricePerWeek && remainingDays >= 7) {
-          const weeks = Math.floor(remainingDays / 7);
-          const leftoverDays = remainingDays % 7;
-          return months * this.ad.pricePerMonth + weeks * this.ad.pricePerWeek + leftoverDays * this.ad.price;
+      if (this.ad.pricePerMonth) {
+        const wholeMonths = Math.floor(remaining / 30);
+        const rem = remaining % 30;
+        if (wholeMonths > 0) {
+          const sub = wholeMonths * this.ad.pricePerMonth;
+          parts.push({ label: this.plural(wholeMonths, 'mesec', 'meseca', 'meseci'), unitPrice: this.ad.pricePerMonth, qty: wholeMonths, sub });
+          total += sub;
         }
-        return months * this.ad.pricePerMonth + remainingDays * this.ad.price;
+        if (rem > 0) {
+          const dailyEquiv = Math.round(this.ad.pricePerMonth / 30);
+          const sub = rem * dailyEquiv;
+          parts.push({ label: this.plural(rem, 'dan', 'dana', 'dana'), unitPrice: dailyEquiv, qty: rem, sub });
+          total += sub;
+        }
+        return { total, parts };
       }
-      if (this.ad.pricePerWeek && days >= 7) {
-        const weeks = Math.floor(days / 7);
-        const remainingDays = days % 7;
-        return weeks * this.ad.pricePerWeek + remainingDays * this.ad.price;
-      }
+      const sub = remaining * this.ad.price;
+      parts.push({ label: this.plural(remaining, 'dan', 'dana', 'dana'), unitPrice: this.ad.price, qty: remaining, sub });
+      return { total: sub, parts };
     }
-    return days * this.ad.price;
+
+    // PER_DAY (default za većinu oglasa)
+    if (this.ad.pricePerMonth && remaining >= 30) {
+      const months = Math.floor(remaining / 30);
+      const sub = months * this.ad.pricePerMonth;
+      parts.push({ label: this.plural(months, 'mesec', 'meseca', 'meseci'), unitPrice: this.ad.pricePerMonth, qty: months, sub });
+      total += sub;
+      remaining -= months * 30;
+    }
+    if (this.ad.pricePerWeek && remaining >= 7) {
+      const weeks = Math.floor(remaining / 7);
+      const sub = weeks * this.ad.pricePerWeek;
+      parts.push({ label: this.plural(weeks, 'nedelja', 'nedelje', 'nedelja'), unitPrice: this.ad.pricePerWeek, qty: weeks, sub });
+      total += sub;
+      remaining -= weeks * 7;
+    }
+    if (remaining > 0) {
+      const sub = remaining * this.ad.price;
+      parts.push({ label: this.plural(remaining, 'dan', 'dana', 'dana'), unitPrice: this.ad.price, qty: remaining, sub });
+      total += sub;
+    }
+    return { total, parts };
+  }
+
+  get priceBreakdown() { return this.buildBreakdown(this.numberOfDays); }
+
+  get currencySymbol(): string {
+    if (!this.ad) return 'din';
+    return this.ad.currency === 'EUR' ? '€' : 'din';
+  }
+
+  private plural(n: number, one: string, few: string, many: string): string {
+    const mod10 = n % 10;
+    const mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return `${n} ${one}`;
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${n} ${few}`;
+    return `${n} ${many}`;
   }
 
   isDateBlocked(date: Date): boolean {

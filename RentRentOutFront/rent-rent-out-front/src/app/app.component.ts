@@ -12,6 +12,8 @@ import { NotificationService } from './core/services/notification.service';
 import { SidebarStateService } from './core/services/sidebar-state.service';
 import { MobileFilterService } from './core/services/mobile-filter.service';
 import { CapacitorAppService } from './core/services/capacitor-app.service';
+import { MobilePushService } from './core/services/mobile-push.service';
+import { AuthService } from './features/auth/services/auth.service';
 import { map, filter, startWith } from 'rxjs';
 
 @Component({
@@ -29,9 +31,16 @@ export class AppComponent implements OnInit {
   private sidebarState = inject(SidebarStateService);
   private mobileFilterService = inject(MobileFilterService);
   private capacitorApp = inject(CapacitorAppService);
+  private mobilePush = inject(MobilePushService);
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
     this.capacitorApp.initialize();
+
+    // Push notifikacije se registruju tek nakon uspešnog login-a
+    this.authService.currentUser$.subscribe(user => {
+      if (user) this.mobilePush.initialize();
+    });
   }
 
   sidebarCollapsed$ = this.sidebarState.collapsed$;

@@ -83,7 +83,7 @@
 
 @media (max-width: 900px) {
   .page-content {
-    padding-bottom: 72px;
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
     padding-top: 0;
     padding-left: 12px;
     padding-right: 12px;
@@ -106,7 +106,9 @@
     box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
     height: 60px;
     align-items: center;
-    padding: 0 4px;
+    padding: 0 4px env(safe-area-inset-bottom, 0px);
+    padding-left: calc(4px + env(safe-area-inset-left, 0px));
+    padding-right: calc(4px + env(safe-area-inset-right, 0px));
   }
 
   .mobile-nav-item {
@@ -115,36 +117,53 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 3px;
     text-decoration: none;
     color: var(--color-text-light);
     transition: color 0.15s;
-    padding: 4px 2px;
+    padding: 6px 2px;
     min-width: 0;
+    min-height: 48px;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .mobile-nav-item .material-icons {
-    font-size: 22px;
+    font-size: 24px;
     line-height: 1;
   }
 
   .mobile-nav-label {
     display: block;
-    font-size: 10px;
+    font-size: 10.5px;
     font-weight: 600;
     line-height: 1;
     white-space: nowrap;
+    letter-spacing: -0.1px;
   }
 
   .mobile-nav-item.active,
-  .mobile-nav-item:hover {
+  .mobile-nav-item:active {
     color: var(--color-primary);
+  }
+
+  .mobile-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 3px;
+    background: var(--color-primary);
+    border-radius: 0 0 3px 3px;
   }
 
   .mobile-nav-create {
     flex: 0 0 52px !important;
     width: 52px;
     height: 52px;
+    min-height: 52px;
     border-radius: 50%;
     background: var(--color-primary);
     color: var(--color-white) !important;
@@ -158,14 +177,16 @@
     transition: transform 0.15s, box-shadow 0.15s;
   }
 
-  .mobile-nav-create:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 6px 18px var(--color-primary-shadow-hover);
+  .mobile-nav-create:active {
+    transform: translateY(-8px) scale(0.96);
+    box-shadow: 0 3px 10px var(--color-primary-shadow-hover);
     color: var(--color-white) !important;
   }
 
+  .mobile-nav-create.active::before { display: none; }
+
   .mobile-nav-create .material-icons {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   .mobile-nav-icon-wrap {
@@ -192,6 +213,25 @@
     justify-content: center;
     padding: 0 3px;
     line-height: 1;
+  }
+}
+
+/* Vrlo mali telefoni (≤ 380px iPhone SE) */
+@media (max-width: 380px) {
+  .mobile-nav-label {
+    font-size: 9.5px;
+  }
+  .mobile-nav-item .material-icons {
+    font-size: 22px;
+  }
+  .mobile-nav-create {
+    flex: 0 0 48px !important;
+    width: 48px;
+    height: 48px;
+    min-height: 48px;
+  }
+  .mobile-nav-create .material-icons {
+    font-size: 26px;
   }
 }
 

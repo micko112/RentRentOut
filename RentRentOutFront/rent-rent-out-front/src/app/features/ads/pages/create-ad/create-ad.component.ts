@@ -14,6 +14,7 @@ import { Location } from '../../../../shared/models/location.model';
 import { CityPickerComponent, CityPickerOption } from '../../../../shared/components/city-picker/city-picker.component';
 import { AuthService } from '../../../auth/services/auth.service';
 import { AdTemplate, AdTemplateService } from '../../services/ad-template.service';
+import { PlatformService } from '../../../../core/services/platform.service';
 
 
 @Component({
@@ -385,7 +386,38 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private toastService: ToastService,
     private adTemplateService: AdTemplateService,
+    public platform: PlatformService,
   ) {}
+
+  // ── Camera / Gallery (native only) ───────────────────────────────────────
+  async takePhoto(source: 'camera' | 'gallery'): Promise<void> {
+    if (!this.platform.isNative) return;
+    if (this.selectedFiles.length >= this.MAX_IMAGES) {
+      this.toastService.showError(`Maksimum ${this.MAX_IMAGES} slika.`);
+      return;
+    }
+    try {
+      const { Camera, CameraResultType, CameraSource } = await import('@capacitor/camera');
+      const photo = await Camera.getPhoto({
+        quality: 85,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source: source === 'camera' ? CameraSource.Camera : CameraSource.Photos,
+      });
+      if (!photo.webPath) return;
+      const resp = await fetch(photo.webPath);
+      const blob = await resp.blob();
+      const ext = (photo.format || 'jpg').toLowerCase();
+      const file = new File([blob], `photo-${Date.now()}.${ext}`, { type: blob.type || `image/${ext}` });
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      this.addFiles(dt.files);
+    } catch (err: any) {
+      if (err?.message && !/cancel/i.test(err.message)) {
+        this.toastService.showError('Ne mogu da učitam sliku.');
+      }
+    }
+  }
 
   ngOnInit(): void {
     this.templates$ = this.adTemplateService.list$;

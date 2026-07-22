@@ -214,8 +214,8 @@
 }
 
 @media (max-width: 900px) {
-  .site-header { padding: 10px 14px; }
-  .logo .logo-img { width: auto; height: 120px; margin: -36px 0; }
+  .site-header { padding: 10px 14px 10px 0; }
+  .logo .logo-img { width: auto; height: 78px; margin: 0; }
   .user-actions { display: none; }
   .search-bar { height: 42px; }
 }
@@ -225,7 +225,7 @@
    ═══════════════════════════════════ */
 @media (max-width: 768px) {
   .site-header {
-    padding: 10px 14px;
+    padding: 10px 14px 10px 0;
     border-bottom: 1px solid #eee;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
@@ -236,12 +236,12 @@
     align-items: center;
   }
 
-  .logo { flex: 1; }
+  .logo { flex: 1; margin-left: 0; }
 
   .logo .logo-img {
     width: auto;
-    height: 120px;
-    margin: -36px 0;
+    height: 78px;
+    margin: 0;
   }
 
   /* Sakrij search bar u headeru — ide u mobile-search-bar ispod */
@@ -282,5 +282,7 @@
 }
 
 @media (max-width: 480px) {
-  .logo .logo-img { height: 110px; margin: -31px 0; }
+  .site-header { padding-left: 0; }
+  .logo { margin-left: 0; }
+  .logo .logo-img { height: 70px; margin: 0; }
 }

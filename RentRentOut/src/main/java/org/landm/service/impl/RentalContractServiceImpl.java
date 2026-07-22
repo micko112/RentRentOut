@@ -8,6 +8,7 @@ import org.landm.dto.rentalContract.UpdateRentalContractStatusRequestDto;
 import org.landm.entity.Ad;
 import org.landm.entity.Enums.ContractStatus;
 import org.landm.entity.Enums.NotificationType;
+import org.landm.entity.Enums.PriceInterval;
 import org.landm.entity.RentalContract;
 import org.landm.entity.User;
 import org.landm.exception.UserNotFoundException;
@@ -105,6 +106,13 @@ public class RentalContractServiceImpl implements RentalContractService {
         rentalToCreate.setOfferSender(lessee);
         rentalToCreate.setContractStatus(ContractStatus.REQUESTED);
         rentalToCreate.setAmount(req.getAmount());
+
+        // SIGURNOSNO: backend nezavisno računa cenu iz ad-a i datuma — ignoriše req.agreedPrice
+        long days = java.time.temporal.ChronoUnit.DAYS.between(req.getStartDate(), req.getEndDate()) + 1;
+        BigDecimal computedPrice = calculateTieredPrice(ad, days);
+        BigDecimal quantityMultiplier = BigDecimal.valueOf(req.getAmount() == null ? 1L : req.getAmount());
+        rentalToCreate.setAgreedPrice(computedPrice.multiply(quantityMultiplier));
+
         RentalContract saved = rentalContractRepository.save(rentalToCreate);
 
         chatService.sendContractRequestMessage(saved);
@@ -613,6 +621,53 @@ public class RentalContractServiceImpl implements RentalContractService {
 	@Recover
 	public RentalContractDto recover(OptimisticLockException e) {
 		throw new IllegalStateException("Vaš zahtev nije mogao biti obrađen zbog paralelnih izmena. Pokušajte ponovo.");
+	}
+
+	/**
+	 * Backend-side price calculator. Ne veruje frontend-u — nezavisno računa cenu
+	 * na osnovu ad.price / pricePerWeek / pricePerMonth i broja dana.
+	 * Mora se poklapati sa frontend logikom u rental-calendar.component.ts.
+	 */
+	private BigDecimal calculateTieredPrice(Ad ad, long days) {
+		if (days <= 0 || ad.getPrice() == null) return BigDecimal.ZERO;
+		BigDecimal price = ad.getPrice();
+		BigDecimal weekly = ad.getPricePerWeek();
+		BigDecimal monthly = ad.getPricePerMonth();
+		PriceInterval interval = ad.getPriceInterval();
+
+		if (interval == PriceInterval.PER_MONTH) {
+			if (monthly != null) {
+				long wholeMonths = days / 30;
+				long rem = days % 30;
+				BigDecimal total = monthly.multiply(BigDecimal.valueOf(wholeMonths));
+				if (rem > 0) {
+					// pro-rata dnevna cena za ostatak
+					BigDecimal dailyEquiv = monthly.divide(BigDecimal.valueOf(30), 2, java.math.RoundingMode.HALF_UP);
+					total = total.add(dailyEquiv.multiply(BigDecimal.valueOf(rem)));
+				}
+				return total.setScale(0, java.math.RoundingMode.HALF_UP);
+			}
+			return price.multiply(BigDecimal.valueOf(days));
+		}
+
+		// PER_DAY (default za većinu oglasa) — tiered
+		long remaining = days;
+		BigDecimal total = BigDecimal.ZERO;
+
+		if (monthly != null && remaining >= 30) {
+			long months = remaining / 30;
+			total = total.add(monthly.multiply(BigDecimal.valueOf(months)));
+			remaining -= months * 30;
+		}
+		if (weekly != null && remaining >= 7) {
+			long weeks = remaining / 7;
+			total = total.add(weekly.multiply(BigDecimal.valueOf(weeks)));
+			remaining -= weeks * 7;
+		}
+		if (remaining > 0) {
+			total = total.add(price.multiply(BigDecimal.valueOf(remaining)));
+		}
+		return total;
 	}
 
 }

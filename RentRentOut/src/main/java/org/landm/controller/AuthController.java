@@ -36,8 +36,15 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> refresh(@RequestBody(required = false) Map<String, String> body,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) {
+        boolean isMobile = "mobile".equalsIgnoreCase(request.getHeader("X-Client-Platform"));
+
         String refreshToken = extractCookie(request, "refresh_token");
+        if (refreshToken == null && body != null) {
+            refreshToken = body.get("refreshToken");
+        }
 
         if (refreshToken == null || !jwtUtil.validateToken(refreshToken)) {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid or missing refresh token"));
@@ -52,7 +59,13 @@ public class AuthController {
         String newAccessToken = jwtUtil.generateAccessToken(user);
         response.addHeader("Set-Cookie", buildCookie("access_token", newAccessToken, accessExpiration / 1000).toString());
 
-        return ResponseEntity.ok(Map.of("wsToken", jwtUtil.generateToken(user)));
+        Map<String, Object> res = new java.util.HashMap<>();
+        res.put("wsToken", jwtUtil.generateToken(user));
+        if (isMobile) {
+            res.put("accessToken", newAccessToken);
+            res.put("refreshToken", jwtUtil.generateRefreshToken(user));
+        }
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/logout")

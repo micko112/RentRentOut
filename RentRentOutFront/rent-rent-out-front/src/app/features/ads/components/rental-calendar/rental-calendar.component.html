@@ -73,8 +73,12 @@
           Izaberite datume
         </div>
         <div class="price-calculation" *ngIf="numberOfDays > 0">
-          <div class="total-price">{{ (ad.price * numberOfDays) | number }} din</div>
-          <div class="price-per-day">{{ ad.price | number }} din x {{ numberOfDays }} dana</div>
+          <div class="total-price">{{ totalPrice | number }} {{ currencySymbol }}</div>
+          <div class="price-breakdown">
+            <div class="price-line" *ngFor="let p of priceBreakdown.parts">
+              {{ p.label }} × {{ p.unitPrice | number }} {{ currencySymbol }} = {{ p.sub | number }} {{ currencySymbol }}
+            </div>
+          </div>
         </div>
       </div>
 
