@@ -330,21 +330,21 @@
 /* ─── Responsive: list-view na mobilnim ─── */
 @media (max-width: 600px) {
   .listing-card.list-view {
-    height: auto;
-    min-height: 110px;
+    height: 130px;
+    min-height: 130px;
     align-items: stretch;
   }
 
   .listing-card.list-view .image-wrapper {
     width: 130px;
     min-width: 130px;
-    height: auto;
+    height: 130px;
     align-self: stretch;
   }
 
   .listing-card.list-view .image-wrapper img {
     width: 100%;
-    height: 100%;
+    height: 130px;
     object-fit: cover;
   }
 
@@ -368,8 +368,18 @@
 }
 
 @media (max-width: 400px) {
+  .listing-card.list-view {
+    height: 110px;
+    min-height: 110px;
+  }
+
   .listing-card.list-view .image-wrapper {
-    width: 100px;
-    min-width: 100px;
+    width: 110px;
+    min-width: 110px;
+    height: 110px;
+  }
+
+  .listing-card.list-view .image-wrapper img {
+    height: 110px;
   }
 }

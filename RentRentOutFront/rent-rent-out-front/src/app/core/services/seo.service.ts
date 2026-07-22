@@ -40,9 +40,9 @@ export class SeoService {
   }
 
   setAdPage(ad: Ad): void {
-    const raw = ad.description ?? '';
-    const desc = raw.length
-      ? raw.substring(0, 155).replace(/\s+/g, ' ').trim() + (raw.length > 155 ? '...' : '')
+    const clean = this.stripHtml(ad.description);
+    const desc = clean.length
+      ? clean.substring(0, 155).trim() + (clean.length > 155 ? '...' : '')
       : `Iznajmi ${ad.title} u ${ad.location?.city ?? 'Srbiji'}. Pogledaj oglas na Izdajem Iznajmljujem.`;
 
     this.setPage({
@@ -56,8 +56,9 @@ export class SeoService {
   }
 
   setUserProfilePage(user: UserProfile): void {
-    const desc = user.description?.length
-      ? user.description.substring(0, 155).replace(/\s+/g, ' ').trim()
+    const clean = this.stripHtml(user.description);
+    const desc = clean.length
+      ? clean.substring(0, 155).trim()
       : `Pogledaj profil korisnika ${user.displayName} na Izdajem Iznajmljujem.`;
 
     this.setPage({
@@ -125,6 +126,22 @@ export class SeoService {
 
   // ── Helpers ────────────────────────────────────────────
 
+  private stripHtml(value: string | null | undefined): string {
+    if (!value) return '';
+    return value
+      .replace(/<br\s*\/?>/gi, ' ')
+      .replace(/<\/(p|div|li|h[1-6])>/gi, ' ')
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/&amp;/gi, '&')
+      .replace(/&lt;/gi, '<')
+      .replace(/&gt;/gi, '>')
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;/gi, "'")
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   private setCanonical(url: string): void {
     let link = this.doc.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!link) {
@@ -153,11 +170,12 @@ export class SeoService {
   private buildAdSchema(ad: Ad): object {
     const url   = `${BASE_URL}/ads/${ad.id}`;
     const image = ad.images?.length > 0 ? ad.images[0] : DEFAULT_IMAGE;
+    const cleanDesc = this.stripHtml(ad.description);
     return {
       '@context': 'https://schema.org',
       '@type': 'Product',
       name: ad.title,
-      ...(ad.description ? { description: ad.description } : {}),
+      ...(cleanDesc ? { description: cleanDesc } : {}),
       image: ad.images?.length > 0 ? ad.images : [image],
       url,
       ...(ad.category?.name ? { category: ad.category.name } : {}),
@@ -184,9 +202,9 @@ export class SeoService {
       '@type':    'Person',
       name:        user.displayName,
       url:        `${BASE_URL}/user/${user.id}/reviews`,
-      ...(user.avatarUrl       ? { image:       user.avatarUrl       } : {}),
-      ...(user.description     ? { description: user.description     } : {}),
-      ...(user.locationDisplay ? { address:     user.locationDisplay } : {})
+      ...(user.avatarUrl       ? { image:       user.avatarUrl                  } : {}),
+      ...(user.description     ? { description: this.stripHtml(user.description) } : {}),
+      ...(user.locationDisplay ? { address:     user.locationDisplay             } : {})
     };
   }
 

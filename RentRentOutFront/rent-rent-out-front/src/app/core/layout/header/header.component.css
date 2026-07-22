@@ -215,7 +215,7 @@
 
 @media (max-width: 900px) {
   .site-header { padding: 10px 14px; }
-  .logo .logo-img { width: auto; height: 68px; margin: -10px 0; }
+  .logo .logo-img { width: auto; height: 120px; margin: -36px 0; }
   .user-actions { display: none; }
   .search-bar { height: 42px; }
 }
@@ -240,8 +240,8 @@
 
   .logo .logo-img {
     width: auto;
-    height: 68px;
-    margin: -10px 0;
+    height: 120px;
+    margin: -36px 0;
   }
 
   /* Sakrij search bar u headeru — ide u mobile-search-bar ispod */
@@ -282,5 +282,5 @@
 }
 
 @media (max-width: 480px) {
-  .logo .logo-img { height: 60px; }
+  .logo .logo-img { height: 110px; margin: -31px 0; }
 }

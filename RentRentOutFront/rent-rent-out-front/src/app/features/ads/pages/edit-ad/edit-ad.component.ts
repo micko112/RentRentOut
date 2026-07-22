@@ -398,6 +398,11 @@ export class EditAdComponent implements OnInit, OnDestroy {
         }
 
         this.isLoading = false;
+        setTimeout(() => {
+          if (this.descEditorRef?.nativeElement) {
+            this.descEditorRef.nativeElement.innerHTML = ad.description ?? '';
+          }
+        });
       },
       error: () => {
         this.toastService.showError('Ne mogu da učitam oglas.');

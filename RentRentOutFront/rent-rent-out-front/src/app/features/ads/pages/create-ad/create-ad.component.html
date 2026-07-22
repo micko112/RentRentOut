@@ -96,7 +96,7 @@
           </div>
 
           <!-- Level-2 chips -->
-          <div class="subcategory-section" *ngIf="childCategories.length > 0">
+          <div #subcategorySection class="subcategory-section" *ngIf="childCategories.length > 0">
             <div class="sub-label">Podkategorija <span class="req">*</span></div>
             <div class="subcategory-chips">
               <button type="button"
@@ -110,7 +110,7 @@
           </div>
 
           <!-- Level-3 chips -->
-          <div class="subcategory-section subcategory-section--l3" *ngIf="grandchildCategories.length > 0">
+          <div #grandchildSection class="subcategory-section subcategory-section--l3" *ngIf="grandchildCategories.length > 0">
             <div class="sub-label">Pod-podkategorija <span class="req">*</span></div>
             <div class="subcategory-chips">
               <button type="button"

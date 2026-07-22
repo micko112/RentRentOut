@@ -317,6 +317,8 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   ];
 
   @ViewChild('descEditor') descEditorRef?: ElementRef<HTMLDivElement>;
+  @ViewChild('subcategorySection') subcategorySectionRef?: ElementRef<HTMLDivElement>;
+  @ViewChild('grandchildSection') grandchildSectionRef?: ElementRef<HTMLDivElement>;
 
   // Templates panel state
   templatesPanelOpen = false;
@@ -575,6 +577,7 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       this.form.patchValue({ categoryId: cat.id });
     } else {
       this.form.patchValue({ categoryId: null });
+      this.scrollToOnMobile(() => this.subcategorySectionRef?.nativeElement);
     }
   }
 
@@ -585,7 +588,16 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       this.form.patchValue({ categoryId: cat.id });
     } else {
       this.form.patchValue({ categoryId: null });
+      this.scrollToOnMobile(() => this.grandchildSectionRef?.nativeElement);
     }
+  }
+
+  private scrollToOnMobile(getEl: () => HTMLElement | undefined): void {
+    if (typeof window === 'undefined' || window.innerWidth > 900) return;
+    setTimeout(() => {
+      const el = getEl();
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   }
 
   selectGrandchildCategory(cat: Category): void {
