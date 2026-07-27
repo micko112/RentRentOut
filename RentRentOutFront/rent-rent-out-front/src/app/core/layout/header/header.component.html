@@ -11,37 +11,40 @@
     <!-- DESKTOP: search bar -->
     <div class="search-bar">
       <img src="assets/images/icons8-search-50.png" class="search-icon" alt="search"/>
-      <input type="text" placeholder="Sve što zamislite.. "
+      <input type="text" [placeholder]="'header.search_placeholder' | translate"
         [(ngModel)]="searchTerm"
         (keyup.enter)="onSearch()">
       <div class="search-filter-sep"></div>
-      <button class="search-filter-btn" (click)="triggerMobileFilter()" title="Filteri">
+      <button class="search-filter-btn" (click)="triggerMobileFilter()" [title]="'common.filters' | translate">
         <span class="material-icons">tune</span>
       </button>
-      <button class="search-btn" (click)="onSearch()">Traži</button>
+      <button class="search-btn" (click)="onSearch()">{{ 'common.search' | translate }}</button>
     </div>
 
     <!-- DESKTOP: user actions -->
     <div class="user-actions" *ngIf="currentUser$ | async as user; else notLoggedIn">
-      <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
-      <button *ngIf="user.role === 'ROLE_ADMIN'" class="btn-admin" (click)="adminPanel()">Admin Panel</button>
-      <button class="btn-profile" (click)="myProfile()">Moj Profil</button>
-      <button class="auth-button" (click)="logout()">Odjavi se</button>
+      <app-language-switcher></app-language-switcher>
+      <button class="btn-post-ad" (click)="createAd()">{{ 'header.post_ad' | translate }}</button>
+      <button *ngIf="user.role === 'ROLE_ADMIN'" class="btn-admin" (click)="adminPanel()">{{ 'header.admin_panel' | translate }}</button>
+      <button class="btn-profile" (click)="myProfile()">{{ 'header.my_profile' | translate }}</button>
+      <button class="auth-button" (click)="logout()">{{ 'header.logout' | translate }}</button>
     </div>
     <ng-template #notLoggedIn>
       <div class="user-actions">
-        <button class="btn-post-ad" (click)="createAd()">+ Postavi oglas</button>
-        <button class="auth-button" (click)="login()">Uloguj se</button>
-        <button class="auth-button" (click)="register()">Registruj se</button>
+        <app-language-switcher></app-language-switcher>
+        <button class="btn-post-ad" (click)="createAd()">{{ 'header.post_ad' | translate }}</button>
+        <button class="auth-button" (click)="login()">{{ 'header.login' | translate }}</button>
+        <button class="auth-button" (click)="register()">{{ 'header.register' | translate }}</button>
       </div>
     </ng-template>
 
     <!-- MOBILE: ikonice desno (≤768px) -->
     <div class="mobile-actions">
-      <button class="mobile-icon-btn" (click)="navigateSaved()" title="Sačuvani oglasi">
+      <app-language-switcher class="mobile-lang-switcher"></app-language-switcher>
+      <button class="mobile-icon-btn" (click)="navigateSaved()" [title]="'header.saved_ads' | translate">
         <span class="material-icons">bookmark_border</span>
       </button>
-      <button class="mobile-icon-btn mobile-icon-btn--menu" (click)="openMobileMenuEvent.emit()" title="Meni">
+      <button class="mobile-icon-btn mobile-icon-btn--menu" (click)="openMobileMenuEvent.emit()" [title]="'common.menu' | translate">
         <span class="material-icons">menu</span>
       </button>
     </div>

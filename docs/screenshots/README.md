@@ -1,65 +1,65 @@
 # Screenshots
 
-Ovaj folder sadrži slike koje se referenciraju iz glavnog `README.md` i iz `wiki/` stranica.
+This folder contains images referenced from the main `README.md` and from the `wiki/` pages.
 
-## Lista slika koje treba dodati
+## Required images
 
-Da bi README izgledao kompletno, ubaci sledeće PNG/JPG fajlove u ovaj folder (istim imenima):
+To make the README render fully, add the following PNG or JPG files to this folder (using the exact filenames):
 
-### Naslovne (koriste se u README hero sekciji)
+### Hero (used in the README hero section)
 
-| Fajl | Opis | Preporučena dimenzija |
+| File | Description | Recommended size |
 |---|---|---|
-| `hero-banner.png` | Banner/cover slika projekta (logo + naslov) | 1200×630 |
-| `home.png` | Početna stranica sa hero banerom i kategorijama | 1600×900 |
-| `ad-details.png` | Detalji oglasa (galerija + cena + kalendar) | 1600×900 |
-| `chat.png` | Chat inbox (3 kolone: konverzacije, poruke, kalendar) | 1600×900 |
-| `create-ad.png` | Wizard za kreiranje oglasa (Step 1 ili Step 2) | 1600×900 |
+| `hero-banner.png` | Project cover image (logo and title) | 1200 x 630 |
+| `home.png` | Home page with hero banner and categories | 1600 x 900 |
+| `ad-details.png` | Ad details (gallery, pricing, calendar) | 1600 x 900 |
+| `chat.png` | Chat inbox (three columns: conversations, messages, calendar) | 1600 x 900 |
+| `create-ad.png` | Ad creation wizard (Step 1 or Step 2) | 1600 x 900 |
 
-### Sekcije
+### Sections
 
-| Fajl | Opis |
+| File | Description |
 |---|---|
-| `search-filters.png` | Pretraga sa FiltersSidebar i listom rezultata |
-| `ad-list-home.png` | Home mod sa Najnovijim + 5 kategorija |
-| `user-profile.png` | Javni profil korisnika (oglasi + recenzije) |
-| `my-ads.png` | "Moji oglasi" sa promo badge-ovima i expiry info |
-| `contracts.png` | Lista ugovora (incoming/outgoing) |
-| `credit-page.png` | Kredit stranica (balance + paketi + istorija) |
-| `notifications.png` | Notification center |
-| `admin-dashboard.png` | Admin dashboard sa 6 stat kartica |
-| `admin-reports.png` | Admin moderacija prijava |
-| `promotion-modal.png` | Modal za biranje promotion paketa |
-| `rental-calendar.png` | Komponenta za kalendar dostupnosti |
-| `review-form.png` | Forma za ocenjivanje (3 pitanja) |
-| `email-template.png` | Primer HTML email-a (verifikacija ili ugovor) |
+| `search-filters.png` | Search view with FiltersSidebar and result list |
+| `ad-list-home.png` | Home mode with Latest and five categories |
+| `user-profile.png` | Public user profile (ads and reviews) |
+| `my-ads.png` | "My ads" with promotion badges and expiry info |
+| `contracts.png` | Contract list (incoming / outgoing) |
+| `credit-page.png` | Credit page (balance, packages, history) |
+| `notifications.png` | Notification centre |
+| `admin-dashboard.png` | Admin dashboard with six statistics cards |
+| `admin-reports.png` | Admin report moderation view |
+| `promotion-modal.png` | Modal for choosing a promotion package |
+| `rental-calendar.png` | Availability calendar component |
+| `review-form.png` | Rating form (three questions) |
+| `email-template.png` | Sample HTML email (verification or contract) |
 | `cookie-banner.png` | GDPR cookie banner |
-| `login.png` | Login stranica sa social log-in dugmadima |
-| `register.png` | Registracija sa ToS checkbox-om |
+| `login.png` | Login page with social buttons |
+| `register.png` | Registration page with terms-of-service checkbox |
 
-### ML / AI (koriste se u wiki/ML-Service.md)
+### ML / AI (used in `wiki/ML-Service.md`)
 
-| Fajl | Opis |
+| File | Description |
 |---|---|
-| `ml-architecture.png` | Dijagram: Angular → Spring Boot → FastAPI ML servisa |
-| `ml-training-curve.png` | Screenshot grafika tačnosti po epohama (iz Jupyter-a) |
-| `ml-prediction-demo.png` | Demo predikcije u wizard-u (auto-suggest u akciji) |
-| `chatbot-conversation.png` | Snimak ekrana razgovora sa chatbotom |
+| `ml-architecture.png` | Diagram: Angular -> Spring Boot -> FastAPI ML service |
+| `ml-training-curve.png` | Screenshot of the accuracy-per-epoch chart (from Jupyter) |
+| `ml-prediction-demo.png` | Prediction demo inside the wizard (auto-suggest in action) |
+| `chatbot-conversation.png` | Screenshot of a chatbot conversation |
 
 ### Mobile
 
-| Fajl | Opis |
+| File | Description |
 |---|---|
-| `mobile-home.png` | Mobilna verzija home stranice (≤ 900px) |
-| `mobile-chat.png` | Mobilna verzija chat-a |
+| `mobile-home.png` | Mobile home page (<= 900 px) |
+| `mobile-chat.png` | Mobile chat view |
 
-## Kako napraviti screenshots
+## How to take screenshots
 
-1. Pokreni aplikaciju lokalno (`docker-compose up --build`)
-2. Otvori Chrome DevTools → Device Toolbar → 1600×900 za desktop slike
-3. Mobile slike: 390×844 (iPhone 14) ili 414×896
-4. Za HTML email: otvori inbox, klikni email, screenshot
-5. Sačuvaj PNG u ovom folderu istim imenima kao u tabeli iznad
-6. Commit + push
+1. Run the application locally (`docker-compose up --build`).
+2. Open Chrome DevTools -> Device Toolbar -> 1600 x 900 for desktop shots.
+3. For mobile shots: 390 x 844 (iPhone 14) or 414 x 896.
+4. For HTML emails: open your inbox, click the email, capture the screenshot.
+5. Save each PNG in this folder using the exact filenames from the tables above.
+6. Commit and push.
 
-> Ako jedna od slika fali, README/Wiki će prikazati "broken image" — to je signal da je još nisi dodao.
+> If an image is missing, the README or Wiki will show a broken image placeholder — a clear signal that it has not been added yet.

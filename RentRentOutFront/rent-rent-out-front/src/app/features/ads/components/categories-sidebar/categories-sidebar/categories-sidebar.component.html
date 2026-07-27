@@ -1,13 +1,13 @@
 <div class="filters-container">
 
   <div class="filter-section">
-    <h4 class="filter-title">Kategorije</h4>
+    <h4 class="filter-title">{{ 'ads.filters.category' | translate }}</h4>
 
     <div class="category-list">
       <a class="category-item"
          [class.active]="selectedCategoryId === null"
          (click)="onCategoryClick(null)">
-        Sve kategorije
+        {{ 'ads.filters.all_categories' | translate }}
       </a>
 
       <ng-container *ngFor="let parent of parentCategories">

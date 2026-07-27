@@ -7,16 +7,16 @@
         <div class="action-btns">
           <button class="btn-action btn-renew" (click)="renewAd()" [disabled]="renewingInProgress">
             <span class="material-icons">refresh</span>
-            {{ renewingInProgress ? 'Obnavljanje...' : 'Obnovi' }}
+            {{ renewingInProgress ? ('ads.details.renewing' | translate) : ('ads.details.renew' | translate) }}
           </button>
           <button class="btn-action btn-promote" (click)="openPromoModal()">
-            <span class="material-icons">campaign</span> Promoviši
+            <span class="material-icons">campaign</span> {{ 'ads.details.promote' | translate }}
           </button>
           <button class="btn-action btn-edit" [routerLink]="['/ads/edit', currentAd?.id]">
-            <span class="material-icons">edit</span> Izmeni
+            <span class="material-icons">edit</span> {{ 'common.edit' | translate }}
           </button>
           <button class="btn-action btn-delete" (click)="openDeleteModal()">
-            <span class="material-icons">delete_outline</span> Obriši
+            <span class="material-icons">delete_outline</span> {{ 'common.delete' | translate }}
           </button>
         </div>
       </div>
@@ -32,7 +32,7 @@
                  [class.active]="imageUrl === selectedImageUrl">
               <img [src]="imageUrl"
                    (error)="handleImageError($event)"
-                   alt="Mala slika">
+                   [alt]="'ads.details.thumbnail_alt' | translate">
             </div>
           </div>
           <button class="scroll-btn down" *ngIf="ad.images.length > 4" (click)="scrollThumbnails(400)">
@@ -46,17 +46,17 @@
              style="cursor: zoom-in">
           <img [src]="selectedImageUrl"
                (error)="handleImageError($event)"
-               alt="Glavna slika: {{ ad.title }}">
+               alt="{{ ('ads.details.main_image_alt' | translate) }}: {{ ad.title }}">
           <button type="button" class="mobile-nav-arrow prev"
                   *ngIf="ad.images && ad.images.length > 1"
                   (click)="prevMainImage($event)"
-                  aria-label="Prethodna slika">
+                  [attr.aria-label]="'ads.details.prev_image' | translate">
             <span class="material-icons">chevron_left</span>
           </button>
           <button type="button" class="mobile-nav-arrow next"
                   *ngIf="ad.images && ad.images.length > 1"
                   (click)="nextMainImage($event)"
-                  aria-label="Sledeća slika">
+                  [attr.aria-label]="'ads.details.next_image' | translate">
             <span class="material-icons">chevron_right</span>
           </button>
         </div>
@@ -66,7 +66,7 @@
              *ngFor="let imageUrl of ad.images"
              (click)="selectImage(imageUrl)"
              [class.active]="imageUrl === selectedImageUrl">
-          <img [src]="imageUrl" (error)="handleImageError($event)" alt="Mala slika">
+          <img [src]="imageUrl" (error)="handleImageError($event)" [alt]="'ads.details.thumbnail_alt' | translate">
         </div>
       </div>
       <div class="info">
@@ -80,14 +80,14 @@
             [disabled]="isTogglingS"
             (click)="toggleSave()">
             <span class="material-icons">{{ isSaved ? 'bookmark' : 'bookmark_border' }}</span>
-            <span>{{ isSaved ? 'Sačuvano' : 'Sačuvaj' }}</span>
+            <span>{{ isSaved ? ('ads.details.saved' | translate) : ('ads.details.save' | translate) }}</span>
           </button>
         </div>
 
         <div class="ad-stats" *ngIf="ad.viewCount && ad.viewCount > 0">
           <span class="stat-item">
             <span class="material-icons-outlined stat-icon">visibility</span>
-            {{ ad.viewCount }} pregleda
+            {{ ad.viewCount }} {{ 'ads.details.views' | translate }}
           </span>
         </div>
 
@@ -97,36 +97,36 @@
           <span class="price-sep">/</span>
           <span class="price-unit">
             <ng-container [ngSwitch]="ad.priceInterval">
-              <ng-container *ngSwitchCase="'PER_HOUR'">sat</ng-container>
-              <ng-container *ngSwitchCase="'PER_DAY'">dan</ng-container>
-              <ng-container *ngSwitchCase="'PER_MONTH'">mesec</ng-container>
+              <ng-container *ngSwitchCase="'PER_HOUR'">{{ 'ads.details.per_hour' | translate }}</ng-container>
+              <ng-container *ngSwitchCase="'PER_DAY'">{{ 'ads.details.per_day' | translate }}</ng-container>
+              <ng-container *ngSwitchCase="'PER_MONTH'">{{ 'ads.details.per_month' | translate }}</ng-container>
             </ng-container>
           </span>
         </div>
 
         <div class="deposit-row" *ngIf="ad.deposit">
           <span class="material-icons deposit-icon">account_balance_wallet</span>
-          <span class="deposit-label">Depozit:</span>
+          <span class="deposit-label">{{ 'ads.details.deposit' | translate }}:</span>
           <span class="deposit-value">{{ ad.deposit | number:'1.0-0' }} {{ ad.currency === 'EUR' ? '€' : 'din' }}</span>
         </div>
 
         <div class="meta-chips">
           <span class="meta-chip">
             <span class="material-icons">category</span>
-            {{ ad.category?.name || 'Nije navedeno' }}
+            {{ ad.category?.name || ('ads.details.not_specified' | translate) }}
           </span>
           <span class="meta-chip">
             <span class="material-icons">location_on</span>
-            {{ ad.location?.city || 'Nije navedeno' }}<ng-container *ngIf="ad.location?.municipality && ad.location?.municipality !== ad.location?.city"> – {{ ad.location.municipality }}</ng-container>
+            {{ ad.location?.city || ('ads.details.not_specified' | translate) }}<ng-container *ngIf="ad.location?.municipality && ad.location?.municipality !== ad.location?.city"> – {{ ad.location.municipality }}</ng-container>
           </span>
           <span class="meta-chip" *ngIf="ad.totalQuantity > 1">
             <span class="material-icons">inventory_2</span>
-            {{ ad.totalQuantity }} kom.
+            {{ ad.totalQuantity }} {{ 'ads.details.pieces' | translate }}
           </span>
         </div>
 
         <div class="desc-block">
-          <div class="desc-label">Opis</div>
+          <div class="desc-label">{{ 'ads.details.description' | translate }}</div>
           <div class="description" [innerHTML]="ad.description"></div>
         </div>
 
@@ -134,70 +134,70 @@
         <div class="re-details" *ngIf="ad.areaSize || ad.advertiserType || ad.roomCount || ad.propertyMunicipality">
           <div class="re-details-title">
             <span class="material-icons-outlined">home_work</span>
-            Detalji nekretnine
+            {{ 'ads.details.property_details' | translate }}
           </div>
 
           <!-- Lokacija -->
-          <div class="re-section-label" *ngIf="ad.propertyMunicipality || ad.propertyNeighborhood || ad.propertyStreet">Lokacija</div>
+          <div class="re-section-label" *ngIf="ad.propertyMunicipality || ad.propertyNeighborhood || ad.propertyStreet">{{ 'ads.details.location' | translate }}</div>
           <div class="re-row-group" *ngIf="ad.propertyMunicipality || ad.propertyNeighborhood || ad.propertyStreet">
             <div class="re-item" *ngIf="ad.propertyMunicipality">
-              <span class="re-item-label">Deo mesta/grada</span>
+              <span class="re-item-label">{{ 'ads.details.city_part' | translate }}</span>
               <span class="re-item-val">{{ ad.propertyMunicipality }}</span>
             </div>
             <div class="re-item" *ngIf="ad.propertyNeighborhood">
-              <span class="re-item-label">Precizna lokacija</span>
+              <span class="re-item-label">{{ 'ads.details.precise_location' | translate }}</span>
               <span class="re-item-val">{{ ad.propertyNeighborhood }}</span>
             </div>
             <div class="re-item" *ngIf="ad.propertyStreet">
-              <span class="re-item-label">Ulica</span>
+              <span class="re-item-label">{{ 'ads.details.street' | translate }}</span>
               <span class="re-item-val">{{ ad.propertyStreet }}</span>
             </div>
           </div>
 
           <!-- Osnovne informacije -->
-          <div class="re-section-label">Osnovno</div>
+          <div class="re-section-label">{{ 'ads.details.basic' | translate }}</div>
           <div class="re-row-group">
             <div class="re-item" *ngIf="ad.advertiserType">
-              <span class="re-item-label">Oglašivač</span>
+              <span class="re-item-label">{{ 'ads.details.advertiser' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.advertiserType) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.roomCount">
-              <span class="re-item-label">Broj soba</span>
+              <span class="re-item-label">{{ 'ads.details.room_count' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.roomCount) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.areaSize">
-              <span class="re-item-label">Površina</span>
+              <span class="re-item-label">{{ 'ads.details.area' | translate }}</span>
               <span class="re-item-val">{{ ad.areaSize }} m²</span>
             </div>
             <div class="re-item" *ngIf="ad.landArea">
-              <span class="re-item-label">Površina zemljišta</span>
+              <span class="re-item-label">{{ 'ads.details.land_area' | translate }}</span>
               <span class="re-item-val">{{ ad.landArea }} {{ landAreaUnitLabel(ad.landAreaUnit) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.constructionType">
-              <span class="re-item-label">Vrsta gradnje</span>
+              <span class="re-item-label">{{ 'ads.details.construction_type' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.constructionType) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.propertyCondition">
-              <span class="re-item-label">Stanje</span>
+              <span class="re-item-label">{{ 'ads.details.condition' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.propertyCondition) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.totalFloors">
-              <span class="re-item-label">Ukupna spratnost</span>
+              <span class="re-item-label">{{ 'ads.details.total_floors' | translate }}</span>
               <span class="re-item-val">{{ reFloorsLabel(ad.totalFloors) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.floorNumber">
-              <span class="re-item-label">Sprat</span>
+              <span class="re-item-label">{{ 'ads.details.floor' | translate }}</span>
               <span class="re-item-val">{{ reFloorLabel(ad.floorNumber) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.furnished">
-              <span class="re-item-label">Nameštenost</span>
+              <span class="re-item-label">{{ 'ads.details.furnished' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.furnished) }}</span>
             </div>
           </div>
 
           <!-- Grejanje -->
           <div *ngIf="ad.heatingTypes && ad.heatingTypes.length > 0">
-            <div class="re-section-label">Grejanje</div>
+            <div class="re-section-label">{{ 'ads.details.heating' | translate }}</div>
             <div class="re-heating-chips">
               <span class="re-heating-chip" *ngFor="let h of ad.heatingTypes">{{ reLabel(h) }}</span>
             </div>
@@ -205,7 +205,7 @@
 
           <!-- Karakteristike -->
           <div *ngIf="ad.features && ad.features.length > 0">
-            <div class="re-section-label">Karakteristike</div>
+            <div class="re-section-label">{{ 'ads.details.features' | translate }}</div>
             <div class="re-heating-chips">
               <span class="re-heating-chip re-feature-chip" *ngFor="let f of ad.features">{{ reLabel(f) }}</span>
             </div>
@@ -217,112 +217,112 @@
         <div class="re-details" *ngIf="ad.carBrand || ad.carModel || ad.carFuelType || ad.carYear || ad.carMileage">
           <div class="re-details-title">
             <span class="material-icons-outlined">directions_car</span>
-            Detalji automobila
+            {{ 'ads.details.car_details' | translate }}
           </div>
 
-          <div class="re-section-label">Osnovno</div>
+          <div class="re-section-label">{{ 'ads.details.basic' | translate }}</div>
           <div class="re-row-group">
             <div class="re-item" *ngIf="ad.carBrand">
-              <span class="re-item-label">Marka</span>
+              <span class="re-item-label">{{ 'ads.details.car_brand' | translate }}</span>
               <span class="re-item-val">{{ ad.carBrand }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carModel">
-              <span class="re-item-label">Model</span>
+              <span class="re-item-label">{{ 'ads.details.car_model' | translate }}</span>
               <span class="re-item-val">{{ ad.carModel }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carYear">
-              <span class="re-item-label">Godište</span>
+              <span class="re-item-label">{{ 'ads.details.car_year' | translate }}</span>
               <span class="re-item-val">{{ ad.carYear }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carMileage != null">
-              <span class="re-item-label">Kilometraža</span>
+              <span class="re-item-label">{{ 'ads.details.car_mileage' | translate }}</span>
               <span class="re-item-val">{{ ad.carMileage | number:'1.0-0' }} km</span>
             </div>
             <div class="re-item" *ngIf="ad.carBodyType">
-              <span class="re-item-label">Karoserija</span>
+              <span class="re-item-label">{{ 'ads.details.car_body' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carBodyType) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carFuelType">
-              <span class="re-item-label">Gorivo</span>
+              <span class="re-item-label">{{ 'ads.details.car_fuel' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carFuelType) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carTransmission">
-              <span class="re-item-label">Menjač</span>
+              <span class="re-item-label">{{ 'ads.details.car_transmission' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carTransmission) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carPowerKw">
-              <span class="re-item-label">Snaga</span>
+              <span class="re-item-label">{{ 'ads.details.car_power' | translate }}</span>
               <span class="re-item-val">{{ ad.carPowerKw }} kW</span>
             </div>
             <div class="re-item" *ngIf="ad.carDisplacement">
-              <span class="re-item-label">Kubikaža</span>
+              <span class="re-item-label">{{ 'ads.details.car_displacement' | translate }}</span>
               <span class="re-item-val">{{ ad.carDisplacement }} cm³</span>
             </div>
             <div class="re-item" *ngIf="ad.carDrive">
-              <span class="re-item-label">Pogon</span>
+              <span class="re-item-label">{{ 'ads.details.car_drive' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carDrive) }}</span>
             </div>
           </div>
 
-          <div class="re-section-label" *ngIf="ad.carColor || ad.carDoors || ad.carSeats || ad.carEmissionClass || ad.carSteeringWheel || ad.carOrigin || ad.carOwnership || ad.carDamage || ad.carInteriorMaterial || ad.carInteriorColor || ad.carRegisteredUntil || ad.carCountry || ad.carLabel">Detalji</div>
+          <div class="re-section-label" *ngIf="ad.carColor || ad.carDoors || ad.carSeats || ad.carEmissionClass || ad.carSteeringWheel || ad.carOrigin || ad.carOwnership || ad.carDamage || ad.carInteriorMaterial || ad.carInteriorColor || ad.carRegisteredUntil || ad.carCountry || ad.carLabel">{{ 'ads.details.car_details_section' | translate }}</div>
           <div class="re-row-group" *ngIf="ad.carColor || ad.carDoors || ad.carSeats || ad.carEmissionClass || ad.carSteeringWheel || ad.carOrigin || ad.carOwnership || ad.carDamage || ad.carInteriorMaterial || ad.carInteriorColor || ad.carRegisteredUntil || ad.carCountry || ad.carLabel">
             <div class="re-item" *ngIf="ad.carColor">
-              <span class="re-item-label">Boja</span>
+              <span class="re-item-label">{{ 'ads.details.car_color' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carColor) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carDoors">
-              <span class="re-item-label">Broj vrata</span>
+              <span class="re-item-label">{{ 'ads.details.car_doors' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carDoors) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carSeats">
-              <span class="re-item-label">Broj sedišta</span>
+              <span class="re-item-label">{{ 'ads.details.car_seats' | translate }}</span>
               <span class="re-item-val">{{ ad.carSeats }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carEmissionClass">
-              <span class="re-item-label">Emisiona klasa</span>
+              <span class="re-item-label">{{ 'ads.details.car_emission' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carEmissionClass) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carSteeringWheel">
-              <span class="re-item-label">Volan</span>
+              <span class="re-item-label">{{ 'ads.details.car_steering' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carSteeringWheel) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carOrigin">
-              <span class="re-item-label">Poreklo</span>
+              <span class="re-item-label">{{ 'ads.details.car_origin' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carOrigin) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carOwnership">
-              <span class="re-item-label">Vlasništvo</span>
+              <span class="re-item-label">{{ 'ads.details.car_ownership' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carOwnership) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carDamage">
-              <span class="re-item-label">Oštećenje</span>
+              <span class="re-item-label">{{ 'ads.details.car_damage' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carDamage) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carInteriorMaterial">
-              <span class="re-item-label">Enterijer</span>
+              <span class="re-item-label">{{ 'ads.details.car_interior' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carInteriorMaterial) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carInteriorColor">
-              <span class="re-item-label">Boja enterijera</span>
+              <span class="re-item-label">{{ 'ads.details.car_interior_color' | translate }}</span>
               <span class="re-item-val">{{ reLabel(ad.carInteriorColor) }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carRegisteredUntil">
-              <span class="re-item-label">Registrovan do</span>
+              <span class="re-item-label">{{ 'ads.details.car_registered_until' | translate }}</span>
               <span class="re-item-val">{{ ad.carRegisteredUntil }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carCountry">
-              <span class="re-item-label">Zemlja reg.</span>
+              <span class="re-item-label">{{ 'ads.details.car_country' | translate }}</span>
               <span class="re-item-val">{{ ad.carCountry }}</span>
             </div>
             <div class="re-item" *ngIf="ad.carLabel">
-              <span class="re-item-label">Energetska oznaka</span>
+              <span class="re-item-label">{{ 'ads.details.car_label' | translate }}</span>
               <span class="re-item-val">{{ ad.carLabel }}</span>
             </div>
           </div>
 
           <!-- Oprema -->
           <div *ngIf="ad.features && ad.features.length > 0">
-            <div class="re-section-label">Oprema</div>
+            <div class="re-section-label">{{ 'ads.details.car_equipment' | translate }}</div>
             <div class="re-heating-chips">
               <span class="re-heating-chip re-feature-chip" *ngFor="let f of ad.features">{{ reLabel(f) }}</span>
             </div>
@@ -332,15 +332,15 @@
 
       </div>
       <div class="latest-reviews-section" *ngIf="latestReviews$ | async as reviews">
-        <h3 *ngIf="(reviews.length > 0) && !isMyAd">Šta drugi kažu o vlasniku:</h3>
-        <h3 *ngIf="(reviews.length > 0) && isMyAd">Vaše najnovije ocene</h3>
+        <h3 *ngIf="(reviews.length > 0) && !isMyAd">{{ 'ads.details.others_reviews' | translate }}</h3>
+        <h3 *ngIf="(reviews.length > 0) && isMyAd">{{ 'ads.details.your_reviews' | translate }}</h3>
         <div class="reviews-list" *ngIf="reviews.length > 0">
           <app-review-card
             *ngFor="let rev of reviews"
             [review]="rev"></app-review-card>
         </div>
         <button class="btn-text-only" *ngIf="reviews.length > 0" [routerLink]="['/user', ad.owner.id, 'reviews']">
-          Pročitaj sve ocene
+          {{ 'ads.details.read_all_reviews' | translate }}
         </button>
       </div>
 
@@ -355,11 +355,11 @@
         </app-rental-calendar>
         <!-- TIERED PRICING TABLE (shown if any tier is set) -->
         <div class="pricing-tiers" *ngIf="ad.pricePerWeek || ad.pricePerMonth">
-          <div class="pt-header">Cene po periodu</div>
+          <div class="pt-header">{{ 'ads.details.prices_by_period' | translate }}</div>
           <div class="pt-row">
             <span class="pt-label">
               <span class="material-icons pt-icon">today</span>
-              Po danu
+              {{ 'ads.details.per_day_label' | translate }}
             </span>
             <span class="pt-price">
               {{ ad.price | number: '1.0-0' }}
@@ -370,7 +370,7 @@
           <div class="pt-row" *ngIf="ad.pricePerWeek">
             <span class="pt-label">
               <span class="material-icons pt-icon">date_range</span>
-              Po sedmici <small>(7 dana)</small>
+              {{ 'ads.details.per_week_label' | translate }} <small>({{ 'ads.details.seven_days' | translate }})</small>
             </span>
             <span class="pt-price">
               {{ ad.pricePerWeek | number: '1.0-0' }}
@@ -381,7 +381,7 @@
           <div class="pt-row" *ngIf="ad.pricePerMonth">
             <span class="pt-label">
               <span class="material-icons pt-icon">calendar_month</span>
-              Po mesecu <small>(30 dana)</small>
+              {{ 'ads.details.per_month_label' | translate }} <small>({{ 'ads.details.thirty_days' | translate }})</small>
             </span>
             <span class="pt-price">
               {{ ad.pricePerMonth | number: '1.0-0' }}
@@ -409,7 +409,7 @@
 
                 <span class="badge-identified" *ngIf="ad.owner.identified">
                   <span class="material-icons">verified</span>
-                  <span class="tooltip">Ovaj nalog je verifikovan</span>
+                  <span class="tooltip">{{ 'ads.details.account_verified' | translate }}</span>
                 </span>
               </div>
 
@@ -419,7 +419,7 @@
                   <span class="material-icons meta-row-icon">location_on</span>{{ ad.owner.locationDisplay }}
                 </span>
                 <span *ngIf="ad.owner.createdAt">
-                  <span class="material-icons meta-row-icon">calendar_today</span>Na sajtu od {{ ad.owner.createdAt | date:'yyyy' }}.
+                  <span class="material-icons meta-row-icon">calendar_today</span>{{ 'ads.details.member_since' | translate }} {{ ad.owner.createdAt | date:'yyyy' }}.
                 </span>
               </div>
 
@@ -443,8 +443,8 @@
                           *ngIf="!realPhoneNumber"
                           (click)="revealPhoneNumber(ad.owner.id)">
                     <span class="material-icons">phone</span>
-                    <span *ngIf="!isLoadingPhone">Prikaži broj telefona</span>
-                    <span *ngIf="isLoadingPhone">Učitavam...</span>
+                    <span *ngIf="!isLoadingPhone">{{ 'ads.details.show_phone' | translate }}</span>
+                    <span *ngIf="isLoadingPhone">{{ 'ads.details.loading' | translate }}</span>
                   </button>
 
                   <!-- STANJE 2: Posle klika (Pravi broj) -->
@@ -458,24 +458,24 @@
           </div>
           <button class="btn-message"
                   *ngIf="!isMyAd"
-                  (click)="startChat()">Pošalji poruku</button>
+                  (click)="startChat()">{{ 'ads.details.send_message' | translate }}</button>
 
           <button class="btn-report"
                   *ngIf="isLoggedIn && !isMyAd"
                   (click)="openReport()">
-            <span class="material-icons">flag</span> Prijavi oglas
+            <span class="material-icons">flag</span> {{ 'ads.details.report_ad' | translate }}
           </button>
         </div>
 
         <!-- Podeli oglas -->
         <div class="share-section">
-          <span class="share-label">Podeli oglas</span>
+          <span class="share-label">{{ 'ads.details.share_ad' | translate }}</span>
           <div class="share-buttons">
             <a class="share-btn share-wa"
                [href]="waShareUrl"
                target="_blank"
                rel="noopener noreferrer"
-               title="Podeli na WhatsApp-u">
+               [title]="'ads.details.share_whatsapp' | translate">
               <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
               </svg>
@@ -484,7 +484,7 @@
                [href]="fbShareUrl"
                target="_blank"
                rel="noopener noreferrer"
-               title="Podeli na Facebook-u">
+               [title]="'ads.details.share_facebook' | translate">
               <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
@@ -502,24 +502,24 @@
       <span class="mcb-price-value">{{ ad.price | number:'1.0-0' }} {{ ad.currency === 'EUR' ? '€' : 'din' }}</span>
       <span class="mcb-price-unit">
         <ng-container [ngSwitch]="ad.priceInterval">
-          <ng-container *ngSwitchCase="'PER_HOUR'">/sat</ng-container>
-          <ng-container *ngSwitchCase="'PER_DAY'">/dan</ng-container>
-          <ng-container *ngSwitchCase="'PER_MONTH'">/mesec</ng-container>
+          <ng-container *ngSwitchCase="'PER_HOUR'">/{{ 'ads.details.per_hour' | translate }}</ng-container>
+          <ng-container *ngSwitchCase="'PER_DAY'">/{{ 'ads.details.per_day' | translate }}</ng-container>
+          <ng-container *ngSwitchCase="'PER_MONTH'">/{{ 'ads.details.per_month' | translate }}</ng-container>
         </ng-container>
       </span>
     </div>
     <button class="mcb-btn-cta" (click)="startChat()">
       <span class="material-icons">chat</span>
-      Pošalji poruku
+      {{ 'ads.details.send_message' | translate }}
     </button>
   </div>
 
   <div class="mobile-cta-bar mobile-cta-bar--my" *ngIf="isMyAd">
     <button class="mcb-btn-secondary" [routerLink]="['/ads/edit', currentAd?.id]">
-      <span class="material-icons">edit</span> Izmeni
+      <span class="material-icons">edit</span> {{ 'common.edit' | translate }}
     </button>
     <button class="mcb-btn-cta" (click)="openPromoModal()">
-      <span class="material-icons">campaign</span> Promoviši
+      <span class="material-icons">campaign</span> {{ 'ads.details.promote' | translate }}
     </button>
   </div>
 </div>
@@ -542,9 +542,9 @@
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <span class="material-icons modal-icon">delete_outline</span>
-      <h3>Brisanje oglasa</h3>
+      <h3>{{ 'ads.details.delete_title' | translate }}</h3>
     </div>
-    <p class="modal-subtitle">Razlog za brisanje oglasa "{{ currentAd?.title }}"</p>
+    <p class="modal-subtitle">{{ 'ads.details.delete_reason_prompt' | translate }} "{{ currentAd?.title }}"</p>
     <div class="reason-list">
       <label class="reason-option" *ngFor="let reason of deleteReasons">
         <input type="radio" name="deleteReason" [value]="reason" [(ngModel)]="deleteReason">
@@ -552,8 +552,8 @@
       </label>
     </div>
     <div class="modal-actions">
-      <button class="btn-modal-cancel" (click)="closeDeleteModal()">Odustanite</button>
-      <button class="btn-modal-delete" (click)="confirmDelete()" [disabled]="!deleteReason">Obrišite oglas</button>
+      <button class="btn-modal-cancel" (click)="closeDeleteModal()">{{ 'common.cancel' | translate }}</button>
+      <button class="btn-modal-delete" (click)="confirmDelete()" [disabled]="!deleteReason">{{ 'ads.details.delete_ad' | translate }}</button>
     </div>
   </div>
 </div>
@@ -571,7 +571,7 @@
   </button>
   <img [src]="currentAd.images[currentOverlayIndex]"
        (click)="$event.stopPropagation()"
-       alt="Uvelicana slika">
+       [alt]="'ads.details.enlarged_image' | translate">
 
   <button class="nav-btn next-btn"
           *ngIf="currentAd?.images && currentAd.images.length > 1"

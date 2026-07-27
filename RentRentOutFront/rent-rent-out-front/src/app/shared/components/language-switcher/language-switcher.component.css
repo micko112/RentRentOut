@@ -1,0 +1,136 @@
+.lang-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid #e5d9ec;
+  border-radius: 8px;
+  color: #4a2a5c;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.lang-btn:hover {
+  border-color: #813181;
+  background: #faf5ff;
+}
+
+.lang-switcher.open .lang-btn {
+  border-color: #813181;
+  background: #faf5ff;
+}
+
+.lang-icon {
+  font-size: 18px !important;
+  color: #813181;
+}
+
+.lang-current {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.lang-caret {
+  font-size: 18px !important;
+  color: #7c5b8c;
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 160px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #e5d9ec;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(129, 49, 129, 0.12);
+  z-index: 1000;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+}
+
+.lang-option:hover {
+  background: #f5ecff;
+}
+
+.lang-option.active {
+  background: #f5ecff;
+  color: #813181;
+  font-weight: 600;
+}
+
+.lang-code {
+  display: inline-block;
+  min-width: 28px;
+  padding: 2px 6px;
+  background: #f5ecff;
+  color: #813181;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.lang-name {
+  flex: 1;
+}
+
+.lang-check {
+  font-size: 18px !important;
+  color: #813181;
+}
+
+/* Menu opens to the right of the icon (used in sidebar drawer) */
+.lang-switcher.pos-right .lang-menu {
+  top: 50%;
+  right: auto;
+  left: calc(100% + 8px);
+  transform: translateY(-50%);
+}
+
+@media (max-width: 1400px) {
+  .lang-btn {
+    padding: 4px;
+    background: transparent;
+    border: none;
+  }
+  .lang-btn:hover,
+  .lang-switcher.open .lang-btn {
+    background: transparent;
+    border: none;
+  }
+  .lang-current,
+  .lang-caret {
+    display: none;
+  }
+  .lang-icon {
+    font-size: 24px !important;
+  }
+}

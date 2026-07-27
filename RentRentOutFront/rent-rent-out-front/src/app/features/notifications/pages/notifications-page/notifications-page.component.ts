@@ -6,13 +6,14 @@ import { AppNotification } from '../../../../shared/models/notification.model';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateModule } from '@ngx-translate/core';
 
 type Filter = 'all' | 'unread';
 
 @Component({
   selector: 'app-notifications-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './notifications-page.component.html',
   styleUrl: './notifications-page.component.css'
 })

@@ -34,6 +34,7 @@ import org.landm.service.ReviewService;
 import org.landm.service.UserService;
 import org.landm.util.HtmlSanitizer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.client.RestTemplate;
@@ -63,6 +64,7 @@ public class UserServiceImpl implements UserService {
 	private final AdService adService;
 	private final ReviewService reviewService;
 	private final LocationRepository locationRepository;
+	private final MessageSource messageSource;
 	private final RestTemplate restTemplate = new RestTemplate();
 
 	@Value("${google.client-id}")
@@ -81,7 +83,7 @@ public class UserServiceImpl implements UserService {
 						   PasswordEncoder passwordEncoder, UserMapper userMapper,
 						   JwtUtil jwtUtil, RoleRepository roleRepository,
 						   EmailVerificationService emailVerificationService, AdService adService, ReviewService reviewService,
-						   LocationRepository locationRepository) {
+						   LocationRepository locationRepository, MessageSource messageSource) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -92,6 +94,11 @@ public class UserServiceImpl implements UserService {
 		this.adService = adService;
 		this.reviewService = reviewService;
 		this.locationRepository = locationRepository;
+		this.messageSource = messageSource;
+	}
+
+	private String msg(String key, Object... args) {
+		return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
 	}
 
     @Transactional
@@ -137,7 +144,7 @@ public class UserServiceImpl implements UserService {
             throw new WrongCredentialsException("Wrong email or password!");
         }
         if (!user.isEnabled()) {
-            throw new WrongCredentialsException("Email nije verifikovan. Proverite svoju poštu.");
+            throw new WrongCredentialsException(msg("error.user.email_not_verified"));
         }
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
             throw new WrongCredentialsException("Wrong email or password!");
@@ -206,7 +213,7 @@ public class UserServiceImpl implements UserService {
     	if (editUserDto.getLastname() != null && !editUserDto.getLastname().isBlank()) user.setLastname(editUserDto.getLastname());
     	if(editUserDto.getEmail() != null && !editUserDto.getEmail().equals(user.getEmail())){
 			if (userRepository.existsByEmail(editUserDto.getEmail())) {
-				throw new IllegalArgumentException("Taj email je već zauzet!");
+				throw new IllegalArgumentException(msg("error.user.email_taken"));
 			}
 			user.setEmail(editUserDto.getEmail());
 			user.setEnabled(false);
@@ -225,7 +232,7 @@ public class UserServiceImpl implements UserService {
 			try {
 				user.setCurrency(Currency.valueOf(editUserDto.getCurrency()));
 			} catch (IllegalArgumentException e) {
-				throw new IllegalArgumentException("Nepoznata valuta: " + editUserDto.getCurrency());
+				throw new IllegalArgumentException(msg("error.user.unknown_currency", editUserDto.getCurrency()));
 			}
 		}
 		if (editUserDto.getLocationId() != null) {
@@ -238,7 +245,7 @@ public class UserServiceImpl implements UserService {
 		try {
     		user = userRepository.save(user);
 		} catch (org.springframework.dao.DataIntegrityViolationException e) {
-			throw new IllegalArgumentException("Taj email je već zauzet!");
+			throw new IllegalArgumentException(msg("error.user.email_taken"));
 		}
     	return userMapper.toEditDto(user);
 	}
@@ -272,7 +279,7 @@ public class UserServiceImpl implements UserService {
     
     @Recover
     public UserDto recover(OptimisticLockException e) {
-    	throw new IllegalStateException("Vaš zahtev nije mogao biti obrađen zbog paralelnih izmena. Pokušajte ponovo.");
+    	throw new IllegalStateException(msg("error.common.optimistic_lock"));
     }
 
     @Override
@@ -290,17 +297,17 @@ public class UserServiceImpl implements UserService {
         try {
             debugResponse = restTemplate.getForObject(debugUri, Map.class);
         } catch (Exception e) {
-            throw new WrongCredentialsException("Greška pri validaciji Facebook tokena.");
+            throw new WrongCredentialsException(msg("error.auth.facebook_validation"));
         }
 
-        if (debugResponse == null) throw new WrongCredentialsException("Nevažeći Facebook token.");
+        if (debugResponse == null) throw new WrongCredentialsException(msg("error.auth.facebook_invalid_token"));
 
         Map<String, Object> data = (Map<String, Object>) debugResponse.get("data");
         if (data == null || !Boolean.TRUE.equals(data.get("is_valid"))) {
-            throw new WrongCredentialsException("Facebook token nije validan.");
+            throw new WrongCredentialsException(msg("error.auth.facebook_token_not_valid"));
         }
         if (!facebookAppId.equals(String.valueOf(data.get("app_id")))) {
-            throw new WrongCredentialsException("Facebook token nije za ovu aplikaciju.");
+            throw new WrongCredentialsException(msg("error.auth.facebook_wrong_app"));
         }
 
         String facebookUserId = (String) data.get("user_id");
@@ -316,10 +323,10 @@ public class UserServiceImpl implements UserService {
         try {
             fbUser = restTemplate.getForObject(meUri, Map.class);
         } catch (Exception e) {
-            throw new WrongCredentialsException("Greška pri dohvatanju Facebook korisnika.");
+            throw new WrongCredentialsException(msg("error.auth.facebook_fetch_user"));
         }
 
-        if (fbUser == null) throw new WrongCredentialsException("Nije moguće dohvatiti Facebook korisnika.");
+        if (fbUser == null) throw new WrongCredentialsException(msg("error.auth.facebook_no_user"));
 
         String email = fbUser.get("email");
         String firstName = fbUser.getOrDefault("first_name", "Facebook");
@@ -346,7 +353,7 @@ public class UserServiceImpl implements UserService {
             user.setFacebookId(facebookUserId);
             user = userRepository.save(user);
         } else if (!user.isEnabled()) {
-            throw new WrongCredentialsException("Nalog je deaktiviran.");
+            throw new WrongCredentialsException(msg("error.auth.account_disabled"));
         } else if (user.getFacebookId() == null) {
             user.setFacebookId(facebookUserId);
             user = userRepository.save(user);
@@ -365,23 +372,23 @@ public class UserServiceImpl implements UserService {
 
             String kid = signedJWT.getHeader().getKeyID();
             com.nimbusds.jose.jwk.JWK jwk = jwkSet.getKeyByKeyId(kid);
-            if (jwk == null) throw new WrongCredentialsException("Nevažeći Apple token — ključ nije pronađen.");
+            if (jwk == null) throw new WrongCredentialsException(msg("error.auth.apple_key_not_found"));
 
             JWSVerifier verifier = new RSASSAVerifier(((RSAKey) jwk).toRSAPublicKey());
             if (!signedJWT.verify(verifier)) {
-                throw new WrongCredentialsException("Nevažeći Apple token — potpis nije validan.");
+                throw new WrongCredentialsException(msg("error.auth.apple_signature_invalid"));
             }
 
             JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
 
             if (!"https://appleid.apple.com".equals(claims.getIssuer())) {
-                throw new WrongCredentialsException("Nevažeći Apple token — nepoznat izdavaoc.");
+                throw new WrongCredentialsException(msg("error.auth.apple_unknown_issuer"));
             }
             if (!claims.getAudience().contains(appleClientId)) {
-                throw new WrongCredentialsException("Nevažeći Apple token — pogrešna aplikacija.");
+                throw new WrongCredentialsException(msg("error.auth.apple_wrong_app"));
             }
             if (claims.getExpirationTime().before(new Date())) {
-                throw new WrongCredentialsException("Apple token je istekao.");
+                throw new WrongCredentialsException(msg("error.auth.apple_token_expired"));
             }
 
             String appleUserId = claims.getSubject();
@@ -405,7 +412,7 @@ public class UserServiceImpl implements UserService {
                 user.setAppleId(appleUserId);
                 user = userRepository.save(user);
             } else if (!user.isEnabled()) {
-                throw new WrongCredentialsException("Nalog je deaktiviran.");
+                throw new WrongCredentialsException(msg("error.auth.account_disabled"));
             } else if (user.getAppleId() == null) {
                 user.setAppleId(appleUserId);
                 user = userRepository.save(user);
@@ -415,7 +422,7 @@ public class UserServiceImpl implements UserService {
         } catch (WrongCredentialsException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Greška pri Apple prijavi: " + e.getMessage(), e);
+            throw new RuntimeException(msg("error.auth.apple_login_error", e.getMessage()), e);
         }
     }
 
@@ -430,12 +437,12 @@ public class UserServiceImpl implements UserService {
 
             GoogleIdToken googleToken = verifier.verify(idToken);
             if (googleToken == null) {
-                throw new WrongCredentialsException("Nevažeći Google token.");
+                throw new WrongCredentialsException(msg("error.auth.google_invalid_token"));
             }
 
             GoogleIdToken.Payload payload = googleToken.getPayload();
             if (!payload.getEmailVerified()) {
-                throw new WrongCredentialsException("Google email nije verifikovan.");
+                throw new WrongCredentialsException(msg("error.auth.google_email_not_verified"));
             }
 
             String email = payload.getEmail();
@@ -455,14 +462,14 @@ public class UserServiceImpl implements UserService {
                 user.setCurrency(Currency.RSD);
                 user = userRepository.save(user);
             } else if (!user.isEnabled()) {
-                throw new WrongCredentialsException("Nalog je deaktiviran.");
+                throw new WrongCredentialsException(msg("error.auth.account_disabled"));
             }
 
             return user;
         } catch (WrongCredentialsException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Greška pri Google prijavi: " + e.getMessage(), e);
+            throw new RuntimeException(msg("error.auth.google_login_error", e.getMessage()), e);
         }
     }
 

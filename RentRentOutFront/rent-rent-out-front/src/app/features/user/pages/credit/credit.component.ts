@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { PromotionService, CreditTransaction } from '../../../ads/services/promotion.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AuthService } from '../../../auth/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 const COMPANY_NAME = 'Dimitrije Mitic';
 const BANK_ACCOUNT  = '265-0000006785327-58';
@@ -15,7 +16,7 @@ const PAYMENT_PURPOSE = 'Dopuna kredita Izdajem Iznajmljujem';
 @Component({
   selector: 'app-credit',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, TranslateModule],
   templateUrl: './credit.component.html',
   styleUrl: './credit.component.css'
 })

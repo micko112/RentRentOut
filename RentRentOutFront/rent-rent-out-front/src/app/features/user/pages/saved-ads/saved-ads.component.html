@@ -1,10 +1,10 @@
 <div class="saved-ads-container">
   <div class="header-row">
-    <h2>Sačuvani oglasi ({{ adsPage?.totalElements ?? 0 }})</h2>
+    <h2>{{ 'user.savedAds.title' | translate }} ({{ adsPage?.totalElements ?? 0 }})</h2>
   </div>
 
   <div *ngIf="isLoading" class="loading-state">
-    <p>Učitavanje...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 
   <ng-container *ngIf="!isLoading">
@@ -15,7 +15,7 @@
           [ad]="ad"
           viewMode="list">
           <button class="btn-message" (click)="$event.stopPropagation(); sendMessage(ad.id)">
-            <span class="material-icons">chat_bubble_outline</span> Pošalji poruku
+            <span class="material-icons">chat_bubble_outline</span> {{ 'ads.details.send_message' | translate }}
           </button>
         </app-ad-card>
       </div>
@@ -24,13 +24,13 @@
         <button class="page-btn"
                 [disabled]="adsPage.first"
                 (click)="goToPage(adsPage.number - 1)">
-          &laquo; Prethodna
+          &laquo; {{ 'user.savedAds.previous' | translate }}
         </button>
-        <span class="page-info">Strana {{ adsPage.number + 1 }} od {{ adsPage.totalPages }}</span>
+        <span class="page-info">{{ 'user.savedAds.page' | translate }} {{ adsPage.number + 1 }} {{ 'user.savedAds.of' | translate }} {{ adsPage.totalPages }}</span>
         <button class="page-btn"
                 [disabled]="adsPage.last"
                 (click)="goToPage(adsPage.number + 1)">
-          Sledeća &raquo;
+          {{ 'user.savedAds.next' | translate }} &raquo;
         </button>
       </div>
     </ng-container>
@@ -38,9 +38,9 @@
     <ng-template #noAds>
       <div class="empty-state">
         <span class="material-icons empty-icon">bookmark_border</span>
-        <h3>Nemate sačuvanih oglasa</h3>
-        <p>Sačuvajte oglase koji vas zanimaju klikom na ikonu knjižne oznake.</p>
-        <a routerLink="/ads" class="btn-browse">Pregledaj oglase</a>
+        <h3>{{ 'user.savedAds.empty_title' | translate }}</h3>
+        <p>{{ 'user.savedAds.empty_text' | translate }}</p>
+        <a routerLink="/ads" class="btn-browse">{{ 'user.savedAds.browse' | translate }}</a>
       </div>
     </ng-template>
   </ng-container>

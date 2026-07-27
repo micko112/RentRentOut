@@ -1,100 +1,100 @@
-# Deployment Pipeline
+# Deployment pipeline
 
-Automatski CI/CD za Rent Rent Out. Pipeline definisan u [.github/workflows/ci.yml](.github/workflows/ci.yml).
+Automated CI/CD for Rent Rent Out. The pipeline is defined in [.github/workflows/ci.yml](.github/workflows/ci.yml).
 
-## Šta radi
+## What it does
 
 ```
-push u main
-    │
-    ├── test-backend        (mvn test)          ─┐
-    │                                            │ paralelno
-    ├── test-frontend       (npm run build)     ─┘
-    │
-    ├── build-and-push      (3 image-a → GHCR)   matrix
-    │       ├── rentrentout-backend
-    │       ├── rentrentout-frontend
-    │       └── rentrentout-ml
-    │
-    └── deploy              (SSH → /opt/app/deploy.sh → smoke test)
+push to main
+    |
+    +-- test-backend        (mvn test)          -+
+    |                                            | parallel
+    +-- test-frontend       (npm run build)     -+
+    |
+    +-- build-and-push      (3 images -> GHCR)   matrix
+    |       +-- rentrentout-backend
+    |       +-- rentrentout-frontend
+    |       +-- rentrentout-ml
+    |
+    +-- deploy              (SSH -> /opt/app/deploy.sh -> smoke test)
 ```
 
-- PR-ovi pokreću **samo testove** (build+push+deploy se preskaču).
-- Manuelni re-deploy: **Actions → CI / CD → Run workflow** ili re-run pojedinačnog joba.
-- Rollback: re-run starijeg workflow run-a (image je taggovan po SHA).
+- Pull requests trigger **tests only**; build, push and deploy are skipped.
+- Manual re-deploy: **Actions -> CI / CD -> Run workflow**, or re-run an individual job.
+- Rollback: re-run an older workflow run (images are tagged by commit SHA).
 
-## Jednokratni setup (uradi jednom)
+## One-time setup
 
-### 1. Generiši deploy SSH ključ (lokalno)
+### 1. Generate a deploy SSH key (locally)
 
 ```bash
 ssh-keygen -t ed25519 -f ~/.ssh/rentrentout_deploy -N "" -C "github-actions-deploy"
 ```
 
-Dobiješ `~/.ssh/rentrentout_deploy` (private) i `~/.ssh/rentrentout_deploy.pub` (public).
+This produces `~/.ssh/rentrentout_deploy` (private) and `~/.ssh/rentrentout_deploy.pub` (public).
 
-### 2. Public ključ na VPS
+### 2. Install the public key on the VPS
 
 ```bash
 ssh root@178.104.97.101
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
-echo "<sadržaj rentrentout_deploy.pub>" >> ~/.ssh/authorized_keys
+echo "<contents of rentrentout_deploy.pub>" >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 ```
 
 ### 3. GHCR Personal Access Token
 
-Trebaš PAT sa `read:packages` scope da VPS može da pull-uje private image-e:
+The VPS needs a PAT with the `read:packages` scope in order to pull private images:
 
-1. GitHub → Settings → Developer settings → **Personal access tokens (classic)** → Generate new token
-2. Scope: `read:packages`
-3. Copy token
-4. Na VPS-u dodaj u `/opt/app/RentRentOut/.env`:
+1. GitHub -> Settings -> Developer settings -> **Personal access tokens (classic)** -> Generate new token.
+2. Scope: `read:packages`.
+3. Copy the token.
+4. On the VPS add it to `/opt/app/RentRentOut/.env`:
    ```
    GHCR_USER=micko112
    GHCR_TOKEN=ghp_...
    ```
 
-### 4. Kopiraj deploy.sh na VPS
+### 4. Copy deploy.sh to the VPS
 
 ```bash
 scp deploy.sh root@178.104.97.101:/opt/app/deploy.sh
 ssh root@178.104.97.101 "chmod +x /opt/app/deploy.sh"
 ```
 
-(Ili posle prvog `git pull`-a: `chmod +x /opt/app/deploy.sh` — fajl je u repo-u.)
+(Alternatively, after the first `git pull`: `chmod +x /opt/app/deploy.sh` — the file is versioned in the repository.)
 
 ### 5. GitHub Secrets
 
-Repo → **Settings → Secrets and variables → Actions → New repository secret**:
+Repo -> **Settings -> Secrets and variables -> Actions -> New repository secret**:
 
-| Secret | Vrednost |
+| Secret | Value |
 |---|---|
 | `SSH_HOST` | `178.104.97.101` |
-| `SSH_USER` | `root` (ili `deploy` ako napraviš dedicated user) |
-| `SSH_PRIVATE_KEY` | Kompletan sadržaj `~/.ssh/rentrentout_deploy` (uključi `-----BEGIN...-----` i `-----END...-----`) |
-| `SSH_PORT` | `22` (opciono — default je 22) |
+| `SSH_USER` | `root` (or `deploy` if you create a dedicated user) |
+| `SSH_PRIVATE_KEY` | Full contents of `~/.ssh/rentrentout_deploy` (including `-----BEGIN...-----` and `-----END...-----`) |
+| `SSH_PORT` | `22` (optional; default is 22) |
 
-### 6. GitHub Environment (opciono ali preporučeno)
+### 6. GitHub Environment (optional but recommended)
 
-Repo → **Settings → Environments → New environment → `production`**.
+Repo -> **Settings -> Environments -> New environment -> `production`**.
 
-Dodaj **Required reviewers** (samo ti) ako želiš manual approval pre svakog deploya na prod.
+Add **Required reviewers** (yourself) if you want manual approval before every production deploy.
 
-### 7. Prvo pokretanje
+### 7. First run
 
-Push bilo šta u main (ili trigger workflow ručno). Prvi run će:
-- Trajati ~8–12 min (bez GHA cache-a)
-- Build-ovati 3 image-a
-- Push-ovati u `ghcr.io/micko112/rentrentout-*`
-- SSH-ovati u VPS i pokrenuti deploy.sh
-- Verifikovati sa smoke test-om
+Push anything to `main` (or trigger the workflow manually). The first run will:
+- Take roughly 8-12 minutes (no GHA cache yet).
+- Build all three images.
+- Push them to `ghcr.io/micko112/rentrentout-*`.
+- SSH into the VPS and run `deploy.sh`.
+- Verify with a smoke test.
 
-Sledeći runovi su ~3–5 min zahvaljujući GHA layer cache-u.
+Subsequent runs take about 3-5 minutes thanks to the GHA layer cache.
 
-## Local dev (bez promene)
+## Local development (unchanged)
 
-`docker-compose.yml` (ne prod!) i dalje builduje lokalno:
+`docker-compose.yml` (not the production file) still builds locally:
 
 ```bash
 docker-compose up --build
@@ -102,23 +102,23 @@ docker-compose up --build
 
 ## Troubleshooting
 
-**"unauthorized" pri pull-u na VPS-u**
-- PAT je istekao ili nema `read:packages`
-- Ponovi step 3 i update-uj `.env`, pa `docker login ghcr.io` ručno
+**"unauthorized" while pulling on the VPS**
+- The PAT expired or lacks `read:packages`.
+- Repeat step 3, update `.env`, then run `docker login ghcr.io` manually.
 
-**"host key verification failed" u GitHub Actions**
-- `appleboy/ssh-action` automatski prihvata host key, ali ako pukne: proveri `SSH_HOST` (samo IP, bez `https://`)
+**"host key verification failed" in GitHub Actions**
+- `appleboy/ssh-action` accepts the host key automatically; if it still fails, verify `SSH_HOST` (IP only, without `https://`).
 
-**Deploy prošao ali smoke test failed**
-- Backend duže starta od 100s → dodaj retry u smoke test-u ili proveri `docker logs rentrentout-backend`
+**Deploy succeeded but the smoke test failed**
+- The backend takes longer than 100 s to start; add a retry to the smoke test or inspect `docker logs rentrentout-backend`.
 
 **Rollback**
-- GitHub → Actions → nađi zeleni run pre bug-a → **Re-run all jobs**
-- Ili SSH: `IMAGE_TAG=<stariji-sha> ./deploy.sh <stariji-sha>`
+- GitHub -> Actions -> pick a green run from before the bug -> **Re-run all jobs**.
+- Or via SSH: `IMAGE_TAG=<older-sha> ./deploy.sh <older-sha>`.
 
-## Šta pipeline NE radi (svesno)
+## What the pipeline deliberately does not do
 
-- **Ne dira `.env`** — sekreti ostaju na VPS-u, van gita
-- **Ne pokreće migracije eksplicitno** — Liquibase to radi na startu backend containera
-- **Ne backup-uje DB pre deploya** — `backup.sh` cron radi 02:00 svaki dan
-- **Ne šalje notifikacije** — dodaj Slack/Discord webhook u deploy job ako želiš
+- **Never touches `.env`** — secrets stay on the VPS, outside of git.
+- **Does not run migrations explicitly** — Liquibase does that on backend container start-up.
+- **Does not back up the database before deploy** — the `backup.sh` cron runs at 02:00 every day.
+- **Does not send notifications** — add a Slack or Discord webhook to the deploy job if desired.

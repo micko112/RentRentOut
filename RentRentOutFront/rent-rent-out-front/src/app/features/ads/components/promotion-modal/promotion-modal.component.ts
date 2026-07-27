@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { PromotionService, PromotionPackage, CreditBalance } from '../../services/promotion.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { PromotionType } from '../../../../shared/models/adPreview.model';
@@ -9,7 +10,7 @@ import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-promotion-modal',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './promotion-modal.component.html',
   styleUrl: './promotion-modal.component.css'
 })

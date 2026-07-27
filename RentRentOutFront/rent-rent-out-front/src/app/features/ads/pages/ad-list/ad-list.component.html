@@ -3,12 +3,12 @@
   <!-- SEARCH INFO (samo u search modu) -->
   <div class="search-info" *ngIf="isSearchMode">
     <div class="breadcrumb-nav">
-      <a routerLink="/">Početna</a>
+      <a routerLink="/">{{ 'ads.list.breadcrumb_home' | translate }}</a>
       <span class="next">></span>
-      <span class="current-path">Pretraga</span>
+      <span class="current-path">{{ 'ads.list.breadcrumb_search' | translate }}</span>
     </div>
     <div class="results-count">
-      <strong>{{ totalResults }}</strong> oglasa za
+      <strong>{{ totalResults }}</strong> {{ 'ads.list.results_for' | translate }}
       <span class="search-term">"{{ currentKeyword || activeCategory }}"</span>
     </div>
   </div>
@@ -17,9 +17,9 @@
   <div class="mobile-filter-bar" *ngIf="isSearchMode">
     <div class="mobile-sort-wrap">
       <select class="mobile-sort-select" (change)="onSortChange($event)">
-        <option value="id,desc">Najnovije</option>
-        <option value="price,asc">Najjeftinije</option>
-        <option value="price,desc">Najskuplje</option>
+        <option value="id,desc">{{ 'ads.list.sort_newest' | translate }}</option>
+        <option value="price,asc">{{ 'ads.list.sort_cheapest' | translate }}</option>
+        <option value="price,desc">{{ 'ads.list.sort_most_expensive' | translate }}</option>
       </select>
     </div>
   </div>
@@ -38,14 +38,14 @@
           <span class="material-icons">arrow_back_ios</span>
         </button>
         <span class="drawer-title">
-          {{ mobileFilterView === 'main' ? 'Filteri' : filterSubviewTitle }}
+          {{ mobileFilterView === 'main' ? ('common.filters' | translate) : filterSubviewTitle }}
         </span>
         <div class="drawer-header-actions" *ngIf="mobileFilterView === 'main'">
-          <button class="drawer-reset-btn" (click)="resetMobileFilters()">Resetuj</button>
-          <button class="drawer-apply-btn" (click)="applyMobileFilters()">Primeni</button>
+          <button class="drawer-reset-btn" (click)="resetMobileFilters()">{{ 'ads.list.reset' | translate }}</button>
+          <button class="drawer-apply-btn" (click)="applyMobileFilters()">{{ 'ads.list.apply' | translate }}</button>
         </div>
         <div class="drawer-header-actions" *ngIf="mobileFilterView !== 'main'">
-          <button class="drawer-apply-btn" (click)="mobileFilterView = 'main'">Primeni</button>
+          <button class="drawer-apply-btn" (click)="mobileFilterView = 'main'">{{ 'ads.list.apply' | translate }}</button>
         </div>
       </div>
 
@@ -56,7 +56,7 @@
         <div class="filter-menu-list" *ngIf="mobileFilterView === 'main'">
           <div class="filter-menu-item" (click)="mobileFilterView = 'kategorije'">
             <span class="material-icons filter-menu-icon">category</span>
-            <span class="filter-menu-label">Kategorije</span>
+            <span class="filter-menu-label">{{ 'ads.list.categories' | translate }}</span>
             <span class="filter-menu-selected" *ngIf="pendingMobileFilters.categoryId">
               {{ getCategoryName(pendingMobileFilters.categoryId) }}
             </span>
@@ -64,13 +64,13 @@
           </div>
           <div class="filter-menu-item" (click)="mobileFilterView = 'mesto'">
             <span class="material-icons filter-menu-icon">location_on</span>
-            <span class="filter-menu-label">Mesto</span>
+            <span class="filter-menu-label">{{ 'ads.list.location' | translate }}</span>
             <span class="filter-menu-selected" *ngIf="pendingMobileFilters.city">{{ pendingMobileFilters.city }}</span>
             <span class="material-icons filter-menu-arrow">chevron_right</span>
           </div>
           <div class="filter-menu-item" (click)="mobileFilterView = 'cena'">
             <span class="material-icons filter-menu-icon">payments</span>
-            <span class="filter-menu-label">Cena</span>
+            <span class="filter-menu-label">{{ 'ads.list.price' | translate }}</span>
             <span class="filter-menu-selected" *ngIf="mobileMinPrice || mobileMaxPrice">
               {{ mobileMinPrice || '' }}{{ (mobileMinPrice && mobileMaxPrice) ? ' – ' : '' }}{{ mobileMaxPrice || '' }} {{ mobileCurrency }}
             </span>
@@ -83,7 +83,7 @@
           <div class="subview-search-wrap" *ngIf="mobileFilterCategoryStack.length === 0">
             <span class="material-icons subview-search-icon">search</span>
             <input class="subview-search-input"
-                   placeholder="Pretražite kategorije..."
+                   [placeholder]="'ads.list.search_categories' | translate"
                    [(ngModel)]="categorySearch">
           </div>
           <div class="subview-list">
@@ -91,7 +91,7 @@
                  *ngIf="mobileFilterCategoryStack.length === 0"
                  (click)="selectMobileCategoryAll()"
                  [class.selected]="!pendingMobileFilters.categoryId">
-              <span class="subview-item-label">Sve kategorije</span>
+              <span class="subview-item-label">{{ 'ads.list.all_categories' | translate }}</span>
             </div>
             <div class="subview-item subview-item--with-arrow"
                  *ngFor="let cat of currentCategoryList"
@@ -108,7 +108,7 @@
           <div class="subview-search-wrap">
             <span class="material-icons subview-search-icon">search</span>
             <input class="subview-search-input"
-                   placeholder="Pretražite mesta..."
+                   [placeholder]="'ads.list.search_locations' | translate"
                    [(ngModel)]="citySearch">
           </div>
           <div class="popular-cities-row" *ngIf="!citySearch">
@@ -123,7 +123,7 @@
             <div class="subview-item subview-item--with-arrow"
                  (click)="selectMobileCity(null)"
                  [class.selected]="!pendingMobileFilters.city">
-              <span class="subview-item-label">Sve lokacije</span>
+              <span class="subview-item-label">{{ 'ads.list.all_locations' | translate }}</span>
             </div>
             <div class="subview-item subview-item--with-arrow"
                  *ngFor="let city of filteredMobileCities"
@@ -139,7 +139,7 @@
           <div class="price-subview">
             <div class="price-inputs-row">
               <div class="price-input-wrap">
-                <label class="price-label">Od</label>
+                <label class="price-label">{{ 'ads.list.price_from' | translate }}</label>
                 <input type="number"
                        inputmode="decimal"
                        class="price-input"
@@ -148,11 +148,11 @@
               </div>
               <div class="price-input-sep">—</div>
               <div class="price-input-wrap">
-                <label class="price-label">Do</label>
+                <label class="price-label">{{ 'ads.list.price_to' | translate }}</label>
                 <input type="number"
                        inputmode="decimal"
                        class="price-input"
-                       placeholder="Bez ogr."
+                       [placeholder]="'ads.list.no_limit' | translate"
                        [(ngModel)]="mobileMaxPrice">
               </div>
             </div>
@@ -200,7 +200,7 @@
             <span class="cat-strip-circle">
               <span class="material-icons">apps</span>
             </span>
-            <span class="cat-strip-label">Sve</span>
+            <span class="cat-strip-label">{{ 'ads.list.all' | translate }}</span>
           </a>
           <div class="cat-strip-divider"></div>
           <div class="cat-strip-scroll">
@@ -221,10 +221,10 @@
           <div class="section-header">
             <div class="section-left">
               <span class="material-icons section-icon">schedule</span>
-              <h2 class="section-title">Najnoviji oglasi</h2>
+              <h2 class="section-title">{{ 'ads.list.latest_ads' | translate }}</h2>
             </div>
             <a routerLink="/ads" [queryParams]="{sort: 'id,desc'}" class="section-see-all">
-              Pogledajte sve <span class="material-icons">arrow_forward</span>
+              {{ 'ads.list.see_all' | translate }} <span class="material-icons">arrow_forward</span>
             </a>
           </div>
           <div class="grid-layout" *ngIf="!latestLoaded">
@@ -242,10 +242,10 @@
             <div class="section-left">
               <span class="material-icons section-icon">{{ cat.icon }}</span>
               <h2 class="section-title">{{ cat.displayName }}</h2>
-              <span class="section-count" *ngIf="cat.total > 0">{{ cat.total }} oglasa</span>
+              <span class="section-count" *ngIf="cat.total > 0">{{ cat.total }} {{ 'ads.list.ads_count_suffix' | translate }}</span>
             </div>
             <a routerLink="/ads" [queryParams]="{categoryId: cat.id}" class="section-see-all">
-              Pogledajte sve <span class="material-icons">arrow_forward</span>
+              {{ 'ads.list.see_all' | translate }} <span class="material-icons">arrow_forward</span>
             </a>
           </div>
           <div class="grid-layout" *ngIf="!cat.loaded">
@@ -256,7 +256,7 @@
               [ad]="ad" [viewMode]="mobileView ? 'list' : 'grid'"></app-ad-card>
           </div>
           <div class="section-empty" *ngIf="cat.loaded && cat.ads.length === 0">
-            Trenutno nema oglasa u ovoj kategoriji.
+            {{ 'ads.list.no_ads_in_category' | translate }}
           </div>
         </div>
 
@@ -266,11 +266,11 @@
       <ng-container *ngIf="!homeMode">
         <div class="list-controls" *ngIf="isSearchMode">
           <div class="sort-select">
-            <label>Sortiraj:</label>
+            <label>{{ 'ads.list.sort_label' | translate }}</label>
             <select (change)="onSortChange($event)">
-              <option value="id,desc">Najnovije</option>
-              <option value="price,asc">Najjeftinije</option>
-              <option value="price,desc">Najskuplje</option>
+              <option value="id,desc">{{ 'ads.list.sort_newest' | translate }}</option>
+              <option value="price,asc">{{ 'ads.list.sort_cheapest' | translate }}</option>
+              <option value="price,desc">{{ 'ads.list.sort_most_expensive' | translate }}</option>
             </select>
           </div>
         </div>
@@ -290,7 +290,7 @@
           </div>
 
           <div class="pagination-wrapper" *ngIf="adsPage.totalPages > 1">
-            <button class="page-nav-btn" [disabled]="adsPage.first" (click)="goToPage(adsPage.number - 1)" title="Prethodna">
+            <button class="page-nav-btn" [disabled]="adsPage.first" (click)="goToPage(adsPage.number - 1)" [title]="'ads.list.prev' | translate">
               <span class="material-icons">chevron_left</span>
             </button>
             <ng-container *ngFor="let p of getPageRange(adsPage.number, adsPage.totalPages); trackBy: trackByPage">
@@ -302,7 +302,7 @@
                 {{ asNumber(p) + 1 }}
               </button>
             </ng-container>
-            <button class="page-nav-btn" [disabled]="adsPage.last" (click)="goToPage(adsPage.number + 1)" title="Sledeća">
+            <button class="page-nav-btn" [disabled]="adsPage.last" (click)="goToPage(adsPage.number + 1)" [title]="'ads.list.next' | translate">
               <span class="material-icons">chevron_right</span>
             </button>
           </div>

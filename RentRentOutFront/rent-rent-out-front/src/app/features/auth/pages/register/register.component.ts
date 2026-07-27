@@ -4,12 +4,14 @@ import {AuthService} from '../../services/auth.service';
 import {Router, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {ToastService} from '../../../../shared/services/toast.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-register',
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    RouterModule
+    RouterModule,
+    TranslateModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
@@ -22,7 +24,8 @@ export class RegisterComponent implements OnInit {
     constructor(private fb: FormBuilder,
                 private authService: AuthService,
                 private router: Router,
-                private toastService: ToastService,) {
+                private toastService: ToastService,
+                private translate: TranslateService,) {
     }
 
   ngOnInit() {
@@ -52,11 +55,11 @@ export class RegisterComponent implements OnInit {
     this.authService.register(payload).subscribe({
       next: () => {
         this.router.navigate(['/login']);
-        this.toastService.showSuccess("Uspesno ste se registrovali! Proverite email za potvrdu naloga.");
+        this.toastService.showSuccess(this.translate.instant('auth.register.toast_success'));
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.errorMessage = err.error?.message || err.error || 'Došlo je do greške. Molimo pokušajte ponovo.';
+        this.errorMessage = err.error?.message || err.error || this.translate.instant('auth.register.toast_error');
         this.toastService.showError(this.errorMessage!);
       }
     });

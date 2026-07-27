@@ -16,11 +16,12 @@ import {RentalCalendarComponent} from '../../../ads/components/rental-calendar/r
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {LocationPickerModalComponent, SelectedLocation} from '../../components/location-picker-modal/location-picker-modal.component';
 import {ToastService} from '../../../../shared/services/toast.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-inbox',
   standalone: true,
-  imports: [CommonModule, FormsModule, InitialsPipe, RouterLink, RentalCalendarComponent, LocationPickerModalComponent],
+  imports: [CommonModule, FormsModule, InitialsPipe, RouterLink, RentalCalendarComponent, LocationPickerModalComponent, TranslateModule],
   templateUrl: './inbox.component.html',
   styleUrls: ['./inbox.component.css']
 })

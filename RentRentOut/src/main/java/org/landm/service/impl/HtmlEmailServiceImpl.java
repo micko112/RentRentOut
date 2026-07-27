@@ -4,9 +4,13 @@ import jakarta.mail.internet.MimeMessage;
 import org.landm.service.HtmlEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 
 @Service
 public class HtmlEmailServiceImpl implements HtmlEmailService {
@@ -19,9 +23,20 @@ public class HtmlEmailServiceImpl implements HtmlEmailService {
     private static final String COLOR_BTN_HOVER = "#6a276a";
 
     private final JavaMailSender mailSender;
+    private final MessageSource messageSource;
 
-    public HtmlEmailServiceImpl(JavaMailSender mailSender) {
+    public HtmlEmailServiceImpl(JavaMailSender mailSender, MessageSource messageSource) {
         this.mailSender = mailSender;
+        this.messageSource = messageSource;
+    }
+
+    private String t(String key, Object... args) {
+        return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
+    }
+
+    private String htmlLang() {
+        Locale l = LocaleContextHolder.getLocale();
+        return "en".equalsIgnoreCase(l.getLanguage()) ? "en" : "sr";
     }
 
     // -------------------------------------------------------------------------
@@ -30,112 +45,109 @@ public class HtmlEmailServiceImpl implements HtmlEmailService {
 
     @Override
     public void sendVerificationEmail(String to, String firstname, String verifyLink) {
-        String subject = "Potvrdite vašu email adresu — " + SITE_NAME;
+        String subject = t("email.verification.subject", SITE_NAME);
         String body = greeting(firstname)
-                + paragraph("Hvala što ste se registrovali! Da biste počeli da koristite platformu, molimo vas da potvrdite svoju email adresu klikom na dugme ispod.")
-                + paragraph("Link važi <strong>24 sata</strong>.")
-                + ctaButton(verifyLink, "Potvrdi email adresu")
-                + paragraph("Ukoliko niste kreirali nalog, možete ignorisati ovaj email.");
+                + paragraph(t("email.verification.p1"))
+                + paragraph(t("email.verification.p2"))
+                + ctaButton(verifyLink, t("email.verification.cta"))
+                + paragraph(t("email.verification.p3"));
         send(to, subject, wrap(body));
     }
 
     @Override
     public void sendPasswordResetEmail(String to, String firstname, String resetLink) {
-        String subject = "Resetovanje lozinke — " + SITE_NAME;
+        String subject = t("email.password_reset.subject", SITE_NAME);
         String body = greeting(firstname)
-                + paragraph("Primili smo zahtev za resetovanje lozinke za vaš nalog. Kliknite na dugme ispod da postavite novu lozinku.")
-                + paragraph("Link važi <strong>24 sata</strong>. Ukoliko niste tražili reset lozinke, možete ignorisati ovaj email — vaša lozinka ostaje nepromenjena.")
-                + ctaButton(resetLink, "Resetuj lozinku");
+                + paragraph(t("email.password_reset.p1"))
+                + paragraph(t("email.password_reset.p2"))
+                + ctaButton(resetLink, t("email.password_reset.cta"));
         send(to, subject, wrap(body));
     }
 
     @Override
     public void sendContractRequestEmail(String ownerEmail, String ownerName, String lesseeName,
                                          String adTitle, String contractsUrl) {
-        String subject = "Nova zahtev za iznajmljivanje — " + adTitle;
+        String subject = t("email.contract_request.subject", adTitle);
         String body = greeting(ownerName)
-                + paragraph("Korisnik <strong>" + esc(lesseeName) + "</strong> je poslao zahtev za iznajmljivanje vašeg oglasa:")
+                + paragraph(t("email.contract_request.p1", "<strong>" + esc(lesseeName) + "</strong>"))
                 + highlightBox(adTitle)
-                + paragraph("Prijavite se na platformu da prihvatite ili odbijete zahtev.")
-                + ctaButton(contractsUrl, "Pregledaj zahtev");
+                + paragraph(t("email.contract_request.p2"))
+                + ctaButton(contractsUrl, t("email.contract_request.cta"));
         send(ownerEmail, subject, wrap(body));
     }
 
     @Override
     public void sendContractAcceptedEmail(String lesseeEmail, String lesseeName, String adTitle,
                                           String contractsUrl) {
-        String subject = "Vaš zahtev je prihvaćen — " + adTitle;
+        String subject = t("email.contract_accepted.subject", adTitle);
         String body = greeting(lesseeName)
-                + paragraph("Odlične vesti! Vaš zahtev za iznajmljivanje oglasa je <strong>prihvaćen</strong>:")
+                + paragraph(t("email.contract_accepted.p1"))
                 + highlightBox(adTitle)
-                + paragraph("Kontaktirajte vlasnika oglasa porukama unutar platforme kako biste dogovorili detalje preuzimanja.")
-                + ctaButton(contractsUrl, "Pogledaj ugovor");
+                + paragraph(t("email.contract_accepted.p2"))
+                + ctaButton(contractsUrl, t("email.contract_accepted.cta"));
         send(lesseeEmail, subject, wrap(body));
     }
 
     @Override
     public void sendContractRejectedEmail(String lesseeEmail, String lesseeName, String adTitle,
                                           String browseUrl) {
-        String subject = "Vaš zahtev je odbijen — " + adTitle;
+        String subject = t("email.contract_rejected.subject", adTitle);
         String body = greeting(lesseeName)
-                + paragraph("Nažalost, vaš zahtev za iznajmljivanje oglasa je <strong>odbijen</strong>:")
+                + paragraph(t("email.contract_rejected.p1"))
                 + highlightBox(adTitle)
-                + paragraph("Na platformi vas čekaju stotine drugih oglasa. Pronađite ono što vam treba!")
-                + ctaButton(browseUrl, "Pregledaj oglase");
+                + paragraph(t("email.contract_rejected.p2"))
+                + ctaButton(browseUrl, t("email.contract_rejected.cta"));
         send(lesseeEmail, subject, wrap(body));
     }
 
     @Override
     public void sendCreditAddedEmail(String to, String firstname, String amount, String newBalance,
                                      String description, String myAdsUrl) {
-        String subject = "Kredit je dodat na vaš nalog — " + SITE_NAME;
+        String subject = t("email.credit_added.subject", SITE_NAME);
         String noteLine = (description != null && !description.isBlank())
-                ? paragraph("Napomena: <em>" + esc(description) + "</em>")
+                ? paragraph(t("email.credit_added.note", "<em>" + esc(description) + "</em>"))
                 : "";
         String body = greeting(firstname)
-                + paragraph("Na vaš nalog je dodato <strong>" + esc(amount) + " RSD</strong> kredita.")
+                + paragraph(t("email.credit_added.p1", "<strong>" + esc(amount) + " RSD</strong>"))
                 + noteLine
                 + balanceRow(newBalance)
-                + paragraph("Kredit možete iskoristiti za promociju vaših oglasa — istaknite oglas na vrhu pretrage i privucite više zakupaca.")
-                + ctaButton(myAdsUrl, "Promoviši oglas");
+                + paragraph(t("email.credit_added.p2"))
+                + ctaButton(myAdsUrl, t("email.credit_added.cta"));
         send(to, subject, wrap(body));
     }
 
     @Override
     public void sendAdExpiryReminderEmail(String to, String firstname, String adTitle,
                                           String expiryDate, String adUrl, String myAdsUrl) {
-        String subject = "Vaš oglas ističe za 3 dana — " + adTitle;
+        String subject = t("email.ad_expiry.subject", adTitle);
         String body = greeting(firstname)
-                + paragraph("Vaš oglas ističe <strong>" + esc(expiryDate) + "</strong>:")
+                + paragraph(t("email.ad_expiry.p1", "<strong>" + esc(expiryDate) + "</strong>"))
                 + highlightBox(adTitle)
-                + paragraph("Oglas možete <strong>besplatno obnoviti</strong> na stranici Moji oglasi kako bi ostao vidljiv zakupcima.")
-                + twoButtons(myAdsUrl, "Obnovi oglas", adUrl, "Pogledaj oglas");
+                + paragraph(t("email.ad_expiry.p2"))
+                + twoButtons(myAdsUrl, t("email.ad_expiry.cta1"), adUrl, t("email.ad_expiry.cta2"));
         send(to, subject, wrap(body));
     }
 
     @Override
     public void sendVerificationApprovedEmail(String to, String firstname, String profileUrl) {
-        String subject = "Vaš nalog je verifikovan — " + SITE_NAME;
+        String subject = t("email.verify_approved.subject", SITE_NAME);
         String body = greeting(firstname)
-                + paragraph("Odlične vesti! Vaš identitet je uspešno <strong>verifikovan</strong>.")
-                + paragraph("Od sada pored vašeg imena stoji oznaka <strong>Verifikovan</strong>, "
-                    + "što povećava poverenje drugih korisnika i šanse za uspešne dogovore.")
-                + paragraph("Vaši dokumenti su bezbedno obrisani sa naših servera nakon pregleda — "
-                    + "čuvamo samo informaciju da ste verifikovani.")
-                + ctaButton(profileUrl, "Pogledaj profil");
+                + paragraph(t("email.verify_approved.p1"))
+                + paragraph(t("email.verify_approved.p2"))
+                + paragraph(t("email.verify_approved.p3"))
+                + ctaButton(profileUrl, t("email.verify_approved.cta"));
         send(to, subject, wrap(body));
     }
 
     @Override
     public void sendVerificationRejectedEmail(String to, String firstname, String reason, String verifyUrl) {
-        String subject = "Zahtev za verifikaciju je odbijen — " + SITE_NAME;
+        String subject = t("email.verify_rejected.subject", SITE_NAME);
         String body = greeting(firstname)
-                + paragraph("Nažalost, vaš zahtev za verifikaciju identiteta je <strong>odbijen</strong>.")
-                + paragraph("Razlog:")
+                + paragraph(t("email.verify_rejected.p1"))
+                + paragraph(t("email.verify_rejected.reason_label"))
                 + highlightBox(reason)
-                + paragraph("Vaši dokumenti su obrisani sa naših servera. Možete ponovo pokrenuti "
-                    + "proces verifikacije sa ispravnim dokumentima u bilo kom trenutku.")
-                + ctaButton(verifyUrl, "Pokreni ponovo");
+                + paragraph(t("email.verify_rejected.p2"))
+                + ctaButton(verifyUrl, t("email.verify_rejected.cta"));
         send(to, subject, wrap(body));
     }
 
@@ -144,8 +156,9 @@ public class HtmlEmailServiceImpl implements HtmlEmailService {
     // -------------------------------------------------------------------------
 
     private String greeting(String firstname) {
-        return "<p style=\"margin:0 0 16px;font-size:16px;color:#222;\">Poštovani/a <strong>"
-                + esc(firstname) + "</strong>,</p>";
+        return "<p style=\"margin:0 0 16px;font-size:16px;color:#222;\">"
+                + t("email.common.greeting", "<strong>" + esc(firstname) + "</strong>")
+                + "</p>";
     }
 
     private String paragraph(String html) {
@@ -163,7 +176,8 @@ public class HtmlEmailServiceImpl implements HtmlEmailService {
     private String balanceRow(String balance) {
         return "<div style=\"margin:0 0 20px;padding:16px 20px;background:#f9f9f9;"
                 + "border-radius:8px;text-align:center;\">"
-                + "<span style=\"font-size:13px;color:#888;display:block;margin-bottom:4px;\">Novo stanje kredita</span>"
+                + "<span style=\"font-size:13px;color:#888;display:block;margin-bottom:4px;\">"
+                + t("email.common.new_balance_label") + "</span>"
                 + "<span style=\"font-size:28px;font-weight:700;color:" + COLOR_PRIMARY + ";\">"
                 + esc(balance) + " RSD</span></div>";
     }
@@ -189,44 +203,35 @@ public class HtmlEmailServiceImpl implements HtmlEmailService {
         return "<div style=\"text-align:center;margin:24px 0;\">" + btn1 + btn2 + "</div>";
     }
 
-    /**
-     * Wraps inner body HTML in a complete, email-client-safe HTML document
-     * with purple header, white card content, and gray footer.
-     */
     private String wrap(String innerHtml) {
         return "<!DOCTYPE html>"
-                + "<html lang=\"sr\">"
+                + "<html lang=\"" + htmlLang() + "\">"
                 + "<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
                 + "<title>" + SITE_NAME + "</title></head>"
                 + "<body style=\"margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;\">"
                 + "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#f4f4f4;padding:32px 0;\">"
                 + "<tr><td align=\"center\">"
 
-                // Card
                 + "<table width=\"580\" cellpadding=\"0\" cellspacing=\"0\" "
                 + "style=\"max-width:580px;width:100%;background:#fff;border-radius:10px;"
                 + "overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);\">"
 
-                // Header
                 + "<tr><td style=\"background:" + COLOR_PRIMARY + ";padding:28px 40px;text-align:center;\">"
                 + "<span style=\"font-size:22px;font-weight:700;color:#fff;letter-spacing:.5px;\">"
                 + SITE_NAME + "</span>"
                 + "</td></tr>"
 
-                // Body
                 + "<tr><td style=\"padding:32px 40px;\">"
                 + innerHtml
                 + "</td></tr>"
 
-                // Divider
                 + "<tr><td style=\"padding:0 40px;\">"
                 + "<hr style=\"border:none;border-top:1px solid #eee;margin:0;\">"
                 + "</td></tr>"
 
-                // Footer
                 + "<tr><td style=\"padding:20px 40px;text-align:center;\">"
                 + "<p style=\"margin:0;font-size:12px;color:#aaa;line-height:1.6;\">"
-                + "© " + SITE_NAME + " · Ovaj email je poslat automatski, molimo ne odgovarajte na njega."
+                + "&copy; " + SITE_NAME + " &middot; " + t("email.common.footer_note")
                 + "</p></td></tr>"
 
                 + "</table>"
@@ -234,7 +239,6 @@ public class HtmlEmailServiceImpl implements HtmlEmailService {
                 + "</body></html>";
     }
 
-    /** Escapes HTML special characters to prevent injection. */
     private String esc(String s) {
         if (s == null) return "";
         return s.replace("&", "&amp;")

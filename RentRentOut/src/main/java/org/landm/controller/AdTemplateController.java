@@ -8,6 +8,7 @@ import org.landm.entity.AdTemplate;
 import org.landm.entity.User;
 import org.landm.repository.AdTemplateRepository;
 import org.landm.repository.UserRepository;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,13 +28,20 @@ public class AdTemplateController {
     private final AdTemplateRepository repository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final MessageSource messageSource;
 
     public AdTemplateController(AdTemplateRepository repository,
                                 UserRepository userRepository,
-                                ObjectMapper objectMapper) {
+                                ObjectMapper objectMapper,
+                                MessageSource messageSource) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.objectMapper = objectMapper;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
     }
 
     @GetMapping
@@ -48,21 +56,21 @@ public class AdTemplateController {
                                     @AuthenticationPrincipal Long userId) {
         String name = sanitizeName(body.get("name"));
         if (name.isBlank()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Naziv šablona je obavezan."));
+            return ResponseEntity.badRequest().body(Map.of("error", msg("error.template.name_required")));
         }
 
         Object dataRaw = body.get("data");
         if (!(dataRaw instanceof Map<?, ?>)) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Podaci šablona su obavezni."));
+            return ResponseEntity.badRequest().body(Map.of("error", msg("error.template.data_required")));
         }
 
         if (repository.countByUserId(userId) >= MAX_TEMPLATES_PER_USER) {
             return ResponseEntity.badRequest().body(Map.of(
-                "error", "Dostigli ste maksimalan broj šablona (" + MAX_TEMPLATES_PER_USER + ")."));
+                "error", msg("error.template.max_reached", MAX_TEMPLATES_PER_USER)));
         }
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Korisnik nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.user.not_found")));
 
         AdTemplate template = new AdTemplate(user, name, serialize(dataRaw));
         return ResponseEntity.ok(toDto(repository.save(template)));
@@ -73,23 +81,23 @@ public class AdTemplateController {
                                     @RequestBody Map<String, Object> body,
                                     @AuthenticationPrincipal Long userId) {
         AdTemplate template = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Šablon nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.template.not_found")));
 
         if (!template.getUser().getId().equals(userId)) {
-            return ResponseEntity.status(403).body(Map.of("error", "Nemate pristup ovom šablonu."));
+            return ResponseEntity.status(403).body(Map.of("error", msg("error.template.no_access")));
         }
 
         if (body.containsKey("name")) {
             String name = sanitizeName(body.get("name"));
             if (name.isBlank()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Naziv ne sme biti prazan."));
+                return ResponseEntity.badRequest().body(Map.of("error", msg("error.template.name_blank")));
             }
             template.setName(name);
         }
         if (body.containsKey("data")) {
             Object dataRaw = body.get("data");
             if (!(dataRaw instanceof Map<?, ?>)) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Podaci moraju biti objekat."));
+                return ResponseEntity.badRequest().body(Map.of("error", msg("error.template.data_object")));
             }
             template.setData(serialize(dataRaw));
         }
@@ -101,10 +109,10 @@ public class AdTemplateController {
     public ResponseEntity<?> delete(@PathVariable Long id,
                                     @AuthenticationPrincipal Long userId) {
         AdTemplate template = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Šablon nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.template.not_found")));
 
         if (!template.getUser().getId().equals(userId)) {
-            return ResponseEntity.status(403).body(Map.of("error", "Nemate pristup ovom šablonu."));
+            return ResponseEntity.status(403).body(Map.of("error", msg("error.template.no_access")));
         }
 
         repository.delete(template);
@@ -120,7 +128,7 @@ public class AdTemplateController {
         try {
             return objectMapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Neispravni podaci šablona.", e);
+            throw new IllegalArgumentException(msg("error.template.invalid_data"), e);
         }
     }
 

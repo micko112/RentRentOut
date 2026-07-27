@@ -3,11 +3,12 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {CommonModule} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {AuthService} from '../../services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, TranslateModule],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css'
 })
@@ -18,7 +19,7 @@ export class ForgotPasswordComponent {
   successMessage = '';
   errorMessage = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private translate: TranslateService) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
     });
@@ -34,12 +35,12 @@ export class ForgotPasswordComponent {
       next: () => {
         this.isSubmitting = false;
         this.submitted = true;
-        this.successMessage = 'Ukoliko nalog postoji, link za resetovanje lozinke je poslat na Vas email.';
+        this.successMessage = this.translate.instant('auth.forgot.success');
         this.errorMessage = '';
       },
       error: () => {
         this.isSubmitting = false;
-        this.errorMessage = 'Doslo je do greske. Pokusajte ponovo.';
+        this.errorMessage = this.translate.instant('auth.forgot.error');
       }
     });
   }

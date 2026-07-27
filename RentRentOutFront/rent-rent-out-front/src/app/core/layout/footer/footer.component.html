@@ -5,7 +5,7 @@
     <div class="footer-top">
       <div class="footer-brand">
         <span class="brand-name">Izdajem<span class="brand-accent">Iznajmljujem</span></span>
-        <p class="brand-tagline">Iznajmi. Uštedi. Deli.</p>
+        <p class="brand-tagline">{{ 'footer.tagline' | translate }}</p>
       </div>
 
       <div class="footer-social">
@@ -33,25 +33,25 @@
     <!-- Dve kolone linkova -->
     <div class="footer-cols">
       <div class="footer-col">
-        <h4 class="footer-heading">Platforma</h4>
-        <a routerLink="/how-it-works">Kako funkcioniše</a>
-        <a routerLink="/faq">Česta pitanja</a>
-        <a routerLink="/terms-of-service">Uslovi korišćenja</a>
-        <a routerLink="/privacy-policy">Politika privatnosti</a>
-        <a routerLink="/contact">Kontakt</a>
+        <h4 class="footer-heading">{{ 'footer.platform' | translate }}</h4>
+        <a routerLink="/how-it-works">{{ 'footer.how_it_works' | translate }}</a>
+        <a routerLink="/faq">{{ 'footer.faq' | translate }}</a>
+        <a routerLink="/terms-of-service">{{ 'footer.terms' | translate }}</a>
+        <a routerLink="/privacy-policy">{{ 'footer.privacy' | translate }}</a>
+        <a routerLink="/contact">{{ 'footer.contact' | translate }}</a>
       </div>
       <div class="footer-col">
-        <h4 class="footer-heading">Korisno</h4>
-        <a routerLink="/ads/create">Postavi oglas</a>
-        <a routerLink="/ads">Pretraži oglase</a>
-        <a routerLink="/register">Registracija</a>
-        <a routerLink="/login">Prijava</a>
+        <h4 class="footer-heading">{{ 'footer.useful' | translate }}</h4>
+        <a routerLink="/ads/create">{{ 'footer.post_ad' | translate }}</a>
+        <a routerLink="/ads">{{ 'footer.browse_ads' | translate }}</a>
+        <a routerLink="/register">{{ 'footer.register' | translate }}</a>
+        <a routerLink="/login">{{ 'footer.login' | translate }}</a>
       </div>
     </div>
 
   </div>
 
   <div class="footer-bottom">
-    <p>&copy; 2026 IzdajemIznajmljujem. Sva prava zadržana.</p>
+    <p>{{ 'footer.copyright' | translate }}</p>
   </div>
 </footer>

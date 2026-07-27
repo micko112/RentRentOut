@@ -8,13 +8,15 @@ import {AuthService} from '../../../auth/services/auth.service';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '../../../../shared/services/toast.service';
 import {Subject, takeUntil} from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-contracts',
   imports: [
     CommonModule,
     FormsModule,
-    ContractCardComponent
+    ContractCardComponent,
+    TranslateModule
   ],
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.css'

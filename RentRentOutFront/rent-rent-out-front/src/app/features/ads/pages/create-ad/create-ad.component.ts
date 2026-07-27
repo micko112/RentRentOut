@@ -15,11 +15,12 @@ import { CityPickerComponent, CityPickerOption } from '../../../../shared/compon
 import { AuthService } from '../../../auth/services/auth.service';
 import { AdTemplate, AdTemplateService } from '../../services/ad-template.service';
 import { PlatformService } from '../../../../core/services/platform.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-create-ad',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CityPickerComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CityPickerComponent, TranslateModule],
   standalone: true,
   templateUrl: './create-ad.component.html',
   styleUrl: './create-ad.component.css'

@@ -5,6 +5,7 @@ import {AuthService} from '../../services/auth.service';
 import {CommonModule} from '@angular/common';
 import {ToastService} from '../../../../shared/services/toast.service';
 import { environment } from '../../../../../environments/environment';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 declare const google: any;
 declare const FB: any;
@@ -16,6 +17,7 @@ declare const FB: any;
     ReactiveFormsModule,
     CommonModule,
     RouterLink,
+    TranslateModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -33,6 +35,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private toastService: ToastService,
     private route: ActivatedRoute,
     private ngZone: NgZone,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -64,18 +67,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
     } else if (typeof google !== 'undefined') {
       google.accounts.id.prompt();
     } else {
-      this.toastService.showError('Google prijava nije dostupna.');
+      this.toastService.showError(this.translate.instant('auth.login.toast_google_unavailable'));
     }
   }
 
   handleGoogleResponse(response: any): void {
     this.authService.googleLogin(response.credential).subscribe({
       next: () => {
-        this.toastService.showSuccess('Uspešno ste se prijavili sa Google nalogom!');
+        this.toastService.showSuccess(this.translate.instant('auth.login.toast_google_success'));
         this.router.navigateByUrl(this.returnUrl);
       },
       error: () => {
-        this.toastService.showError('Google prijava nije uspela.');
+        this.toastService.showError(this.translate.instant('auth.login.toast_google_failed'));
       }
     });
   }
@@ -91,19 +94,19 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.isLoggingIn = false;
-        this.toastService.showSuccess('Uspešno ste se ulogovali!');
+        this.toastService.showSuccess(this.translate.instant('auth.login.toast_login_success'));
         this.router.navigateByUrl(this.returnUrl);
       },
       error: () => {
         this.isLoggingIn = false;
-        this.toastService.showError('Pogrešan email ili lozinka.');
+        this.toastService.showError(this.translate.instant('auth.login.toast_wrong_credentials'));
       }
     });
   }
 
   loginWithFacebook(): void {
     if (typeof FB === 'undefined') {
-      this.toastService.showError('Facebook SDK nije učitan.');
+      this.toastService.showError(this.translate.instant('auth.login.toast_fb_sdk_missing'));
       return;
     }
     FB.login((response: any) => {
@@ -112,11 +115,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.ngZone.run(() => {
           this.authService.facebookLogin(accessToken).subscribe({
             next: () => {
-              this.toastService.showSuccess('Uspešno ste se prijavili sa Facebook nalogom!');
+              this.toastService.showSuccess(this.translate.instant('auth.login.toast_fb_success'));
               this.router.navigateByUrl(this.returnUrl);
             },
             error: () => {
-              this.toastService.showError('Facebook prijava nije uspela.');
+              this.toastService.showError(this.translate.instant('auth.login.toast_fb_failed'));
             }
           });
         });

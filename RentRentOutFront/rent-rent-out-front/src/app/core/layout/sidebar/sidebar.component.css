@@ -387,3 +387,58 @@
 
   &:hover { color: var(--color-primary); }
 }
+
+/* Bottom auth action (login/logout) — visible in mobile drawer */
+.sidebar-auth-bottom {
+  display: none;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: #eee;
+  margin: 8px 12px 12px;
+}
+
+.sidebar-auth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 24px);
+  margin: 0 12px 16px;
+  padding: 10px 14px;
+  background: transparent;
+  border: 1px solid #d9c8e5;
+  border-radius: 8px;
+  color: #4a2a5c;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.sidebar-auth-btn:hover {
+  background: #faf5ff;
+  border-color: #813181;
+}
+
+.sidebar-auth-btn .material-icons {
+  font-size: 18px;
+}
+
+.sidebar-auth-btn--logout {
+  color: #813181;
+}
+
+/* Only visible in mobile drawer (host has .mobile-drawer-mode class) */
+:host(.mobile-drawer-mode) .sidebar-auth-bottom {
+  display: block;
+  margin-top: auto;
+}
+
+/* Sidebar acts as flex column so the bottom auth block anchors to bottom in drawer */
+:host(.mobile-drawer-mode) .sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}

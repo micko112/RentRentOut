@@ -1,51 +1,51 @@
 # IzdajemIznajmljujem Wiki
 
-Dobrodošao u dokumentaciju projekta. Glavni README je [ovde](../README.md); ova Wiki služi kao **detaljna referenca** po komponentama.
+Welcome to the project documentation. The main README is available [here](../README.md); this Wiki serves as a **detailed reference** organised by component.
 
 <p align="center">
   <img src="../docs/screenshots/hero-banner.png" width="80%" alt="banner" />
 </p>
 
-## Brza navigacija
+## Quick navigation
 
-### 🏛 Arhitektura
-- [Architecture](Architecture.md) — visok nivo, request flow, dijagrami
-- [Database Schema](Database-Schema.md) — entity-i, relacije, migracije
+### Architecture
+- [Architecture](Architecture.md) — high-level view, request flow, diagrams.
+- [Database Schema](Database-Schema.md) — entities, relations, migrations.
 
-### 🔷 Backend (Spring Boot)
-- [Backend](Backend.md) — package layout, slojevi, scheduleri, email
-- [Authentication and Security](Authentication-and-Security.md) — JWT cookies, AES-256, rate limiting
-- [API Reference](API-Reference.md) — REST + WebSocket endpoint-i
+### Backend (Spring Boot)
+- [Backend](Backend.md) — package layout, layers, schedulers, email.
+- [Authentication and Security](Authentication-and-Security.md) — JWT cookies, AES-256, rate limiting.
+- [API Reference](API-Reference.md) — REST and WebSocket endpoints.
 
-### 🔴 Frontend (Angular)
-- [Frontend](Frontend.md) — feature moduli, RxJS pattern-i, layout breakpoint-i
+### Frontend (Angular)
+- [Frontend](Frontend.md) — feature modules, RxJS patterns, layout breakpoints.
 
-### 🧠 AI / ML
-- [ML Service](ML-Service.md) — PyTorch MLP za auto-suggest kategorije
-- [Chatbot](Chatbot.md) — LangChain + Chroma RAG chatbot
+### AI / ML
+- [ML Service](ML-Service.md) — PyTorch MLP for category auto-suggest.
+- [Chatbot](Chatbot.md) — LangChain and Chroma RAG chatbot.
 
-### 💰 Domen
-- [Promotion System](Promotion-System.md) — paketi, kredit, expiry job
+### Domain
+- [Promotion System](Promotion-System.md) — packages, credit, expiry job.
 
-### 🚢 DevOps
-- [Deployment](Deployment.md) — VPS, Nginx, SSL, backup
-- [Configuration](Configuration.md) — env varijable po servisu
+### DevOps
+- [Deployment](Deployment.md) — VPS, Nginx, SSL, backups.
+- [Configuration](Configuration.md) — environment variables per service.
 
-### 📋 Specifikacija
-- [Use Cases](Use-Cases.md) — 72 use case-a
+### Specification
+- [Use Cases](Use-Cases.md) — 72 use cases.
 
 ---
 
-## Konvencije u dokumentaciji
+## Documentation conventions
 
-- **Code blocks** koriste sintaksne highlight-ove (`java`, `typescript`, `python`, `properties`, `bash`)
-- **Linkovi** između Wiki stranica su relativni (`[Name](Page.md)`)
-- **Screenshots** su u [`docs/screenshots/`](../docs/screenshots/README.md)
-- Sve poruke u email-ovima i UI-u su **na srpskom (latinica)**
+- **Code blocks** use syntax highlighting (`java`, `typescript`, `python`, `properties`, `bash`).
+- **Links** between Wiki pages are relative (`[Name](Page.md)`).
+- **Screenshots** live in [`docs/screenshots/`](../docs/screenshots/README.md).
+- All UI copy and email content is written in **Serbian (Latin script)**.
 
-## Kontribucija dokumentaciji
+## Contributing to the documentation
 
-1. Edituj odgovarajući `.md` u `wiki/`
-2. Ako dodaješ novu stranicu, doda je u [Home.md](Home.md) i u glavni [README.md](../README.md) tabelu
-3. Commit + push
-4. (Opciono) sinhronizuj sa GitHub Wiki repoom (vidi README sekciju "Dokumentacija (Wiki)")
+1. Edit the relevant `.md` file under `wiki/`.
+2. If you add a new page, list it in [Home.md](Home.md) and in the main [README.md](../README.md) table.
+3. Commit and push.
+4. (Optional) Synchronise with the GitHub Wiki repository (see the README section "Documentation (Wiki)").

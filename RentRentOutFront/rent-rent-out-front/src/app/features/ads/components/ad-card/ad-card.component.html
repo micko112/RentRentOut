@@ -14,9 +14,9 @@
          width="400" height="267"
          loading="lazy">
 
-    <span *ngIf="ad.promotionType === 'FEATURED'" class="promo-badge badge-featured">Na vrhu</span>
-    <span *ngIf="ad.promotionType === 'PRIORITY'" class="promo-badge badge-priority">Prioritetni</span>
-    <span *ngIf="ad.promotionType === 'HIGHLIGHTED'" class="promo-badge badge-highlighted">Istaknut</span>
+    <span *ngIf="ad.promotionType === 'FEATURED'" class="promo-badge badge-featured">{{ 'enums.promotionType.FEATURED' | translate }}</span>
+    <span *ngIf="ad.promotionType === 'PRIORITY'" class="promo-badge badge-priority">{{ 'enums.promotionType.PRIORITY' | translate }}</span>
+    <span *ngIf="ad.promotionType === 'HIGHLIGHTED'" class="promo-badge badge-highlighted">{{ 'enums.promotionType.HIGHLIGHTED' | translate }}</span>
 
     <button
       *ngIf="isLoggedIn && viewMode === 'grid'"

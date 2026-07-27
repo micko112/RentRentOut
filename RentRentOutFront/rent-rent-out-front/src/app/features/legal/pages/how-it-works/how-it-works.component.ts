@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SeoService } from '../../../../core/services/seo.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-how-it-works',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, TranslateModule],
   templateUrl: './how-it-works.component.html',
   styleUrl: './how-it-works.component.css'
 })

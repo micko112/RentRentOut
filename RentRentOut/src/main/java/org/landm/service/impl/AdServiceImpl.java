@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,7 @@ public class AdServiceImpl implements AdService {
     private final AdViewRepository adViewRepository;
     private final SavedAdRepository savedAdRepository;
     private final NotificationPersistenceService notificationPersistenceService;
+    private final MessageSource messageSource;
 
     public AdServiceImpl(AdRepository adRepository, UserRepository userRepository,
                          AdMapper adMapper, LocationMapper locationMapper,
@@ -58,7 +60,8 @@ public class AdServiceImpl implements AdService {
                          RentalContractRepository rentalContractRepository,
                          RentalContractService rentalContractService, CategoryService categoryService,
                          AdViewRepository adViewRepository, SavedAdRepository savedAdRepository,
-                         NotificationPersistenceService notificationPersistenceService) {
+                         NotificationPersistenceService notificationPersistenceService,
+                         MessageSource messageSource) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adMapper = adMapper;
@@ -71,13 +74,18 @@ public class AdServiceImpl implements AdService {
         this.adViewRepository = adViewRepository;
         this.savedAdRepository = savedAdRepository;
         this.notificationPersistenceService = notificationPersistenceService;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
     }
 
     private void validateImageUrls(List<String> images) {
         if (images == null) return;
         for (String url : images) {
             if (url == null || !url.startsWith(CLOUDINARY_PREFIX)) {
-                throw new IllegalArgumentException("Nevažeći URL slike.");
+                throw new IllegalArgumentException(msg("error.ad.invalid_image_url"));
             }
         }
     }
@@ -293,11 +301,11 @@ public class AdServiceImpl implements AdService {
         validateImageUrls(req.getImages());
         Ad adToUpdate = adRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ad not found"));
         if (!adToUpdate.getOwner().getId().equals(userId)) {
-            throw new AccessDeniedException("Nemate dozvolu za izmenu ovog oglasa.");
+            throw new AccessDeniedException(msg("error.ad.no_edit_permission"));
         }
 
         if (adToUpdate.getAdStatus() == AdStatus.DELETED) {
-            throw new IllegalStateException("Ne možete izmeniti obrisan oglas.");
+            throw new IllegalStateException(msg("error.ad.cannot_edit_deleted"));
         }
         Category category = categoryRepository.findById(req.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
@@ -367,18 +375,18 @@ public class AdServiceImpl implements AdService {
 				.orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 		
 		if(!currAd.getOwner().getId().equals(userId)) {
-			throw new AccessDeniedException("Nemate dozvolu za brisanje ovog oglasa.");
+			throw new AccessDeniedException(msg("error.ad.no_delete_permission"));
 		}
 
 		if(rentalContractRepository.hasActiveOrFutureContracts(adId)) {
-			throw new IllegalStateException("Ne možete obrisati oglas koji ima aktivne ugovore.");
+			throw new IllegalStateException(msg("error.ad.cannot_delete_active_contracts"));
 		}
 
 		if(currAd.getAdStatus() != AdStatus.DELETED) {
 			currAd.setAdStatus(AdStatus.DELETED);
 			rentalContractService.markToAdDeleted(currAd.getId());
 		}else {
-			throw new IllegalStateException("Oglas je već obrisan.");
+			throw new IllegalStateException(msg("error.ad.already_deleted"));
 		}
 		
 		return "Successfully deleted your Ad!";

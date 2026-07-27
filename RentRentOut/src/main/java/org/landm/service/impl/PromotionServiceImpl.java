@@ -18,6 +18,7 @@ import org.landm.repository.UserRepository;
 import org.landm.service.HtmlEmailService;
 import org.landm.service.PromotionService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -41,6 +42,7 @@ public class PromotionServiceImpl implements PromotionService {
     private final AdPromotionRepository adPromotionRepository;
     private final CreditTransactionRepository creditTransactionRepository;
     private final HtmlEmailService htmlEmailService;
+    private final MessageSource messageSource;
 
     @Value("${app.frontend.base-url:https://izdajemiznajmljujem.com}")
     private String frontendBaseUrl;
@@ -49,12 +51,18 @@ public class PromotionServiceImpl implements PromotionService {
                                 UserRepository userRepository,
                                 AdPromotionRepository adPromotionRepository,
                                 CreditTransactionRepository creditTransactionRepository,
-                                HtmlEmailService htmlEmailService) {
+                                HtmlEmailService htmlEmailService,
+                                MessageSource messageSource) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adPromotionRepository = adPromotionRepository;
         this.creditTransactionRepository = creditTransactionRepository;
         this.htmlEmailService = htmlEmailService;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -73,20 +81,20 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional
     public ActivePromotionDto activate(Long adId, PromotionType type, Long userId) {
         Ad ad = adRepository.findById(adId)
-                .orElseThrow(() -> new IllegalArgumentException("Oglas nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.ad.not_found")));
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Korisnik nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.user.not_found")));
 
         if (!ad.getOwner().getId().equals(userId)) {
-            throw new SecurityException("Možete promovišati samo sopstvene oglase.");
+            throw new SecurityException(msg("error.promotion.own_ads_only"));
         }
         if (ad.getAdStatus() == AdStatus.DELETED || ad.getAdStatus() == AdStatus.SUSPENDED_BY_ADMIN) {
-            throw new IllegalStateException("Oglas nije dostupan za promociju.");
+            throw new IllegalStateException(msg("error.promotion.ad_not_available"));
         }
 
         BigDecimal price = BigDecimal.valueOf(type.getPriceRsd());
         if (user.getCredit().compareTo(price) < 0) {
-            throw new IllegalStateException("Nedovoljno kredita. Potrebno: " + price + " RSD.");
+            throw new IllegalStateException(msg("error.promotion.insufficient_credit", price));
         }
 
         // Skini kredit
@@ -139,12 +147,12 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional
     public void renewAd(Long adId, Long userId) {
         Ad ad = adRepository.findById(adId)
-                .orElseThrow(() -> new IllegalArgumentException("Oglas nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.ad.not_found")));
         if (!ad.getOwner().getId().equals(userId)) {
-            throw new SecurityException("Možete obnoviti samo sopstvene oglase.");
+            throw new SecurityException(msg("error.promotion.renew_own_only"));
         }
         if (ad.getAdStatus() == AdStatus.DELETED || ad.getAdStatus() == AdStatus.SUSPENDED_BY_ADMIN) {
-            throw new IllegalStateException("Oglas ne može biti obnovljen.");
+            throw new IllegalStateException(msg("error.promotion.cannot_renew"));
         }
         ad.setExpiresAt(LocalDateTime.now().plusDays(30));
         if (ad.getAdStatus() == AdStatus.ARCHIVED) {
@@ -157,10 +165,10 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional
     public void addCredit(Long userId, BigDecimal amount, String description) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Iznos mora biti pozitivan.");
+            throw new IllegalArgumentException(msg("error.credit.amount_positive"));
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Korisnik nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.user.not_found")));
         user.setCredit(user.getCredit().add(amount));
         userRepository.save(user);
 
@@ -184,7 +192,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public BigDecimal getCreditBalance(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Korisnik nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.user.not_found")));
         return user.getCredit();
     }
 

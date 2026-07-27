@@ -2,12 +2,12 @@
 
   <div class="search-bar">
     <span class="material-icons">search</span>
-    <input type="text" [(ngModel)]="searchQuery" placeholder="Pretražite ugovore po naslovu oglasa...">
+    <input type="text" [(ngModel)]="searchQuery" [placeholder]="'user.contracts.search_placeholder' | translate">
   </div>
 
   <section class="contract-section">
     <div class="section-header">
-      <h3 class="section-title">Dolazni zahtevi</h3>
+      <h3 class="section-title">{{ 'user.contracts.incoming' | translate }}</h3>
       <span class="count-badge">{{ filteredIncoming.length }}</span>
     </div>
 
@@ -21,13 +21,13 @@
       </app-contract-card>
     </div>
     <ng-template #noIncoming>
-      <p class="empty-state">{{ searchQuery ? 'Nema rezultata pretrage.' : 'Nema dolaznih zahteva.' }}</p>
+      <p class="empty-state">{{ searchQuery ? ('user.contracts.no_search' | translate) : ('user.contracts.no_incoming' | translate) }}</p>
     </ng-template>
   </section>
 
   <section class="contract-section">
     <div class="section-header">
-      <h3 class="section-title">Moji zahtevi</h3>
+      <h3 class="section-title">{{ 'user.contracts.outgoing' | translate }}</h3>
       <span class="count-badge">{{ filteredOutgoing.length }}</span>
     </div>
 
@@ -41,7 +41,7 @@
       </app-contract-card>
     </div>
     <ng-template #noOutgoing>
-      <p class="empty-state">{{ searchQuery ? 'Nema rezultata pretrage.' : 'Nisi poslao nijedan zahtev.' }}</p>
+      <p class="empty-state">{{ searchQuery ? ('user.contracts.no_search' | translate) : ('user.contracts.no_outgoing' | translate) }}</p>
     </ng-template>
   </section>
 

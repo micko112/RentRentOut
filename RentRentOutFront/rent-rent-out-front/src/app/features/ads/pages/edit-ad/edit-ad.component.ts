@@ -13,11 +13,12 @@ import {UpdateAdRequest} from '../../../../shared/models/update-ad-request';
 import {Location} from '../../../../shared/models/location.model';
 import {CityPickerComponent, CityPickerOption} from '../../../../shared/components/city-picker/city-picker.component';
 import {AuthService} from '../../../auth/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-ad',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, CityPickerComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CityPickerComponent, TranslateModule],
   templateUrl: './edit-ad.component.html',
   styleUrl: './edit-ad.component.css'
 })

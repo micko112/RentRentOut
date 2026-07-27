@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, ApplicationConfig, inject, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
+import {APP_INITIALIZER, ApplicationConfig, importProvidersFrom, inject, Injector, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter, withInMemoryScrolling, withPreloading, PreloadAllModules, Router } from '@angular/router';
 import { provideClientHydration } from '@angular/platform-browser';
 import {
@@ -9,9 +9,14 @@ import {
   withInterceptors
 } from '@angular/common/http';
 import localeSr from '@angular/common/locales/sr-Latn';
+import localeEn from '@angular/common/locales/en';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { routes } from './app.routes';
 import {DatePipe, registerLocaleData} from '@angular/common';
+import { LanguageService } from './core/services/language.service';
+import { TranslateService } from '@ngx-translate/core';
 
 import {catchError, from, switchMap, tap, throwError} from 'rxjs';
 import {ToastService} from './shared/services/toast.service';
@@ -21,18 +26,41 @@ import { ErrorHandler } from '@angular/core'; // <-- DODAJ IMPORT
 import * as Sentry from "@sentry/angular";    // <-- DODAJ IMPORT
 
 registerLocaleData(localeSr);
+registerLocaleData(localeEn);
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
 
 // Dodaje withCredentials na sve zahteve — browser automatski šalje HttpOnly cookie
 // Na mobile-u (Capacitor): dodaje X-Client-Platform: mobile i Authorization: Bearer <token>
+// Reads current language from localStorage (fallback to 'sr') — cheap sync read, avoids DI cycles.
+function currentLangHeader(): string {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const v = localStorage.getItem('rro_lang');
+      if (v === 'en') return 'en';
+    }
+  } catch { /* ignore */ }
+  return 'sr';
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const platform = inject(PlatformService);
+  const lang = currentLangHeader();
 
   if (!platform.isNative) {
-    return next(req.clone({ withCredentials: true }));
+    const headers = req.headers.has('Accept-Language')
+      ? req.headers
+      : req.headers.set('Accept-Language', lang);
+    return next(req.clone({ withCredentials: true, headers }));
   }
 
   const cached = platform.getCachedAccess();
   let headers = req.headers.set('X-Client-Platform', 'mobile');
+  if (!req.headers.has('Accept-Language')) {
+    headers = headers.set('Accept-Language', lang);
+  }
   if (cached && !req.headers.has('Authorization')) {
     headers = headers.set('Authorization', `Bearer ${cached}`);
   }
@@ -44,6 +72,15 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
   const http        = inject(HttpClient);
   const platform    = inject(PlatformService);
+  const injector    = inject(Injector);
+  const tr = (key: string): string => {
+    try {
+      const t = injector.get(TranslateService, null as any);
+      return t ? t.instant(key) : key;
+    } catch {
+      return key;
+    }
+  };
 
   const refreshCall = () => {
     if (!platform.isNative) {
@@ -108,9 +145,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         }
         router.navigate(['/login']);
       } else if (err.status === 403) {
-        toastService.showError('Nemate dozvolu za ovu akciju.');
+        toastService.showError(tr('toast.no_permission'));
       } else if (err.status >= 500) {
-        toastService.showError('Greška na serveru. Pokušajte ponovo.');
+        toastService.showError(tr('toast.server_error'));
       }
       return throwError(() => err);
     })
@@ -122,11 +159,27 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withPreloading(PreloadAllModules), withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        defaultLanguage: 'sr',
+        loader: {
+          provide: TranslateLoader,
+          useFactory: createTranslateLoader,
+          deps: [HttpClient],
+        },
+      })
+    ),
     {
       provide: APP_INITIALIZER,
       multi: true,
       useFactory: (platform: PlatformService) => () => platform.hydrate(),
       deps: [PlatformService],
+    },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: (lang: LanguageService) => () => lang.init(),
+      deps: [LanguageService],
     },
     provideClientHydration(),
     {provide: LOCALE_ID, useValue: 'sr-Latn'},

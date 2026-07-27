@@ -6,7 +6,7 @@
       <span class="material-icons">account_balance_wallet</span>
     </div>
     <div class="balance-info">
-      <p class="balance-label">Vaš kredit</p>
+      <p class="balance-label">{{ 'user.credit.balance_label' | translate }}</p>
       <div class="balance-amount" *ngIf="!loading">{{ balance | number:'1.0-0' }} RSD</div>
       <div class="balance-skeleton" *ngIf="loading"></div>
     </div>
@@ -14,10 +14,10 @@
 
   <!-- Top-up section -->
   <div class="topup-card">
-    <h3><span class="material-icons">add_circle_outline</span> Dopuna kredita</h3>
+    <h3><span class="material-icons">add_circle_outline</span> {{ 'user.credit.topup_title' | translate }}</h3>
 
     <!-- Amount selector -->
-    <p class="amount-label">Izaberite iznos dopune:</p>
+    <p class="amount-label">{{ 'user.credit.select_amount' | translate }}</p>
     <div class="amount-row">
       <button
         *ngFor="let a of quickAmounts"
@@ -27,7 +27,7 @@
         {{ a | number:'1.0-0' }} RSD
       </button>
       <button class="amount-btn amount-custom-btn" [class.active]="showCustom" (click)="toggleCustom()">
-        Drugi iznos
+        {{ 'user.credit.other_amount' | translate }}
       </button>
     </div>
 
@@ -37,7 +37,7 @@
           type="number"
           class="custom-amount-input"
           [(ngModel)]="customAmount"
-          placeholder="Iznos (min. 100)"
+          [placeholder]="'user.credit.amount_placeholder' | translate"
           min="100"
           step="100" />
         <span class="custom-amount-currency">RSD</span>
@@ -47,7 +47,7 @@
     <!-- Payment data table -->
     <p class="payment-intro">
       <span class="material-icons">account_balance</span>
-      Izvršite prenos putem e-bankinga ili uplatnice:
+      {{ 'user.credit.payment_intro' | translate }}
     </p>
     <div class="payment-table">
       <div class="payment-row" *ngFor="let row of paymentRows">
@@ -62,60 +62,60 @@
     <div class="topup-note">
       <span class="material-icons">info_outline</span>
       <span>
-        Nakon uplate pošaljite potvrdu na
+        {{ 'user.credit.topup_note_prefix' | translate }}
         <a href="mailto:izdajemiznajmljujem.rs@gmail.com">izdajemiznajmljujem.rs&#64;gmail.com</a>
-        — kredit se dodaje u roku od jednog radnog dana.
-        <strong>Obavezno unesite tačan poziv na broj</strong> kako bismo identifikovali vašu uplatu.
+        {{ 'user.credit.topup_note_suffix' | translate }}
+        <strong>{{ 'user.credit.topup_note_bold' | translate }}</strong> {{ 'user.credit.topup_note_end' | translate }}
       </span>
     </div>
   </div>
 
   <!-- Promotion packages -->
   <div class="packages-section">
-    <h3>Dostupni paketi promocija</h3>
+    <h3>{{ 'user.credit.packages_title' | translate }}</h3>
     <div class="packages-grid">
       <div class="pkg-card featured">
         <div class="pkg-header">
-          <span class="pkg-badge badge-featured">Na vrhu</span>
+          <span class="pkg-badge badge-featured">{{ 'user.myAds.promo_featured' | translate }}</span>
           <span class="pkg-price">500 RSD</span>
         </div>
-        <p>Oglas se prikazuje <strong>na prvom mestu</strong> u pretrazi, iznad svih ostalih.</p>
-        <p class="pkg-duration">Trajanje: 7 dana</p>
+        <p [innerHTML]="'user.credit.pkg_featured_desc' | translate"></p>
+        <p class="pkg-duration">{{ 'user.credit.duration' | translate }}: 7 {{ 'user.myAds.days' | translate }}</p>
       </div>
       <div class="pkg-card priority">
         <div class="pkg-header">
-          <span class="pkg-badge badge-priority">Prioritetni</span>
+          <span class="pkg-badge badge-priority">{{ 'user.myAds.promo_priority' | translate }}</span>
           <span class="pkg-price">250 RSD</span>
         </div>
-        <p>Oglas se prikazuje <strong>ispred standardnih</strong> oglasa u pretrazi.</p>
-        <p class="pkg-duration">Trajanje: 3 dana</p>
+        <p [innerHTML]="'user.credit.pkg_priority_desc' | translate"></p>
+        <p class="pkg-duration">{{ 'user.credit.duration' | translate }}: 3 {{ 'user.myAds.days' | translate }}</p>
       </div>
       <div class="pkg-card highlighted">
         <div class="pkg-header">
-          <span class="pkg-badge badge-highlighted">Istaknut</span>
+          <span class="pkg-badge badge-highlighted">{{ 'user.myAds.promo_highlighted' | translate }}</span>
           <span class="pkg-price">100 RSD</span>
         </div>
-        <p>Oglas je <strong>vizuelno istaknut</strong> u listingu sa posebnom oznakom.</p>
-        <p class="pkg-duration">Trajanje: 30 dana</p>
+        <p [innerHTML]="'user.credit.pkg_highlighted_desc' | translate"></p>
+        <p class="pkg-duration">{{ 'user.credit.duration' | translate }}: 30 {{ 'user.myAds.days' | translate }}</p>
       </div>
     </div>
     <p class="promote-cta">
-      Promocije se aktiviraju direktno sa stranice <a routerLink="/user/me/ads">Moji oglasi</a>
-      klikom na dugme "Promoviši" pored svakog oglasa.
+      {{ 'user.credit.promote_cta_prefix' | translate }} <a routerLink="/user/me/ads">{{ 'sidebar.my_ads' | translate }}</a>
+      {{ 'user.credit.promote_cta_suffix' | translate }}
     </p>
   </div>
 
   <!-- Transaction history -->
   <div class="history-section">
-    <h3>Istorija transakcija</h3>
+    <h3>{{ 'user.credit.history_title' | translate }}</h3>
 
     <div class="loading-state" *ngIf="loadingHistory">
-      <span class="material-icons spin">refresh</span> Učitavanje...
+      <span class="material-icons spin">refresh</span> {{ 'common.loading' | translate }}
     </div>
 
     <div class="empty-history" *ngIf="!loadingHistory && transactions.length === 0">
       <span class="material-icons">receipt_long</span>
-      <p>Još nema transakcija na vašem nalogu.</p>
+      <p>{{ 'user.credit.empty_history' | translate }}</p>
     </div>
 
     <div class="transactions-list" *ngIf="!loadingHistory && transactions.length > 0">

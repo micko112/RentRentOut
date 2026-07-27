@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { SeoService } from '../../../../core/services/seo.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-privacy-policy',
   standalone: true,
+  imports: [TranslateModule],
   templateUrl: './privacy-policy.component.html',
   styleUrl: './privacy-policy.component.css'
 })

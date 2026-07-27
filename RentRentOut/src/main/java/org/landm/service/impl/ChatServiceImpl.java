@@ -20,6 +20,7 @@ import org.landm.service.ChatService;
 import org.landm.service.NotificationService;
 import org.landm.util.HtmlSanitizer;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -39,8 +40,9 @@ public class ChatServiceImpl implements ChatService {
     private final ChatMapper chatMapper;
     private final SimpMessagingTemplate messagingTemplate;
     private final NotificationService notificationService;
+    private final MessageSource messageSource;
 
-    public ChatServiceImpl(ConversationRepository conversationRepository, MessageRepository messageRepository, UserRepository userRepository, AdRepository adRepository, ChatMapper chatMapper, SimpMessagingTemplate messagingTemplate, NotificationService notificationService) {
+    public ChatServiceImpl(ConversationRepository conversationRepository, MessageRepository messageRepository, UserRepository userRepository, AdRepository adRepository, ChatMapper chatMapper, SimpMessagingTemplate messagingTemplate, NotificationService notificationService, MessageSource messageSource) {
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
@@ -48,6 +50,11 @@ public class ChatServiceImpl implements ChatService {
         this.chatMapper = chatMapper;
         this.messagingTemplate = messagingTemplate;
         this.notificationService = notificationService;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
     }
 
 
@@ -55,7 +62,7 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public MessageDto sendMessage(SendMessageRequestDto request, Long senderId) {
         if (request.getReceiverId() == null || request.getAdId() == null) {
-            throw new IllegalArgumentException("receiverId i adId su obavezni.");
+            throw new IllegalArgumentException(msg("error.chat.receiver_and_ad_required"));
         }
 
         MessageType type;
@@ -64,29 +71,29 @@ public class ChatServiceImpl implements ChatService {
                     ? MessageType.REGULAR
                     : MessageType.valueOf(request.getMessageType());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Nepoznat tip poruke.");
+            throw new IllegalArgumentException(msg("error.chat.unknown_message_type"));
         }
         if (type != MessageType.REGULAR && type != MessageType.IMAGE && type != MessageType.LOCATION) {
-            throw new IllegalArgumentException("Nedozvoljen tip poruke.");
+            throw new IllegalArgumentException(msg("error.chat.disallowed_message_type"));
         }
 
         if (type == MessageType.REGULAR) {
             if (request.getContent() == null || request.getContent().isBlank()) {
-                throw new IllegalArgumentException("Poruka ne sme biti prazna.");
+                throw new IllegalArgumentException(msg("error.chat.message_empty"));
             }
             if (request.getContent().length() > 5000) {
-                throw new IllegalArgumentException("Poruka ne sme biti duža od 5000 karaktera.");
+                throw new IllegalArgumentException(msg("error.chat.message_too_long"));
             }
         } else if (type == MessageType.IMAGE) {
             if (request.getImageUrl() == null || request.getImageUrl().isBlank()) {
-                throw new IllegalArgumentException("imageUrl je obavezan za IMAGE poruku.");
+                throw new IllegalArgumentException(msg("error.chat.image_url_required"));
             }
             if (!isAllowedImageUrl(request.getImageUrl())) {
-                throw new IllegalArgumentException("Nedozvoljen izvor slike.");
+                throw new IllegalArgumentException(msg("error.chat.disallowed_image_source"));
             }
         } else { // LOCATION
             if (request.getLocationLat() == null || request.getLocationLng() == null) {
-                throw new IllegalArgumentException("Koordinate su obavezne za LOCATION poruku.");
+                throw new IllegalArgumentException(msg("error.chat.coordinates_required"));
             }
         }
 
@@ -95,7 +102,7 @@ public class ChatServiceImpl implements ChatService {
 
         Ad ad = adRepository.findById(request.getAdId()).orElseThrow(() -> new IllegalArgumentException("Ad not found"));
         if (senderId.equals(request.getReceiverId())) {
-            throw new IllegalArgumentException("Ne možete poslati poruku samom sebi.");
+            throw new IllegalArgumentException(msg("error.chat.cannot_message_self"));
         }
         Optional<Conversation> existingConv = conversationRepository.findExistingConversation(ad.getId(), senderId, receiver.getId());
         Conversation conv;
@@ -230,7 +237,7 @@ public class ChatServiceImpl implements ChatService {
                 .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
 
         if(!conversation.getParticipantOne().getId().equals(myUserId) && !conversation.getParticipantTwo().getId().equals(myUserId)){
-            throw new AccessDeniedException("Nemate pristup ovoj konverzaciji.");
+            throw new AccessDeniedException(msg("error.chat.no_conversation_access"));
         }
 
         messageRepository.markMessageAsRead(conversationId, myUserId);

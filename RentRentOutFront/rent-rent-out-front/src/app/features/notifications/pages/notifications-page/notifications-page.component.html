@@ -3,21 +3,21 @@
   <!-- HEADER -->
   <div class="page-header">
     <div class="header-left">
-      <h1>Obaveštenja</h1>
-      <span class="unread-pill" *ngIf="unreadCount > 0">{{ unreadCount }} nepročitanih</span>
+      <h1>{{ 'notifications.title' | translate }}</h1>
+      <span class="unread-pill" *ngIf="unreadCount > 0">{{ unreadCount }} {{ 'notifications.unread' | translate }}</span>
     </div>
     <button class="btn-mark-all"
             *ngIf="unreadCount > 0"
             (click)="markAllAsRead()">
-      Označi sve kao pročitano
+      {{ 'notifications.mark_all_read' | translate }}
     </button>
   </div>
 
   <!-- FILTER TABS -->
   <div class="filter-tabs">
-    <button class="tab" [class.active]="activeFilter === 'all'"    (click)="setFilter('all')">Sve</button>
+    <button class="tab" [class.active]="activeFilter === 'all'"    (click)="setFilter('all')">{{ 'notifications.all' | translate }}</button>
     <button class="tab" [class.active]="activeFilter === 'unread'" (click)="setFilter('unread')">
-      Nepročitana
+      {{ 'notifications.unread_tab' | translate }}
       <span class="tab-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
     </button>
   </div>
@@ -25,15 +25,15 @@
   <!-- LOADING -->
   <div class="loading-state" *ngIf="isLoading">
     <div class="spinner"></div>
-    <span>Učitavanje...</span>
+    <span>{{ 'common.loading' | translate }}</span>
   </div>
 
   <!-- EMPTY STATE -->
   <div class="empty-state" *ngIf="!isLoading && filtered.length === 0">
     <div class="empty-icon">🔔</div>
-    <h3>{{ activeFilter === 'unread' ? 'Nema nepročitanih obaveštenja' : 'Nemate obaveštenja' }}</h3>
-    <p *ngIf="activeFilter === 'unread'">Sve je pročitano.</p>
-    <p *ngIf="activeFilter === 'all'">Ovde će se pojaviti obaveštenja o ugovorima i ocenama.</p>
+    <h3>{{ activeFilter === 'unread' ? ('notifications.empty_unread' | translate) : ('notifications.empty_all' | translate) }}</h3>
+    <p *ngIf="activeFilter === 'unread'">{{ 'notifications.all_read' | translate }}</p>
+    <p *ngIf="activeFilter === 'all'">{{ 'notifications.empty_hint' | translate }}</p>
   </div>
 
   <!-- LIST -->
@@ -51,8 +51,8 @@
 
       <!-- Body -->
       <div class="notif-body">
-        <div class="notif-title">{{ n.title }}</div>
-        <div class="notif-msg">{{ n.message }}</div>
+        <div class="notif-title">{{ ('enums.notificationType.' + n.type + '.title') | translate: { actor: n.actorName || '' } }}</div>
+        <div class="notif-msg">{{ ('enums.notificationType.' + n.type + '.message') | translate: { actor: n.actorName || '' } }}</div>
         <div class="notif-meta">
           <span class="notif-time">{{ formatTime(n.createdAt) }}</span>
           <span class="notif-actor" *ngIf="n.actorName">· {{ n.actorName }}</span>
@@ -61,7 +61,7 @@
 
       <!-- Right side -->
       <div class="notif-right">
-        <div class="unread-dot" *ngIf="!n.isRead" title="Nepročitano"></div>
+        <div class="unread-dot" *ngIf="!n.isRead" [title]="'notifications.unread_dot' | translate"></div>
         <span *ngIf="getRouterLink(n)" class="notif-arrow">→</span>
       </div>
 

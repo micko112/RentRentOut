@@ -1,15 +1,16 @@
-import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnDestroy, Output} from '@angular/core';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
 import {CommonModule} from '@angular/common';
 import {ContractService} from '../../../contracts/services/contract.service';
 import {RouterLink} from '@angular/router';
 import {ToastService} from '../../../../shared/services/toast.service';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-contract-card',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './contract-card.component.html',
   styleUrl: './contract-card.component.css'
 })
@@ -19,6 +20,7 @@ export class ContractCardComponent implements OnDestroy {
     @Output() statusUpdated = new EventEmitter<void>();
     isUpdating = false;
 
+    private translate = inject(TranslateService);
     private destroy$ = new Subject<void>();
 
     constructor(private contractService: ContractService,
@@ -57,18 +59,6 @@ export class ContractCardComponent implements OnDestroy {
   }
 
   getStatusLabel(status: string): string {
-    const labels: Record<string, string> = {
-      REQUESTED: 'Na čekanju',
-      ACCEPTED: 'Prihvaćen',
-      ACTIVE: 'Aktivan',
-      FINISHED: 'Završen',
-      CANCELLED: 'Otkazan',
-      REJECTED: 'Odbijen',
-      EXPIRED: 'Istekao',
-      CANCELLED_AFTER_ACCEPT: 'Otkazan (prihvaćen)',
-      AD_DELETED: 'Oglas obrisan',
-      DELETED: 'Obrisan',
-    };
-    return labels[status] ?? status;
+    return this.translate.instant('enums.contractStatus.' + status);
   }
 }

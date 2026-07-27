@@ -5,14 +5,14 @@
   <!-- ========================================== -->
   <aside class="chat-sidebar">
     <div class="sidebar-header">
-      <h3>Poruke</h3>
+      <h3>{{ 'sidebar.messages' | translate }}</h3>
     </div>
 
     <div class="conversations-list">
 
       <!-- Ako nema konverzacija -->
       <div *ngIf="conversations.length === 0" style="padding: 20px; text-align: center; color: #777;">
-        Nemate aktivnih razgovora.
+        {{ 'chat.no_conversations' | translate }}
       </div>
 
       <!-- Vrtimo petlju kroz sve konverzacije koje smo dobili sa backenda -->
@@ -45,7 +45,7 @@
 
     <!-- SLUČAJ A: Nije kliknuto ni na jednu sobu levo -->
     <div class="no-chat-selected" *ngIf="!activeConversation">
-      <p>Izaberite razgovor sa leve strane</p>
+      <p>{{ 'chat.select_conversation' | translate }}</p>
     </div>
 
     <!-- SLUČAJ B: Izabran je razgovor — trostubačni layout -->
@@ -59,7 +59,7 @@
           <button class="back-btn-mobile" (click)="backToList()">
             <span class="material-icons">arrow_back</span>
           </button>
-          <img [src]="activeConversation.adThumbnail || 'assets/images/placeholder.png'" alt="Oglas" class="header-ad-img">
+          <img [src]="activeConversation.adThumbnail || 'assets/images/placeholder.png'" [alt]="'chat.ad_alt' | translate" class="header-ad-img">
           <div class="header-info">
             <a class="header-ad-link" [routerLink]="['/ads', activeConversation.adId]">{{ activeConversation.adTitle }}</a>
             <a class="header-user-link" [routerLink]="['/user', activeConversation.otherParticipant.id]">{{ activeConversation.otherParticipant.displayName }}</a>
@@ -74,7 +74,7 @@
           </div>
 
           <div *ngIf="!isLoadingMessages && messages.length === 0" class="no-messages-alert">
-            Nema poruka. Pošaljite prvu poruku!
+            {{ 'chat.no_messages' | translate }}
           </div>
 
           <ng-container *ngFor="let group of groupedMessages">
@@ -97,13 +97,13 @@
                 <div class="contract-card">
                   <div class="contract-card-header">
                     <span class="contract-card-icon material-icons">handshake</span>
-                    <span class="contract-card-title">Zahtev za iznajmljivanje</span>
+                    <span class="contract-card-title">{{ 'chat.contract_request' | translate }}</span>
                   </div>
                   <div class="contract-card-body">
                     <!-- Oglas (ceo red) -->
                     <div class="contract-card-row">
                       <span class="contract-card-label">
-                        <span class="material-icons contract-label-icon">inventory_2</span> Oglas:
+                        <span class="material-icons contract-label-icon">inventory_2</span> {{ 'chat.ad_label' | translate }}:
                       </span>
                       <span class="contract-card-value">{{ msg.contractAdTitle }}</span>
                     </div>
@@ -111,26 +111,26 @@
                     <div class="contract-meta-row">
                       <div class="contract-meta-item">
                         <span class="contract-card-label">
-                          <span class="material-icons contract-label-icon">calendar_today</span> Od:
+                          <span class="material-icons contract-label-icon">calendar_today</span> {{ 'chat.from' | translate }}:
                         </span>
                         <span class="contract-card-value">{{ msg.contractStartDate | date:'dd.MM.yyyy.' }}</span>
                       </div>
                       <div class="contract-meta-item">
                         <span class="contract-card-label">
-                          <span class="material-icons contract-label-icon">event</span> Do:
+                          <span class="material-icons contract-label-icon">event</span> {{ 'chat.to' | translate }}:
                         </span>
                         <span class="contract-card-value">{{ msg.contractEndDate | date:'dd.MM.yyyy.' }}</span>
                       </div>
                       <div class="contract-meta-item">
                         <span class="contract-card-label">
-                          <span class="material-icons contract-label-icon">payments</span> Ukupno:
+                          <span class="material-icons contract-label-icon">payments</span> {{ 'chat.total' | translate }}:
                         </span>
                         <span class="contract-price-value">{{ msg.contractTotalPrice | number:'1.2-2' }} {{ msg.contractCurrency }}</span>
                       </div>
                     </div>
                   </div>
                   <div class="contract-card-footer">
-                    <button class="contract-card-btn" (click)="goToContract(msg.relatedContractId)">Pogledaj detalje</button>
+                    <button class="contract-card-btn" (click)="goToContract(msg.relatedContractId)">{{ 'chat.view_details' | translate }}</button>
                     <span class="message-time-card">{{ msg.createdAt | date:'HH:mm' }}</span>
                   </div>
                 </div>
@@ -154,7 +154,7 @@
                    [ngClass]="msg.senderId === myUserId ? 'sent' : 'received'">
                 <div class="message-content-wrapper">
                   <div class="image-bubble" (click)="openImage(msg.imageUrl)">
-                    <img [src]="msg.imageUrl" alt="Slika u poruci" loading="lazy">
+                    <img [src]="msg.imageUrl" [alt]="'chat.image_alt' | translate" loading="lazy">
                     <span class="message-time-image">{{ msg.createdAt | date:'HH:mm' }}</span>
                   </div>
                 </div>
@@ -174,8 +174,8 @@
                     </div>
                     <div class="location-footer">
                       <div class="location-text">
-                        <span class="location-label">{{ msg.locationLabel || 'Deljena lokacija' }}</span>
-                        <span class="location-sub">Otvori u Mapama</span>
+                        <span class="location-label">{{ msg.locationLabel || ('chat.shared_location' | translate) }}</span>
+                        <span class="location-sub">{{ 'chat.open_in_maps' | translate }}</span>
                       </div>
                       <span class="message-time">{{ msg.createdAt | date:'HH:mm' }}</span>
                     </div>
@@ -199,7 +199,7 @@
 
           <button type="button"
                   class="btn-attach"
-                  title="Pošalji sliku"
+                  [title]="'chat.send_image' | translate"
                   [disabled]="isUploadingImage"
                   (click)="triggerImagePicker(imageFileInput)">
             <span class="material-icons" *ngIf="!isUploadingImage">image</span>
@@ -208,18 +208,18 @@
 
           <button type="button"
                   class="btn-attach"
-                  title="Ubaci moju lokaciju u poruku"
+                  [title]="'chat.share_location' | translate"
                   (click)="openLocationPicker()">
             <span class="material-icons">place</span>
           </button>
 
           <input type="text"
-                 placeholder="Napišite poruku..."
+                 [placeholder]="'chat.write_message' | translate"
                  [(ngModel)]="newMessageContent"
                  (keyup.enter)="sendMessage()">
           <button class="btn-send"
                   (click)="sendMessage()"
-                  [disabled]="!newMessageContent.trim()">Pošalji</button>
+                  [disabled]="!newMessageContent.trim()">{{ 'chat.send' | translate }}</button>
         </div>
 
       </div>
@@ -248,8 +248,8 @@
 
   <!-- Image lightbox -->
   <div class="lightbox" *ngIf="lightboxImage" (click)="closeLightbox()">
-    <button class="lightbox-close" (click)="closeLightbox()" aria-label="Zatvori">&times;</button>
-    <img [src]="lightboxImage" alt="Slika" (click)="$event.stopPropagation()">
+    <button class="lightbox-close" (click)="closeLightbox()" [attr.aria-label]="'common.close' | translate">&times;</button>
+    <img [src]="lightboxImage" [alt]="'chat.image_alt' | translate" (click)="$event.stopPropagation()">
   </div>
 
 </div>

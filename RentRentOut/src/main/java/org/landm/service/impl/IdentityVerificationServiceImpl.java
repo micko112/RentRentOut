@@ -15,6 +15,7 @@ import org.landm.service.IdentityVerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     private final IdentityVerificationRepository verificationRepository;
     private final UserRepository userRepository;
     private final HtmlEmailService emailService;
+    private final MessageSource messageSource;
 
     @Value("${app.frontend.base-url:http://localhost:4200}")
     private String frontendBaseUrl;
@@ -51,11 +53,17 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     public IdentityVerificationServiceImpl(Cloudinary cloudinary,
                                            IdentityVerificationRepository verificationRepository,
                                            UserRepository userRepository,
-                                           HtmlEmailService emailService) {
+                                           HtmlEmailService emailService,
+                                           MessageSource messageSource) {
         this.cloudinary = cloudinary;
         this.verificationRepository = verificationRepository;
         this.userRepository = userRepository;
         this.emailService = emailService;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -69,23 +77,23 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
                                         MultipartFile docBack,
                                         MultipartFile selfie) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Korisnik nije pronađen."));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, msg("error.user.not_found")));
 
         if (user.isIdentified()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vaš nalog je već verifikovan.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg("error.verification.already_verified"));
         }
 
-        validateImage(docFront, "Prednja strana dokumenta");
-        validateImage(selfie, "Selfi fotografija");
+        validateImage(docFront, msg("error.verification.field.doc_front"));
+        validateImage(selfie, msg("error.verification.field.selfie"));
         // docBack je opciono
         if (docBack != null && !docBack.isEmpty()) {
-            validateImage(docBack, "Zadnja strana dokumenta");
+            validateImage(docBack, msg("error.verification.field.doc_back"));
         }
 
         IdentityVerification existing = verificationRepository.findByUserId(userId).orElse(null);
         if (existing != null && existing.getStatus() == VerificationStatus.PENDING) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Već imate zahtev koji čeka pregled.");
+                msg("error.verification.pending_exists"));
         }
 
         // Upload slika kao authenticated (ne javno dostupno)
@@ -146,7 +154,7 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
                 VerificationStatus s = VerificationStatus.valueOf(statusFilter.toUpperCase());
                 page = verificationRepository.findAllByStatusOrderBySubmittedAtAsc(s, pageable);
             } catch (IllegalArgumentException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nepoznat status.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg("error.verification.unknown_status"));
             }
         } else {
             page = verificationRepository.findAllByOrderBySubmittedAtDesc(pageable);
@@ -158,7 +166,7 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     @Transactional(readOnly = true)
     public AdminVerificationDetailsDto getDetailsForAdmin(Long verificationId) {
         IdentityVerification v = verificationRepository.findById(verificationId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Zahtev nije pronađen."));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, msg("error.verification.request_not_found")));
 
         AdminVerificationDetailsDto dto = new AdminVerificationDetailsDto();
         dto.setId(v.getId());
@@ -177,10 +185,10 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     @Transactional
     public void approve(Long verificationId, Long adminUserId) {
         IdentityVerification v = verificationRepository.findById(verificationId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Zahtev nije pronađen."));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, msg("error.verification.request_not_found")));
 
         if (v.getStatus() != VerificationStatus.PENDING) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Zahtev je već obrađen.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg("error.verification.already_processed"));
         }
 
         User admin = userRepository.findById(adminUserId).orElse(null);
@@ -216,15 +224,15 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
     @Transactional
     public void reject(Long verificationId, Long adminUserId, String reason) {
         if (reason == null || reason.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Razlog odbijanja je obavezan.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg("error.verification.reason_required"));
         }
         if (reason.length() > 300) reason = reason.substring(0, 300);
 
         IdentityVerification v = verificationRepository.findById(verificationId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Zahtev nije pronađen."));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, msg("error.verification.request_not_found")));
 
         if (v.getStatus() != VerificationStatus.PENDING) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Zahtev je već obrađen.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg("error.verification.already_processed"));
         }
 
         User admin = userRepository.findById(adminUserId).orElse(null);
@@ -260,16 +268,16 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
 
     private void validateImage(MultipartFile file, String fieldName) {
         if (file == null || file.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, fieldName + " je obavezno polje.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg("error.verification.image_required", fieldName));
         }
         if (file.getSize() > MAX_FILE_SIZE) {
-            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, fieldName + " je prevelika (max 10MB).");
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, msg("error.verification.image_too_large", fieldName));
         }
         String originalName = file.getOriginalFilename() != null ? file.getOriginalFilename() : "";
         String ext = originalName.contains(".") ? originalName.substring(originalName.lastIndexOf('.') + 1).toLowerCase() : "";
         String ct = file.getContentType() != null ? file.getContentType().toLowerCase() : "";
         if (!HEIC_EXTENSIONS.contains(ext) && !ALLOWED_CONTENT_TYPES.contains(ct)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, fieldName + ": samo JPG, PNG, WEBP ili HEIC.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg("error.verification.image_bad_format", fieldName));
         }
     }
 
@@ -285,7 +293,7 @@ public class IdentityVerificationServiceImpl implements IdentityVerificationServ
             return (String) result.get("public_id");
         } catch (IOException e) {
             log.error("Greška pri upload-u verifikacione slike", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Neuspelo otpremanje slike.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, msg("error.verification.upload_failed"));
         }
     }
 

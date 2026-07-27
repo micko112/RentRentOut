@@ -5,14 +5,14 @@
        ══════════════════════════════════════ -->
   <header class="wizard-header">
     <div class="header-inner">
-      <a routerLink="/user/me/ads" class="back-btn" title="Nazad">
+      <a routerLink="/user/me/ads" class="back-btn" [title]="'common.back' | translate">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <path d="M11 14L7 9l4-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
 
       <div class="header-center">
-        <h1>Izmeni oglas</h1>
+        <h1>{{ 'ads.edit.title' | translate }}</h1>
       </div>
     </div>
 
@@ -24,7 +24,7 @@
   <main class="wizard-body">
     <div *ngIf="isLoading" class="loading-state">
       <span class="material-icons loading-icon">hourglass_empty</span>
-      Učitavanje oglasa...
+      {{ 'ads.edit.loading' | translate }}
     </div>
 
     <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -733,13 +733,13 @@
            ══════════════════════════════════════ -->
       <div class="wizard-nav">
         <div class="nav-right">
-          <a class="btn-cancel" routerLink="/user/me/ads">Odustani</a>
+          <a class="btn-cancel" routerLink="/user/me/ads">{{ 'common.cancel' | translate }}</a>
 
           <button type="submit"
                   class="btn-submit"
                   [disabled]="isSubmitting || form.invalid">
             <span class="submit-spinner" *ngIf="isSubmitting"></span>
-            {{ isSubmitting ? 'Čuvam...' : 'Sačuvaj izmene' }}
+            {{ isSubmitting ? ('ads.create.saving' | translate) : ('ads.edit.save_changes' | translate) }}
           </button>
         </div>
       </div>

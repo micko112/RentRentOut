@@ -8,11 +8,12 @@ import { CityPickerComponent, CityPickerOption } from '../../../../shared/compon
 import { AdService } from '../../services/ad.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Subject, switchMap, takeUntil, debounceTime, catchError, of } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-filters-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, CityPickerComponent],
+  imports: [CommonModule, FormsModule, CityPickerComponent, TranslateModule],
   templateUrl: './filters-sidebar.component.html',
   styleUrl: './filters-sidebar.component.css'
 })
@@ -65,9 +66,9 @@ export class FiltersSidebarComponent implements OnInit, OnDestroy {
   } = {};
 
   readonly intervalOptions = [
-    { value: 'PER_HOUR',  label: 'Po satu'   },
-    { value: 'PER_DAY',   label: 'Po danu'   },
-    { value: 'PER_MONTH', label: 'Po mesecu' },
+    { value: 'PER_HOUR',  label: 'Po satu',   i18nKey: 'ads.filters.per_hour'  },
+    { value: 'PER_DAY',   label: 'Po danu',   i18nKey: 'ads.filters.per_day'   },
+    { value: 'PER_MONTH', label: 'Po mesecu', i18nKey: 'ads.filters.per_month' },
   ];
 
   private _initialLocationId: number | null = null;

@@ -5,14 +5,14 @@
        ══════════════════════════════════════ -->
   <header class="wizard-header">
     <div class="header-inner">
-      <a routerLink=".." class="back-btn" title="Nazad">
+      <a routerLink=".." class="back-btn" [title]="'common.back' | translate">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <path d="M11 14L7 9l4-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
 
       <div class="header-center">
-        <h1>Postavi oglas</h1>
+        <h1>{{ 'ads.create.title' | translate }}</h1>
         <div class="step-pills">
           <span *ngFor="let s of stepConfig; let i = index"
                 class="step-pill"
@@ -52,12 +52,12 @@
                     [class.is-open]="templatesPanelOpen"
                     (click)="templatesPanelOpen = !templatesPanelOpen">
               <span class="material-icons templates-toggle__icon">bookmarks</span>
-              <span class="templates-toggle__text">Imam sačuvane šablone ({{ templates.length }})</span>
+              <span class="templates-toggle__text">{{ 'ads.create.saved_templates' | translate }} ({{ templates.length }})</span>
               <span class="material-icons templates-toggle__caret">{{ templatesPanelOpen ? 'expand_less' : 'expand_more' }}</span>
             </button>
 
             <div class="templates-list" *ngIf="templatesPanelOpen">
-              <p class="templates-list__hint">Klikni na šablon da popuniš formu sa sačuvanim podacima.</p>
+              <p class="templates-list__hint">{{ 'ads.create.templates_hint' | translate }}</p>
               <div *ngFor="let t of templates" class="template-row" (click)="useTemplate(t)">
                 <span class="template-row__icon material-icons">play_circle</span>
                 <div class="template-row__info">
@@ -67,7 +67,7 @@
                 <button type="button"
                         class="template-row__delete"
                         (click)="deleteTemplate($event, t)"
-                        title="Obriši šablon">
+                        [title]="'ads.create.delete_template' | translate">
                   <span class="material-icons">delete_outline</span>
                 </button>
               </div>
@@ -79,9 +79,9 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">1</span>
-            Kategorija
+            {{ 'ads.create.category' | translate }}
           </div>
-          <p class="section-hint">Izaberite kategoriju koja opisuje vaš predmet</p>
+          <p class="section-hint">{{ 'ads.create.category_hint' | translate }}</p>
 
           <div class="category-grid">
             <button type="button"
@@ -97,7 +97,7 @@
 
           <!-- Level-2 chips -->
           <div #subcategorySection class="subcategory-section" *ngIf="childCategories.length > 0">
-            <div class="sub-label">Podkategorija <span class="req">*</span></div>
+            <div class="sub-label">{{ 'ads.create.subcategory' | translate }} <span class="req">*</span></div>
             <div class="subcategory-chips">
               <button type="button"
                       *ngFor="let child of childCategories"
@@ -111,7 +111,7 @@
 
           <!-- Level-3 chips -->
           <div #grandchildSection class="subcategory-section subcategory-section--l3" *ngIf="grandchildCategories.length > 0">
-            <div class="sub-label">Pod-podkategorija <span class="req">*</span></div>
+            <div class="sub-label">{{ 'ads.create.sub_subcategory' | translate }} <span class="req">*</span></div>
             <div class="subcategory-chips">
               <button type="button"
                       *ngFor="let gc of grandchildCategories"
@@ -124,7 +124,7 @@
           </div>
 
           <small class="field-error" *ngIf="form.get('categoryId')?.touched && !form.get('categoryId')?.value">
-            Izaberite kategoriju pre nastavka.
+            {{ 'ads.create.err_category_required' | translate }}
           </small>
         </section>
 
@@ -139,25 +139,25 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">1</span>
-            Naslov oglasa
+            {{ 'ads.create.section_title' | translate }}
           </div>
 
           <div class="form-field">
-            <label class="field-label">Naslov <span class="req">*</span></label>
+            <label class="field-label">{{ 'ads.create.title_label' | translate }} <span class="req">*</span></label>
             <div class="counted-wrap" [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
               <input type="text"
                      formControlName="title"
-                     placeholder="npr. Hilti SDS+ bušilica TE-70, profesionalna"
+                     [placeholder]="'ads.create.title_placeholder' | translate"
                      [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
               <span class="char-count"
                     [class.near]="titleLength > MAX_TITLE * 0.8"
                     [class.over]="titleLength >= MAX_TITLE">{{ titleLength }}/{{ MAX_TITLE }}</span>
             </div>
             <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['minlength']">
-              Naslov mora imati najmanje 5 karaktera.
+              {{ 'ads.create.err_title_min' | translate }}
             </small>
             <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
-              Naslov je obavezan.
+              {{ 'ads.create.err_title_required' | translate }}
             </small>
           </div>
 
@@ -169,18 +169,18 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">2</span>
-            Fotografije
+            {{ 'ads.create.section_photos' | translate }}
           </div>
-          <p class="section-hint">Dodajte do {{ MAX_IMAGES }} fotografija. Prva slika biće naslovna.</p>
+          <p class="section-hint">{{ 'ads.create.photos_hint' | translate:{ n: MAX_IMAGES } }}</p>
 
           <input type="file" id="fileInput" multiple accept="image/*,.heic,.heif" (change)="onFileSelected($event)" hidden>
 
           <div *ngIf="platform.isNative" class="mobile-photo-actions" style="display:flex;gap:12px;margin-bottom:12px;">
             <button type="button" class="btn btn-outline" style="flex:1" (click)="takePhoto('camera')">
-              <span class="material-icons" style="vertical-align:middle;font-size:20px">photo_camera</span> Fotografiši
+              <span class="material-icons" style="vertical-align:middle;font-size:20px">photo_camera</span> {{ 'ads.create.take_photo' | translate }}
             </button>
             <button type="button" class="btn btn-outline" style="flex:1" (click)="takePhoto('gallery')">
-              <span class="material-icons" style="vertical-align:middle;font-size:20px">photo_library</span> Galerija
+              <span class="material-icons" style="vertical-align:middle;font-size:20px">photo_library</span> {{ 'ads.create.gallery' | translate }}
             </button>
           </div>
 
@@ -193,9 +193,9 @@
                  (drop)="onDrop($event)">
             <div class="dz-inner">
               <span class="dz-icon material-icons">{{ isDragging ? 'folder_open' : 'add_photo_alternate' }}</span>
-              <span class="dz-title">{{ isDragging ? 'Ispusti slike ovde' : 'Prevuci slike ili klikni za odabir' }}</span>
-              <span class="dz-sub">PNG · JPG · WEBP &nbsp;·&nbsp; max 10MB po slici</span>
-              <span class="dz-badge" *ngIf="selectedFiles.length > 0">{{ selectedFiles.length }}/{{ MAX_IMAGES }} odabrano</span>
+              <span class="dz-title">{{ isDragging ? ('ads.create.drop_here' | translate) : ('ads.create.drop_or_click' | translate) }}</span>
+              <span class="dz-sub">PNG · JPG · WEBP &nbsp;·&nbsp; {{ 'ads.create.max_10mb' | translate }}</span>
+              <span class="dz-badge" *ngIf="selectedFiles.length > 0">{{ selectedFiles.length }}/{{ MAX_IMAGES }} {{ 'ads.create.selected' | translate }}</span>
             </div>
           </label>
 
@@ -207,12 +207,12 @@
                   <span class="material-icons">image</span>
                   <span class="heic-name">{{ selectedFiles[i]?.name }}</span>
                 </div>
-                <div class="cover-badge" *ngIf="i === 0"><span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> Naslovna</div>
+                <div class="cover-badge" *ngIf="i === 0"><span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> {{ 'ads.create.cover' | translate }}</div>
                 <div class="img-overlay">
                   <button type="button" class="img-btn cover-btn" *ngIf="i !== 0"
-                          (click)="setCoverImage(i)" title="Postavi kao naslovnu"><span class="material-icons" style="font-size:17px">star</span></button>
+                          (click)="setCoverImage(i)" [title]="'ads.create.set_as_cover' | translate"><span class="material-icons" style="font-size:17px">star</span></button>
                   <button type="button" class="img-btn remove-btn"
-                          (click)="removeImage(i)" title="Ukloni"><span class="material-icons" style="font-size:17px">close</span></button>
+                          (click)="removeImage(i)" [title]="'ads.create.remove' | translate"><span class="material-icons" style="font-size:17px">close</span></button>
                 </div>
               </div>
               <div class="img-num">{{ i + 1 }}</div>
@@ -221,13 +221,13 @@
             <label for="fileInput" class="img-cell add-cell" *ngIf="selectedFiles.length < MAX_IMAGES">
               <div class="add-inner">
                 <span class="add-plus">+</span>
-                <span class="add-lbl">Dodaj još</span>
+                <span class="add-lbl">{{ 'ads.create.add_more' | translate }}</span>
               </div>
             </label>
           </div>
 
           <small class="field-error" *ngIf="form.get('images')?.touched && selectedFiles.length === 0">
-            Dodajte najmanje jednu fotografiju.
+            {{ 'ads.create.err_min_one_photo' | translate }}
           </small>
         </section>
 
@@ -237,17 +237,17 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">3</span>
-            Cena
+            {{ 'ads.create.section_price' | translate }}
           </div>
 
           <div class="price-preview-card">
-            <span class="ppc-label">Pregled cene</span>
+            <span class="ppc-label">{{ 'ads.create.price_preview' | translate }}</span>
             <span class="ppc-value">{{ priceDisplay }}</span>
           </div>
 
           <div class="price-row">
             <div class="form-field flex-grow">
-              <label class="field-label">Iznos <span class="req">*</span></label>
+              <label class="field-label">{{ 'ads.create.amount' | translate }} <span class="req">*</span></label>
               <input type="number"
                      inputmode="decimal"
                      formControlName="price"
@@ -256,12 +256,12 @@
                      class="price-input"
                      [class.invalid]="form.get('price')?.touched && form.get('price')?.invalid">
               <small class="field-error" *ngIf="form.get('price')?.touched && form.get('price')?.invalid">
-                Unesite ispravnu cenu (min. 1).
+                {{ 'ads.create.err_price' | translate }}
               </small>
             </div>
 
             <div class="form-field">
-              <label class="field-label">Valuta</label>
+              <label class="field-label">{{ 'ads.create.currency' | translate }}</label>
               <div class="currency-toggle">
                 <button type="button" class="cur-btn" [class.active]="selectedCurrency === 'RSD'"
                         (click)="form.patchValue({currency: 'RSD'})">din</button>
@@ -271,7 +271,7 @@
             </div>
 
             <div class="form-field">
-              <label class="field-label">Period</label>
+              <label class="field-label">{{ 'ads.create.period' | translate }}</label>
               <div class="interval-row">
                 <button type="button"
                         *ngFor="let opt of priceIntervalOptions"
@@ -288,8 +288,8 @@
           <!-- DEPOZIT -->
           <div class="form-field" style="margin-top: 16px;">
             <label class="field-label">
-              Depozit
-              <span class="field-hint-inline">(opcionalno)</span>
+              {{ 'ads.create.deposit' | translate }}
+              <span class="field-hint-inline">({{ 'ads.create.optional' | translate }})</span>
             </label>
             <div class="tier-input-wrap">
               <input type="number" inputmode="decimal" formControlName="deposit" placeholder="-" min="0" class="tier-input"
@@ -297,19 +297,19 @@
               <span class="tier-currency">{{ selectedCurrency === 'EUR' ? '€' : 'din' }}</span>
             </div>
             <small class="field-error" *ngIf="form.get('deposit')?.touched && form.get('deposit')?.invalid">
-              Depozit ne može biti negativan.
+              {{ 'ads.create.err_deposit' | translate }}
             </small>
           </div>
 
           <!-- TIERED PRICING -->
           <div class="tiered-pricing">
-            <div class="tier-hint">Popust za duži period iznajmljivanja (opcionalno)</div>
+            <div class="tier-hint">{{ 'ads.create.tier_hint' | translate }}</div>
             <div class="tier-row">
               <div class="tier-label">
                 <span class="tier-icon material-icons">event</span>
                 <div>
-                  <div class="tier-name">Po sedmici</div>
-                  <div class="tier-sub">7 dana</div>
+                  <div class="tier-name">{{ 'ads.create.per_week' | translate }}</div>
+                  <div class="tier-sub">{{ 'ads.create.seven_days' | translate }}</div>
                 </div>
               </div>
               <div class="tier-input-wrap">
@@ -321,8 +321,8 @@
               <div class="tier-label">
                 <span class="tier-icon material-icons">calendar_month</span>
                 <div>
-                  <div class="tier-name">Po mesecu</div>
-                  <div class="tier-sub">30 dana</div>
+                  <div class="tier-name">{{ 'ads.create.per_month' | translate }}</div>
+                  <div class="tier-sub">{{ 'ads.create.thirty_days' | translate }}</div>
                 </div>
               </div>
               <div class="tier-input-wrap">
@@ -339,30 +339,30 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">4</span>
-            Lokacija i količina
+            {{ 'ads.create.section_location_qty' | translate }}
           </div>
 
           <div class="loc-qty-row">
             <!-- Location -->
             <div class="form-field flex-grow">
-              <label class="field-label">Lokacija preuzimanja <span class="req">*</span></label>
+              <label class="field-label">{{ 'ads.create.pickup_location' | translate }} <span class="req">*</span></label>
               <app-city-picker
                 [locations]="locations"
                 [allowCityOnly]="false"
-                placeholder="Pretraži grad ili opštinu..."
+                [placeholder]="'ads.create.search_city' | translate"
                 [initialLocationId]="initialLocationId"
                 [priorityCity]="userCity"
                 [isInvalid]="!!(form.get('locationId')?.touched && !form.get('locationId')?.value)"
                 (selectionChange)="onLocationChange($event)">
               </app-city-picker>
               <small class="field-error" *ngIf="form.get('locationId')?.touched && !form.get('locationId')?.value">
-                Izaberite lokaciju.
+                {{ 'ads.create.err_location' | translate }}
               </small>
             </div>
 
             <!-- Quantity -->
             <div class="form-field">
-              <label class="field-label">Količina</label>
+              <label class="field-label">{{ 'ads.create.quantity' | translate }}</label>
               <div class="stepper">
                 <button type="button" class="stepper-btn" (click)="decrement()" [disabled]="quantity <= 1">−</button>
                 <div class="stepper-mid">
@@ -759,15 +759,15 @@
         <!-- OPIS -->
         <section class="section-block">
           <div class="section-title">
-            Opis oglasa
+            {{ 'ads.create.section_description' | translate }}
           </div>
 
           <div class="form-field">
-            <label class="field-label">Opis <span class="req">*</span></label>
+            <label class="field-label">{{ 'ads.create.description' | translate }} <span class="req">*</span></label>
             <div class="counted-wrap rich-editor-wrap" [class.invalid]="form.get('description')?.touched && form.get('description')?.invalid">
               <div class="editor-toolbar">
-                <button type="button" class="fmt-btn" (click)="execFormat('bold')" title="Bold (Ctrl+B)"><strong>B</strong></button>
-                <button type="button" class="fmt-btn" (click)="execFormat('italic')" title="Italic (Ctrl+I)"><em>I</em></button>
+                <button type="button" class="fmt-btn" (click)="execFormat('bold')" [title]="'ads.create.bold' | translate"><strong>B</strong></button>
+                <button type="button" class="fmt-btn" (click)="execFormat('italic')" [title]="'ads.create.italic' | translate"><em>I</em></button>
               </div>
               <div #descEditor
                    class="rich-editor"
@@ -775,16 +775,16 @@
                    (input)="onDescInput()"
                    (blur)="onDescBlur()"
                    (keydown)="onDescKeydown($event)"
-                   data-placeholder="Opišite stanje predmeta, šta je uključeno u cenu, gde se preuzima i napomene..."></div>
+                   [attr.data-placeholder]="'ads.create.desc_placeholder' | translate"></div>
               <span class="char-count"
                     [class.near]="descLength > MAX_DESC * 0.85"
                     [class.over]="descLength >= MAX_DESC">{{ descLength }}/{{ MAX_DESC }}</span>
             </div>
             <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['minlength']">
-              Opis mora imati najmanje 20 karaktera.
+              {{ 'ads.create.err_desc_min' | translate }}
             </small>
             <small class="field-error" *ngIf="form.get('description')?.touched && form.get('description')?.errors?.['required']">
-              Opis je obavezan.
+              {{ 'ads.create.err_desc_required' | translate }}
             </small>
           </div>
         </section>
@@ -799,23 +799,23 @@
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Nazad
+          {{ 'common.back' | translate }}
         </button>
 
         <div class="nav-right">
-          <a class="btn-cancel" routerLink=".." *ngIf="currentStep === 1">Odustani</a>
+          <a class="btn-cancel" routerLink=".." *ngIf="currentStep === 1">{{ 'common.cancel' | translate }}</a>
 
           <button type="button"
                   class="btn-save-template"
                   *ngIf="currentStep === totalSteps"
                   (click)="openSaveTemplateModal()"
-                  title="Sačuvaj trenutne podatke kao šablon za buduće oglase">
+                  [title]="'ads.create.save_as_template_title' | translate">
             <span class="material-icons">bookmark_add</span>
-            Sačuvaj kao šablon
+            {{ 'ads.create.save_as_template' | translate }}
           </button>
 
           <button type="button" class="btn-next" (click)="nextStep()" *ngIf="currentStep < totalSteps">
-            Dalje
+            {{ 'common.next' | translate }}
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -826,7 +826,7 @@
                   *ngIf="currentStep === totalSteps"
                   [disabled]="isSubmitting || form.invalid || selectedFiles.length === 0">
             <span class="submit-spinner" *ngIf="isSubmitting"></span>
-            {{ isSubmitting ? 'Objavljujem...' : 'Objavi oglas' }}
+            {{ isSubmitting ? ('ads.create.publishing' | translate) : ('ads.create.publish' | translate) }}
           </button>
         </div>
       </div>
@@ -841,34 +841,33 @@
     <div class="template-modal" (click)="$event.stopPropagation()">
       <div class="template-modal__header">
         <span class="material-icons">bookmark_add</span>
-        <h3>Sačuvaj šablon</h3>
-        <button class="template-modal__close" type="button" (click)="closeSaveTemplateModal()" title="Zatvori">
+        <h3>{{ 'ads.create.save_template_title' | translate }}</h3>
+        <button class="template-modal__close" type="button" (click)="closeSaveTemplateModal()" [title]="'common.close' | translate">
           <span class="material-icons">close</span>
         </button>
       </div>
       <div class="template-modal__body">
         <p class="template-modal__hint">
-          Šablon će sačuvati sve trenutne podatke iz forme (osim slika).
-          Kasnije možete brzo kreirati novi oglas iz dropdown menija u zaglavlju.
+          {{ 'ads.create.template_modal_hint' | translate }}
         </p>
-        <label class="field-label">Naziv šablona <span class="req">*</span></label>
+        <label class="field-label">{{ 'ads.create.template_name' | translate }} <span class="req">*</span></label>
         <input type="text"
                class="template-modal__input"
                [(ngModel)]="templateName"
-               placeholder="npr. Trambolina 3m"
+               [placeholder]="'ads.create.template_name_placeholder' | translate"
                maxlength="80"
                (keyup.enter)="saveAsTemplate()"
                autofocus>
         <small class="template-modal__counter">{{ templateName.length }}/80</small>
       </div>
       <div class="template-modal__footer">
-        <button type="button" class="btn-cancel-modal" (click)="closeSaveTemplateModal()">Odustani</button>
+        <button type="button" class="btn-cancel-modal" (click)="closeSaveTemplateModal()">{{ 'common.cancel' | translate }}</button>
         <button type="button"
                 class="btn-save-modal"
                 [disabled]="isSavingTemplate || !templateName.trim()"
                 (click)="saveAsTemplate()">
           <span class="submit-spinner" *ngIf="isSavingTemplate"></span>
-          {{ isSavingTemplate ? 'Čuvam...' : 'Sačuvaj' }}
+          {{ isSavingTemplate ? ('ads.create.saving' | translate) : ('common.save' | translate) }}
         </button>
       </div>
     </div>

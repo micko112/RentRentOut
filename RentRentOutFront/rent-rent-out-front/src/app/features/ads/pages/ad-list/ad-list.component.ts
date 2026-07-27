@@ -17,11 +17,12 @@ import { CategoriesSidebarComponent } from '../../components/categories-sidebar/
 import { Location } from '../../../../shared/models/location.model';
 import { SeoService } from '../../../../core/services/seo.service';
 import { MobileFilterService } from '../../../../core/services/mobile-filter.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ad-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent, SkeletonCardComponent],
+  imports: [CommonModule, FormsModule, AdCardComponent, RouterLink, FiltersSidebarComponent, CategoriesSidebarComponent, SkeletonCardComponent, TranslateModule],
   templateUrl: './ad-list.component.html',
   styleUrl: './ad-list.component.css'
 })
@@ -91,6 +92,7 @@ export class AdListComponent implements OnInit, OnDestroy {
 
   private seoService = inject(SeoService);
   private mobileFilterService = inject(MobileFilterService);
+  private translate = inject(TranslateService);
 
   constructor(
     private adService: AdService,
@@ -110,10 +112,11 @@ export class AdListComponent implements OnInit, OnDestroy {
     if (this.mobileFilterView === 'kategorije') {
       return this.mobileFilterCategoryStack.length > 0
         ? this.mobileFilterCategoryStack[this.mobileFilterCategoryStack.length - 1].name
-        : 'Kategorije';
+        : this.translate.instant('ads.list.categories');
     }
-    const titles: Record<string, string> = { mesto: 'Mesto', cena: 'Cena' };
-    return titles[this.mobileFilterView] ?? 'Filteri';
+    if (this.mobileFilterView === 'mesto') return this.translate.instant('ads.list.location');
+    if (this.mobileFilterView === 'cena') return this.translate.instant('ads.list.price');
+    return this.translate.instant('common.filters');
   }
 
   get allCities(): string[] {
@@ -366,11 +369,13 @@ export class AdListComponent implements OnInit, OnDestroy {
 
   private updateActiveCategory(categoryId: number | undefined, sort?: string): void {
     if (!categoryId) {
-      this.activeCategory = sort === 'id,desc' ? 'Najnoviji oglasi' : 'Svi oglasi';
+      this.activeCategory = sort === 'id,desc'
+        ? this.translate.instant('ads.list.latest_ads')
+        : this.translate.instant('ads.list.all_ads');
       return;
     }
     const found = this.categories.find(c => c.id === categoryId);
-    this.activeCategory = found ? found.name : 'Učitavanje...';
+    this.activeCategory = found ? found.name : this.translate.instant('common.loading');
   }
 
   onSortChange(event: Event): void {

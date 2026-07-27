@@ -3,12 +3,13 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {AdService} from '../../../ads/services/ad.service';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {AdPreview} from '../../../../shared/models/adPreview.model';
 import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component';
 import {ToastService} from '../../../../shared/services/toast.service';
 import {PromotionService} from '../../../ads/services/promotion.service';
 import {PromotionModalComponent} from '../../../ads/components/promotion-modal/promotion-modal.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-my-ads',
@@ -16,7 +17,9 @@ import {PromotionModalComponent} from '../../../ads/components/promotion-modal/p
     CommonModule,
     AdCardComponent,
     FormsModule,
-    PromotionModalComponent
+    PromotionModalComponent,
+    RouterLink,
+    TranslateModule
   ],
   templateUrl: './my-ads.component.html',
   styleUrl: './my-ads.component.css'

@@ -1,0 +1,19 @@
+<div class="lang-switcher" [class.open]="open" [class.pos-right]="menuPosition === 'right'">
+  <button type="button" class="lang-btn" (click)="toggle()" [attr.aria-label]="'language_switcher.label' | translate">
+    <span class="material-icons lang-icon">language</span>
+    <span class="lang-current">{{ currentOption.label }}</span>
+    <span class="material-icons lang-caret">{{ open ? 'expand_less' : 'expand_more' }}</span>
+  </button>
+  <ul class="lang-menu" *ngIf="open" role="menu">
+    <li *ngFor="let opt of options" role="menuitem">
+      <button type="button"
+              class="lang-option"
+              [class.active]="opt.code === current"
+              (click)="choose(opt.code)">
+        <span class="lang-code">{{ opt.label }}</span>
+        <span class="lang-name">{{ 'language_switcher.' + opt.code | translate }}</span>
+        <span class="material-icons lang-check" *ngIf="opt.code === current">check</span>
+      </button>
+    </li>
+  </ul>
+</div>

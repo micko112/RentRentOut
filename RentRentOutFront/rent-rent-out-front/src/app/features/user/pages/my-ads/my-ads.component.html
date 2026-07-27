@@ -1,7 +1,7 @@
 <div class="my-ads-container">
   <div class="header-row">
-    <h2>Moji oglasi ({{ totalElements }})</h2>
-    <button class="btn-add-new" routerLink="/ads/create">+ Novi oglas</button>
+    <h2>{{ 'user.myAds.title' | translate }} ({{ totalElements }})</h2>
+    <button class="btn-add-new" routerLink="/ads/create">{{ 'user.myAds.new_ad' | translate }}</button>
   </div>
 
   <!-- Search bar -->
@@ -10,7 +10,7 @@
     <input
       type="text"
       [(ngModel)]="searchQuery"
-      placeholder="Pretražite vaše oglase..."
+      [placeholder]="'user.myAds.search_placeholder' | translate"
       class="search-input">
   </div>
 
@@ -26,31 +26,31 @@
         <div class="expiry-info" *ngIf="ad.expiresAt">
           <span class="material-icons expiry-icon" [class.expired]="isExpired(ad.expiresAt)">schedule</span>
           <span *ngIf="!isExpired(ad.expiresAt)" class="expiry-text" [class.expiry-soon]="(daysUntilExpiry(ad.expiresAt) ?? 99) <= 5">
-            Ističe za {{ daysUntilExpiry(ad.expiresAt) }} {{ (daysUntilExpiry(ad.expiresAt) ?? 0) === 1 ? 'dan' : 'dana' }}
+            {{ 'user.myAds.expires_in' | translate }} {{ daysUntilExpiry(ad.expiresAt) }} {{ (daysUntilExpiry(ad.expiresAt) ?? 0) === 1 ? ('user.myAds.day' | translate) : ('user.myAds.days' | translate) }}
           </span>
-          <span *ngIf="isExpired(ad.expiresAt)" class="expiry-text expired">Istekao</span>
+          <span *ngIf="isExpired(ad.expiresAt)" class="expiry-text expired">{{ 'user.myAds.expired' | translate }}</span>
         </div>
 
         <!-- Promotion badge if active -->
         <div class="active-promo-badge" *ngIf="ad.promotionType">
-          <span *ngIf="ad.promotionType === 'FEATURED'" class="promo-label badge-featured">Na vrhu</span>
-          <span *ngIf="ad.promotionType === 'PRIORITY'" class="promo-label badge-priority">Prioritetni</span>
-          <span *ngIf="ad.promotionType === 'HIGHLIGHTED'" class="promo-label badge-highlighted">Istaknut</span>
+          <span *ngIf="ad.promotionType === 'FEATURED'" class="promo-label badge-featured">{{ 'user.myAds.promo_featured' | translate }}</span>
+          <span *ngIf="ad.promotionType === 'PRIORITY'" class="promo-label badge-priority">{{ 'user.myAds.promo_priority' | translate }}</span>
+          <span *ngIf="ad.promotionType === 'HIGHLIGHTED'" class="promo-label badge-highlighted">{{ 'user.myAds.promo_highlighted' | translate }}</span>
         </div>
 
         <div class="action-btns">
-          <button class="btn-renew" (click)="renewAd(ad)" [disabled]="renewingIds.has(ad.id)" title="Besplatna obnova">
+          <button class="btn-renew" (click)="renewAd(ad)" [disabled]="renewingIds.has(ad.id)" [title]="'user.myAds.renew_title' | translate">
             <span class="material-icons">refresh</span>
-            {{ renewingIds.has(ad.id) ? 'Obnavljanje...' : 'Obnovi' }}
+            {{ renewingIds.has(ad.id) ? ('user.myAds.renewing' | translate) : ('user.myAds.renew' | translate) }}
           </button>
           <button class="btn-promote" (click)="openPromoModal(ad)">
-            <span class="material-icons">campaign</span> Promoviši
+            <span class="material-icons">campaign</span> {{ 'user.myAds.promote' | translate }}
           </button>
           <button class="btn-edit" (click)="onEdit(ad.id)">
-            <span class="material-icons">edit</span> Izmeni
+            <span class="material-icons">edit</span> {{ 'common.edit' | translate }}
           </button>
           <button class="btn-delete" (click)="openDeleteModal(ad)">
-            <span class="material-icons">delete_outline</span> Obriši
+            <span class="material-icons">delete_outline</span> {{ 'common.delete' | translate }}
           </button>
         </div>
       </div>
@@ -59,7 +59,7 @@
     <!-- Nema rezultata pretrage -->
     <div class="no-results" *ngIf="filteredAds.length === 0 && searchQuery">
       <span class="material-icons">search_off</span>
-      <p>Nema oglasa koji odgovaraju pretrazi "{{ searchQuery }}".</p>
+      <p>{{ 'user.myAds.no_search_results' | translate }} "{{ searchQuery }}".</p>
     </div>
   </div>
 
@@ -69,9 +69,9 @@
       <div class="empty-icon">
         <span class="material-icons">campaign</span>
       </div>
-      <h3>Još uvek nemate objavljenih oglasa</h3>
-      <p>Postavite oglas i počnite sa izdavanjem svojih stvari već danas.</p>
-      <button class="btn-primary" routerLink="/ads/create">Postavi prvi oglas</button>
+      <h3>{{ 'user.myAds.empty_title' | translate }}</h3>
+      <p>{{ 'user.myAds.empty_text' | translate }}</p>
+      <button class="btn-primary" routerLink="/ads/create">{{ 'user.myAds.post_first_ad' | translate }}</button>
     </div>
   </ng-template>
 </div>
@@ -90,9 +90,9 @@
   <div class="modal-card" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <span class="material-icons modal-icon">delete_outline</span>
-      <h3>Brisanje oglasa</h3>
+      <h3>{{ 'user.myAds.delete_title' | translate }}</h3>
     </div>
-    <p class="modal-subtitle">Razlog za brisanje oglasa "{{ adToDelete?.title }}"</p>
+    <p class="modal-subtitle">{{ 'user.myAds.delete_reason' | translate }} "{{ adToDelete?.title }}"</p>
 
     <div class="reason-list">
       <label class="reason-option" *ngFor="let reason of deleteReasons">
@@ -102,8 +102,8 @@
     </div>
 
     <div class="modal-actions">
-      <button class="btn-cancel" (click)="closeDeleteModal()">Odustanite</button>
-      <button class="btn-delete-confirm" (click)="confirmDelete()" [disabled]="!deleteReason">Obrišite oglas</button>
+      <button class="btn-cancel" (click)="closeDeleteModal()">{{ 'common.cancel' | translate }}</button>
+      <button class="btn-delete-confirm" (click)="confirmDelete()" [disabled]="!deleteReason">{{ 'user.myAds.confirm_delete' | translate }}</button>
     </div>
   </div>
 </div>

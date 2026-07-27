@@ -6,7 +6,7 @@
   </button>
 
   <!-- Desktop: toggle collapse dugme -->
-  <button *ngIf="!mobileDrawer" class="sidebar-toggle" (click)="toggle()" [title]="(isCollapsed$ | async) ? 'Proširi meni' : 'Skupi meni'">
+  <button *ngIf="!mobileDrawer" class="sidebar-toggle" (click)="toggle()" [title]="(isCollapsed$ | async) ? ('sidebar.expand' | translate) : ('sidebar.collapse' | translate)">
     <span class="material-icons">{{ (isCollapsed$ | async) ? 'chevron_right' : 'chevron_left' }}</span>
   </button>
 
@@ -22,47 +22,47 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a routerLink="/user/me/ads" routerLinkActive="active" title="Moji oglasi">
+      <a routerLink="/user/me/ads" routerLinkActive="active" [title]="'sidebar.my_ads' | translate">
         <span class="material-icons nav-icon">article</span>
-        <span class="nav-label">Moji oglasi</span>
+        <span class="nav-label">{{ 'sidebar.my_ads' | translate }}</span>
       </a>
-      <a routerLink="/user/saved-ads" routerLinkActive="active" title="Sačuvani oglasi">
+      <a routerLink="/user/saved-ads" routerLinkActive="active" [title]="'sidebar.saved_ads' | translate">
         <span class="material-icons nav-icon">bookmark</span>
-        <span class="nav-label">Sačuvani oglasi</span>
+        <span class="nav-label">{{ 'sidebar.saved_ads' | translate }}</span>
       </a>
-      <a routerLink="/messages" routerLinkActive="active" title="Poruke">
+      <a routerLink="/messages" routerLinkActive="active" [title]="'sidebar.messages' | translate">
         <span class="material-icons nav-icon">forum</span>
-        <span class="nav-label">Poruke</span>
+        <span class="nav-label">{{ 'sidebar.messages' | translate }}</span>
         <span class="unread-badge" *ngIf="(totalUnread$ | async) as count">
           {{ count > 99 ? '99+' : count }}
         </span>
       </a>
-      <a routerLink="/user/me/contracts" routerLinkActive="active" title="Moji Ugovori">
+      <a routerLink="/user/me/contracts" routerLinkActive="active" [title]="'sidebar.my_contracts' | translate">
         <span class="material-icons nav-icon">description</span>
-        <span class="nav-label">Moji Ugovori</span>
+        <span class="nav-label">{{ 'sidebar.my_contracts' | translate }}</span>
       </a>
-      <a routerLink="/notifications" routerLinkActive="active" title="Obaveštenja">
+      <a routerLink="/notifications" routerLinkActive="active" [title]="'sidebar.notifications' | translate">
         <span class="material-icons nav-icon">notifications</span>
-        <span class="nav-label">Obaveštenja</span>
+        <span class="nav-label">{{ 'sidebar.notifications' | translate }}</span>
         <span class="unread-badge" *ngIf="(notifUnread$ | async) as count">
           {{ count > 99 ? '99+' : count }}
         </span>
       </a>
-      <a [routerLink]="['/user', user.id, 'reviews']" routerLinkActive="active" title="Ocene">
+      <a [routerLink]="['/user', user.id, 'reviews']" routerLinkActive="active" [title]="'sidebar.reviews' | translate">
         <span class="material-icons nav-icon">star</span>
-        <span class="nav-label">Ocene</span>
+        <span class="nav-label">{{ 'sidebar.reviews' | translate }}</span>
       </a>
-      <a routerLink="/credit" routerLinkActive="active" title="Kredit">
+      <a routerLink="/credit" routerLinkActive="active" [title]="'sidebar.credit' | translate">
         <span class="material-icons nav-icon">account_balance_wallet</span>
-        <span class="nav-label">Kredit</span>
+        <span class="nav-label">{{ 'sidebar.credit' | translate }}</span>
       </a>
-      <a routerLink="/verify" routerLinkActive="active" title="Verifikacija">
+      <a routerLink="/verify" routerLinkActive="active" [title]="'sidebar.verification' | translate">
         <span class="material-icons nav-icon" [class.nav-icon-verified]="user.identified">verified_user</span>
-        <span class="nav-label">Verifikacija</span>
+        <span class="nav-label">{{ 'sidebar.verification' | translate }}</span>
       </a>
-      <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" title="Moj Nalog">
+      <a routerLink="/user/me" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" [title]="'sidebar.my_account' | translate">
         <span class="material-icons nav-icon">manage_accounts</span>
-        <span class="nav-label">Moj Nalog</span>
+        <span class="nav-label">{{ 'sidebar.my_account' | translate }}</span>
       </a>
     </nav>
   </ng-container>
@@ -70,18 +70,40 @@
   <ng-template #guestBlock>
     <div class="guest-block">
       <div class="guest-avatar">?</div>
-      <p class="guest-text">Niste prijavljeni</p>
-      <a routerLink="/login" class="btn-login">Prijavi se</a>
-      <a routerLink="/register" class="btn-register">Registruj se</a>
+      <p class="guest-text">{{ 'sidebar.guest_not_logged_in' | translate }}</p>
+      <a routerLink="/login" class="btn-login">{{ 'sidebar.login' | translate }}</a>
+      <a routerLink="/register" class="btn-register">{{ 'sidebar.register' | translate }}</a>
     </div>
 
     <nav class="sidebar-nav sidebar-nav--locked">
-      <span class="nav-item-locked" title="Moji oglasi"><span class="material-icons nav-icon">article</span><span class="nav-label"> Moji oglasi</span></span>
-      <span class="nav-item-locked" title="Poruke"><span class="material-icons nav-icon">forum</span><span class="nav-label"> Poruke</span></span>
-      <span class="nav-item-locked" title="Obaveštenja"><span class="material-icons nav-icon">notifications</span><span class="nav-label"> Obaveštenja</span></span>
-      <span class="nav-item-locked" title="Ocene"><span class="material-icons nav-icon">star</span><span class="nav-label"> Ocene</span></span>
-      <span class="nav-item-locked" title="Moj Nalog"><span class="material-icons nav-icon">manage_accounts</span><span class="nav-label"> Moj Nalog</span></span>
+      <span class="nav-item-locked" [title]="'sidebar.my_ads' | translate"><span class="material-icons nav-icon">article</span><span class="nav-label"> {{ 'sidebar.my_ads' | translate }}</span></span>
+      <span class="nav-item-locked" [title]="'sidebar.messages' | translate"><span class="material-icons nav-icon">forum</span><span class="nav-label"> {{ 'sidebar.messages' | translate }}</span></span>
+      <span class="nav-item-locked" [title]="'sidebar.notifications' | translate"><span class="material-icons nav-icon">notifications</span><span class="nav-label"> {{ 'sidebar.notifications' | translate }}</span></span>
+      <span class="nav-item-locked" [title]="'sidebar.reviews' | translate"><span class="material-icons nav-icon">star</span><span class="nav-label"> {{ 'sidebar.reviews' | translate }}</span></span>
+      <span class="nav-item-locked" [title]="'sidebar.my_account' | translate"><span class="material-icons nav-icon">manage_accounts</span><span class="nav-label"> {{ 'sidebar.my_account' | translate }}</span></span>
     </nav>
   </ng-template>
+
+  <!-- Language switcher: visible in mobile drawer (fallback to sidebar switch) -->
+  <div class="sidebar-lang" *ngIf="mobileDrawer">
+    <app-language-switcher menuPosition="right"></app-language-switcher>
+  </div>
+
+  <!-- Bottom auth action: divider + login (guest) or logout (logged in) -->
+  <div class="sidebar-auth-bottom">
+    <div class="sidebar-divider"></div>
+    <ng-container *ngIf="currentUser$ | async as user; else guestAuthBtn">
+      <button type="button" class="sidebar-auth-btn sidebar-auth-btn--logout" (click)="logout()">
+        <span class="material-icons">logout</span>
+        <span>{{ 'header.logout' | translate }}</span>
+      </button>
+    </ng-container>
+    <ng-template #guestAuthBtn>
+      <button type="button" class="sidebar-auth-btn sidebar-auth-btn--login" (click)="goToLogin()">
+        <span class="material-icons">login</span>
+        <span>{{ 'header.login' | translate }}</span>
+      </button>
+    </ng-template>
+  </div>
 
 </aside>

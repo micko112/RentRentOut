@@ -21,6 +21,7 @@ import org.landm.repository.CreditTransactionRepository;
 import org.landm.repository.RentalContractRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.AdminService;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
     private final UserMapper userMapper;
     private final AdMapper adMapper;
     private final RentalContractMapper rentalContractMapper;
+    private final MessageSource messageSource;
 
     public AdminServiceImpl(
             AdRepository adRepository,
@@ -50,7 +52,8 @@ public class AdminServiceImpl implements AdminService {
             AdReportRepository adReportRepository,
             UserMapper userMapper,
             AdMapper adMapper,
-            RentalContractMapper rentalContractMapper) {
+            RentalContractMapper rentalContractMapper,
+            MessageSource messageSource) {
         this.adRepository = adRepository;
         this.rentalContractRepository = rentalContractRepository;
         this.userRepository = userRepository;
@@ -59,6 +62,11 @@ public class AdminServiceImpl implements AdminService {
         this.userMapper = userMapper;
         this.adMapper = adMapper;
         this.rentalContractMapper = rentalContractMapper;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -68,7 +76,7 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 
         if (adToSuspend.getAdStatus() == AdStatus.SUSPENDED_BY_ADMIN) {
-            throw new IllegalStateException("Oglas je već suspendovan.");
+            throw new IllegalStateException(msg("error.admin.ad_already_suspended"));
         }
         List<ContractStatus> activeStatuses = List.of(ContractStatus.ACTIVE, ContractStatus.ACCEPTED);
         List<RentalContract> rentalContracts = rentalContractRepository.findActiveContractForAd(adId, activeStatuses);
@@ -105,7 +113,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public void deleteAd(Long adId) {
         Ad ad = adRepository.findById(adId)
-                .orElseThrow(() -> new IllegalArgumentException("Oglas nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.ad.not_found")));
         adRepository.delete(ad);
     }
 
@@ -136,7 +144,7 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
 
         if (ad.getAdStatus() != AdStatus.SUSPENDED_BY_ADMIN) {
-            throw new IllegalStateException("Oglas nije suspendovan od strane admina.");
+            throw new IllegalStateException(msg("error.admin.ad_not_suspended_by_admin"));
         }
 
         ad.setAdStatus(AdStatus.ACTIVE);
@@ -202,7 +210,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public void markReportReviewed(Long reportId) {
         AdReport report = adReportRepository.findById(reportId)
-                .orElseThrow(() -> new IllegalArgumentException("Prijava nije pronađena."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.report.not_found")));
         report.setReviewed(true);
         adReportRepository.save(report);
     }

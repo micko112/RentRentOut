@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterLink, RouterModule} from '@angular/router';
+import {TranslateModule} from '@ngx-translate/core';
 import {AdPreview} from '../../../../shared/models/adPreview.model';
 import {AdService} from '../../services/ad.service';
 import {AuthService} from '../../../auth/services/auth.service';
@@ -8,7 +9,7 @@ import {AuthService} from '../../../auth/services/auth.service';
 @Component({
   selector: 'app-ad-card',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule],
+  imports: [CommonModule, RouterLink, RouterModule, TranslateModule],
   templateUrl: './ad-card.component.html',
   styleUrl: './ad-card.component.css'
 })

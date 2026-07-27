@@ -4,10 +4,10 @@
   <div class="sidebar-header">
     <h2 class="sidebar-title">
       <span class="material-icons">tune</span>
-      Filteri
+      {{ 'common.filters' | translate }}
     </h2>
     <button class="btn-clear-header" *ngIf="activeFilterCount > 0" (click)="clearAll()">
-      Poništi sve
+      {{ 'ads.filters.clear_all' | translate }}
     </button>
   </div>
 
@@ -15,10 +15,10 @@
 
     <!-- 1. KLJUČNA REČ -->
     <section class="filter-group">
-      <label class="group-label">Pretraga</label>
+      <label class="group-label">{{ 'ads.filters.search' | translate }}</label>
       <div class="search-input-wrap">
         <span class="material-icons si-icon">search</span>
-        <input type="text" class="search-text-input" placeholder="npr. Hilti, kamera..."
+        <input type="text" class="search-text-input" [placeholder]="'ads.filters.search_placeholder' | translate"
                [(ngModel)]="filters.keyword" name="keyword" (ngModelChange)="onFilterChange()" />
         <button class="si-clear" *ngIf="filters.keyword" (click)="filters.keyword = ''">
           <span class="material-icons">close</span>
@@ -28,13 +28,13 @@
 
     <!-- 2. KATEGORIJA -->
     <section class="filter-group">
-      <label class="group-label">Kategorija</label>
+      <label class="group-label">{{ 'ads.filters.category' | translate }}</label>
       <div class="select-wrap">
         <span class="material-icons select-icon">category</span>
         <select class="custom-select" [(ngModel)]="filters.categoryId" name="categoryId" (ngModelChange)="onFilterChange()">
-          <option [ngValue]="undefined">Sve kategorije</option>
+          <option [ngValue]="undefined">{{ 'ads.filters.all_categories' | translate }}</option>
           <optgroup *ngFor="let parent of parentCategories" [label]="parent.name">
-            <option [ngValue]="parent.id">{{ parent.name }} (sve)</option>
+            <option [ngValue]="parent.id">{{ parent.name }} ({{ 'ads.filters.all' | translate }})</option>
             <ng-container *ngFor="let child of getChildren(parent.id)">
               <option [ngValue]="child.id">{{ child.name }}</option>
               <option *ngFor="let grandchild of getChildren(child.id)" [ngValue]="grandchild.id">— {{ grandchild.name }}</option>
@@ -46,12 +46,12 @@
 
     <!-- 3. LOKACIJA -->
     <section class="filter-group">
-      <label class="group-label">Grad</label>
+      <label class="group-label">{{ 'ads.filters.city' | translate }}</label>
       <app-city-picker
         #cityPicker
         [locations]="locations"
         [allowCityOnly]="true"
-        placeholder="Svi gradovi"
+        [placeholder]="'ads.filters.all_cities' | translate"
         [initialLocationId]="initialLocationId"
         [priorityCity]="userCity"
         (selectionChange)="onCityChange($event)">
@@ -60,27 +60,27 @@
 
     <!-- 4. TIP CENE -->
     <section class="filter-group">
-      <label class="group-label">Tip zakupa</label>
+      <label class="group-label">{{ 'ads.filters.rent_type' | translate }}</label>
       <div class="interval-chips">
         <button *ngFor="let opt of intervalOptions"
                 class="interval-chip"
                 [class.active]="filters.priceInterval === opt.value"
                 (click)="toggleInterval(opt.value)">
-          {{ opt.label }}
+          {{ opt.i18nKey | translate }}
         </button>
       </div>
     </section>
 
     <!-- 5. CENA -->
     <section class="filter-group">
-      <label class="group-label">Raspon cene</label>
+      <label class="group-label">{{ 'ads.filters.price_range' | translate }}</label>
       <div class="price-row">
         <div class="price-input-wrap">
-          <input type="number" class="price-input" placeholder="Od" [(ngModel)]="filters.minPrice" name="minPrice" min="0" (ngModelChange)="onFilterChange()" />
+          <input type="number" class="price-input" [placeholder]="'ads.filters.from' | translate" [(ngModel)]="filters.minPrice" name="minPrice" min="0" (ngModelChange)="onFilterChange()" />
         </div>
         <span class="price-dash">—</span>
         <div class="price-input-wrap">
-          <input type="number" class="price-input" placeholder="Do" [(ngModel)]="filters.maxPrice" name="maxPrice" min="0" (ngModelChange)="onFilterChange()" />
+          <input type="number" class="price-input" [placeholder]="'ads.filters.to' | translate" [(ngModel)]="filters.maxPrice" name="maxPrice" min="0" (ngModelChange)="onFilterChange()" />
         </div>
       </div>
     </section>
@@ -89,7 +89,7 @@
     <div class="sidebar-actions">
       <button class="btn-apply" (click)="onSubmit()">
         <span class="material-icons">search</span>
-        Prikaži oglase
+        {{ 'ads.filters.show_ads' | translate }}
         <span class="filter-badge" *ngIf="previewCount !== null">{{ previewCount }}</span>
       </button>
     </div>

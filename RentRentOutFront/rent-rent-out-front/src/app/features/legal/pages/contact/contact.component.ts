@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SeoService } from '../../../../core/services/seo.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, TranslateModule],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css'
 })

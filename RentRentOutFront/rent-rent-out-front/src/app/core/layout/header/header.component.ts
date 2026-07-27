@@ -2,16 +2,18 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { User } from '../../../shared/models/user.model';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { AdService } from '../../../features/ads/services/ad.service';
 import { MobileFilterService } from '../../services/mobile-filter.service';
+import { LanguageSwitcherComponent } from '../../../shared/components/language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslateModule, LanguageSwitcherComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

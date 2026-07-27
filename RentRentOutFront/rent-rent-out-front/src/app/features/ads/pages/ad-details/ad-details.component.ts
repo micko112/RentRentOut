@@ -17,11 +17,12 @@ import {SeoService} from '../../../../core/services/seo.service';
 import {FormsModule} from '@angular/forms';
 import {PromotionService} from '../../services/promotion.service';
 import {PromotionModalComponent} from '../../components/promotion-modal/promotion-modal.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ad-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, InitialsPipe, ReviewCardComponent, RentalCalendarComponent, ReportModalComponent, PromotionModalComponent],
+  imports: [CommonModule, RouterLink, FormsModule, InitialsPipe, ReviewCardComponent, RentalCalendarComponent, ReportModalComponent, PromotionModalComponent, TranslateModule],
   templateUrl: './ad-details.component.html',
   styleUrl: './ad-details.component.css'
 })
@@ -69,6 +70,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private seoService: SeoService,
     private promotionService: PromotionService,
+    private translate: TranslateService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
@@ -380,7 +382,7 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isLoadingPhone = false;
-        this.toastService.showError('Greška pri učitavanju broja telefona.');
+        this.toastService.showError(this.translate.instant('ads.details.toast_phone_error'));
       }
     });
   }
@@ -389,14 +391,14 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     if (!this.currentAd) return;
 
     if (!this.authService.currentUserValue) {
-      this.toastService.showError('Morate biti ulogovani da biste poslali poruku.');
+      this.toastService.showError(this.translate.instant('ads.details.toast_login_required'));
       this.router.navigate(['/login']);
       return;
     }
 
     const currentUser = this.authService.currentUserValue;
     if (currentUser && currentUser.id === this.currentAd.owner.id) {
-      this.toastService.showError('Ne možete poslati poruku samom sebi.');
+      this.toastService.showError(this.translate.instant('ads.details.toast_no_self_message'));
       return;
     }
 
@@ -415,11 +417,11 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     this.renewingInProgress = true;
     this.promotionService.renewAd(this.currentAd.id).subscribe({
       next: () => {
-        this.toastService.showSuccess('Oglas je obnovljen na 30 dana.');
+        this.toastService.showSuccess(this.translate.instant('ads.details.toast_renewed'));
         this.renewingInProgress = false;
       },
       error: () => {
-        this.toastService.showError('Greška pri obnovi oglasa.');
+        this.toastService.showError(this.translate.instant('ads.details.toast_renew_error'));
         this.renewingInProgress = false;
       }
     });
@@ -437,10 +439,10 @@ export class AdDetailsComponent implements OnInit, OnDestroy {
     this.closeDeleteModal();
     this.adService.deleteAd(id).subscribe({
       next: () => {
-        this.toastService.showSuccess('Uspešno ste obrisali oglas!');
+        this.toastService.showSuccess(this.translate.instant('ads.details.toast_deleted'));
         this.router.navigate(['/user/me/ads']);
       },
-      error: () => this.toastService.showError('Greška pri brisanju oglasa.')
+      error: () => this.toastService.showError(this.translate.instant('ads.details.toast_delete_error'))
     });
   }
 

@@ -1,136 +1,137 @@
 # Architecture
 
-## Pregled
+## Overview
 
-IzdajemIznajmljujem je full-stack monorepo sa **četiri servisa** koja se orchestrate-uju kroz Docker Compose:
+IzdajemIznajmljujem is a full-stack monorepo made up of **four services** orchestrated by Docker Compose:
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                       Klijent (Browser / PWA)                       │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │ HTTPS :443
-                               ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                            Nginx                                    │
-│                                                                     │
-│  /                   → Angular SPA (statika iz dist/)               │
-│  /api/predict-category, /api/chatbot → ml-service:8000              │
-│  /sitemap.xml        → backend:8080                                 │
-│  /api/**             → backend:8080                                 │
-│  /ws                 → backend:8080  (WebSocket Upgrade)            │
-└─────────────────────────────────────────────────────────────────────┘
-                               │
-            ┌──────────────────┼──────────────────┐
-            ▼                  ▼                  ▼
-   ┌─────────────────┐ ┌──────────────┐ ┌──────────────────┐
-   │  Spring Boot    │ │   FastAPI    │ │  Angular dist    │
-   │  :8080          │ │   :8000      │ │  (statika)       │
-   │                 │ │              │ │                  │
-   │  REST API       │ │  /predict-   │ │  lazy modules    │
-   │  WebSocket      │ │   category   │ │  SSR opcija      │
-   │  Scheduler      │ │  /chatbot    │ │                  │
-   └────────┬────────┘ └──────┬───────┘ └──────────────────┘
-            │                 │
-            ▼                 ▼
-   ┌─────────────────┐  ┌──────────────────────────────┐
-   │  MySQL 8.0      │  │  OpenAI API + Chroma (lokal) │
-   │  :3306          │  │  (chatbot only)              │
-   └─────────────────┘  └──────────────────────────────┘
++---------------------------------------------------------------------+
+|                       Client (Browser / PWA)                        |
++------------------------------+--------------------------------------+
+                               | HTTPS :443
+                               v
++---------------------------------------------------------------------+
+|                            Nginx                                    |
+|                                                                     |
+|  /                     -> Angular SPA (static from dist/)           |
+|  /api/predict-category,                                             |
+|  /api/chatbot          -> ml-service:8000                           |
+|  /sitemap.xml          -> backend:8080                              |
+|  /api/**               -> backend:8080                              |
+|  /ws                   -> backend:8080 (WebSocket upgrade)          |
++---------------------------------------------------------------------+
+                               |
+            +------------------+------------------+
+            v                  v                  v
+   +-----------------+ +--------------+ +------------------+
+   |  Spring Boot    | |   FastAPI    | |  Angular dist    |
+   |  :8080          | |   :8000      | |  (static)        |
+   |                 | |              | |                  |
+   |  REST API       | |  /predict-   | |  lazy modules    |
+   |  WebSocket      | |   category   | |  optional SSR    |
+   |  Scheduler      | |  /chatbot    | |                  |
+   +--------+--------+ +------+-------+ +------------------+
+            |                 |
+            v                 v
+   +-----------------+  +------------------------------+
+   |  MySQL 8.0      |  |  OpenAI API + Chroma (local) |
+   |  :3306          |  |  (chatbot only)              |
+   +-----------------+  +------------------------------+
 ```
 
-## Eksterni servisi
+## External services
 
-| Servis | Svrha |
+| Service | Purpose |
 |---|---|
-| **Cloudinary** | Skladištenje slika oglasa, avatara, chat attachments |
-| **Gmail SMTP** | Svi transakcioni HTML email-ovi |
-| **OpenAI** | Embeddings (`text-embedding-3-small`) + LLM (`gpt-4o-mini`) za chatbot |
-| **Sentry** | Backend + frontend error tracking |
-| **Google Analytics 4** | Učitava se tek nakon cookie consent-a |
+| **Cloudinary** | Storage for ad images, avatars and chat attachments |
+| **Gmail SMTP** | All transactional HTML emails |
+| **OpenAI** | Embeddings (`text-embedding-3-small`) and LLM (`gpt-4o-mini`) for the chatbot |
+| **Sentry** | Backend and frontend error tracking |
+| **Google Analytics 4** | Loaded only after cookie consent |
 | **Google / Facebook / Apple** | OAuth providers |
 
-## Request flow: kreiranje oglasa sa AI preporukom
+## Request flow: creating an ad with AI suggestion
 
 ```
-┌─ Korisnik kuca naslov u Step 1 wizard-a
-│
-├─ Angular: debounce(800ms) + switchMap + takeUntil(destroy$)
-│           GET /api/categories/suggest?title=karcher
-│
-├─ Spring Boot CategoryServiceImpl.suggestCategory()
-│           RestClient.post("http://ml-service:8000/api/predict-category")
-│                     .body({ title: "karcher" })
-│
-├─ FastAPI main.py /api/predict-category
-│           clean_text → TF-IDF.transform → model.forward → argmax
-│           label_encoder.inverse_transform([47]) → 1322
-│           → { predicted_category_id: 1322 }
-│
-├─ Spring Boot: vraća 1322 → Angular
-│
-└─ Angular: applySuggestedCategory(1322) → vizuelno označava kategoriju u stablu
++ User types a title in Step 1 of the wizard
+|
++- Angular: debounce(800 ms) + switchMap + takeUntil(destroy$)
+|           GET /api/categories/suggest?title=karcher
+|
++- Spring Boot CategoryServiceImpl.suggestCategory()
+|           RestClient.post("http://ml-service:8000/api/predict-category")
+|                     .body({ title: "karcher" })
+|
++- FastAPI main.py /api/predict-category
+|           clean_text -> TF-IDF.transform -> model.forward -> argmax
+|           label_encoder.inverse_transform([47]) -> 1322
+|           -> { predicted_category_id: 1322 }
+|
++- Spring Boot: returns 1322 to Angular
+|
++- Angular: applySuggestedCategory(1322) -> visually marks the category in the tree
 ```
 
-## Request flow: prihvatanje ugovora (sa side-effect-ima)
+## Request flow: accepting a contract (with side effects)
 
 ```
 PATCH /api/contracts/{id}/status  { status: ACCEPTED }
-   │
-   ▼
+   |
+   v
 RentalContractServiceImpl.changeStatus()
-   ├─ menja status u DB
-   ├─ kreira SYSTEM poruku u conversation
-   │   → ChatWsController šalje preko WS (STOMP /queue/messages)
-   ├─ kreira Notification za drugog korisnika
-   │   → WS push (STOMP /queue/notifications)
-   │   → Push notification (Web Push API) ako ima PushSubscription
-   └─ šalje HtmlEmail (HtmlEmailServiceImpl.sendContractAccepted)
-       → try-catch, log.warn ako padne (ne blokira flow)
+   +- updates status in the database
+   +- creates a SYSTEM message inside the conversation
+   |   -> ChatWsController pushes over WS (STOMP /queue/messages)
+   +- creates a Notification for the counterparty
+   |   -> WS push (STOMP /queue/notifications)
+   |   -> Push notification (Web Push API) if a PushSubscription exists
+   +- sends an HTML email (HtmlEmailServiceImpl.sendContractAccepted)
+       -> wrapped in try/catch, log.warn on failure (does not block the flow)
 ```
 
-## Scheduler-i
+## Schedulers
 
-Implementirani sa Spring `@Scheduled`:
+Implemented with Spring `@Scheduled`:
 
-| Job | Cron | Sloj | Šta radi |
+| Job | Cron | Layer | Purpose |
 |---|---|---|---|
-| `expirePromotions()` | svakih 1h | `PromotionServiceImpl` | Resetuje `promotionType/Rank` na isteklim |
-| `expireAds()` | `0 0 3 * * *` | `PromotionServiceImpl` | `adStatus=ARCHIVED` za istekle oglase |
-| `sendExpiryReminders()` | `0 0 10 * * *` | `PromotionServiceImpl` | Email za oglase koji ističu za 2–3 dana |
-| Contract transitions | konfigurisano | `RentalContractScheduler` | ACCEPTED → ACTIVE → FINISHED |
+| `expirePromotions()` | every 1 h | `PromotionServiceImpl` | Reset `promotionType` and `promotionRank` on expired promotions |
+| `expireAds()` | `0 0 3 * * *` | `PromotionServiceImpl` | Set `adStatus=ARCHIVED` for expired ads |
+| `sendExpiryReminders()` | `0 0 10 * * *` | `PromotionServiceImpl` | Email ads that expire in 2-3 days |
+| Contract transitions | configured | `RentalContractScheduler` | ACCEPTED -> ACTIVE -> FINISHED |
 
-## Layout slojeva (backend)
+## Backend layering
 
 ```
-Controller   ──▶  Service (interface + impl)  ──▶  Repository  ──▶  Entity / MySQL
-   ▲                  │
-   │                  ├──▶  HtmlEmailService           (transakcioni email-ovi)
-   │                  ├──▶  CloudinaryService          (upload slika)
-   │                  ├──▶  RestClient                 (poziv ML servisa)
-   │                  └──▶  NotificationPersistenceService (Notification + push)
-   │
-DTO (mapper.entity↔DTO)
+Controller   -->  Service (interface + impl)  -->  Repository  -->  Entity / MySQL
+   ^                  |
+   |                  +--> HtmlEmailService             (transactional emails)
+   |                  +--> CloudinaryService            (image upload)
+   |                  +--> RestClient                   (ML service call)
+   |                  +--> NotificationPersistenceService (Notification + push)
+   |
+DTO (mapper: entity <-> DTO)
 ```
 
-## Layout (frontend)
+## Frontend layout
 
 ```
 core/
-  config/        — endpoint konstante, RxStomp konfiguracija
-  layout/        — Header, Sidebar, Navbar, Footer
-  services/      — NotificationService (globalni unread badge)
+  config/        -- endpoint constants, RxStomp configuration
+  layout/        -- Header, Sidebar, Navbar, Footer
+  services/      -- NotificationService (global unread badge)
 
-shared/          — modeli, Toast, SkeletonCard, pipes, CookieConsentService
+shared/          -- models, Toast, SkeletonCard, pipes, CookieConsentService
 
 features/
-  └── lazy-loaded moduli (auth, ads, chat, user, review, notifications,
-                          verification, support, legal, admin)
+  +-- lazy-loaded modules (auth, ads, chat, user, review, notifications,
+                           verification, support, legal, admin)
 ```
 
 ## Cross-cutting concerns
 
-- **CORS** — `WebConfig` u backendu, dozvoljava frontend origin
-- **CSRF** — disabled (stateless JWT cookies)
-- **Sessions** — `STATELESS`
-- **Logging** — `@Slf4j` u service impl klasama
-- **Tracing** — Sentry traces (`sentry.traces-sample-rate=0.1` u produkciji)
+- **CORS** — `WebConfig` on the backend allows the frontend origin.
+- **CSRF** — disabled (stateless JWT cookies).
+- **Sessions** — `STATELESS`.
+- **Logging** — `@Slf4j` in service implementation classes.
+- **Tracing** — Sentry traces (`sentry.traces-sample-rate=0.1` in production).

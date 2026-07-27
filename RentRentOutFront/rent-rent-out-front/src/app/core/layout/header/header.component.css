@@ -192,7 +192,7 @@
   .user-actions .auth-button,
   .user-actions .btn-post-ad,
   .user-actions .btn-profile { padding: 10px 20px; font-size: 14px; }
-  .logo .logo-img { height: 120px}
+  .logo .logo-img { height: 100px; }
 }
 
 @media (max-width: 1200px) {
@@ -218,6 +218,29 @@
   .logo .logo-img { width: auto; height: 78px; margin: 0; }
   .user-actions { display: none; }
   .search-bar { height: 42px; }
+
+  /* Show mobile action bar (menu + saved + lang) so the drawer can be opened */
+  .mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: -6px;
+  }
+  .mobile-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #444;
+    transition: background 0.15s, color 0.15s;
+  }
+  .mobile-icon-btn .material-icons { font-size: 24px; }
+  .mobile-icon-btn:hover { background: #f5ecff; color: #813181; }
 }
 
 /* ═══════════════════════════════════

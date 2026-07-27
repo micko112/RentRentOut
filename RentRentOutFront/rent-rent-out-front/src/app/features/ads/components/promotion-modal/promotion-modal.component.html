@@ -31,7 +31,7 @@
         (click)="select(pkg.type)">
 
         <div class="pkg-header">
-          <span class="pkg-badge" [ngClass]="'badge-' + pkg.type.toLowerCase()">{{ pkg.displayName }}</span>
+          <span class="pkg-badge" [ngClass]="'badge-' + pkg.type.toLowerCase()">{{ 'enums.promotionType.' + pkg.type | translate }}</span>
           <span class="pkg-price">{{ pkg.priceRsd | number:'1.0-0' }} RSD</span>
         </div>
         <p class="pkg-desc">{{ pkg.description }}</p>

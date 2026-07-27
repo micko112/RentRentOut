@@ -6,11 +6,12 @@ import {AdService} from '../../../ads/services/ad.service';
 import {AdCardComponent} from '../../../ads/components/ad-card/ad-card.component';
 import {ToastService} from '../../../../shared/services/toast.service';
 import {Subject, takeUntil} from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-saved-ads',
   standalone: true,
-  imports: [CommonModule, RouterLink, AdCardComponent],
+  imports: [CommonModule, RouterLink, AdCardComponent, TranslateModule],
   templateUrl: './saved-ads.component.html',
   styleUrl: './saved-ads.component.css'
 })

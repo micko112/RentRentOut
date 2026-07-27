@@ -3,11 +3,13 @@ import {CommonModule} from "@angular/common";
 import {Category} from '../../../../../shared/models/category.model';
 import {CategoryService} from '../../../services/category.service';
 import {Subject, takeUntil} from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-categories-sidebar',
     imports: [
-      CommonModule
+      CommonModule,
+      TranslateModule
     ],
   standalone: true,
   templateUrl: './categories-sidebar.component.html',

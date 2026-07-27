@@ -19,6 +19,7 @@ import org.landm.service.NotificationPersistenceService;
 import org.landm.service.ReviewService;
 import org.landm.util.HtmlSanitizer;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,14 +37,21 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final RentalContractRepository rentalContractRepository;
     private final NotificationPersistenceService notifPersistenceService;
+    private final MessageSource messageSource;
 
     public ReviewServiceImpl(ReviewMapper reviewMapper, UserRepository userRepository, ReviewRepository reviewRepository,
-                             RentalContractRepository rentalContractRepository, NotificationPersistenceService notifPersistenceService) {
+                             RentalContractRepository rentalContractRepository, NotificationPersistenceService notifPersistenceService,
+                             MessageSource messageSource) {
         this.reviewMapper = reviewMapper;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.rentalContractRepository = rentalContractRepository;
         this.notifPersistenceService = notifPersistenceService;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -75,19 +83,19 @@ public class ReviewServiceImpl implements ReviewService {
 
         User reviewer = userRepository.findById(reviewerId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        RentalContract rc = rentalContractRepository.findById(dto.getContractId()).orElseThrow(() -> new IllegalArgumentException("Contract not found"));
+        RentalContract rc = rentalContractRepository.findById(dto.getContractId()).orElseThrow(() -> new IllegalArgumentException(msg("error.contract.not_found")));
 
         if(reviewRepository.existsByContractIdAndReviewerId(rc.getId(), reviewerId)){
-            throw new IllegalStateException("Već ste ostavili ocenu za ovaj ugovor.");
+            throw new IllegalStateException(msg("error.review.duplicate"));
         }
 
         if (rc.getContractStatus() != ContractStatus.FINISHED
                 && rc.getContractStatus() != ContractStatus.CANCELLED_AFTER_ACCEPT) {
-            throw new IllegalStateException("Ugovor nije završen ili otkazan nakon prihvatanja.");
+            throw new IllegalStateException(msg("error.review.contract_not_finished"));
         }
 
         if (rc.getEndDate().isBefore(LocalDate.now().minusDays(30))) {
-            throw new IllegalStateException("Rok za ocenjivanje (30 dana) je istekao.");
+            throw new IllegalStateException(msg("error.review.deadline_expired"));
         }
 
         User reviewee;
@@ -95,10 +103,10 @@ public class ReviewServiceImpl implements ReviewService {
             reviewee = rc.getAd().getOwner();
         }else if(rc.getAd().getOwner().getId().equals(reviewerId)){
             reviewee = rc.getLessee();
-        }else throw new AccessDeniedException("Niste učesnik u ovom ugovoru.");
+        }else throw new AccessDeniedException(msg("error.review.not_participant"));
 
         if(reviewerId.equals(reviewee.getId())){
-            throw new IllegalArgumentException("Ne možete sami sebi ostaviti ocenu.");
+            throw new IllegalArgumentException(msg("error.review.cannot_review_self"));
         }
 
         Review review = new Review(
@@ -121,7 +129,7 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             reviewRepository.save(review);
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            throw new IllegalStateException("Već ste ostavili ocenu za ovaj ugovor.");
+            throw new IllegalStateException(msg("error.review.duplicate"));
         }
         userRepository.save(reviewee);
         String reviewerName = reviewer.getFirstname() + " " + reviewer.getLastname();
@@ -138,23 +146,23 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewEligibilityDto checkEligibility(Long contractId, Long reviewerId) {
-        RentalContract rc = rentalContractRepository.findById(contractId).orElseThrow(() -> new IllegalArgumentException("Contract not found"));
+        RentalContract rc = rentalContractRepository.findById(contractId).orElseThrow(() -> new IllegalArgumentException(msg("error.contract.not_found")));
 
         boolean isParty = rc.getLessee().getId().equals(reviewerId)
                 || rc.getAd().getOwner().getId().equals(reviewerId);
         if (!isParty) {
-            return new ReviewEligibilityDto(false, "Niste učesnik u ovom ugovoru.");
+            return new ReviewEligibilityDto(false, msg("error.review.not_participant"));
         }
 
         if (rc.getContractStatus() != ContractStatus.FINISHED
                 && rc.getContractStatus() != ContractStatus.CANCELLED_AFTER_ACCEPT) {
-            return new ReviewEligibilityDto(false, "Ne može se utvrditi da je do iznajmljivanja došlo.");
+            return new ReviewEligibilityDto(false, msg("error.review.rental_not_confirmed"));
         }
         if (rc.getEndDate().isBefore(LocalDate.now().minusDays(30))) {
-            return new ReviewEligibilityDto(false, "Ovaj dogovor je završen pre više od 30 dana.");
+            return new ReviewEligibilityDto(false, msg("error.review.finished_over_30_days"));
         }
         if (reviewRepository.existsByContractIdAndReviewerId(contractId, reviewerId)) {
-            return new ReviewEligibilityDto(false, "Već ste ocenili korisnika za ovu saradnju.");
+            return new ReviewEligibilityDto(false, msg("error.review.already_reviewed_user"));
         }
         return new ReviewEligibilityDto(true, "");
     }
