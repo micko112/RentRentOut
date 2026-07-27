@@ -21,9 +21,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.landm.service.HtmlEmailService;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +52,9 @@ class PromotionServiceImplTest {
     @Mock
     private HtmlEmailService htmlEmailService;
 
+    @Mock
+    private MessageSource messageSource;
+
     @InjectMocks
     private PromotionServiceImpl promotionService;
 
@@ -57,6 +63,14 @@ class PromotionServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        ResourceBundleMessageSource realMessages = new ResourceBundleMessageSource();
+        realMessages.setBasename("i18n/messages");
+        realMessages.setDefaultEncoding("UTF-8");
+        realMessages.setDefaultLocale(new Locale("sr"));
+        lenient().when(messageSource.getMessage(anyString(), any(), any(Locale.class)))
+                .thenAnswer(inv -> realMessages.getMessage(
+                        inv.getArgument(0), inv.getArgument(1), new Locale("sr")));
+
         Role role = new Role("ROLE_USER");
 
         owner = new User();
