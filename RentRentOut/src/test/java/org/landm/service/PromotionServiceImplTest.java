@@ -22,7 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.landm.service.HtmlEmailService;
 
 import java.math.BigDecimal;
@@ -63,10 +63,11 @@ class PromotionServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        ResourceBundleMessageSource realMessages = new ResourceBundleMessageSource();
-        realMessages.setBasename("i18n/messages");
+        ReloadableResourceBundleMessageSource realMessages = new ReloadableResourceBundleMessageSource();
+        realMessages.setBasename("classpath:i18n/messages");
         realMessages.setDefaultEncoding("UTF-8");
         realMessages.setDefaultLocale(new Locale("sr"));
+        realMessages.setFallbackToSystemLocale(false);
         lenient().when(messageSource.getMessage(anyString(), any(), any(Locale.class)))
                 .thenAnswer(inv -> realMessages.getMessage(
                         inv.getArgument(0), inv.getArgument(1), new Locale("sr")));

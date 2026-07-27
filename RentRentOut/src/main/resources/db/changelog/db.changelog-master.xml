@@ -62,6 +62,8 @@
     <include file="/db/changelog/db.changelog-39-add-address-to-user.xml"/>
     <include file="/db/changelog/db.changelog-40-create-ad-template.xml"/>
     <include file="/db/changelog/db.changelog-41-new-main-categories.xml"/>
+    <include file="/db/changelog/db.changelog-42-add-category-name-en.xml"/>
+    <include file="/db/changelog/db.changelog-43-populate-category-name-en.xml"/>
 
     <!-- Onda korisnike (kojima treba lokacija) -->
     <include file="/db/changelog/db.changelog-seed-user.xml"/>

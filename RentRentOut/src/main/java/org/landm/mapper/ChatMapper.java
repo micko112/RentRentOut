@@ -10,6 +10,8 @@ import org.landm.entity.RentalContract;
 import org.landm.entity.User;
 import org.landm.repository.MessageRepository;
 import org.landm.repository.RentalContractRepository;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,12 +23,19 @@ public class ChatMapper {
     private final UserMapper userMapper;
     private final MessageRepository messageRepository;
     private final RentalContractRepository rentalContractRepository;
+    private final MessageSource messageSource;
 
     public ChatMapper(UserMapper userMapper, MessageRepository messageRepository,
-                      RentalContractRepository rentalContractRepository) {
+                      RentalContractRepository rentalContractRepository,
+                      MessageSource messageSource) {
         this.userMapper = userMapper;
         this.messageRepository = messageRepository;
         this.rentalContractRepository = rentalContractRepository;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
     }
 
     public MessageDto toMessageDto(Message m){
@@ -88,9 +97,9 @@ public class ChatMapper {
     private String previewFor(Message m) {
         if (m == null) return "";
         switch (m.getMessageType()) {
-            case IMAGE:    return "📷 Slika";
-            case LOCATION: return "📍 Lokacija";
-            case CONTRACT_REQUEST: return "Zahtev za iznajmljivanje";
+            case IMAGE:    return msg("chat.preview.image");
+            case LOCATION: return msg("chat.preview.location");
+            case CONTRACT_REQUEST: return msg("chat.preview.contract_request");
             default:       return m.getContent() != null ? m.getContent() : "";
         }
     }

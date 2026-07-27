@@ -6,6 +6,8 @@ import org.landm.repository.UserRepository;
 import org.landm.service.ChatbotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ public class ChatbotServiceImpl implements ChatbotService {
             .version(HttpClient.Version.HTTP_1_1)
             .build();
     private final UserRepository userRepository;
+    private final MessageSource messageSource;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -32,8 +35,13 @@ public class ChatbotServiceImpl implements ChatbotService {
     @Value("${ai.service.url}")
     private String aiServiceUrl;
 
-    public ChatbotServiceImpl(UserRepository userRepository) {
+    public ChatbotServiceImpl(UserRepository userRepository, MessageSource messageSource) {
         this.userRepository = userRepository;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -56,10 +64,10 @@ public class ChatbotServiceImpl implements ChatbotService {
             log.info("FastAPI status: {}, body: {}", response.statusCode(), response.body());
             Map<?, ?> responseMap = objectMapper.readValue(response.body(), Map.class);
             Object reply = responseMap.get("reply");
-            return reply != null ? reply.toString() : "Izvini, trenutno ne mogu da odgovorim.";
+            return reply != null ? reply.toString() : msg("chatbot.fallback.short");
         } catch (Exception e) {
             log.error("Chatbot ML servis greška: {}", e.getMessage(), e);
-            return "Izvini, trenutno ne mogu da odgovorim. Pokušaj ponovo ili piši na izdajemiznajmljujem.rs@gmail.com";
+            return msg("chatbot.fallback.long");
         }
     }
 

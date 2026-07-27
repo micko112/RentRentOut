@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {ReviewService} from '../../services/review.service';
 import {ToastService} from '../../../../shared/services/toast.service';
 
@@ -8,7 +9,7 @@ import {ToastService} from '../../../../shared/services/toast.service';
 @Component({
   selector: 'app-review-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './review-form.component.html',
   styleUrls: ['./review-form.component.css']
 })
@@ -27,13 +28,14 @@ export class ReviewFormComponent {
 
   constructor(
     private reviewService: ReviewService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translate: TranslateService
   ) {}
 
   submitReview(): void {
     if (this.isSubmitting) return;
     if (!this.reviewData.paymentOk || !this.reviewData.communicationOk || !this.reviewData.agreementOk) {
-      this.toastService.showError('Morate odgovoriti na sva tri pitanja!');
+      this.toastService.showError(this.translate.instant('review.form.error_answer_all'));
       return;
     }
 
@@ -49,12 +51,12 @@ export class ReviewFormComponent {
     this.reviewService.submitReview(payload).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.toastService.showSuccess('Ocena je uspešno sačuvana!');
+        this.toastService.showSuccess(this.translate.instant('review.form.saved'));
         this.reviewSaved.emit();
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.toastService.showError(err?.error || 'Greška pri čuvanju ocene.');
+        this.toastService.showError(err?.error || this.translate.instant('review.form.error_save'));
       }
     });
   }

@@ -41,7 +41,13 @@ export class LanguageSwitcherComponent implements OnInit {
   choose(lang: AppLang): void {
     this.open = false;
     if (lang !== this.current) {
-      this.langService.setLang(lang);
+      this.langService.setLang(lang).then(() => {
+        // Full reload so all server-rendered content (categories, DTOs
+        // that depend on Accept-Language) refetches with the new locale.
+        if (typeof window !== 'undefined') {
+          window.location.reload();
+        }
+      });
     }
   }
 

@@ -16,7 +16,7 @@ import {RentalCalendarComponent} from '../../../ads/components/rental-calendar/r
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {LocationPickerModalComponent, SelectedLocation} from '../../components/location-picker-modal/location-picker-modal.component';
 import {ToastService} from '../../../../shared/services/toast.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-inbox',
@@ -73,8 +73,25 @@ export class InboxComponent implements OnInit, AfterViewChecked, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private toast: ToastService
+    private toast: ToastService,
+    private translate: TranslateService
   ) {}
+
+  renderSystemMessage(content: string | null | undefined): string {
+    if (!content) return '';
+    const trimmed = content.trim();
+    if (trimmed.startsWith('{') && trimmed.includes('"i18n"')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (parsed && typeof parsed.i18n === 'string') {
+          return this.translate.instant(parsed.i18n, parsed.params ?? {});
+        }
+      } catch {
+        // fall through — legacy plain-text SR content
+      }
+    }
+    return content;
+  }
 
   ngOnInit(): void {
 

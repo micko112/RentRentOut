@@ -100,7 +100,7 @@ public class ChatServiceImpl implements ChatService {
         User sender = userRepository.findById(senderId).orElseThrow(() -> new UserNotFoundException("User not found"));
         User receiver = userRepository.findById(request.getReceiverId()).orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        Ad ad = adRepository.findById(request.getAdId()).orElseThrow(() -> new IllegalArgumentException("Ad not found"));
+        Ad ad = adRepository.findById(request.getAdId()).orElseThrow(() -> new IllegalArgumentException(msg("error.ad.not_found")));
         if (senderId.equals(request.getReceiverId())) {
             throw new IllegalArgumentException(msg("error.chat.cannot_message_self"));
         }
@@ -127,14 +127,14 @@ public class ChatServiceImpl implements ChatService {
                     : sanitizedContent;
         } else if (type == MessageType.IMAGE) {
             message.setImageUrl(request.getImageUrl());
-            pushPreview = "📷 Poslata je slika";
+            pushPreview = msg("chat.push.image_sent");
         } else {
             message.setLocationLat(request.getLocationLat());
             message.setLocationLng(request.getLocationLng());
             if (request.getLocationLabel() != null && !request.getLocationLabel().isBlank()) {
                 message.setLocationLabel(HtmlSanitizer.sanitize(request.getLocationLabel()));
             }
-            pushPreview = "📍 Poslata je lokacija";
+            pushPreview = msg("chat.push.location_sent");
         }
 
         messageRepository.save(message);
@@ -144,7 +144,7 @@ public class ChatServiceImpl implements ChatService {
 
         notificationService.sendPushNotification(
             receiver.getId(),
-            "Nova poruka od " + sender.getFirstname(),
+            msg("chat.push.new_message_from", sender.getFirstname()),
             pushPreview
         );
 
@@ -204,15 +204,15 @@ public class ChatServiceImpl implements ChatService {
             conv = conversationRepository.save(conv);
         }
 
-        Message msg = new Message(conv, lessee, "Poslat je zahtev za iznajmljivanje.");
-        msg.setMessageType(MessageType.CONTRACT_REQUEST);
-        msg.setRelatedContractId(contract.getId());
-        messageRepository.save(msg);
+        Message message = new Message(conv, lessee, msg("chat.system.contract_request_sent"));
+        message.setMessageType(MessageType.CONTRACT_REQUEST);
+        message.setRelatedContractId(contract.getId());
+        messageRepository.save(message);
 
         conv.setUpdatedAt(LocalDateTime.now());
         conversationRepository.save(conv);
 
-        MessageDto dto = chatMapper.toMessageDto(msg);
+        MessageDto dto = chatMapper.toMessageDto(message);
         dto.setContractAdTitle(ad.getTitle());
         dto.setContractStartDate(contract.getStartDate().toString());
         dto.setContractEndDate(contract.getEndDate().toString());
@@ -234,7 +234,7 @@ public class ChatServiceImpl implements ChatService {
     public Page<MessageDto> getMessagesForConversation(Long conversationId, Long myUserId, Pageable pageable) {
 
         Conversation conversation = conversationRepository.findById(conversationId)
-                .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.chat.conversation_not_found")));
 
         if(!conversation.getParticipantOne().getId().equals(myUserId) && !conversation.getParticipantTwo().getId().equals(myUserId)){
             throw new AccessDeniedException(msg("error.chat.no_conversation_access"));

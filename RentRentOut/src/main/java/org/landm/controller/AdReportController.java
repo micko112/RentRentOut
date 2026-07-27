@@ -6,6 +6,8 @@ import org.landm.entity.User;
 import org.landm.repository.AdRepository;
 import org.landm.repository.AdReportRepository;
 import org.landm.repository.UserRepository;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,13 +22,20 @@ public class AdReportController {
     private final AdRepository adRepository;
     private final AdReportRepository adReportRepository;
     private final UserRepository userRepository;
+    private final MessageSource messageSource;
 
     public AdReportController(AdRepository adRepository,
                                AdReportRepository adReportRepository,
-                               UserRepository userRepository) {
+                               UserRepository userRepository,
+                               MessageSource messageSource) {
         this.adRepository = adRepository;
         this.adReportRepository = adReportRepository;
         this.userRepository = userRepository;
+        this.messageSource = messageSource;
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
     }
 
     @PostMapping("/{adId}/report")
@@ -35,27 +44,27 @@ public class AdReportController {
                                            @RequestBody Map<String, String> body,
                                            @AuthenticationPrincipal Long userId) {
         Ad ad = adRepository.findById(adId)
-                .orElseThrow(() -> new IllegalArgumentException("Oglas nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.ad.not_found")));
 
         if (ad.getOwner().getId().equals(userId)) {
-            return ResponseEntity.badRequest().body("Ne možete prijaviti sopstveni oglas.");
+            return ResponseEntity.badRequest().body(msg("error.report.cannot_report_own"));
         }
 
         if (adReportRepository.existsByAdIdAndReporterId(adId, userId)) {
-            return ResponseEntity.badRequest().body("Već ste prijavili ovaj oglas.");
+            return ResponseEntity.badRequest().body(msg("error.report.already_reported"));
         }
 
         String reason = body.getOrDefault("reason", "").trim();
         if (reason.isBlank()) {
-            return ResponseEntity.badRequest().body("Razlog prijave je obavezan.");
+            return ResponseEntity.badRequest().body(msg("error.report.reason_required"));
         }
         String note = body.getOrDefault("note", "").trim();
         if (note.length() > 500) note = note.substring(0, 500);
 
         User reporter = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Korisnik nije pronađen."));
+                .orElseThrow(() -> new IllegalArgumentException(msg("error.user.not_found")));
 
         adReportRepository.save(new AdReport(ad, reporter, reason, note));
-        return ResponseEntity.ok("Prijava je uspešno poslata. Hvala vam!");
+        return ResponseEntity.ok(msg("success.report.sent"));
     }
 }

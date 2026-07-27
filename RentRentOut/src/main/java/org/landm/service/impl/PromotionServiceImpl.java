@@ -69,11 +69,14 @@ public class PromotionServiceImpl implements PromotionService {
     public List<PromotionPackageDto> getPackages() {
         return List.of(
             new PromotionPackageDto(PromotionType.FEATURED,
-                "Uvek na 1. mestu u rezultatima pretrage i kategoriji. Do 10x više pregleda."),
+                msg("promotion.type.featured.name"),
+                msg("promotion.package.featured.description")),
             new PromotionPackageDto(PromotionType.PRIORITY,
-                "Ispred standardnih oglasa u pretrazi i kategoriji. Do 5x više pregleda."),
+                msg("promotion.type.priority.name"),
+                msg("promotion.package.priority.description")),
             new PromotionPackageDto(PromotionType.HIGHLIGHTED,
-                "Oglas se vizuelno ističe bojom kartice. Obnova oglasa po isteku promocije.")
+                msg("promotion.type.highlighted.name"),
+                msg("promotion.package.highlighted.description"))
         );
     }
 
@@ -102,9 +105,10 @@ public class PromotionServiceImpl implements PromotionService {
         userRepository.save(user);
 
         // Zabeleži transakciju
+        String typeDisplayName = msg("promotion.type." + type.name().toLowerCase() + ".name");
         CreditTransaction tx = new CreditTransaction(
                 user, price.negate(), TransactionType.PROMOTION_PURCHASE,
-                type.getDisplayName() + " — oglas #" + adId, adId);
+                msg("credit.transaction.promotion_purchase", typeDisplayName, adId), adId);
         creditTransactionRepository.save(tx);
 
         // Kreiraj zapis u istoriji promocija

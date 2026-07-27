@@ -2,60 +2,55 @@
 
   <!-- FORMA ZA OCENJIVANJE -->
   <div class="review-form">
-    <h3>Ocenite saradnju</h3>
+    <h3>{{ 'review.form.title' | translate }}</h3>
 
     <div class="question">
-      <label class="question-text">1. Da li je plaćanje / dogovor ispoštovan?</label>
+      <label class="question-text">{{ 'review.form.q_payment' | translate }}</label>
       <div class="radio-group">
-        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="YES"> Da</label>
-        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="COULD_BE_BETTER"> Može
-          bolje</label>
-        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="NO"> Ne</label>
+        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="YES"> {{ 'common.yes' | translate }}</label>
+        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="COULD_BE_BETTER"> {{ 'review.form.could_be_better' | translate }}</label>
+        <label><input type="radio" name="paymentGroup" [(ngModel)]="reviewData.paymentOk" value="NO"> {{ 'common.no' | translate }}</label>
       </div>
     </div>
 
     <div class="question">
-      <label class="question-text">2. Da li je komunikacija protekla dobro?</label>
+      <label class="question-text">{{ 'review.form.q_communication' | translate }}</label>
       <div class="radio-group">
-        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk" value="YES">
-          Da</label>
-        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk"
-                      value="COULD_BE_BETTER"> Može bolje</label>
-        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk" value="NO">
-          Ne</label>
+        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk" value="YES"> {{ 'common.yes' | translate }}</label>
+        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk" value="COULD_BE_BETTER"> {{ 'review.form.could_be_better' | translate }}</label>
+        <label><input type="radio" name="communicationGroup" [(ngModel)]="reviewData.communicationOk" value="NO"> {{ 'common.no' | translate }}</label>
       </div>
     </div>
 
     <div class="question">
-      <label class="question-text">3. Da li je predmet bio kao iz opisa?</label>
+      <label class="question-text">{{ 'review.form.q_agreement' | translate }}</label>
       <div class="radio-group">
-        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="YES"> Da</label>
-        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="COULD_BE_BETTER">
-          Može bolje</label>
-        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="NO"> Ne</label>
+        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="YES"> {{ 'common.yes' | translate }}</label>
+        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="COULD_BE_BETTER"> {{ 'review.form.could_be_better' | translate }}</label>
+        <label><input type="radio" name="agreementGroup" [(ngModel)]="reviewData.agreementOk" value="NO"> {{ 'common.no' | translate }}</label>
       </div>
     </div>
 
     <div class="question">
-      <label>Dodatni komentar (opciono):</label>
-      <textarea [(ngModel)]="reviewData.comment" rows="3" placeholder="Sve preporuke za člana..."></textarea>
+      <label>{{ 'review.form.comment_label' | translate }}</label>
+      <textarea [(ngModel)]="reviewData.comment" rows="3" [placeholder]="'review.form.comment_placeholder' | translate"></textarea>
     </div>
 
   </div>
   <div class="btn-submit-div">
-    <button class="btn-submit" (click)="submitReview()">Pošalji ocenu</button>
+    <button class="btn-submit" (click)="submitReview()">{{ 'review.form.submit' | translate }}</button>
   </div>
 </div>
 
 <div class="review-wrapper" *ngIf="contractId === null">
   <div>
-    <p>Korisnika ne možete oceniti:</p>
+    <p>{{ 'review.form.blocked_intro' | translate }}</p>
     <ul>
-      <li>ako ste se nedavno registrovali, </li>
-      <li>ako se iz Vaše konverzacije KP Porukama ne može utvrditi da je do kupoprodaje došlo,</li>
-      <li>ako ste ga već ocenili pre manje od 7 dana,</li>
-      <li>ako je konverzacija starija od 30 dana,</li>
-      <li>ako ste korisnika već ocenili iz iste konverzacije.</li>
+      <li>{{ 'review.form.blocked_reason_1' | translate }}</li>
+      <li>{{ 'review.form.blocked_reason_2' | translate }}</li>
+      <li>{{ 'review.form.blocked_reason_3' | translate }}</li>
+      <li>{{ 'review.form.blocked_reason_4' | translate }}</li>
+      <li>{{ 'review.form.blocked_reason_5' | translate }}</li>
     </ul>
   </div>
 </div>

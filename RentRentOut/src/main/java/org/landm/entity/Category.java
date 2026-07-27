@@ -14,6 +14,9 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(name = "name_en", length = 150)
+    private String nameEn;
+
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Category parent;
@@ -40,6 +43,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
     }
 
     public void setId(Long id) {

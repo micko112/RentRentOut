@@ -87,7 +87,7 @@
 
               <!-- Sistemska poruka: centrirani sivi box -->
               <div class="system-message-row" *ngIf="msg.messageType === 'SYSTEM'">
-                <div class="system-message-bubble">{{ msg.content }}</div>
+                <div class="system-message-bubble">{{ renderSystemMessage(msg.content) }}</div>
               </div>
 
               <!-- Kartica ugovora -->

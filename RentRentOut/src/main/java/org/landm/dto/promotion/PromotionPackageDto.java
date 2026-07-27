@@ -10,9 +10,9 @@ public class PromotionPackageDto {
     private int durationDays;
     private String description;
 
-    public PromotionPackageDto(PromotionType type, String description) {
+    public PromotionPackageDto(PromotionType type, String displayName, String description) {
         this.type = type;
-        this.displayName = type.getDisplayName();
+        this.displayName = displayName;
         this.priceRsd = type.getPriceRsd();
         this.durationDays = type.getDurationDays();
         this.description = description;

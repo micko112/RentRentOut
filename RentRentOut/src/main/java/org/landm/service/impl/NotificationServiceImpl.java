@@ -15,6 +15,8 @@ import org.landm.service.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final PushSubscriptionRepository pushSubscriptionRepository;
     private final UserRepository userRepository;
     private final PushService pushService;
+    private final MessageSource messageSource;
 
     @Value("${app.frontend.base-url:http://localhost:4200}")
     private String frontendBaseUrl;
@@ -38,18 +41,24 @@ public class NotificationServiceImpl implements NotificationService {
             HtmlEmailService htmlEmailService,
             PushSubscriptionRepository pushSubscriptionRepository,
             UserRepository userRepository,
+            MessageSource messageSource,
             @Value("${app.vapid.public-key}") String vapidPublicKey,
             @Value("${app.vapid.private-key}") String vapidPrivateKey,
             @Value("${app.vapid.subject}") String vapidSubject) throws Exception {
         this.htmlEmailService = htmlEmailService;
         this.pushSubscriptionRepository = pushSubscriptionRepository;
         this.userRepository = userRepository;
+        this.messageSource = messageSource;
 
         if (Security.getProvider("BC") == null) {
             Security.addProvider(new BouncyCastleProvider());
         }
 
         this.pushService = new PushService(vapidPublicKey, vapidPrivateKey, vapidSubject);
+    }
+
+    private String msg(String key, Object... args) {
+        return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
     }
 
     @Override
@@ -62,8 +71,8 @@ public class NotificationServiceImpl implements NotificationService {
         );
         sendPushNotification(
             owner.getId(),
-            "Novi zahtev za iznajmljivanje",
-            lessee.getFirstname() + " želi da iznajmi: " + ad.getTitle()
+            msg("push.contract.request.title"),
+            msg("push.contract.request.body", lessee.getFirstname(), ad.getTitle())
         );
     }
 
@@ -76,8 +85,8 @@ public class NotificationServiceImpl implements NotificationService {
         );
         sendPushNotification(
             lessee.getId(),
-            "Zahtev prihvaćen!",
-            "Vaš zahtev za \"" + ad.getTitle() + "\" je prihvaćen."
+            msg("push.contract.accepted.title"),
+            msg("push.contract.accepted.body", ad.getTitle())
         );
     }
 
@@ -90,8 +99,8 @@ public class NotificationServiceImpl implements NotificationService {
         );
         sendPushNotification(
             lessee.getId(),
-            "Zahtev odbijen",
-            "Vaš zahtev za \"" + ad.getTitle() + "\" je odbijen."
+            msg("push.contract.rejected.title"),
+            msg("push.contract.rejected.body", ad.getTitle())
         );
     }
 

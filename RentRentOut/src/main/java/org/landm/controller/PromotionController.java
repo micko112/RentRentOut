@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import org.landm.dto.promotion.*;
 import org.landm.entity.Enums.PromotionType;
 import org.landm.service.PromotionService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,9 +22,11 @@ import java.util.List;
 public class PromotionController {
 
     private final PromotionService promotionService;
+    private final MessageSource messageSource;
 
-    public PromotionController(PromotionService promotionService) {
+    public PromotionController(PromotionService promotionService, MessageSource messageSource) {
         this.promotionService = promotionService;
+        this.messageSource = messageSource;
     }
 
     /** GET /api/promotions/packages — lista paketa sa cenama (javno) */
@@ -89,8 +93,11 @@ public class PromotionController {
     public ResponseEntity<Void> addCredit(
             @RequestParam Long userId,
             @RequestParam BigDecimal amount,
-            @RequestParam(required = false, defaultValue = "Dopuna kredita") String description) {
-        promotionService.addCredit(userId, amount, description);
+            @RequestParam(required = false) String description) {
+        String finalDescription = (description == null || description.isBlank())
+                ? messageSource.getMessage("credit.transaction.default_topup_description", null, LocaleContextHolder.getLocale())
+                : description;
+        promotionService.addCredit(userId, amount, finalDescription);
         return ResponseEntity.ok().build();
     }
 }

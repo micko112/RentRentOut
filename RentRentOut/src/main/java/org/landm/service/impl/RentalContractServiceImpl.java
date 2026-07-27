@@ -70,7 +70,37 @@ public class RentalContractServiceImpl implements RentalContractService {
     private String msg(String key, Object... args) {
         return messageSource.getMessage(key, args, org.springframework.context.i18n.LocaleContextHolder.getLocale());
     }
-    
+
+    // Encodes a translation key + params as JSON. Frontend chat renderer parses
+    // and translates. Falls back to raw string if a param contains a control char.
+    private String systemMsg(String key, String... kv) {
+        StringBuilder sb = new StringBuilder("{\"i18n\":\"").append(key).append("\",\"params\":{");
+        for (int i = 0; i + 1 < kv.length; i += 2) {
+            if (i > 0) sb.append(',');
+            sb.append('"').append(escapeJson(kv[i])).append("\":\"").append(escapeJson(kv[i + 1])).append('"');
+        }
+        sb.append("}}");
+        return sb.toString();
+    }
+
+    private String escapeJson(String s) {
+        if (s == null) return "";
+        StringBuilder out = new StringBuilder(s.length());
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            switch (c) {
+                case '"' -> out.append("\\\"");
+                case '\\' -> out.append("\\\\");
+                case '\n' -> out.append("\\n");
+                case '\r' -> out.append("\\r");
+                case '\t' -> out.append("\\t");
+                default -> out.append(c);
+            }
+        }
+        return out.toString();
+    }
+
+
     @Override
     @Retryable(
     		retryFor = OptimisticLockException.class,
@@ -175,7 +205,9 @@ public class RentalContractServiceImpl implements RentalContractService {
                 contract.getAd().getId(),
                 lessee.getId(),
                 owner.getId(),
-                counterOfferSender.getFirstname() + " je poslao/la kontra-ponudu za predmet \"" + contract.getAd().getTitle() + "\".",
+                systemMsg("chat.system.counter_offer",
+                    "actor", counterOfferSender.getFirstname(),
+                    "title", contract.getAd().getTitle()),
                 userId
             );
             notifPersistenceService.create(
@@ -315,7 +347,7 @@ public class RentalContractServiceImpl implements RentalContractService {
                 ad.getId(),
                 lessee.getId(),
                 owner.getId(),
-                ownerName + " je prihvatio/la vaš zahtev za iznajmljivanje.",
+                systemMsg("chat.system.accepted", "actor", ownerName),
                 userId
             );
             notificationService.sendContractAcceptedEmail(lessee, ad);
@@ -381,7 +413,7 @@ public class RentalContractServiceImpl implements RentalContractService {
                 contract.getAd().getId(),
                 contractLessee.getId(),
                 lessor.getId(),
-                lessor.getFirstname() + " je odbio/la vaš zahtev za iznajmljivanje.",
+                systemMsg("chat.system.rejected", "actor", lessor.getFirstname()),
                 userId
             );
             notificationService.sendContractRejectedEmail(contractLessee, contract.getAd());
@@ -405,7 +437,7 @@ public class RentalContractServiceImpl implements RentalContractService {
                 contract.getAd().getId(),
                 lessee.getId(),
                 owner.getId(),
-                lessee.getFirstname() + " je povukao/la zahtev za iznajmljivanje.",
+                systemMsg("chat.system.withdrawn", "actor", lessee.getFirstname()),
                 userId
             );
             notifPersistenceService.create(
@@ -435,7 +467,7 @@ public class RentalContractServiceImpl implements RentalContractService {
                 contract.getAd().getId(),
                 lessee.getId(),
                 owner.getId(),
-                cancellerName + " je otkazao/la prihvaćeni ugovor. Obe strane mogu da ostave ocenu.",
+                systemMsg("chat.system.cancelled_accepted", "actor", cancellerName),
                 userId
             );
             notifPersistenceService.create(
@@ -464,7 +496,7 @@ public class RentalContractServiceImpl implements RentalContractService {
                 contract.getAd().getId(),
                 lessee.getId(),
                 owner.getId(),
-                cancellerName + " je raskinuo/la aktivan ugovor. Obe strane mogu da ostave ocenu.",
+                systemMsg("chat.system.cancelled_active", "actor", cancellerName),
                 userId
             );
             notifPersistenceService.create(
