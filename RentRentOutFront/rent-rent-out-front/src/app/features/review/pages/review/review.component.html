@@ -13,8 +13,8 @@
         <div class="details">
           <h1>{{ user?.displayName }}</h1>
           <p class="meta-info">
-            <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ user?.locationDisplay || 'Nepoznata lokacija' }}</span>
-            <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>Član od: {{ user?.createdAt | date:'dd.MM.yyyy' }}.</span>
+            <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ user?.locationDisplay || ('reviewPage.unknown_location' | translate) }}</span>
+            <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>{{ 'reviewPage.member_since' | translate }} {{ user?.createdAt | date:'dd.MM.yyyy' }}.</span>
           </p>
           <p class="user-description" *ngIf="user?.description">{{ user?.description }}</p>
         </div>
@@ -28,7 +28,7 @@
         </div>
         <button class="btn-review"
                 *ngIf="!showForm && !showContractSelect && !isOwnProfile"
-                (click)="onOceniClick()">Ocenite
+                (click)="onOceniClick()">{{ 'reviewPage.rate' | translate }}
         </button>
       </div>
 
@@ -36,13 +36,13 @@
 
     <!-- Select za ugovor — prikazuje se posle klika na "Ocenite" ako ima završenih ugovora -->
     <div class="contract-select-section" *ngIf="showContractSelect">
-      <p class="contract-select-label">Izaberi ugovor za koji ocenjuješ:</p>
+      <p class="contract-select-label">{{ 'reviewPage.select_contract' | translate }}</p>
       <div class="contract-select-list">
         <button class="contract-select-item"
                 *ngFor="let c of finishedContracts"
                 (click)="onContractSelected(c.id)">
           <span class="material-symbols-outlined" style="font-size:16px">description</span>
-          {{ c.adDto?.title ?? 'Oglas' }} &nbsp;·&nbsp; {{ c.startDate | date:'dd.MM.yyyy' }} – {{ c.endDate | date:'dd.MM.yyyy' }}
+          {{ c.adDto?.title ?? ('reviewPage.ad_fallback' | translate) }} &nbsp;·&nbsp; {{ c.startDate | date:'dd.MM.yyyy' }} – {{ c.endDate | date:'dd.MM.yyyy' }}
         </button>
       </div>
     </div>
@@ -61,19 +61,19 @@
   <!-- TABOVI ZA FILTER OCENA -->
   <div class="review-tabs">
     <button [class.active]="activeTab === 'ALL'" (click)="setTab('ALL')">
-      Sve ocene
+      {{ 'reviewPage.tab_all' | translate }}
     </button>
     <button [class.active]="activeTab === 'LESSOR'" (click)="setTab('LESSOR')">
-      Kao izdavač
+      {{ 'reviewPage.tab_lessor' | translate }}
     </button>
     <button [class.active]="activeTab === 'LESSEE'" (click)="setTab('LESSEE')">
-      Kao iznajmljivač
+      {{ 'reviewPage.tab_lessee' | translate }}
     </button>
     <button [class.active]="activeTypeTab === 'POSITIVE'" (click)="setTypeTab(activeTypeTab === 'POSITIVE' ? 'ALL' : 'POSITIVE')" class="type-btn positive-btn">
-      <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_up</span>Pozitivne
+      <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_up</span>{{ 'reviewPage.tab_positive' | translate }}
     </button>
     <button [class.active]="activeTypeTab === 'NEGATIVE'" (click)="setTypeTab(activeTypeTab === 'NEGATIVE' ? 'ALL' : 'NEGATIVE')" class="type-btn negative-btn">
-      <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_down</span>Negativne
+      <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_down</span>{{ 'reviewPage.tab_negative' | translate }}
     </button>
   </div>
 
@@ -83,7 +83,7 @@
       [review]="review">
     </app-review-card>
     <p *ngIf="filteredReviews.length === 0" style="text-align: center; color: #666; margin-top: 20px;">
-      Nema ocena u ovoj kategoriji.
+      {{ 'reviewPage.empty' | translate }}
     </p>
   </div>
 

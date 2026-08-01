@@ -14,6 +14,7 @@ import {ReviewFormComponent} from '../../../review/components/review-form/review
 import {Review} from '../../../../shared/models/review';
 import {AuthService} from '../../../auth/services/auth.service';
 import {ReviewService} from '../../../review/services/review.service';
+import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-profile',
@@ -25,7 +26,8 @@ import {ReviewService} from '../../../review/services/review.service';
     AsyncPipe,
     DatePipe,
     InitialsPipe,
-    ReviewFormComponent
+    ReviewFormComponent,
+    TranslateModule
   ],
   templateUrl: './user-profile.component.html',
   standalone: true,

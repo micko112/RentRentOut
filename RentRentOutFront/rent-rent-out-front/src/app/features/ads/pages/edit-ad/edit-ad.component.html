@@ -35,9 +35,9 @@
       <section class="section-block">
           <div class="section-title">
             <span class="section-num">1</span>
-            Kategorija
+            {{ 'editAd.category' | translate }}
           </div>
-          <p class="section-hint">Izaberite kategoriju koja opisuje vaš predmet</p>
+          <p class="section-hint">{{ 'editAd.category_hint' | translate }}</p>
 
           <div class="category-grid">
             <button type="button"
@@ -53,7 +53,7 @@
 
           <!-- Level-2 chips -->
           <div class="subcategory-section" *ngIf="childCategories.length > 0">
-            <div class="sub-label">Podkategorija <span class="req">*</span></div>
+            <div class="sub-label">{{ 'editAd.subcategory' | translate }} <span class="req">*</span></div>
             <div class="subcategory-chips">
               <button type="button"
                       *ngFor="let child of childCategories"
@@ -67,7 +67,7 @@
 
           <!-- Level-3 chips -->
           <div class="subcategory-section subcategory-section--l3" *ngIf="grandchildCategories.length > 0">
-            <div class="sub-label">Pod-podkategorija <span class="req">*</span></div>
+            <div class="sub-label">{{ 'editAd.sub_subcategory' | translate }} <span class="req">*</span></div>
             <div class="subcategory-chips">
               <button type="button"
                       *ngFor="let gc of grandchildCategories"
@@ -80,7 +80,7 @@
           </div>
 
           <small class="field-error" *ngIf="form.get('categoryId')?.touched && !form.get('categoryId')?.value">
-            Izaberite kategoriju pre nastavka.
+            {{ 'editAd.err_category' | translate }}
           </small>
         </section>
 
@@ -90,25 +90,25 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">1</span>
-            Naslov oglasa
+            {{ 'editAd.title_section' | translate }}
           </div>
 
           <div class="form-field">
-            <label class="field-label">Naslov <span class="req">*</span></label>
+            <label class="field-label">{{ 'ads.create.title_label' | translate }} <span class="req">*</span></label>
             <div class="counted-wrap" [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
               <input type="text"
                      formControlName="title"
-                     placeholder="npr. Hilti SDS+ bušilica TE-70, profesionalna"
+                     [placeholder]="'ads.create.title_placeholder' | translate"
                      [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
               <span class="char-count"
                     [class.near]="titleLength > MAX_TITLE * 0.8"
                     [class.over]="titleLength >= MAX_TITLE">{{ titleLength }}/{{ MAX_TITLE }}</span>
             </div>
             <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['minlength']">
-              Naslov mora imati najmanje 5 karaktera.
+              {{ 'ads.create.err_title_min' | translate }}
             </small>
             <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
-              Naslov je obavezan.
+              {{ 'ads.create.err_title_required' | translate }}
             </small>
           </div>
         </section>
@@ -119,9 +119,9 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">2</span>
-            Fotografije
+            {{ 'editAd.photos_section' | translate }}
           </div>
-          <p class="section-hint">Zadržite ili uklonite postojeće slike, i dodajte nove. Ukupno do {{ MAX_IMAGES }} fotografija.</p>
+          <p class="section-hint">{{ 'editAd.photos_hint_prefix' | translate }} {{ MAX_IMAGES }} {{ 'editAd.photos_hint_suffix' | translate }}</p>
 
           <input type="file" id="fileInput" multiple accept="image/*,.heic,.heif" (change)="onFileSelected($event)" hidden>
 
@@ -134,7 +134,7 @@
                  (drop)="onDrop($event)">
             <div class="dz-inner">
               <span class="dz-icon material-icons">{{ isDragging ? 'folder_open' : 'add_photo_alternate' }}</span>
-              <span class="dz-title">{{ isDragging ? 'Ispusti slike ovde' : 'Prevuci slike ili klikni za odabir' }}</span>
+              <span class="dz-title">{{ isDragging ? ('ads.create.drop_here' | translate) : ('ads.create.drop_or_click' | translate) }}</span>
               <span class="dz-sub">PNG · JPG · WEBP · HEIC &nbsp;·&nbsp; max 10MB po slici</span>
               <span class="dz-badge" *ngIf="totalImageCount > 0">{{ totalImageCount }}/{{ MAX_IMAGES }} slika</span>
             </div>
@@ -147,7 +147,7 @@
               <div class="img-inner">
                 <img [src]="url" [alt]="'Postojeća slika ' + (i + 1)" (error)="handleExistingImageError($event)">
                 <div class="cover-badge" *ngIf="i === 0 && previewUrl.length === 0">
-                  <span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> Naslovna
+                  <span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> {{ 'editAd.cover_label' | translate }}
                 </div>
                 <div class="img-overlay">
                   <button type="button" class="img-btn remove-btn"
@@ -168,7 +168,7 @@
                   <span class="heic-name">{{ selectedFiles[i]?.name }}</span>
                 </div>
                 <div class="cover-badge" *ngIf="existingImages.length === 0 && i === 0">
-                  <span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> Naslovna
+                  <span class="material-icons" style="font-size:11px;vertical-align:middle">star</span> {{ 'editAd.cover_label' | translate }}
                 </div>
                 <div class="img-overlay">
                   <button type="button" class="img-btn remove-btn"
@@ -183,13 +183,13 @@
             <label for="fileInput" class="img-cell add-cell" *ngIf="totalImageCount < MAX_IMAGES">
               <div class="add-inner">
                 <span class="add-plus">+</span>
-                <span class="add-lbl">Dodaj još</span>
+                <span class="add-lbl">{{ 'editAd.add_more' | translate }}</span>
               </div>
             </label>
           </div>
 
           <small class="field-error" *ngIf="form.get('images')?.touched && totalImageCount === 0">
-            Morate ostaviti bar jednu sliku.
+            {{ 'editAd.err_min_photo' | translate }}
           </small>
         </section>
 
@@ -199,7 +199,7 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">3</span>
-            Cena
+            {{ 'editAd.price_section' | translate }}
           </div>
 
           <div class="price-preview-card">
@@ -301,7 +301,7 @@
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">4</span>
-            Lokacija i količina
+            {{ 'editAd.location_qty_section' | translate }}
           </div>
 
           <div class="loc-qty-row">
@@ -698,7 +698,7 @@
         <!-- OPIS -->
         <section class="section-block">
           <div class="section-title">
-            Opis oglasa
+            {{ 'editAd.description_section' | translate }}
           </div>
 
           <div class="form-field">

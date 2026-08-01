@@ -13,7 +13,7 @@ import {UpdateAdRequest} from '../../../../shared/models/update-ad-request';
 import {Location} from '../../../../shared/models/location.model';
 import {CityPickerComponent, CityPickerOption} from '../../../../shared/components/city-picker/city-picker.component';
 import {AuthService} from '../../../auth/services/auth.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-ad',
@@ -267,7 +267,8 @@ export class EditAdComponent implements OnInit, OnDestroy {
               private router: Router,
               private toastService: ToastService,
               private cdRef: ChangeDetectorRef,
-              private authService: AuthService) {}
+              private authService: AuthService,
+              private translate: TranslateService) {}
 
   get userCity(): string | null {
     const userLocId = this.authService.currentUserValue?.locationId;
@@ -322,7 +323,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
     this.adId = paramId ? Number(paramId) : NaN;
 
     if (!this.adId || Number.isNaN(this.adId)) {
-      this.toastService.showError('Neispravan ID oglasa.');
+      this.toastService.showError(this.translate.instant('editAd.toast_bad_id'));
       this.router.navigate(['/user/me/ads']);
       return;
     }
@@ -336,12 +337,12 @@ export class EditAdComponent implements OnInit, OnDestroy {
           this.pendingCategoryId = null;
         }
       },
-      error: () => this.toastService.showError('Greška pri učitavanju kategorija.')
+      error: () => this.toastService.showError(this.translate.instant('editAd.toast_cat_load_err'))
     });
 
     this.locationService.getAll().subscribe({
       next: locs => { this.locations = locs; },
-      error: () => this.toastService.showError('Greška pri učitavanju lokacija.')
+      error: () => this.toastService.showError(this.translate.instant('editAd.toast_loc_load_err'))
     });
 
     this.adService.getAdById(this.adId).subscribe({
@@ -406,7 +407,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
         });
       },
       error: () => {
-        this.toastService.showError('Ne mogu da učitam oglas.');
+        this.toastService.showError(this.translate.instant('editAd.toast_load_ad_err'));
         this.router.navigate(['/user/me/ads']);
       }
     });
@@ -554,8 +555,8 @@ export class EditAdComponent implements OnInit, OnDestroy {
       const file = files[i];
       const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
       const isHeic = ext === 'heic' || ext === 'heif';
-      if (!file.type.match(/^image\//i) && !isHeic) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
-      if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
+      if (!file.type.match(/^image\//i) && !isHeic) { this.toastService.showError(this.translate.instant('editAd.toast_not_image', { name: file.name })); continue; }
+      if (file.size > 10 * 1024 * 1024) { this.toastService.showError(this.translate.instant('editAd.toast_too_big', { name: file.name })); continue; }
       this.selectedFiles.push(file);
       this.previewUrl.push(isHeic ? '__heic__' : URL.createObjectURL(file));
       added++;
@@ -746,7 +747,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
     if (this.isSubmitting) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.toastService.showError('Molimo popunite sva polja.');
+      this.toastService.showError(this.translate.instant('editAd.toast_fill_all'));
       return;
     }
     this.isSubmitting = true;
@@ -795,18 +796,18 @@ export class EditAdComponent implements OnInit, OnDestroy {
     const finalizeUpdate = (images: string[]) => {
       if (images.length === 0) {
         this.isSubmitting = false;
-        this.toastService.showError('Morate ostaviti bar jednu sliku.');
+        this.toastService.showError(this.translate.instant('editAd.toast_min_image'));
         return;
       }
       const payload: UpdateAdRequest = { ...basePayload, images };
       this.adService.updateAd(this.adId, payload).subscribe({
         next: (updatedAd) => {
-          this.toastService.showSuccess('Oglas uspešno izmenjen.');
+          this.toastService.showSuccess(this.translate.instant('editAd.toast_updated'));
           this.router.navigate(['/ads', updatedAd.id]);
         },
         error: () => {
           this.isSubmitting = false;
-          this.toastService.showError('Greška pri izmeni oglasa.');
+          this.toastService.showError(this.translate.instant('editAd.toast_update_err'));
         }
       });
     };
@@ -818,7 +819,7 @@ export class EditAdComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.isSubmitting = false;
-          this.toastService.showError('Greška pri upload-u slika.');
+          this.toastService.showError(this.translate.instant('editAd.toast_upload_err'));
         }
       });
     } else {

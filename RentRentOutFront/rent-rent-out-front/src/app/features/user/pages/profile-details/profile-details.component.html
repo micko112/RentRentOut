@@ -12,7 +12,7 @@
           <span class="material-icons">person</span>
         </div>
       </ng-template>
-      <label class="avatar-cam-overlay" for="bannerAvatarInput" title="Promeni sliku">
+      <label class="avatar-cam-overlay" for="bannerAvatarInput" [title]="'profile.avatar_title' | translate">
         <span class="material-icons">photo_camera</span>
       </label>
       <input id="bannerAvatarInput" type="file" accept="image/*,.heic,.heif"
@@ -38,42 +38,42 @@
     <!-- Personal info panel -->
     <div class="panel">
       <div class="panel-head">
-        <h3>Lični podaci</h3>
-        <button class="btn-edit" *ngIf="!isEditing" (click)="startEdit()">Izmeni</button>
+        <h3>{{ 'profile.personal_info' | translate }}</h3>
+        <button class="btn-edit" *ngIf="!isEditing" (click)="startEdit()">{{ 'profile.edit' | translate }}</button>
       </div>
 
       <!-- View mode -->
       <div class="info-list" *ngIf="!isEditing">
         <div class="info-item">
-          <span class="info-label">Ime i prezime</span>
+          <span class="info-label">{{ 'profile.name_and_surname' | translate }}</span>
           <span class="info-value">{{ user.firstname }} {{ user.lastname }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Email adresa</span>
+          <span class="info-label">{{ 'profile.email' | translate }}</span>
           <span class="info-value">{{ user.email }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Telefon</span>
-          <span class="info-value">{{ user.phoneNumber || 'Nije unet' }}</span>
+          <span class="info-label">{{ 'profile.phone' | translate }}</span>
+          <span class="info-value">{{ user.phoneNumber || ('profile.phone_not_set' | translate) }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Opis</span>
-          <span class="info-value">{{ user.description || 'Nema opisa' }}</span>
+          <span class="info-label">{{ 'profile.description' | translate }}</span>
+          <span class="info-value">{{ user.description || ('profile.no_description' | translate) }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Lokacija</span>
-          <span class="info-value">{{ user.locationDisplay || 'Nije uneta' }}</span>
+          <span class="info-label">{{ 'profile.location' | translate }}</span>
+          <span class="info-value">{{ user.locationDisplay || ('profile.location_not_set' | translate) }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Adresa</span>
-          <span class="info-value">{{ user.address || 'Nije uneta' }}</span>
+          <span class="info-label">{{ 'profile.address' | translate }}</span>
+          <span class="info-value">{{ user.address || ('profile.address_not_set' | translate) }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Valuta</span>
+          <span class="info-label">{{ 'profile.currency' | translate }}</span>
           <span class="info-value">{{ user.currency || 'RSD' }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Stanje na računu</span>
+          <span class="info-label">{{ 'profile.balance' | translate }}</span>
           <span class="info-value money">{{ user.credit || 0 | number }} din</span>
         </div>
       </div>
@@ -90,43 +90,43 @@
               <span class="material-icons">person</span>
             </div>
           </ng-template>
-          <label class="btn-avatar-upload" for="avatarInput">Promeni sliku</label>
+          <label class="btn-avatar-upload" for="avatarInput">{{ 'profile.change_avatar' | translate }}</label>
           <input id="avatarInput" type="file" accept="image/*,.heic,.heif" (change)="onAvatarSelected($event)" hidden />
         </div>
 
         <div class="form-grid">
           <div class="form-row">
-            <label>Ime</label>
+            <label>{{ 'profile.firstname' | translate }}</label>
             <input type="text" formControlName="firstname" />
           </div>
           <div class="form-row">
-            <label>Prezime</label>
+            <label>{{ 'profile.lastname' | translate }}</label>
             <input type="text" formControlName="lastname" />
           </div>
           <div class="form-row">
-            <label>Email</label>
+            <label>{{ 'profile.email' | translate }}</label>
             <input type="email" formControlName="email" />
           </div>
           <div class="form-row">
-            <label>Telefon</label>
-            <input type="text" formControlName="phoneNumber" placeholder="+381 6x xxx-xxxx" />
+            <label>{{ 'profile.phone' | translate }}</label>
+            <input type="text" formControlName="phoneNumber" [placeholder]="'profile.phone_placeholder' | translate" />
           </div>
           <div class="form-row form-row--full">
-            <label>Lokacija</label>
+            <label>{{ 'profile.location' | translate }}</label>
             <app-city-picker
               [locations]="locations"
               [initialLocationId]="selectedLocationId"
               [priorityCity]="userCity"
-              placeholder="Izaberite grad"
+              [placeholder]="'profile.city_placeholder' | translate"
               (selectionChange)="onLocationChange($event)">
             </app-city-picker>
           </div>
           <div class="form-row form-row--full">
-            <label>Adresa <span class="optional-hint">(opciono — privatna, vidiš samo ti)</span></label>
-            <input type="text" formControlName="address" placeholder="Npr. Bulevar Kralja Aleksandra 73" maxlength="255" />
+            <label>{{ 'profile.address' | translate }} <span class="optional-hint">{{ 'profile.address_optional' | translate }}</span></label>
+            <input type="text" formControlName="address" [placeholder]="'profile.address_placeholder' | translate" maxlength="255" />
           </div>
           <div class="form-row">
-            <label>Valuta</label>
+            <label>{{ 'profile.currency' | translate }}</label>
             <select formControlName="currency">
               <option value="RSD">RSD</option>
               <option value="EUR">EUR</option>
@@ -135,14 +135,14 @@
         </div>
 
         <div class="form-row">
-          <label>Opis</label>
-          <textarea formControlName="description" rows="3" placeholder="Kratko opisite sebe..."></textarea>
+          <label>{{ 'profile.description' | translate }}</label>
+          <textarea formControlName="description" rows="3" [placeholder]="'profile.desc_placeholder' | translate"></textarea>
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn-cancel" (click)="cancelEdit()">Odustani</button>
+          <button type="button" class="btn-cancel" (click)="cancelEdit()">{{ 'profile.cancel' | translate }}</button>
           <button type="submit" class="btn-save" [disabled]="isUploadingAvatar">
-            {{ isUploadingAvatar ? 'Učitavanje...' : 'Sačuvaj' }}
+            {{ isUploadingAvatar ? ('profile.uploading' | translate) : ('profile.save' | translate) }}
           </button>
         </div>
       </form>
@@ -151,19 +151,19 @@
     <!-- Password panel -->
     <div class="panel">
       <div class="panel-head">
-        <h3>Promena lozinke</h3>
+        <h3>{{ 'profile.password_change' | translate }}</h3>
       </div>
       <form class="edit-form" [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
         <div class="form-row">
-          <label>Stara lozinka</label>
+          <label>{{ 'profile.old_password' | translate }}</label>
           <input type="password" formControlName="oldPassword" />
         </div>
         <div class="form-row">
-          <label>Nova lozinka</label>
+          <label>{{ 'profile.new_password' | translate }}</label>
           <input type="password" formControlName="newPassword" />
         </div>
         <div class="form-actions">
-          <button type="submit" class="btn-save">Promeni lozinku</button>
+          <button type="submit" class="btn-save">{{ 'profile.change_password_btn' | translate }}</button>
         </div>
       </form>
     </div>

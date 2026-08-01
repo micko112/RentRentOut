@@ -1,18 +1,20 @@
 import { Component, ElementRef, ViewChild, inject, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SupportService } from '../services/support.service';
 import { MarkdownPipe } from './markdown.pipe';
 
 @Component({
   selector: 'app-support-widget',
   standalone: true,
-  imports: [CommonModule, FormsModule, MarkdownPipe],
+  imports: [CommonModule, FormsModule, MarkdownPipe, TranslateModule],
   templateUrl: './support-widget.component.html',
   styleUrl: './support-widget.component.css'
 })
 export class SupportWidgetComponent implements AfterViewChecked {
   private supportService = inject(SupportService);
+  private translate = inject(TranslateService);
 
   isOpen = false;
   draft = '';
@@ -65,7 +67,7 @@ export class SupportWidgetComponent implements AfterViewChecked {
         this.shouldScroll = true;
       },
       error: () => {
-        this.supportService.addMessage('bot', 'Izvini, trenutno ne mogu da odgovorim. Pokušaj ponovo ili piši na izdajemiznajmljujem.rs@gmail.com');
+        this.supportService.addMessage('bot', this.translate.instant('support.error_fallback'));
         this.loading = false;
         this.shouldScroll = true;
       }

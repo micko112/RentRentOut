@@ -4,8 +4,8 @@
   <!-- 1. RED: Ime i Datum -->
   <div class="card-top-row">
     <span class="reviewer-row">
-      <a class="reviewer-name" [routerLink]="['/user', review.reviewer.id]">{{ review.reviewer.displayName || 'Korisnik' }}</a>
-      <span *ngIf="review.reviewer.identified" class="badge-identified" title="Ovaj nalog je verifikovan">
+      <a class="reviewer-name" [routerLink]="['/user', review.reviewer.id]">{{ review.reviewer.displayName || ('reviewCard.user_fallback' | translate) }}</a>
+      <span *ngIf="review.reviewer.identified" class="badge-identified" [title]="'reviewCard.verified_tooltip' | translate">
         <span class="material-icons">verified</span>
       </span>
       <span class="reviewer-location" *ngIf="review.reviewer.locationDisplay">
@@ -21,22 +21,22 @@
       <span class="material-symbols-outlined" *ngIf="review.reviewType === 'POSITIVE'">thumb_up</span>
       <span class="material-symbols-outlined" *ngIf="review.reviewType === 'NEGATIVE'">thumb_down</span>
     </div>
-    <h4 class="ad-title">{{ review.adTitle || 'Nepoznat oglas' }}</h4>
+    <h4 class="ad-title">{{ review.adTitle || ('reviewCard.unknown_ad' | translate) }}</h4>
   </div>
 
   <!-- 3. RED: Tri pitanja (Grid) -->
   <div class="qa-grid">
     <div class="qa-item">
-      <span class="question">Opis iz oglasa tačan:</span>
-      <span class="answer">{{ optionMap[review.agreementOk] }}</span>
+      <span class="question">{{ 'reviewCard.q_agreement' | translate }}</span>
+      <span class="answer">{{ optionMap[review.agreementOk] | translate }}</span>
     </div>
     <div class="qa-item">
-      <span class="question">Komunikacija protekla dobro:</span>
-      <span class="answer">{{ optionMap[review.communicationOk] }}</span>
+      <span class="question">{{ 'reviewCard.q_communication' | translate }}</span>
+      <span class="answer">{{ optionMap[review.communicationOk] | translate }}</span>
     </div>
     <div class="qa-item">
-      <span class="question">Ispoštovan dogovor:</span>
-      <span class="answer">{{ optionMap[review.paymentOk] }}</span>
+      <span class="question">{{ 'reviewCard.q_payment' | translate }}</span>
+      <span class="answer">{{ optionMap[review.paymentOk] | translate }}</span>
     </div>
   </div>
 
@@ -45,7 +45,7 @@
     {{ review.comment }}
   </div>
   <div class="comment-box empty" *ngIf="!review.comment">
-    Korisnik nije ostavio komentar.
+    {{ 'reviewCard.no_comment' | translate }}
   </div>
 
 </div>

@@ -10,6 +10,7 @@ import {ToastService} from '../../../../shared/services/toast.service';
 import {LocationService} from '../../../ads/services/location.service';
 import {Location} from '../../../../shared/models/location.model';
 import {CityPickerComponent, CityPickerOption} from '../../../../shared/components/city-picker/city-picker.component';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-details',
@@ -18,7 +19,8 @@ import {CityPickerComponent, CityPickerOption} from '../../../../shared/componen
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    CityPickerComponent
+    CityPickerComponent,
+    TranslateModule
   ],
   templateUrl: './profile-details.component.html',
   styleUrl: './profile-details.component.css'
@@ -52,7 +54,8 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
               private authService: AuthService,
               private fb: FormBuilder,
               private toastService: ToastService,
-              private locationService: LocationService) {
+              private locationService: LocationService,
+              private translate: TranslateService) {
   }
 
   ngOnInit() {
@@ -139,7 +142,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       error: () => {
         this.isUploadingAvatar = false;
         this.bannerAvatarPreview = null;
-        this.toastService.showError('Greška pri otpremanju slike.');
+        this.toastService.showError(this.translate.instant('profile.toast_upload_error'));
       }
     });
   }
@@ -158,7 +161,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
     if (this.isSaving) return;
     if (this.profileForm.invalid) {
       this.profileForm.markAllAsTouched();
-      this.toastService.showError('Molimo popunite sva polja ispravno.');
+      this.toastService.showError(this.translate.instant('profile.toast_form_invalid'));
       return;
     }
 
@@ -173,7 +176,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
         error: () => {
           this.isSaving = false;
           this.isUploadingAvatar = false;
-          this.toastService.showError('Greska pri otpremanju slike.');
+          this.toastService.showError(this.translate.instant('profile.toast_upload_error'));
         }
       });
     } else {
@@ -195,11 +198,11 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
         this.isEditing = false;
         this.avatarPreview = null;
         this.selectedAvatarFile = null;
-        this.toastService.showSuccess('Profil je uspesno azuriran.');
+        this.toastService.showSuccess(this.translate.instant('profile.toast_profile_updated'));
       },
       error: (err) => {
         this.isSaving = false;
-        this.toastService.showError(err?.error || 'Greska pri cuvanju profila.');
+        this.toastService.showError(err?.error || this.translate.instant('profile.toast_save_error'));
       }
     });
   }
@@ -208,7 +211,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
     if (this.isChangingPassword) return;
     if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched();
-      this.toastService.showError('Unesite ispravne podatke za lozinku.');
+      this.toastService.showError(this.translate.instant('profile.toast_password_invalid'));
       return;
     }
 
@@ -216,12 +219,12 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
     this.userService.changePassword(this.passwordForm.value).subscribe({
       next: () => {
         this.isChangingPassword = false;
-        this.toastService.showSuccess('Lozinka je promenjena.');
+        this.toastService.showSuccess(this.translate.instant('profile.toast_password_changed'));
         this.passwordForm.reset();
       },
       error: (err) => {
         this.isChangingPassword = false;
-        this.toastService.showError(err?.error || 'Greska pri promeni lozinke.');
+        this.toastService.showError(err?.error || this.translate.instant('profile.toast_password_error'));
       }
     });
   }

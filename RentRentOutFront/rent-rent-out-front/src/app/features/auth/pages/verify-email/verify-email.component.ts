@@ -1,39 +1,43 @@
-﻿import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute, RouterLink} from '@angular/router';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.css'
 })
 export class VerifyEmailComponent implements OnInit {
   status: 'loading' | 'success' | 'error' = 'loading';
-  message = 'Verifikacija u toku...';
+  message = '';
 
   constructor(private route: ActivatedRoute,
-              private authService: AuthService) {}
+              private authService: AuthService,
+              private translate: TranslateService) {
+    this.message = this.translate.instant('verifyEmail.loading');
+  }
 
   ngOnInit(): void {
     const token = this.route.snapshot.queryParamMap.get('token');
 
     if (!token) {
       this.status = 'error';
-      this.message = 'Nedostaje token za verifikaciju.';
+      this.message = this.translate.instant('verifyEmail.missing_token');
       return;
     }
 
     this.authService.verifyEmail(token).subscribe({
       next: () => {
         this.status = 'success';
-        this.message = 'Email je uspesno verifikovan. Mozete da se prijavite.';
+        this.message = this.translate.instant('verifyEmail.success');
       },
       error: (err) => {
         this.status = 'error';
-        this.message = err?.error || 'Verifikacija nije uspela. Pokusajte ponovo.';
+        this.message = err?.error || this.translate.instant('verifyEmail.error_generic');
       }
     });
   }

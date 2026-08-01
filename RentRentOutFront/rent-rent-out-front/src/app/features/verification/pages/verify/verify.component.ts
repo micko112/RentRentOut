@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { VerificationService, VerificationStatus } from '../../services/verification.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AuthService } from '../../../auth/services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-verify',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './verify.component.html',
   styleUrl: './verify.component.css',
 })
@@ -29,6 +30,7 @@ export class VerifyComponent implements OnInit {
     private verificationService: VerificationService,
     private toast: ToastService,
     private authService: AuthService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -49,13 +51,13 @@ export class VerifyComponent implements OnInit {
     const file = input.files[0];
 
     if (file.size > 10 * 1024 * 1024) {
-      this.toast.showError('Slika je prevelika (maksimum 10MB).');
+      this.toast.showError(this.translate.instant('verify.toast_too_large'));
       return;
     }
     const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
     const isHeic = ext === 'heic' || ext === 'heif';
     if (!['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'].includes(file.type) && !isHeic) {
-      this.toast.showError('Dozvoljeni formati: JPG, PNG, WEBP, HEIC.');
+      this.toast.showError(this.translate.instant('verify.toast_bad_format'));
       return;
     }
 
@@ -87,7 +89,7 @@ export class VerifyComponent implements OnInit {
       next: (s) => {
         this.status = s;
         this.submitting = false;
-        this.toast.showSuccess('Zahtev je uspešno poslat. Čeka pregled administratora.');
+        this.toast.showSuccess(this.translate.instant('verify.toast_submitted'));
         this.docFront = null;
         this.docBack = null;
         this.selfie = null;
@@ -97,7 +99,7 @@ export class VerifyComponent implements OnInit {
       },
       error: (err) => {
         this.submitting = false;
-        const msg = err?.error?.message || 'Greška pri slanju zahteva.';
+        const msg = err?.error?.message || this.translate.instant('verify.toast_submit_error');
         this.toast.showError(msg);
       },
     });

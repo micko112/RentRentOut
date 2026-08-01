@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterLink, RouterModule} from '@angular/router';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {AdPreview} from '../../../../shared/models/adPreview.model';
 import {AdService} from '../../services/ad.service';
 import {AuthService} from '../../../auth/services/auth.service';
@@ -22,7 +22,7 @@ export class AdCardComponent implements OnInit {
   isSavingToggle: boolean = false;
   isLoggedIn: boolean = false;
 
-  constructor(private adService: AdService, private authService: AuthService) {}
+  constructor(private adService: AdService, private authService: AuthService, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.authService.currentUserValue;
@@ -91,29 +91,30 @@ export class AdCardComponent implements OnInit {
     const diffMonths = Math.floor(diffDays / 30);
     const diffYears = Math.floor(diffDays / 365);
 
-    if (diffMinutes < 60) return 'Danas';
+    const t = (k: string, params?: any) => this.translate.instant('time_ago.' + k, params);
+
+    if (diffMinutes < 60) return t('today');
 
     if (diffHours < 24) {
-      if (diffHours === 1) return 'Pre 1 sat';
-      if (diffHours <= 4) return `Pre ${diffHours} sata`;
-      return `Pre ${diffHours} sati`;
+      if (diffHours === 1) return t('hour_1');
+      if (diffHours <= 4) return t('hour_few', { n: diffHours });
+      return t('hour_many', { n: diffHours });
     }
 
     if (diffDays < 30) {
-      if (diffDays === 1) return 'Pre 1 dan';
-      if (diffDays <= 4) return `Pre ${diffDays} dana`;
-      return `Pre ${diffDays} dana`;
+      if (diffDays === 1) return t('day_1');
+      return t('day_many', { n: diffDays });
     }
 
     if (diffMonths < 12) {
-      if (diffMonths === 1) return 'Pre 1 mesec';
-      if (diffMonths <= 4) return `Pre ${diffMonths} meseca`;
-      return `Pre ${diffMonths} meseci`;
+      if (diffMonths === 1) return t('month_1');
+      if (diffMonths <= 4) return t('month_few', { n: diffMonths });
+      return t('month_many', { n: diffMonths });
     }
 
-    if (diffYears === 1) return 'Pre 1 godinu';
-    if (diffYears <= 4) return `Pre ${diffYears} godine`;
-    return `Pre ${diffYears} godina`;
+    if (diffYears === 1) return t('year_1');
+    if (diffYears <= 4) return t('year_few', { n: diffYears });
+    return t('year_many', { n: diffYears });
   }
 
   toggleSave(event: MouseEvent): void {

@@ -9,11 +9,12 @@ import {AdService} from '../../services/ad.service';
 import {Router} from '@angular/router';
 import {CreateRentalContractRequest} from '../../../../shared/models/create-rental-contract-request';
 import {AuthService} from '../../../auth/services/auth.service';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-rental-calendar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   providers: [DatePipe],
   templateUrl: './rental-calendar.component.html',
   styleUrl: './rental-calendar.component.css'
@@ -35,7 +36,7 @@ export class RentalCalendarComponent implements OnChanges, OnDestroy {
   // Calendar state
   displayDate: Date = new Date();
   daysInMonth: CalendarDay[] = [];
-  weekdays: string[] = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
+  weekdays: string[] = [];
 
   startDate: Date | null = null;
   endDate: Date | null = null;
@@ -51,8 +52,24 @@ export class RentalCalendarComponent implements OnChanges, OnDestroy {
     private adService: AdService,
     private router: Router,
     private datePipe: DatePipe,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private translate: TranslateService
+  ) {
+    this.loadWeekdays();
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => this.loadWeekdays());
+  }
+
+  private loadWeekdays(): void {
+    this.weekdays = [
+      this.translate.instant('calendar.weekday_mon'),
+      this.translate.instant('calendar.weekday_tue'),
+      this.translate.instant('calendar.weekday_wed'),
+      this.translate.instant('calendar.weekday_thu'),
+      this.translate.instant('calendar.weekday_fri'),
+      this.translate.instant('calendar.weekday_sat'),
+      this.translate.instant('calendar.weekday_sun'),
+    ];
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['ad'] && this.ad) {
@@ -218,11 +235,16 @@ export class RentalCalendarComponent implements OnChanges, OnDestroy {
   }
 
   private plural(n: number, one: string, few: string, many: string): string {
+    // one/few/many arguments are legacy fallbacks; we always translate via i18n keys per unit.
+    // Signature retained for compatibility; ignore fallback strings.
+    const suffix = one === 'mesec' ? 'month' : one === 'nedelja' ? 'week' : 'day';
     const mod10 = n % 10;
     const mod100 = n % 100;
-    if (mod10 === 1 && mod100 !== 11) return `${n} ${one}`;
-    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${n} ${few}`;
-    return `${n} ${many}`;
+    let variant: string;
+    if (mod10 === 1 && mod100 !== 11) variant = '1';
+    else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) variant = 'few';
+    else variant = 'many';
+    return this.translate.instant(`calendar.unit_${suffix}_${variant}`, { n });
   }
 
   isDateBlocked(date: Date): boolean {
@@ -282,11 +304,11 @@ export class RentalCalendarComponent implements OnChanges, OnDestroy {
     this.contractService.createRentalContract(request).subscribe({
       next: () => {
         this.isSendingRequest = false;
-        this.toastService.showSuccess('Uspesno ste poslali zahtev!');
+        this.toastService.showSuccess(this.translate.instant('calendar.toast_sent'));
       },
       error: () => {
         this.isSendingRequest = false;
-        this.toastService.showError('Zahtev nije poslat!');
+        this.toastService.showError(this.translate.instant('calendar.toast_send_error'));
       }
     });
   }
@@ -316,11 +338,11 @@ export class RentalCalendarComponent implements OnChanges, OnDestroy {
         }));
         this.clearDates();
         this.generateCalendar();
-        this.toastService.showSuccess('Datumi su uspešno blokirani!');
+        this.toastService.showSuccess(this.translate.instant('calendar.toast_blocked'));
       },
       error: () => {
         this.isBlockingDates = false;
-        this.toastService.showError('Greška pri blokiranju datuma.');
+        this.toastService.showError(this.translate.instant('calendar.toast_block_error'));
       }
     });
   }

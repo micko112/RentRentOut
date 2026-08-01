@@ -2,63 +2,53 @@
   <div class="page-header">
     <h1>
       <span class="material-icons-outlined">verified_user</span>
-      Verifikacija identiteta
+      {{ 'verify.title' | translate }}
     </h1>
-    <p class="subtitle">
-      Verifikujte svoj identitet da biste dobili oznaku poverenja na profilu.
-      Vaši dokumenti se brišu sa naših servera odmah nakon pregleda.
-    </p>
+    <p class="subtitle">{{ 'verify.subtitle' | translate }}</p>
   </div>
 
-  <div *ngIf="loading" class="loading-state">Učitavanje...</div>
+  <div *ngIf="loading" class="loading-state">{{ 'verify.loading' | translate }}</div>
 
   <!-- APPROVED -->
   <div *ngIf="!loading && status?.status === 'APPROVED'" class="status-card approved">
     <span class="material-icons big-icon">verified</span>
-    <h2>Vaš nalog je verifikovan</h2>
-    <p>
-      Čestitamo! Vaš identitet je potvrđen. Sada vaš profil ima oznaku <strong>Verifikovan</strong>,
-      što povećava poverenje drugih korisnika.
-    </p>
-    <a routerLink="/user/me" class="btn-primary">Pogledaj profil</a>
+    <h2>{{ 'verify.approved_title' | translate }}</h2>
+    <p [innerHTML]="'verify.approved_text' | translate"></p>
+    <a routerLink="/user/me" class="btn-primary">{{ 'verify.view_profile' | translate }}</a>
   </div>
 
   <!-- PENDING -->
   <div *ngIf="!loading && status?.status === 'PENDING'" class="status-card pending">
     <span class="material-icons-outlined big-icon">hourglass_top</span>
-    <h2>Zahtev čeka pregled</h2>
+    <h2>{{ 'verify.pending_title' | translate }}</h2>
     <p>
-      Vaš zahtev je poslat <strong>{{ status?.submittedAt | date:'dd.MM.yyyy. HH:mm' }}</strong>.
-      Administrator će pregledati vaše dokumente u najkraćem roku. Dobićete email
-      čim zahtev bude obrađen.
+      {{ 'verify.pending_text_prefix' | translate }} <strong>{{ status?.submittedAt | date:'dd.MM.yyyy. HH:mm' }}</strong>.
+      {{ 'verify.pending_text_suffix' | translate }}
     </p>
   </div>
 
   <!-- REJECTED -->
   <div *ngIf="!loading && status?.status === 'REJECTED'" class="status-card rejected">
     <span class="material-icons-outlined big-icon">error_outline</span>
-    <h2>Zahtev je odbijen</h2>
-    <p *ngIf="status?.rejectionReason"><strong>Razlog:</strong> {{ status?.rejectionReason }}</p>
-    <p>Možete ponovo poslati zahtev sa ispravnim dokumentima.</p>
+    <h2>{{ 'verify.rejected_title' | translate }}</h2>
+    <p *ngIf="status?.rejectionReason"><strong>{{ 'verify.rejected_reason_label' | translate }}</strong> {{ status?.rejectionReason }}</p>
+    <p>{{ 'verify.rejected_can_resubmit' | translate }}</p>
   </div>
 
   <!-- UPLOAD FORMA -->
   <div *ngIf="!loading && canResubmit" class="upload-section">
-    <h2>Pošaljite dokumente</h2>
+    <h2>{{ 'verify.upload_title' | translate }}</h2>
 
     <div class="info-box">
       <span class="material-icons-outlined">info</span>
       <div>
-        <strong>Šta nam treba:</strong>
+        <strong>{{ 'verify.what_we_need' | translate }}</strong>
         <ul>
-          <li>Jasna fotografija <strong>prednje strane</strong> važećeg identifikacionog dokumenta
-            (lična karta, pasoš, vozačka dozvola)</li>
-          <li><strong>Zadnja strana</strong> dokumenta (opcionalno)</li>
-          <li><strong>Selfie</strong> fotografija sa dokumentom u ruci</li>
+          <li [innerHTML]="'verify.req_front' | translate"></li>
+          <li [innerHTML]="'verify.req_back' | translate"></li>
+          <li [innerHTML]="'verify.req_selfie' | translate"></li>
         </ul>
-        <p class="gdpr-note">
-          Slike se bezbedno brišu sa naših servera odmah nakon što administrator obradi zahtev.
-        </p>
+        <p class="gdpr-note">{{ 'verify.gdpr_note' | translate }}</p>
       </div>
     </div>
 
@@ -66,7 +56,7 @@
       <!-- DOC FRONT -->
       <div class="upload-slot">
         <label class="slot-label">
-          Prednja strana dokumenta <span class="required">*</span>
+          {{ 'verify.doc_front_label' | translate }} <span class="required">*</span>
         </label>
         <div class="slot-box" [class.has-file]="docFrontPreview">
           <ng-container *ngIf="!docFrontPreview; else frontPreview">
@@ -74,11 +64,11 @@
                    (change)="onFileSelected($event, 'docFront')" hidden #frontInput>
             <button type="button" class="upload-btn" (click)="frontInput.click()">
               <span class="material-icons-outlined">cloud_upload</span>
-              <span>Izaberi sliku</span>
+              <span>{{ 'verify.choose_image' | translate }}</span>
             </button>
           </ng-container>
           <ng-template #frontPreview>
-            <img [src]="docFrontPreview" alt="Prednja strana">
+            <img [src]="docFrontPreview" [alt]="'verify.alt_front' | translate">
             <button type="button" class="remove-btn" (click)="removeFile('docFront')">
               <span class="material-icons">close</span>
             </button>
@@ -89,7 +79,7 @@
       <!-- DOC BACK -->
       <div class="upload-slot">
         <label class="slot-label">
-          Zadnja strana dokumenta <span class="optional">(opciono)</span>
+          {{ 'verify.doc_back_label' | translate }} <span class="optional">{{ 'verify.optional' | translate }}</span>
         </label>
         <div class="slot-box" [class.has-file]="docBackPreview">
           <ng-container *ngIf="!docBackPreview; else backPreview">
@@ -97,11 +87,11 @@
                    (change)="onFileSelected($event, 'docBack')" hidden #backInput>
             <button type="button" class="upload-btn" (click)="backInput.click()">
               <span class="material-icons-outlined">cloud_upload</span>
-              <span>Izaberi sliku</span>
+              <span>{{ 'verify.choose_image' | translate }}</span>
             </button>
           </ng-container>
           <ng-template #backPreview>
-            <img [src]="docBackPreview" alt="Zadnja strana">
+            <img [src]="docBackPreview" [alt]="'verify.alt_back' | translate">
             <button type="button" class="remove-btn" (click)="removeFile('docBack')">
               <span class="material-icons">close</span>
             </button>
@@ -112,7 +102,7 @@
       <!-- SELFIE -->
       <div class="upload-slot">
         <label class="slot-label">
-          Selfie sa dokumentom <span class="required">*</span>
+          {{ 'verify.selfie_label' | translate }} <span class="required">*</span>
         </label>
         <div class="slot-box" [class.has-file]="selfiePreview">
           <ng-container *ngIf="!selfiePreview; else selfiePreviewTpl">
@@ -120,11 +110,11 @@
                    (change)="onFileSelected($event, 'selfie')" hidden #selfieInput>
             <button type="button" class="upload-btn" (click)="selfieInput.click()">
               <span class="material-icons-outlined">cloud_upload</span>
-              <span>Izaberi sliku</span>
+              <span>{{ 'verify.choose_image' | translate }}</span>
             </button>
           </ng-container>
           <ng-template #selfiePreviewTpl>
-            <img [src]="selfiePreview" alt="Selfie">
+            <img [src]="selfiePreview" [alt]="'verify.alt_selfie' | translate">
             <button type="button" class="remove-btn" (click)="removeFile('selfie')">
               <span class="material-icons">close</span>
             </button>
@@ -135,8 +125,8 @@
 
     <div class="actions">
       <button type="button" class="btn-primary" [disabled]="!canSubmit()" (click)="submit()">
-        <span *ngIf="!submitting">Pošalji zahtev za verifikaciju</span>
-        <span *ngIf="submitting">Slanje...</span>
+        <span *ngIf="!submitting">{{ 'verify.submit' | translate }}</span>
+        <span *ngIf="submitting">{{ 'verify.submitting' | translate }}</span>
       </button>
     </div>
   </div>

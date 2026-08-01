@@ -2,7 +2,7 @@
 <div class="support-backdrop" *ngIf="isOpen" (click)="close()"></div>
 
 <!-- Floating bubble -->
-<button class="support-fab" (click)="toggle()" [attr.aria-label]="isOpen ? 'Sakrij podršku' : 'Otvori podršku'">
+<button class="support-fab" (click)="toggle()" [attr.aria-label]="isOpen ? ('support.close_aria' | translate) : ('support.open_aria' | translate)">
   <span class="material-icons" *ngIf="!isOpen">chat</span>
   <span class="material-icons" *ngIf="isOpen">keyboard_arrow_down</span>
 </button>
@@ -21,14 +21,14 @@
         <span class="ai-badge">AI</span>
       </div>
       <div class="header-title">
-        <span class="bot-name">bot Igor</span>
+        <span class="bot-name">{{ 'support.bot_name' | translate }}</span>
         <span class="bot-status">
           <span class="status-dot"></span>
-          Online
+          {{ 'support.online' | translate }}
         </span>
       </div>
     </div>
-    <button class="close-btn" (click)="close()" aria-label="Zatvori">
+    <button class="close-btn" (click)="close()" [attr.aria-label]="'support.close' | translate">
       <span class="material-icons">close</span>
     </button>
   </header>
@@ -39,8 +39,8 @@
       <div class="bot-avatar lg" aria-hidden="true">
         <span class="material-symbols-outlined">smart_toy</span>
       </div>
-      <h4>Zdravo, ja sam bot Igor</h4>
-      <p>Pitaj me bilo šta o platformi ili pravnim temama vezanim za iznajmljivanje.</p>
+      <h4>{{ 'support.intro_hello' | translate }}</h4>
+      <p>{{ 'support.intro_text' | translate }}</p>
     </div>
 
     <div *ngFor="let m of messages; trackBy: trackByIndex"
@@ -62,10 +62,10 @@
       #inputRef
       [(ngModel)]="draft"
       (keydown)="onInputKeydown($event)"
-      placeholder="Napiši pitanje…"
+      [placeholder]="'support.placeholder' | translate"
       rows="1"
       [disabled]="loading"></textarea>
-    <button class="send-btn" (click)="send()" [disabled]="!draft.trim() || loading" aria-label="Pošalji">
+    <button class="send-btn" (click)="send()" [disabled]="!draft.trim() || loading" [attr.aria-label]="'support.send' | translate">
       <span class="material-icons">send</span>
     </button>
   </div>

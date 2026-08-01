@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import {Review} from '../../../../shared/models/review';
 import {DatePipe, NgClass, NgIf} from '@angular/common';
 import {RouterLink} from '@angular/router';
+import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-review-card',
@@ -9,7 +10,8 @@ import {RouterLink} from '@angular/router';
     NgClass,
     DatePipe,
     NgIf,
-    RouterLink
+    RouterLink,
+    TranslateModule
   ],
   standalone: true,
   templateUrl: './review-card.component.html',
@@ -20,9 +22,9 @@ export class ReviewCardComponent {
   @Input() public review!: Review;
 
   optionMap: { [key: string]: string } = {
-    'YES': 'Da',
-    'NO': 'Ne',
-    'COULD_BE_BETTER': 'Može bolje'
+    'YES': 'reviewCard.answer_yes',
+    'NO': 'reviewCard.answer_no',
+    'COULD_BE_BETTER': 'reviewCard.answer_could_be_better'
   };
 
 }

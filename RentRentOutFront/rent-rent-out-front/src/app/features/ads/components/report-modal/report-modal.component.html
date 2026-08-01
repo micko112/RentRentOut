@@ -2,13 +2,13 @@
 
 <div class="modal">
   <button class="close-btn" (click)="close()">&times;</button>
-  <h3 class="modal-title">Prijavi oglas</h3>
-  <p class="modal-sub">Izaberite razlog prijave:</p>
+  <h3 class="modal-title">{{ 'report.title' | translate }}</h3>
+  <p class="modal-sub">{{ 'report.subtitle' | translate }}</p>
 
   <div class="reason-list">
-    <label *ngFor="let r of reasons" class="reason-item" [class.selected]="selectedReason === r">
-      <input type="radio" name="reason" [value]="r" [(ngModel)]="selectedReason">
-      {{ r }}
+    <label *ngFor="let r of reasons" class="reason-item" [class.selected]="selectedReason === r.value">
+      <input type="radio" name="reason" [value]="r.value" [(ngModel)]="selectedReason">
+      {{ r.key | translate }}
     </label>
   </div>
 
@@ -16,16 +16,16 @@
     class="note-input"
     rows="3"
     maxlength="500"
-    placeholder="Dodatne napomene (opciono)..."
+    [placeholder]="'report.note_placeholder' | translate"
     [(ngModel)]="note">
   </textarea>
 
   <div class="modal-actions">
-    <button class="btn-cancel" (click)="close()">Odustani</button>
+    <button class="btn-cancel" (click)="close()">{{ 'report.cancel' | translate }}</button>
     <button class="btn-submit"
             [disabled]="!selectedReason || submitting"
             (click)="submit()">
-      {{ submitting ? 'Slanje...' : 'Pošalji prijavu' }}
+      {{ submitting ? ('report.submitting' | translate) : ('report.submit' | translate) }}
     </button>
   </div>
 </div>

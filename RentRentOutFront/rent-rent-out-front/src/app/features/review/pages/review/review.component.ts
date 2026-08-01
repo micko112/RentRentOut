@@ -14,6 +14,7 @@ import {InitialsPipe} from '../../../../shared/pipes/initials.pipe';
 import {AuthService} from '../../../auth/services/auth.service';
 import {ContractService} from '../../../contracts/services/contract.service';
 import {RentalContract} from '../../../../shared/models/rental-contract.model';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-review',
@@ -22,7 +23,8 @@ import {RentalContract} from '../../../../shared/models/rental-contract.model';
     ReviewFormComponent,
     ReviewCardComponent,
     InitialsPipe,
-    DatePipe
+    DatePipe,
+    TranslateModule
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.css'
@@ -64,7 +66,8 @@ export class ReviewComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private contractService: ContractService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -164,6 +167,6 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   contractLabel(c: RentalContract): string {
-    return `${c.adDto?.title ?? 'Oglas'} · ${c.startDate} – ${c.endDate}`;
+    return `${c.adDto?.title ?? this.translate.instant('reviewPage.ad_fallback')} · ${c.startDate} – ${c.endDate}`;
   }
 }

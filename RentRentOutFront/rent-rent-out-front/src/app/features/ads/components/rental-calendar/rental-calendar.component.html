@@ -39,29 +39,29 @@
       <!-- Zakupac vidi: Preuzmi / Vrati -->
       <div class="pickup-dropoff-wrapper" *ngIf="!isMyAd">
         <div class="date-info">
-          <span class="label">Preuzmi</span>
+          <span class="label">{{ 'calendar.pickup' | translate }}</span>
           <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
         </div>
         <div class="date-info">
-          <span class="label">Vrati</span>
+          <span class="label">{{ 'calendar.return' | translate }}</span>
           <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
         </div>
       </div>
 
       <!-- Vlasnik vidi: Od / Do -->
-      <span class="item-unavailable-message" *ngIf="isMyAd">Predmet neće biti dostupan od</span>
+      <span class="item-unavailable-message" *ngIf="isMyAd">{{ 'calendar.item_unavailable_from' | translate }}</span>
       <div class="pickup-dropoff-wrapper" *ngIf="isMyAd">
         <div class="date-info">
-          <span class="label">Od</span>
+          <span class="label">{{ 'calendar.from' | translate }}</span>
           <span class="date-value">{{ startDate | date:'EEE, dd MMM' | titlecase }}</span>
         </div>
         <div class="date-info">
-          <span class="label">Do</span>
+          <span class="label">{{ 'calendar.to' | translate }}</span>
           <span class="date-value">{{ endDate | date:'EEE, dd MMM' | titlecase }}</span>
         </div>
       </div>
 
-      <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">Obriši datume</div>
+      <div class="clear-dates" (click)="clearDates()" *ngIf="startDate">{{ 'calendar.clear_dates' | translate }}</div>
     </div>
 
     <!-- Cena i dugme za akciju -->
@@ -70,7 +70,7 @@
       <!-- Zakupac: prikaz cene -->
       <div class="payment-dates" *ngIf="!isMyAd">
         <div class="choose-dates" *ngIf="numberOfDays === 0">
-          Izaberite datume
+          {{ 'calendar.choose_dates' | translate }}
         </div>
         <div class="price-calculation" *ngIf="numberOfDays > 0">
           <div class="total-price">{{ totalPrice | number }} {{ currencySymbol }}</div>
@@ -87,7 +87,7 @@
               *ngIf="!isMyAd"
               [disabled]="!startDate || !endDate"
               (click)="sendRequest()">
-        Pošalji zahtev
+        {{ 'calendar.send_request' | translate }}
       </button>
 
       <!-- Vlasnik: blokiraj datume -->
@@ -95,7 +95,7 @@
               *ngIf="isMyAd"
               [disabled]="!startDate || !endDate"
               (click)="blockDates()">
-        Postavi zauzeto
+        {{ 'calendar.set_blocked' | translate }}
       </button>
 
     </div>

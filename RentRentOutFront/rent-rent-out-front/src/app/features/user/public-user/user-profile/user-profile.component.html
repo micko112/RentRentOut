@@ -17,12 +17,12 @@
             {{ data.userInfo?.displayName }}
             <span *ngIf="data.userInfo?.identified" class="badge-identified">
               <span class="material-icons">verified</span>
-              <span class="tooltip">Ovaj nalog je verifikovan</span>
+              <span class="tooltip">{{ 'reviewPage.account_verified_tooltip' | translate }}</span>
             </span>
           </h1>
           <p class="meta-info">
-            <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ data.userInfo?.locationDisplay || 'Nepoznata lokacija' }}</span>
-            <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>Član od: {{ data.userInfo?.createdAt | date:'dd.MM.yyyy' }}.</span>
+            <span class="location"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">location_on</span>{{ data.userInfo?.locationDisplay || ('reviewPage.unknown_location' | translate) }}</span>
+            <span class="member-since"><span class="material-symbols-outlined" style="font-size:15px;margin-right:3px">calendar_month</span>{{ 'reviewPage.member_since' | translate }} {{ data.userInfo?.createdAt | date:'dd.MM.yyyy' }}.</span>
           </p>
           <p class="user-description" *ngIf="data.userInfo?.description">{{ data.userInfo?.description }}</p>
         </div>
@@ -36,7 +36,7 @@
         </div>
         <button class="btn-review"
                 *ngIf="!showForm && !isOwnProfile && reviewCheckDone && reviewContractId !== null"
-                (click)="toggleForm()">Ocenite
+                (click)="toggleForm()">{{ 'reviewPage.rate' | translate }}
         </button>
       </div>
     </div>
@@ -55,10 +55,10 @@
   <!-- 2. TABOVI -->
   <nav class="review-tabs">
     <button [class.active]="activeTab === 'ads'" (click)="setTab('ads')">
-      Oglasi ({{ data.ads.totalElements }})
+      {{ 'reviewPage.ads_count' | translate }} ({{ data.ads.totalElements }})
     </button>
     <button [class.active]="activeTab === 'reviews'" (click)="setTab('reviews')">
-      Ocene ({{ data.reviews.totalElements }})
+      {{ 'reviewPage.reviews_count' | translate }} ({{ data.reviews.totalElements }})
     </button>
   </nav>
 
@@ -76,26 +76,26 @@
     <div *ngIf="activeTab === 'reviews'" class="reviews">
       <div class="review-tabs">
         <button [class.active]="activeReviewTab === 'ALL'" (click)="setReviewTab('ALL')">
-          Sve ocene
+          {{ 'reviewPage.tab_all' | translate }}
         </button>
         <button [class.active]="activeReviewTab === 'LESSOR'" (click)="setReviewTab('LESSOR')">
-          Kao izdavač
+          {{ 'reviewPage.tab_lessor' | translate }}
         </button>
         <button [class.active]="activeReviewTab === 'LESSEE'" (click)="setReviewTab('LESSEE')">
-          Kao iznajmljivač
+          {{ 'reviewPage.tab_lessee' | translate }}
         </button>
         <button [class.active]="activeTypeTab === 'POSITIVE'" (click)="setTypeTab(activeTypeTab === 'POSITIVE' ? 'ALL' : 'POSITIVE')" class="type-btn positive-btn">
-          <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_up</span>Pozitivne
+          <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_up</span>{{ 'reviewPage.tab_positive' | translate }}
         </button>
         <button [class.active]="activeTypeTab === 'NEGATIVE'" (click)="setTypeTab(activeTypeTab === 'NEGATIVE' ? 'ALL' : 'NEGATIVE')" class="type-btn negative-btn">
-          <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_down</span>Negativne
+          <span class="material-symbols-outlined" style="font-size:16px;margin-right:4px">thumb_down</span>{{ 'reviewPage.tab_negative' | translate }}
         </button>
       </div>
       <app-review-card
         *ngFor="let rev of filteredReviews"
         [review]="rev"></app-review-card>
       <p *ngIf="filteredReviews.length === 0" style="text-align: center; color: #666; margin-top: 20px;">
-        Nema ocena u ovoj kategoriji.
+        {{ 'reviewPage.empty' | translate }}
       </p>
     </div>
 
