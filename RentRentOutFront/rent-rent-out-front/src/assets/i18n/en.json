@@ -172,7 +172,23 @@
       "ads_count_suffix": "ads",
       "no_ads_in_category": "No ads in this category yet.",
       "prev": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "home_categories": {
+        "electronics": "Electronics",
+        "photo_video": "Photo and video",
+        "tools_equipment": "Tools and equipment",
+        "events_parties": "Events and parties",
+        "sports_recreation": "Sports and recreation",
+        "clothing": "Clothing"
+      },
+      "home_categories_short": {
+        "electronics": "Electronics",
+        "photo": "Photo",
+        "tools": "Tools",
+        "events": "Events",
+        "sports": "Sports",
+        "clothing": "Clothing"
+      }
     },
     "filters": {
       "clear_all": "Clear all",

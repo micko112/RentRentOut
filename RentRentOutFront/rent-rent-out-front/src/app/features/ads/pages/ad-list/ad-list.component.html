@@ -211,7 +211,7 @@
               <span class="cat-strip-circle">
                 <span class="material-icons">{{ cat.icon }}</span>
               </span>
-              <span class="cat-strip-label">{{ cat.shortName }}</span>
+              <span class="cat-strip-label">{{ cat.shortName | translate }}</span>
             </a>
           </div>
         </div>
@@ -241,7 +241,7 @@
           <div class="section-header">
             <div class="section-left">
               <span class="material-icons section-icon">{{ cat.icon }}</span>
-              <h2 class="section-title">{{ cat.displayName }}</h2>
+              <h2 class="section-title">{{ cat.displayName | translate }}</h2>
               <span class="section-count" *ngIf="cat.total > 0">{{ cat.total }} {{ 'ads.list.ads_count_suffix' | translate }}</span>
             </div>
             <a routerLink="/ads" [queryParams]="{categoryId: cat.id}" class="section-see-all">

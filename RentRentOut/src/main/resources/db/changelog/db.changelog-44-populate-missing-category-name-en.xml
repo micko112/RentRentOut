@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="44-populate-missing-category-name-en" author="claude">
+        <sql>
+UPDATE category SET name_en = 'Cars' WHERE name = 'Automobili' AND name_en IS NULL;
+UPDATE category SET name_en = 'Dumper' WHERE name = 'Damper' AND name_en IS NULL;
+UPDATE category SET name_en = 'Kids clothing' WHERE name = 'Dečija odeća' AND name_en IS NULL;
+UPDATE category SET name_en = 'Kids bike' WHERE name = 'Dečiji bicikl' AND name_en IS NULL;
+UPDATE category SET name_en = 'Kids bikes and gear' WHERE name = 'Dečiji bicikli i oprema' AND name_en IS NULL;
+UPDATE category SET name_en = 'Kids furniture' WHERE name = 'Dečiji nameštaj' AND name_en IS NULL;
+UPDATE category SET name_en = 'Simulator gear' WHERE name = 'Simulator oprema' AND name_en IS NULL;
+UPDATE category SET name_en = 'Synthesizer' WHERE name = 'Sintisajzer' AND name_en IS NULL;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -55,21 +55,21 @@ export class AdListComponent implements OnInit, OnDestroy {
   }> = [];
 
   private readonly HOME_CATEGORIES = [
-    { id: 200,   displayName: 'Elektronika',         icon: 'devices'       },
-    { id: 300,   displayName: 'Foto i video',        icon: 'photo_camera'  },
-    { id: 100,   displayName: 'Alati i oprema',      icon: 'construction'  },
-    { id: 600,   displayName: 'Događaji i zurke',    icon: 'celebration'   },
-    { id: 700,   displayName: 'Sport i rekreacija',  icon: 'sports'        },
-    { id: 10000, displayName: 'Garderoba',           icon: 'checkroom'     },
+    { id: 200,   displayName: 'ads.list.home_categories.electronics',        icon: 'devices'       },
+    { id: 300,   displayName: 'ads.list.home_categories.photo_video',        icon: 'photo_camera'  },
+    { id: 100,   displayName: 'ads.list.home_categories.tools_equipment',    icon: 'construction'  },
+    { id: 600,   displayName: 'ads.list.home_categories.events_parties',     icon: 'celebration'   },
+    { id: 700,   displayName: 'ads.list.home_categories.sports_recreation',  icon: 'sports'        },
+    { id: 10000, displayName: 'ads.list.home_categories.clothing',           icon: 'checkroom'     },
   ];
 
   readonly mobileCategoryStrip = [
-    { id: 200,   shortName: 'Elektronika', icon: 'devices'       },
-    { id: 300,   shortName: 'Foto',        icon: 'photo_camera'  },
-    { id: 100,   shortName: 'Alati',       icon: 'construction'  },
-    { id: 600,   shortName: 'Događaji',    icon: 'celebration'   },
-    { id: 700,   shortName: 'Sport',       icon: 'sports'        },
-    { id: 10000, shortName: 'Garderoba',   icon: 'checkroom'     },
+    { id: 200,   shortName: 'ads.list.home_categories_short.electronics', icon: 'devices'       },
+    { id: 300,   shortName: 'ads.list.home_categories_short.photo',       icon: 'photo_camera'  },
+    { id: 100,   shortName: 'ads.list.home_categories_short.tools',       icon: 'construction'  },
+    { id: 600,   shortName: 'ads.list.home_categories_short.events',      icon: 'celebration'   },
+    { id: 700,   shortName: 'ads.list.home_categories_short.sports',      icon: 'sports'        },
+    { id: 10000, shortName: 'ads.list.home_categories_short.clothing',    icon: 'checkroom'     },
   ];
 
   readonly popularCities = [

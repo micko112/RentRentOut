@@ -172,7 +172,23 @@
       "ads_count_suffix": "oglasa",
       "no_ads_in_category": "Trenutno nema oglasa u ovoj kategoriji.",
       "prev": "Prethodna",
-      "next": "Sledeća"
+      "next": "Sledeća",
+      "home_categories": {
+        "electronics": "Elektronika",
+        "photo_video": "Foto i video",
+        "tools_equipment": "Alati i oprema",
+        "events_parties": "Događaji i zurke",
+        "sports_recreation": "Sport i rekreacija",
+        "clothing": "Garderoba"
+      },
+      "home_categories_short": {
+        "electronics": "Elektronika",
+        "photo": "Foto",
+        "tools": "Alati",
+        "events": "Događaji",
+        "sports": "Sport",
+        "clothing": "Garderoba"
+      }
     },
     "filters": {
       "clear_all": "Poništi sve",
