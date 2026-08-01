@@ -22,11 +22,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.landm.service.HtmlEmailService;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,16 +63,39 @@ class PromotionServiceImplTest {
     private User owner;
     private Ad ad;
 
+    private static final Map<String, String> SR_MESSAGES = new HashMap<>();
+    static {
+        SR_MESSAGES.put("error.ad.not_found", "Oglas nije pronađen.");
+        SR_MESSAGES.put("error.user.not_found", "Korisnik nije pronađen.");
+        SR_MESSAGES.put("error.credit.amount_positive", "Iznos mora biti pozitivan.");
+        SR_MESSAGES.put("error.promotion.own_ads_only", "Možete promovišati samo sopstvene oglase.");
+        SR_MESSAGES.put("error.promotion.ad_not_available", "Oglas nije dostupan za promociju.");
+        SR_MESSAGES.put("error.promotion.insufficient_credit", "Nedovoljno kredita. Potrebno: {0} RSD.");
+        SR_MESSAGES.put("error.promotion.renew_own_only", "Možete obnoviti samo sopstvene oglase.");
+        SR_MESSAGES.put("error.promotion.cannot_renew", "Oglas ne može biti obnovljen.");
+        SR_MESSAGES.put("promotion.type.featured.name", "Na vrhu");
+        SR_MESSAGES.put("promotion.type.priority.name", "Prioritetni");
+        SR_MESSAGES.put("promotion.type.highlighted.name", "Istaknut oglas");
+        SR_MESSAGES.put("promotion.package.featured.description",
+                "Uvek na 1. mestu u rezultatima pretrage i kategoriji. Do 10x više pregleda.");
+        SR_MESSAGES.put("promotion.package.priority.description",
+                "Ispred standardnih oglasa u pretrazi i kategoriji. Do 5x više pregleda.");
+        SR_MESSAGES.put("promotion.package.highlighted.description",
+                "Oglas se vizuelno ističe bojom kartice. Obnova oglasa po isteku promocije.");
+        SR_MESSAGES.put("credit.transaction.promotion_purchase", "{0} — oglas #{1}");
+    }
+
     @BeforeEach
     void setUp() {
-        ReloadableResourceBundleMessageSource realMessages = new ReloadableResourceBundleMessageSource();
-        realMessages.setBasename("classpath:i18n/messages");
-        realMessages.setDefaultEncoding("UTF-8");
-        realMessages.setDefaultLocale(new Locale("sr"));
-        realMessages.setFallbackToSystemLocale(false);
         lenient().when(messageSource.getMessage(anyString(), any(), any(Locale.class)))
-                .thenAnswer(inv -> realMessages.getMessage(
-                        inv.getArgument(0), inv.getArgument(1), new Locale("sr")));
+                .thenAnswer(inv -> {
+                    String code = inv.getArgument(0);
+                    Object[] args = inv.getArgument(1);
+                    String template = SR_MESSAGES.getOrDefault(code, code);
+                    return (args != null && args.length > 0)
+                            ? MessageFormat.format(template, args)
+                            : template;
+                });
 
         Role role = new Role("ROLE_USER");
 
