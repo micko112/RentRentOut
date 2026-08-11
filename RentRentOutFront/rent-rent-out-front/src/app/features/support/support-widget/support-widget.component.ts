@@ -56,18 +56,27 @@ export class SupportWidgetComponent implements AfterViewChecked {
     if (!text || this.loading) return;
 
     this.supportService.addMessage('user', text);
+    this.supportService.addMessage('bot', '');
     this.draft = '';
     this.loading = true;
     this.shouldScroll = true;
 
-    this.supportService.ask(text).subscribe({
-      next: reply => {
-        this.supportService.addMessage('bot', reply);
+    let acc = '';
+    this.supportService.askStream(text, {
+      onToken: token => {
+        acc += token;
+        this.supportService.updateLastBotMessage(acc);
+        this.shouldScroll = true;
+      },
+      onDone: () => {
+        if (!acc) {
+          this.supportService.updateLastBotMessage(this.translate.instant('support.error_fallback'));
+        }
         this.loading = false;
         this.shouldScroll = true;
       },
-      error: () => {
-        this.supportService.addMessage('bot', this.translate.instant('support.error_fallback'));
+      onError: () => {
+        this.supportService.updateLastBotMessage(this.translate.instant('support.error_fallback'));
         this.loading = false;
         this.shouldScroll = true;
       }

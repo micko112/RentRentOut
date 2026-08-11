@@ -21,4 +21,14 @@ export class CategoryService {
     return this.http.get<number[]>(`${API_BASE_URL}/categories/suggest`, { params });
   }
 
+  suggestCategoryDetailed(title: string): Observable<CategorySuggestion[]> {
+    const params = new HttpParams().set('title', title);
+    return this.http.get<CategorySuggestion[]>(`${API_BASE_URL}/categories/suggest-detailed`, { params });
+  }
+
+}
+
+export interface CategorySuggestion {
+  categoryId: number;
+  confidence: number;
 }

@@ -48,6 +48,7 @@ services:
     env_file: ./RentRentOut/.env
     volumes:
       - chroma_data:/app/chroma_db
+      - chatbot_data:/app/data
 
   # ─── Nginx reverse proxy ──────────────────────────────────────────────────────
   nginx:
@@ -83,3 +84,4 @@ volumes:
   certbot-conf:
   certbot-www:
   chroma_data:
+  chatbot_data:

@@ -3,6 +3,7 @@ package org.landm.controller;
 
 import jakarta.validation.Valid;
 import org.landm.dto.CategoryDto;
+import org.landm.dto.CategorySuggestionDto;
 import org.landm.dto.requestDto.CreateCategoryRequestDto;
 import org.landm.service.CategoryService;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,11 @@ public class CategoryController {
     public ResponseEntity<List<Long>> suggestCategory(@RequestParam String title) {
         List<Long> categoryIds = categoryService.suggestCategory(title);
         return ResponseEntity.ok(categoryIds);
+    }
+
+    @GetMapping("/suggest-detailed")
+    public ResponseEntity<List<CategorySuggestionDto>> suggestCategoryDetailed(@RequestParam String title) {
+        return ResponseEntity.ok(categoryService.suggestCategoryDetailed(title));
     }
 
 }

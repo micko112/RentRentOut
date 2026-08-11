@@ -159,6 +159,40 @@
             <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
               {{ 'ads.create.err_title_required' | translate }}
             </small>
+
+            <div class="suggest-row">
+              <button type="button"
+                      class="btn-suggest"
+                      (click)="suggestCategories()"
+                      [disabled]="!canSuggest || isSuggestingCategories">
+                <ng-container *ngIf="!isSuggestingCategories; else suggestingTpl">
+                  <span class="material-icons suggest-icon">auto_awesome</span>
+                  {{ 'ads.create.suggest_button' | translate }}
+                </ng-container>
+                <ng-template #suggestingTpl>
+                  <span class="suggest-spinner"></span>
+                  {{ 'ads.create.suggest_loading' | translate }}
+                </ng-template>
+              </button>
+              <span class="suggest-hint">{{ 'ads.create.suggest_hint' | translate }}</span>
+            </div>
+
+            <div class="suggest-results" *ngIf="suggestedCategories.length">
+              <div class="suggest-results-label">
+                <span class="material-icons suggest-results-icon">lightbulb</span>
+                {{ 'ads.create.suggest_results_label' | translate }}
+              </div>
+              <div class="suggest-chips">
+                <button type="button"
+                        *ngFor="let cat of suggestedCategories; let i = index"
+                        class="suggest-chip"
+                        (click)="applySuggestedCategory(cat)">
+                  <span class="suggest-chip-rank">{{ i + 1 }}</span>
+                  <span class="suggest-chip-path">{{ cat.name }}</span>
+                  <span class="material-icons suggest-chip-arrow">arrow_forward</span>
+                </button>
+              </div>
+            </div>
           </div>
 
         </section>

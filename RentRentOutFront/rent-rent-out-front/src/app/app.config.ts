@@ -15,7 +15,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { routes } from './app.routes';
 import {DatePipe, registerLocaleData} from '@angular/common';
-import { LanguageService } from './core/services/language.service';
+import { LanguageService, readLangCookie, INITIAL_LANG, AppLang } from './core/services/language.service';
 import { TranslateService } from '@ngx-translate/core';
 
 import {catchError, from, switchMap, tap, throwError} from 'rxjs';
@@ -24,6 +24,7 @@ import {PlatformService} from './core/services/platform.service';
 
 import { ErrorHandler } from '@angular/core'; // <-- DODAJ IMPORT
 import * as Sentry from "@sentry/angular";    // <-- DODAJ IMPORT
+import { DOCUMENT } from '@angular/common';
 
 registerLocaleData(localeSr);
 registerLocaleData(localeEn);
@@ -34,20 +35,26 @@ export function createTranslateLoader(http: HttpClient) {
 
 // Dodaje withCredentials na sve zahteve — browser automatski šalje HttpOnly cookie
 // Na mobile-u (Capacitor): dodaje X-Client-Platform: mobile i Authorization: Bearer <token>
-// Reads current language from localStorage (fallback to 'sr') — cheap sync read, avoids DI cycles.
-function currentLangHeader(): string {
+// Jezik čita iz localStorage (browser) ili iz `rro_lang` cookie-ja (SSR, gde
+// localStorage ne postoji). Bez cookie fallback-a SSR bi uvek slao Accept-Language: sr,
+// pa bi TransferState klijentu isporučio srpske kategorije čak i kada je izabran EN.
+function currentLangHeader(doc: Document | null, ssrLang: AppLang | null): string {
+  if (ssrLang) return ssrLang;
   try {
     if (typeof localStorage !== 'undefined') {
       const v = localStorage.getItem('rro_lang');
       if (v === 'en') return 'en';
+      if (v === 'sr') return 'sr';
     }
   } catch { /* ignore */ }
-  return 'sr';
+  return readLangCookie(doc) ?? 'sr';
 }
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const platform = inject(PlatformService);
-  const lang = currentLangHeader();
+  const doc = inject(DOCUMENT, { optional: true });
+  const ssrLang = inject(INITIAL_LANG, { optional: true });
+  const lang = currentLangHeader(doc, ssrLang);
 
   if (!platform.isNative) {
     const headers = req.headers.has('Accept-Language')

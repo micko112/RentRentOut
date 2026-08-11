@@ -59,9 +59,11 @@ services:
     env_file: ./RentRentOut/.env
     volumes:
       - chroma_data:/app/chroma_db
+      - chatbot_data:/app/data
     ports:
       - "8000:8000"
 
 volumes:
   mysql_data:
   chroma_data:
+  chatbot_data:

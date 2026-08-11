@@ -1,6 +1,7 @@
 package org.landm.service.impl;
 
 import org.landm.dto.CategoryDto;
+import org.landm.dto.CategorySuggestionDto;
 import org.landm.dto.requestDto.CreateCategoryRequestDto;
 import org.landm.entity.Category;
 import org.landm.mapper.CategoryMapper;
@@ -76,25 +77,43 @@ public class CategoryServiceImpl implements CategoryService{
     }
     @Override
     public List<Long> suggestCategory(String title) {
+        Map response = callPredictCategory(title);
+        if (response != null && response.containsKey("predicted_category_ids")) {
+            List<Number> ids = (List<Number>) response.get("predicted_category_ids");
+            return ids.stream().map(Number::longValue).toList();
+        }
+        return List.of();
+    }
+
+    @Override
+    public List<CategorySuggestionDto> suggestCategoryDetailed(String title) {
+        Map response = callPredictCategory(title);
+        if (response != null && response.containsKey("suggestions")) {
+            List<Map<String, Object>> raw = (List<Map<String, Object>>) response.get("suggestions");
+            return raw.stream()
+                    .map(m -> new CategorySuggestionDto(
+                            ((Number) m.get("category_id")).longValue(),
+                            ((Number) m.get("confidence")).doubleValue()
+                    ))
+                    .toList();
+        }
+        return List.of();
+    }
+
+    private Map callPredictCategory(String title) {
         Map<String, String> body = new HashMap<>();
         body.put("title", title);
-
         try {
-            Map response = restClient.post()
+            return restClient.post()
                     .uri(aiServiceUrl + "/api/predict-category")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(body)
                     .retrieve()
                     .body(Map.class);
-
-            if (response != null && response.containsKey("predicted_category_ids")) {
-                List<Number> ids = (List<Number>) response.get("predicted_category_ids");
-                return ids.stream().map(Number::longValue).toList();
-            }
         } catch (Exception e) {
             System.out.println("AI Service je trenutno nedostupan: " + e.getMessage());
+            return null;
         }
-        return List.of();
     }
 
 }

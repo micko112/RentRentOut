@@ -285,19 +285,37 @@ Email u `addCredit()` i `sendExpiryReminders()` je wrapped u try-catch + `log.wa
 
 ---
 
-## ML Servis — Predlaganje Kategorija
+## ML Servis — Predlaganje Kategorija (v2, 2026-08-11)
 
 **Lokacija**: `RentRentOutML/ai_service/`
 
-**Stack**: Python 3.11, FastAPI, PyTorch (CPU), scikit-learn (TF-IDF), joblib
+**Stack**: Python 3.11, FastAPI, PyTorch CPU, sentence-transformers, joblib
+
+**Arhitektura v2**: `title → paraphrase-multilingual-mpnet-base-v2 (frozen, 768d) → MLP head (768→384→644) → softmax → top-K`. Zamenjuje v1 (TF-IDF + duboki MLP) koji je bio treniran samo na sintetičkim šablonima i lomio se na realnim upitima.
+
+**Trening podaci** (`training_data.csv`, 4648 primera): 280 realnih oglasa (scraped + Codex labeling) + 4368 sintetičkih (6/klasa + brand/synonym map). Trenirano sa AdamW, class weights, label smoothing, early stopping na val top-3.
+
+**Metrike (posle 37 epoha)**: Top-1 77.5%, **Top-3 89.0%**, Top-5 91.0%. UX koristi top-3 (chipovi u wizard-u).
 
 **Fajlovi**:
-- `main.py` — FastAPI app, klasa `RentRentOutKategorizator` (nn.Sequential: 256→128→N klasa), endpoint `POST /api/predict-category`
-- `rentrentout_model.pth` — sačuvane težine modela
-- `tfidf_vectorizer.pkl` — TF-IDF vektorizator
-- `label_encoder.pkl` — mapiranje indeksa → MySQL category ID
-- `requirements.txt` — fastapi, uvicorn, joblib, scikit-learn
-- `Dockerfile` — single-stage `python:3.11-slim`, torch instaliran sa CPU-only index URL
+- `main.py` — FastAPI, `POST /api/predict-category` (isti response format kao v1)
+- `prepare_training_data.py` — spaja realne + sintetičke + synonyms → `training_data.csv`
+- `train_model.py` — computes embeddings (cache `embeddings_cache.npz`), trenira MLP head
+- `sanity_check.py` — provera modela na 15 test upita
+- `encoder_model_name.txt` — HF ime encodera (baked u Docker image)
+- `classifier_head.pth` — MLP head weights (~2MB)
+- `label_encoder.pkl` — idx ↔ category_id mapping
+- `category_names.json` — id → naziv za debugging
+- `taxonomy.csv` — 644 leaf + parent info (koristi se u prep i za Codex)
+- `labeled_ads.csv` — Codex output (280 iskoristivih + 53 SKIP)
+- `titles_to_label.csv` — 333 dedupovanih realnih naslova pre labeliranja
+- `CODEX_LABELING_BRIEF.md` — brief za novi labeling ciklus kad dođu novi oglasi
+- `training_report.txt` — najsvezije metrike + per-source breakdown
+- `Dockerfile` — pre-download-uje encoder (~470MB) tokom build-a (HF_HOME=/app/.hf_cache) da runtime ne treba internet
+
+**Reprodukovanje**: `python prepare_training_data.py && python train_model.py` (~10 min na CPU posle prvog download-a). `embeddings_cache.npz` je .gitignore-ovan; regeneriše se automatski.
+
+**Backend integracija**: `CategoryServiceImpl.suggestCategory()` očekuje `predicted_category_ids` + `suggestions` polja — response format je nepromenjen između v1/v2, pa nema code izmena u Spring Boot-u.
 
 **Flow**: Angular → `GET /api/categories/suggest?title=...` → Spring Boot `CategoryServiceImpl.suggestCategory()` → `POST http://ml-service:8000/api/predict-category` (JSON body `{title}`) → vraća `{ predicted_category_id: Long }`
 

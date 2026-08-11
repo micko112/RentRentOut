@@ -4,6 +4,13 @@ import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
+import { INITIAL_LANG } from './src/app/core/services/language.service';
+
+function parseLangFromCookie(cookieHeader: string | undefined): 'sr' | 'en' | null {
+  if (!cookieHeader) return null;
+  const match = cookieHeader.match(/(?:^|;\s*)rro_lang=(sr|en)(?:;|$)/);
+  return match ? (match[1] as 'sr' | 'en') : null;
+}
 
 export function app(): express.Express {
   const server = express();
@@ -27,13 +34,17 @@ export function app(): express.Express {
   // Sve Angular rute renderuje SSR engine
   server.get(/.*/, (req, res, next) => {
     const { protocol, originalUrl, headers } = req;
+    const lang = parseLangFromCookie(headers.cookie);
     commonEngine
       .render({
         bootstrap,
         documentFilePath: indexHtml,
         url: `${protocol}://${headers.host}${originalUrl}`,
         publicPath: browserDistFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }],
+        providers: [
+          { provide: APP_BASE_HREF, useValue: req.baseUrl },
+          { provide: INITIAL_LANG, useValue: lang },
+        ],
       })
       .then((html) => res.send(html))
       .catch((err) => next(err));

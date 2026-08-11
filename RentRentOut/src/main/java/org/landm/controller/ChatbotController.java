@@ -4,12 +4,14 @@ import jakarta.validation.Valid;
 import org.landm.dto.chatbot.ChatbotRequestDto;
 import org.landm.dto.chatbot.ChatbotResponseDto;
 import org.landm.service.ChatbotService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequestMapping("/api/support")
@@ -26,6 +28,13 @@ public class ChatbotController {
         Long userId = resolveUserId(auth);
         String aiReply = chatbotService.askQuestion(requestDto.getMessage(), userId);
         return ResponseEntity.ok(new ChatbotResponseDto(aiReply));
+    }
+
+    @PostMapping(value = "/ask/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter askBotStream(@Valid @RequestBody ChatbotRequestDto requestDto,
+                                   Authentication auth) {
+        Long userId = resolveUserId(auth);
+        return chatbotService.streamQuestion(requestDto.getMessage(), userId);
     }
 
     private Long resolveUserId(Authentication auth) {

@@ -1,6 +1,7 @@
 package org.landm.service;
 
 import org.landm.dto.CategoryDto;
+import org.landm.dto.CategorySuggestionDto;
 import org.landm.dto.requestDto.CreateCategoryRequestDto;
 
 import java.util.List;
@@ -11,5 +12,5 @@ public interface CategoryService {
     public List<Long> findAllSubCategoryId(Long parentId);
     public List<CategoryDto> getAll();
     public List<Long> suggestCategory(String title);
-
+    public List<CategorySuggestionDto> suggestCategoryDetailed(String title);
 }

@@ -1,39 +1,41 @@
 import os
-from typing import TypedDict, List, Annotated
-import operator
+import sqlite3
+from typing import TypedDict, List, Annotated, AsyncIterator
+
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
 from langgraph.graph import StateGraph, START, END
-from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.sqlite import SqliteSaver
+
+from chatbot_logger import log_event
 
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+_CHROMA_DIR = os.path.join(_BASE_DIR, "chroma_db")
+_CHECKPOINT_DIR = os.path.join(_BASE_DIR, "data")
+_CHECKPOINT_PATH = os.path.join(_CHECKPOINT_DIR, "chatbot.sqlite")
+
+# Cap chat history at last 20 lines (~10 exchanges) to bound prompt token cost.
+_HISTORY_CAP = 20
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.6)
 
-_CHROMA_DIR = os.path.join(_BASE_DIR, "chroma_db")
+
+def _merge_history(old: List[str], new: List[str]) -> List[str]:
+    return (old + new)[-_HISTORY_CAP:]
 
 
 def _build_vector_store():
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-
     if os.path.exists(_CHROMA_DIR) and os.listdir(_CHROMA_DIR):
-        print("Loading existing vector store from disk...")
-        store = Chroma(persist_directory=_CHROMA_DIR, embedding_function=embeddings)
-        print("Vector store loaded.")
-        return store
+        return Chroma(persist_directory=_CHROMA_DIR, embedding_function=embeddings)
 
     loader = TextLoader(os.path.join(_BASE_DIR, "baza_znanja.txt"), encoding="utf-8")
     docs = loader.load()
-
     splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=50)
     chunks = splitter.split_documents(docs)
-
-    print(f"Building vector store from {len(chunks)} chunks...")
-    store = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=_CHROMA_DIR)
-    print("Vector store saved to disk.")
-    return store
+    return Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=_CHROMA_DIR)
 
 
 _vector_store = _build_vector_store()
@@ -43,13 +45,18 @@ retriever = _vector_store.as_retriever(search_kwargs={"k": 3})
 class AgentState(TypedDict):
     question: str
     user_context: str
+    thread_id: str
     documents: List[str]
-    chat_history: Annotated[List[str], operator.add]
+    chat_history: Annotated[List[str], _merge_history]
     is_relevant: str
     answer: str
 
 
-def router(state):
+def _tid(state) -> str:
+    return state.get("thread_id") or "unknown"
+
+
+async def router(state):
     question = state["question"]
     history = "\n".join(state.get("chat_history", [])[-6:])
     prompt = f"""Klasifikuj pitanje korisnika u jednu od dve kategorije:
@@ -62,14 +69,13 @@ Prethodni razgovor: {history}
 Pitanje: {question}
 
 Odgovori ISKLJUČIVO jednom rečju: retrieve ili chat."""
-    decision = llm.invoke(prompt).content.strip().lower()
-    if "retrieve" in decision:
-        return "retrieve_node"
-    else:
-        return "chat_node"
+    decision = (await llm.ainvoke(prompt)).content.strip().lower()
+    route = "retrieve_node" if "retrieve" in decision else "chat_node"
+    log_event(_tid(state), "router", {"question": question, "decision": decision, "route": route})
+    return route
 
 
-def retrieve_node(state):
+async def retrieve_node(state):
     question = state["question"]
     history = "\n".join(state.get("chat_history", [])[-6:])
 
@@ -78,25 +84,28 @@ Prethodni razgovor: {history}
 Preformuliši pitanje na 3 različita načina (sinonimi, profesionalniji rečnik) da poboljšamo pretragu baze znanja.
 Vrati ISKLJUČIVO ta 3 pitanja, svako u novom redu, bez dodatnog teksta ili rednih brojeva."""
 
-    expanded_text = llm.invoke(expansion_prompt).content.strip()
-    queries = []
-    for q in expanded_text.split("\n"):
-        if q.strip():
-            queries.append(q.strip())
+    expanded_text = (await llm.ainvoke(expansion_prompt)).content.strip()
+    queries = [q.strip() for q in expanded_text.split("\n") if q.strip()]
     queries.append(question)
 
-    all_docs = []
+    all_docs: List[str] = []
     seen = set()
     for q in queries:
-        for d in retriever.invoke(q):
+        for d in await retriever.ainvoke(q):
             if d.page_content not in seen:
                 seen.add(d.page_content)
                 all_docs.append(d.page_content)
 
-    return {"documents": all_docs[:6]}
+    docs = all_docs[:6]
+    log_event(_tid(state), "retrieve", {
+        "question": question,
+        "expanded_queries": queries,
+        "doc_count": len(docs),
+    })
+    return {"documents": docs}
 
 
-def grade_node(state):
+async def grade_node(state):
     question = state["question"]
     context = "\n".join(state["documents"])
     prompt = f"""Da li TEKST sadrži informacije koje mogu pomoći u odgovoru na PITANJE — čak i delimično, indirektno, ili povezane informacije koje bi korisnik mogao smatrati korisnim?
@@ -107,37 +116,27 @@ TEKST: {context}
 PITANJE: {question}
 
 Odgovori ISKLJUČIVO sa: yes ili no."""
-    decision = llm.invoke(prompt).content.strip().lower()
-    if "yes" in decision:
-        return {"is_relevant": "yes"}
-    else:
-        return {"is_relevant": "no"}
+    decision = (await llm.ainvoke(prompt)).content.strip().lower()
+    verdict = "yes" if "yes" in decision else "no"
+    log_event(_tid(state), "grade", {"question": question, "verdict": verdict})
+    return {"is_relevant": verdict}
 
 
 def check_relevance(state):
-    if state["is_relevant"] == "yes":
-        return "generate_node"
-    else:
-        return "escalate_node"
+    return "generate_node" if state["is_relevant"] == "yes" else "escalate_node"
 
 
-def generate_node(state):
-    context = "\n\n".join(state["documents"])
+def _build_answer_prompt(state, *, escalate: bool) -> str:
     question = state["question"]
+    context = "\n\n".join(state.get("documents", []))
     user_context = state.get("user_context", "")
     history = "\n".join(state.get("chat_history", [])[-10:])
 
-    if user_context:
-        user_ctx_block = f"\nKontekst korisnika:\n{user_context}"
-    else:
-        user_ctx_block = ""
+    user_ctx_block = f"\nKontekst korisnika:\n{user_context}" if user_context else ""
+    history_block = f"\nPrethodni razgovor:\n{history}" if history else ""
 
-    if history:
-        history_block = f"\nPrethodni razgovor:\n{history}"
-    else:
-        history_block = ""
-
-    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina: alata, kamera, opreme, vozila, stanova, kuća i svega ostalog.
+    if not escalate:
+        return f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina: alata, kamera, opreme, vozila, stanova, kuća i svega ostalog.
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak, jasan i prijateljski. Ne koristi emojije.{user_ctx_block}{history_block}
 
 Na osnovu KONTEKSTA odgovori na PITANJE korisnika:
@@ -147,35 +146,8 @@ KONTEKST:
 PITANJE: {question}
 ODGOVOR:"""
 
-    answer = llm.invoke(prompt).content
-    return {
-        "answer": answer,
-        "chat_history": [f"Korisnik: {question}", f"Bot: {answer}"],
-    }
-
-
-def escalate_node(state):
-    question = state["question"]
-    context = "\n\n".join(state.get("documents", []))
-    user_context = state.get("user_context", "")
-    history = "\n".join(state.get("chat_history", [])[-10:])
-
-    if user_context:
-        user_ctx_block = f"\nKontekst korisnika:\n{user_context}"
-    else:
-        user_ctx_block = ""
-
-    if history:
-        history_block = f"\nPrethodni razgovor:\n{history}"
-    else:
-        history_block = ""
-
-    if context:
-        context_block = f"\nDelimično relevantan kontekst iz baze:\n{context}"
-    else:
-        context_block = ""
-
-    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina: alata, kamera, opreme, vozila, stanova, kuća i svega ostalog.
+    context_block = f"\nDelimično relevantan kontekst iz baze:\n{context}" if context else ""
+    return f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina: alata, kamera, opreme, vozila, stanova, kuća i svega ostalog.
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak, jasan i prijateljski. Ne koristi emojije.
 
 U bazi znanja nisi našao direktan odgovor na pitanje korisnika. Uradi sledeće:
@@ -186,23 +158,12 @@ U bazi znanja nisi našao direktan odgovor na pitanje korisnika. Uradi sledeće:
 PITANJE: {question}
 ODGOVOR:"""
 
-    answer = llm.invoke(prompt).content
-    return {
-        "answer": answer,
-        "chat_history": [f"Korisnik: {question}", f"Bot: {answer}"],
-    }
 
-
-def chat_node(state):
+def _build_chat_prompt(state) -> str:
     question = state["question"]
     history = "\n".join(state.get("chat_history", [])[-10:])
-
-    if history:
-        history_block = f"\nPrethodni razgovor:\n{history}"
-    else:
-        history_block = ""
-
-    prompt = f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina (alati, kamere, oprema, vozila, stanovi, kuće, i sl.).
+    history_block = f"\nPrethodni razgovor:\n{history}" if history else ""
+    return f"""Ti si "bot Igor", asistent na platformi izdajemiznajmljujem.com — tržištu za iznajmljivanje svih vrsta predmeta i nekretnina (alati, kamere, oprema, vozila, stanovi, kuće, i sl.).
 Odgovaraj na srpskom jeziku, latinicom. Budi kratak i prijateljski. Ne koristi emojije.
 Baviš se isključivo pitanjima o platformi i temama vezanim za iznajmljivanje svih vrsta predmeta ili nekretnina.
 Ako pitanje nije vezano za tu temu, ljubazno odbij i vrati korisnika na temu platforme.{history_block}
@@ -210,10 +171,34 @@ Ako pitanje nije vezano za tu temu, ljubazno odbij i vrati korisnika na temu pla
 Korisnik: {question}
 Bot:"""
 
-    answer = llm.invoke(prompt).content
+
+async def generate_node(state):
+    prompt = _build_answer_prompt(state, escalate=False)
+    answer = (await llm.ainvoke(prompt)).content
+    log_event(_tid(state), "generate", {"question": state["question"], "answer_len": len(answer)})
     return {
         "answer": answer,
-        "chat_history": [f"Korisnik: {question}", f"Bot: {answer}"],
+        "chat_history": [f"Korisnik: {state['question']}", f"Bot: {answer}"],
+    }
+
+
+async def escalate_node(state):
+    prompt = _build_answer_prompt(state, escalate=True)
+    answer = (await llm.ainvoke(prompt)).content
+    log_event(_tid(state), "escalate", {"question": state["question"], "answer_len": len(answer)})
+    return {
+        "answer": answer,
+        "chat_history": [f"Korisnik: {state['question']}", f"Bot: {answer}"],
+    }
+
+
+async def chat_node(state):
+    prompt = _build_chat_prompt(state)
+    answer = (await llm.ainvoke(prompt)).content
+    log_event(_tid(state), "chat", {"question": state["question"], "answer_len": len(answer)})
+    return {
+        "answer": answer,
+        "chat_history": [f"Korisnik: {state['question']}", f"Bot: {answer}"],
     }
 
 
@@ -229,14 +214,91 @@ workflow.add_conditional_edges(
 )
 workflow.add_edge("retrieve_node", "grade_node")
 workflow.add_conditional_edges(
-    "grade_node", # source
-    check_relevance,    # path
-    {"generate_node": "generate_node", "escalate_node": "escalate_node"}, #path map
+    "grade_node",
+    check_relevance,
+    {"generate_node": "generate_node", "escalate_node": "escalate_node"},
 )
 workflow.add_edge("generate_node", END)
 workflow.add_edge("escalate_node", END)
 workflow.add_edge("chat_node", END)
 
-memory = MemorySaver()
-agent = workflow.compile(checkpointer=memory)
-print("LangGraph agent compiled successfully.")
+os.makedirs(_CHECKPOINT_DIR, exist_ok=True)
+_checkpoint_conn = sqlite3.connect(_CHECKPOINT_PATH, check_same_thread=False)
+checkpointer = SqliteSaver(_checkpoint_conn)
+
+agent = workflow.compile(checkpointer=checkpointer)
+print("LangGraph agent compiled (async, SQLite checkpointer, logger wired).")
+
+
+# ─── Streaming helpers ───────────────────────────────────────────────────────
+# For SSE we replicate the router→(retrieve→grade→(generate|escalate) | chat)
+# flow but stream tokens from the final answering LLM call.
+
+async def _classify_route(question: str, history_lines: List[str]) -> str:
+    history = "\n".join(history_lines[-6:])
+    prompt = f"""Klasifikuj pitanje korisnika u jednu od dve kategorije:
+- retrieve
+- chat
+Prethodni razgovor: {history}
+Pitanje: {question}
+Odgovori ISKLJUČIVO jednom rečju."""
+    decision = (await llm.ainvoke(prompt)).content.strip().lower()
+    return "retrieve" if "retrieve" in decision else "chat"
+
+
+async def stream_answer(question: str, thread_id: str, user_context: str) -> AsyncIterator[str]:
+    """Yield answer token-by-token. State history is loaded/saved via checkpointer."""
+    config = {"configurable": {"thread_id": thread_id}}
+
+    snapshot = await agent.aget_state(config)
+    prior = snapshot.values if snapshot and snapshot.values else {}
+    history_lines: List[str] = list(prior.get("chat_history", []))
+
+    route = await _classify_route(question, history_lines)
+    log_event(thread_id, "router_stream", {"question": question, "route": route})
+
+    if route == "retrieve":
+        docs_state: List[str] = []
+        try:
+            for d in await retriever.ainvoke(question):
+                docs_state.append(d.page_content)
+        except Exception as e:
+            log_event(thread_id, "retrieve_stream_error", {"error": str(e)})
+        state = {
+            "question": question,
+            "user_context": user_context,
+            "documents": docs_state[:6],
+            "chat_history": history_lines,
+        }
+        prompt = _build_answer_prompt(state, escalate=(len(docs_state) == 0))
+        event = "generate_stream" if docs_state else "escalate_stream"
+    else:
+        state = {
+            "question": question,
+            "user_context": user_context,
+            "chat_history": history_lines,
+        }
+        prompt = _build_chat_prompt(state)
+        event = "chat_stream"
+
+    collected: List[str] = []
+    async for chunk in llm.astream(prompt):
+        piece = getattr(chunk, "content", "") or ""
+        if piece:
+            collected.append(piece)
+            yield piece
+
+    full_answer = "".join(collected)
+    log_event(thread_id, event, {"question": question, "answer_len": len(full_answer)})
+
+    # Persist to checkpointer so future turns see this exchange in history.
+    new_history = _merge_history(history_lines, [f"Korisnik: {question}", f"Bot: {full_answer}"])
+    await agent.aupdate_state(
+        config,
+        {
+            "question": question,
+            "user_context": user_context,
+            "answer": full_answer,
+            "chat_history": new_history,
+        },
+    )
