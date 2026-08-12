@@ -71,9 +71,7 @@ try:
         def forward(self, x):
             return self.net(x)
 
-    with open("encoder_model_name.txt", "r", encoding="utf-8") as f:
-        encoder_name = f.read().strip()
-
+    encoder_name = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
     print(f"Loading sentence-transformer encoder: {encoder_name}")
     _encoder = SentenceTransformer(encoder_name, device="cpu")
 

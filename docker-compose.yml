@@ -60,6 +60,7 @@ services:
     volumes:
       - chroma_data:/app/chroma_db
       - chatbot_data:/app/data
+      - ml_hf_cache:/app/.hf_cache
     ports:
       - "8000:8000"
 
@@ -67,3 +68,4 @@ volumes:
   mysql_data:
   chroma_data:
   chatbot_data:
+  ml_hf_cache:

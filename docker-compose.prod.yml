@@ -49,6 +49,7 @@ services:
     volumes:
       - chroma_data:/app/chroma_db
       - chatbot_data:/app/data
+      - ml_hf_cache:/app/.hf_cache
 
   # ─── Nginx reverse proxy ──────────────────────────────────────────────────────
   nginx:
@@ -85,3 +86,4 @@ volumes:
   certbot-www:
   chroma_data:
   chatbot_data:
+  ml_hf_cache:
