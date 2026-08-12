@@ -40,18 +40,18 @@ else
   echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 fi
 
-echo "▶ [4/6] Pull najnovijih image-a"
+echo "▶ [4/6] Cleanup starih image-a (pre pull-a da bi bilo mesta)"
+docker image prune -af
+
+echo "▶ [5/6] Pull najnovijih image-a"
 docker compose -f "$COMPOSE_FILE" pull backend frontend ml-service
 
-echo "▶ [5/6] Restart servisa (rolling, bez down-a MySQL-a)"
+echo "▶ [6/6] Restart servisa (rolling, bez down-a MySQL-a)"
 docker compose -f "$COMPOSE_FILE" up -d --no-deps --remove-orphans backend frontend ml-service
 
 # Nginx kešira upstream DNS — restart je obavezan da bi video nove IP-jeve
 # containera koji su tek zamenjeni. Bez ovoga → 502 Bad Gateway.
 echo "    Restarting Nginx (upstream DNS refresh)..."
 docker compose -f "$COMPOSE_FILE" restart nginx
-
-echo "▶ [6/6] Cleanup dangling image-a"
-docker image prune -f
 
 echo "✓ Deploy završen — commit $IMAGE_TAG"
