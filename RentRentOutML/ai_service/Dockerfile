@@ -9,11 +9,9 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 
 # Pre-download sentence-transformer model tokom build-a (~470MB) da runtime nema cold-start download.
 # HF cache se drzi u /app/.hf_cache.
-COPY encoder_model_name.txt .
 ENV HF_HOME=/app/.hf_cache
 RUN python -c "from sentence_transformers import SentenceTransformer; \
-    name=open('encoder_model_name.txt').read().strip(); \
-    SentenceTransformer(name)"
+    SentenceTransformer('sentence-transformers/paraphrase-multilingual-mpnet-base-v2')"
 
 COPY . .
 
