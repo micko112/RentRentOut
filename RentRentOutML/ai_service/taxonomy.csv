@@ -1,0 +1,719 @@
+id,name,parent_id,parent_name,is_leaf
+100,Građevinska oprema i alati,,,0
+101,Bušilice i šrafilice,100,Građevinska oprema i alati,0
+102,Struja i agregati,100,Građevinska oprema i alati,0
+103,Testerisanje i sečenje,100,Građevinska oprema i alati,0
+104,Brušenje i poliranje,100,Građevinska oprema i alati,0
+105,Ventilacija i grejanje,100,Građevinska oprema i alati,1
+106,Merni instrumenti,100,Građevinska oprema i alati,0
+107,Ručni alati,100,Građevinska oprema i alati,0
+108,Krečenje i tapete,100,Građevinska oprema i alati,0
+109,Glodanje i hoblovanje,100,Građevinska oprema i alati,0
+110,Skele i podupirači,100,Građevinska oprema i alati,0
+200,Elektronika,,,0
+201,Audio oprema i zvuk,200,Elektronika,0
+202,Dronovi,200,Elektronika,0
+203,Projektori i televizori,200,Elektronika,0
+204,Računari i oprema,200,Elektronika,0
+205,Video igre i konzole,200,Elektronika,0
+206,Mobilni telefoni i tableti,200,Elektronika,0
+207,Radio stanice i toki-voki,200,Elektronika,1
+208,Kancelarijske mašine,200,Elektronika,0
+209,POS terminali,200,Elektronika,1
+210,Ostalo u elektronici,200,Elektronika,1
+300,Foto i Video,,,0
+301,Fotoaparati i kamere,300,Foto i Video,0
+302,Objektivi,300,Foto i Video,0
+303,Blicevi i rasveta,300,Foto i Video,0
+304,Stativi i rigovi,300,Foto i Video,0
+305,Foto/Video paketi,300,Foto i Video,1
+306,Monitori,300,Foto i Video,1
+307,Baterije za kamere,300,Foto i Video,1
+308,Memorijske kartice,300,Foto i Video,1
+309,Foto pozadine,300,Foto i Video,0
+310,Ostalo u foto i video,300,Foto i Video,1
+400,Bašta,,,0
+401,Baštenske mašine,400,Bašta,0
+402,Merdevine,400,Bašta,0
+403,Održavanje travnjaka,400,Bašta,0
+404,Baštenski alati,400,Bašta,0
+405,Baštenski nameštaj,400,Bašta,1
+406,Ostalo u bašti,400,Bašta,1
+500,Kuća i dom,,,0
+501,Stilizovanje i dekoracija,500,Kuća i dom,0
+502,Čišćenje i pranje,500,Kuća i dom,0
+503,Kuhinjski aparati,500,Kuća i dom,0
+504,Oprema za decu,500,Kuća i dom,0
+505,Lična nega,500,Kuća i dom,0
+506,Mašine za šivenje,500,Kuća i dom,1
+507,Oprema za selidbe,500,Kuća i dom,0
+508,Oprema za kućne ljubimce,500,Kuća i dom,0
+509,Ostalo u kući,500,Kuća i dom,1
+600,Proslave i događaji,,,0
+601,"Zvuk, rasveta i bina",600,Proslave i događaji,0
+602,Odeća i kostimi,600,Proslave i događaji,0
+603,Nameštaj za proslave,600,Proslave i događaji,0
+604,Ketering i kuhinja,600,Proslave i događaji,0
+605,Aktivnosti i zabava,600,Proslave i događaji,0
+606,Šatori i tende,600,Proslave i događaji,0
+607,Dekoracija,600,Proslave i događaji,0
+608,Party paketi,600,Proslave i događaji,1
+609,Grejalice i pečurke,600,Proslave i događaji,1
+610,Ostalo za proslave,600,Proslave i događaji,1
+700,Sport i rekreacija,,,0
+701,Muzički instrumenti,700,Sport i rekreacija,0
+702,Kampovanje i outdoor,700,Sport i rekreacija,0
+703,Biciklizam,700,Sport i rekreacija,0
+704,Igra i hobi,700,Sport i rekreacija,0
+705,Sportski rekviziti,700,Sport i rekreacija,0
+706,Sportovi na vodi,700,Sport i rekreacija,0
+707,Trening i teretana,700,Sport i rekreacija,0
+708,Zimski sportovi,700,Sport i rekreacija,0
+709,Putovanja i koferi,700,Sport i rekreacija,0
+710,Mobilnost i medicinska nega,700,Sport i rekreacija,0
+800,Vozila i oprema,,,0
+801,Auto oprema,800,Vozila i oprema,0
+802,Alati za radionicu,800,Vozila i oprema,0
+803,Čamci i plovila,800,Vozila i oprema,0
+804,Prikolice,800,Vozila i oprema,0
+805,Kamperi i kamp prikolice,800,Vozila i oprema,0
+806,Motocikli i oprema,800,Vozila i oprema,0
+807,Prikolice za konje,800,Vozila i oprema,0
+808,Ostala vozila,800,Vozila i oprema,1
+900,Ostalo,,,0
+901,Prostori,900,Ostalo,0
+1001,Komprimovani vazduh,100,Građevinska oprema i alati,0
+1002,Građevinska mehanizacija,100,Građevinska oprema i alati,0
+1003,Podne obloge i pločice,100,Građevinska oprema i alati,0
+1005,Mašine za uređenje terena,100,Građevinska oprema i alati,0
+1006,Klamerice i ekseri,100,Građevinska oprema i alati,0
+1007,Vodoinstalaterski alati,100,Građevinska oprema i alati,0
+1008,Zaštitna oprema,100,Građevinska oprema i alati,1
+1009,Transport i dizanje,100,Građevinska oprema i alati,0
+1010,Paketi alata,100,Građevinska oprema i alati,1
+1011,Aparati za zavarivanje,100,Građevinska oprema i alati,0
+1012,Radna rasveta,100,Građevinska oprema i alati,1
+1013,Ostalo u građevini i alatima,100,Građevinska oprema i alati,1
+1015,Inverter,200,Elektronika,1
+1017,Satelitska oprema,200,Elektronika,1
+1018,Pametni zvučnik,200,Elektronika,1
+1019,Baterije i punjači,102,Struja i agregati,1
+1020,Skidač izolacije,107,Ručni alati,1
+1021,Kalemovi i električni kablovi,107,Ručni alati,1
+1022,Razvodni ormar,102,Struja i agregati,1
+1024,Agregat,102,Struja i agregati,1
+1025,Aligator testera,103,Testerisanje i sečenje,1
+1026,Tračna testera,103,Testerisanje i sečenje,1
+1027,Sekač vijaka,103,Testerisanje i sečenje,1
+1028,Cirkularna testera,103,Testerisanje i sečenje,1
+1029,Kombinovana testera,103,Testerisanje i sečenje,1
+1030,Vodilica,103,Testerisanje i sečenje,1
+1031,Ručna testera,103,Testerisanje i sečenje,1
+1032,Ubodna testera,103,Testerisanje i sečenje,1
+1033,Makaze za metal,103,Testerisanje i sečenje,1
+1034,Kružna testera za metal,103,Testerisanje i sečenje,1
+1035,Stoni ger za drvo,103,Testerisanje i sečenje,1
+1036,Ručni ger za drvo,103,Testerisanje i sečenje,1
+1037,Mobilna pilana,103,Testerisanje i sečenje,1
+1038,Oscilirajući višenamenski alat / Multialat,103,Testerisanje i sečenje,1
+1039,Plazma rezač,103,Testerisanje i sečenje,1
+1040,Narezač,103,Testerisanje i sečenje,1
+1041,Presa,103,Testerisanje i sečenje,1
+1042,Sabljasta testera,103,Testerisanje i sečenje,1
+1043,Stona testera,103,Testerisanje i sečenje,1
+1044,Rezač pločica,103,Testerisanje i sečenje,1
+1045,Ostalo u testerama,103,Testerisanje i sečenje,1
+1046,Ugaona brusilica,104,Brušenje i poliranje,1
+1047,Trakasta turpija,104,Brušenje i poliranje,1
+1048,Trakasta brusilica,104,Brušenje i poliranje,1
+1049,Stona brusilica,104,Brušenje i poliranje,1
+1050,Precizna brusilica,104,Brušenje i poliranje,1
+1051,Brusilica za suvi zid,104,Brušenje i poliranje,1
+1052,Mašina za graviranje,104,Brušenje i poliranje,1
+1053,Brusilica za podove,104,Brušenje i poliranje,1
+1054,Toplotni pištolj,104,Brušenje i poliranje,1
+1055,Orbitalna brusilica,104,Brušenje i poliranje,1
+1056,Polirka,104,Brušenje i poliranje,1
+1057,Listna brusilica,104,Brušenje i poliranje,1
+1058,Ostalo u brušenju,104,Brušenje i poliranje,1
+1059,Ostale brusilice,104,Brušenje i poliranje,1
+1060,Merač protoka vazduha,106,Merni instrumenti,1
+1061,Merač kvaliteta vazduha,106,Merni instrumenti,1
+1062,Uglomer,106,Merni instrumenti,1
+1063,Tražač kabla,106,Merni instrumenti,1
+1064,Merač energije,106,Merni instrumenti,1
+1065,IC termometar,106,Merni instrumenti,1
+1066,Laserski daljinomer,106,Merni instrumenti,1
+1067,Laserski nivelator,106,Merni instrumenti,1
+1068,Fotometar,106,Merni instrumenti,1
+1069,Metar,106,Merni instrumenti,1
+1070,Detektor metala,106,Merni instrumenti,1
+1071,Merač vlage,106,Merni instrumenti,1
+1072,Multimetar,106,Merni instrumenti,1
+1073,Osciloskop,106,Merni instrumenti,1
+1074,Detektor radona,106,Merni instrumenti,1
+1075,Rotirajući laser,106,Merni instrumenti,1
+1076,Vaga,106,Merni instrumenti,1
+1077,Merač buke,106,Merni instrumenti,1
+1078,Libela,106,Merni instrumenti,1
+1079,Tražač greda,106,Merni instrumenti,1
+1080,Termovizijska kamera,106,Merni instrumenti,1
+1081,Tahimetar,106,Merni instrumenti,1
+1082,Ostalo u mernim instrumentima,106,Merni instrumenti,1
+1083,Pištolj za silikon,107,Ručni alati,1
+1084,Stega i mengel,107,Ručni alati,1
+1085,Pijuk,107,Ručni alati,1
+1086,Regulator šarki,107,Ručni alati,1
+1087,Pištolj za lepak,107,Ručni alati,1
+1088,Čekić,107,Ručni alati,1
+1089,Udarni odvijač,107,Ručni alati,1
+1090,Klješta,107,Ručni alati,1
+1091,Izvlakač,107,Ručni alati,1
+1092,Macola,107,Ručni alati,1
+1093,Lemilica,107,Ručni alati,1
+1094,Ključevi i gedore,107,Ručni alati,1
+1095,Kofer za alat,107,Ručni alati,1
+1096,Moment ključ,107,Ručni alati,1
+1098,Ključ,107,Ručni alati,1
+1099,Ostalo u ručnim alatima,107,Ručni alati,1
+1100,Mešalica boje,108,Krečenje i tapete,1
+1101,NCS karta boja,108,Krečenje i tapete,1
+1102,Merač boja,108,Krečenje i tapete,1
+1103,Skidač boje,108,Krečenje i tapete,1
+1104,Nogari za farbanje,108,Krečenje i tapete,1
+1105,Pištolj za boju,108,Krečenje i tapete,1
+1106,Sto za tapete,108,Krečenje i tapete,1
+1107,Prskalica za malter,108,Krečenje i tapete,1
+1108,Kutija za valjak,108,Krečenje i tapete,1
+1109,Skidač tapeta,108,Krečenje i tapete,1
+1110,Ostalo u farbanju,108,Krečenje i tapete,1
+1111,Ručno rende,109,Glodanje i hoblovanje,1
+1112,Strug,109,Glodanje i hoblovanje,1
+1113,Glodalica,109,Glodanje i hoblovanje,1
+1114,Stol za glodalicu,109,Glodanje i hoblovanje,1
+1115,Stono rende,109,Glodanje i hoblovanje,1
+1116,Ostalo u glodanju,109,Glodanje i hoblovanje,1
+1117,Viljuškar,1009,Transport i dizanje,1
+1118,Vakuumski podizač stakla,1009,Transport i dizanje,1
+1119,Paletni viljuškar,1009,Transport i dizanje,1
+1120,Platforma za prevoz,1009,Transport i dizanje,1
+1121,Kolica za teret,1009,Transport i dizanje,1
+1122,Vitlo,1009,Transport i dizanje,1
+1123,Ostalo u transportu,1009,Transport i dizanje,1
+1124,DJ oprema,201,Audio oprema i zvuk,1
+1125,Slušalice,201,Audio oprema i zvuk,1
+1126,Luper,201,Audio oprema i zvuk,1
+1127,Mikrofon,201,Audio oprema i zvuk,1
+1128,Muzički instrumenti,201,Audio oprema i zvuk,1
+1129,PA sistem,201,Audio oprema i zvuk,1
+1130,Prenosni zvučnik,201,Audio oprema i zvuk,1
+1131,Zvučna kartica,201,Audio oprema i zvuk,1
+1132,Zvučnik,201,Audio oprema i zvuk,1
+1133,Ostalo u zvuku,201,Audio oprema i zvuk,1
+1134,Oprema za dronove,202,Dronovi,1
+1135,DJI Avata,202,Dronovi,1
+1136,DJI FPV,202,Dronovi,1
+1137,DJI Inspire,202,Dronovi,1
+1138,DJI Mavic,202,Dronovi,1
+1139,DJI Mavic 3,202,Dronovi,1
+1140,DJI Phantom,202,Dronovi,1
+1141,DJI Spark,202,Dronovi,1
+1142,Podvodni dronovi,202,Dronovi,1
+1143,Ostali dronovi,202,Dronovi,1
+1144,4G ruter,204,Računari i oprema,1
+1145,Računarska oprema,204,Računari i oprema,1
+1146,Desktop računar,204,Računari i oprema,1
+1147,Grafička tabla,204,Računari i oprema,1
+1148,Laptop,204,Računari i oprema,1
+1149,Mrežna oprema,204,Računari i oprema,1
+1150,PC monitori,204,Računari i oprema,1
+1151,Ostalo u računarima,204,Računari i oprema,1
+1152,Arkadna mašina,205,Video igre i konzole,1
+1153,Igrica,205,Video igre i konzole,1
+1154,Konzola,205,Video igre i konzole,1
+1155,Ručni kontroler,205,Video igre i konzole,1
+1156,Simulator oprema,205,Video igre i konzole,1
+1157,VR naočale,205,Video igre i konzole,1
+1158,Ostalo u video igrama,205,Video igre i konzole,1
+1159,Oprema za mobilne i tablete,206,Mobilni telefoni i tableti,1
+1160,Gimbal za mobilni,206,Mobilni telefoni i tableti,1
+1161,Mobilni telefon,206,Mobilni telefoni i tableti,1
+1162,Pametni sat,206,Mobilni telefoni i tableti,1
+1163,Solarni punjač,206,Mobilni telefoni i tableti,1
+1164,Tablet,206,Mobilni telefoni i tableti,1
+1165,3D štampač,208,Kancelarijske mašine,1
+1166,Štampač nalepnica,208,Kancelarijske mašine,1
+1167,Mašina za laminiranje,208,Kancelarijske mašine,1
+1168,Laserski rezač,208,Kancelarijske mašine,1
+1169,Rezač papira,208,Kancelarijske mašine,1
+1170,Skener za fotografije,208,Kancelarijske mašine,1
+1171,Štampač,208,Kancelarijske mašine,1
+1172,Skener,208,Kancelarijske mašine,1
+1173,Rezač dokumenata,208,Kancelarijske mašine,1
+1174,Ostalo u kancelarijskim mašinama,208,Kancelarijske mašine,1
+1175,Ugaona bušilica,101,Bušilice i šrafilice,1
+1176,Set bitova,101,Bušilice i šrafilice,1
+1177,Pikamer,101,Bušilice i šrafilice,1
+1178,Burgije,101,Bušilice i šrafilice,1
+1179,Mašina za bušenje,101,Bušilice i šrafilice,1
+1180,Krunska testera,101,Bušilice i šrafilice,1
+1181,Udarna bušilica,101,Bušilice i šrafilice,1
+1182,Udarni ključ,101,Bušilice i šrafilice,1
+1183,Stub bušilica,101,Bušilice i šrafilice,1
+1184,Ankeri i tiplovi,101,Bušilice i šrafilice,1
+1185,Rotacioni čekić,101,Bušilice i šrafilice,1
+1186,Šrafilice,101,Bušilice i šrafilice,1
+1187,Mašina za bušenje kamena,101,Bušilice i šrafilice,1
+1188,Ostalo u bušilicama i šrafilicama,101,Bušilice i šrafilice,1
+1189,Vazdušni pištolj,1001,Komprimovani vazduh,1
+1190,Crevo za komprimovani vazduh,1001,Komprimovani vazduh,1
+1191,Kompresor,1001,Komprimovani vazduh,1
+1192,Ostalo u komprimovanom vazduhu,1001,Komprimovani vazduh,1
+1193,Platforma za rad na visini,1002,Građevinska mehanizacija,1
+1194,Damper,1002,Građevinska mehanizacija,1
+1195,Bager,1002,Građevinska mehanizacija,1
+1196,Utovarivač,1002,Građevinska mehanizacija,1
+1197,Mini damper,1002,Građevinska mehanizacija,1
+1198,Traktor,1002,Građevinska mehanizacija,1
+1199,Ostalo u građevinskoj mehanizaciji,1002,Građevinska mehanizacija,1
+1200,Alat za decking,1003,Podne obloge i pločice,1
+1201,Brusilica za podove,1003,Podne obloge i pločice,1
+1202,Mašina za skidanje podova,1003,Podne obloge i pločice,1
+1203,Paket za podove,1003,Podne obloge i pločice,1
+1204,Rezač laminata,1003,Podne obloge i pločice,1
+1205,Rezač pločica,1003,Podne obloge i pločice,1
+1206,Paket za keramiku,1003,Podne obloge i pločice,1
+1207,Ostalo u podnim oblogama,1003,Podne obloge i pločice,1
+1208,Vibro nabijač,1005,Mašine za uređenje terena,1
+1209,Beton i armatura,1005,Mašine za uređenje terena,1
+1210,Građevinska grabulja,1005,Mašine za uređenje terena,1
+1211,Svrdlo za zemlju,1005,Mašine za uređenje terena,1
+1212,Rezač kamena,1005,Mašine za uređenje terena,1
+1213,Ostalo u mehanizaciji terena,1005,Mašine za uređenje terena,1
+1214,Pištolj za eksere,1006,Klamerice i ekseri,1
+1215,Pištolj za klamerice,1006,Klamerice i ekseri,1
+1216,Alati za proširivanje,1007,Vodoinstalaterski alati,1
+1217,Rezač cevi,1007,Vodoinstalaterski alati,1
+1218,Ključ za cevi,1007,Vodoinstalaterski alati,1
+1219,Savijač cevi,1007,Vodoinstalaterski alati,1
+1220,Presa,1007,Vodoinstalaterski alati,1
+1221,Tester pritiska,1007,Vodoinstalaterski alati,1
+1222,Sanipex alati,1007,Vodoinstalaterski alati,1
+1223,Ostalo u vodoinstalaciji,1007,Vodoinstalaterski alati,1
+1224,Električni aparat za zavarivanje,1011,Aparati za zavarivanje,1
+1225,Gasni aparat za zavarivanje,1011,Aparati za zavarivanje,1
+1226,MIG aparat,1011,Aparati za zavarivanje,1
+1227,Plastični zavarivač,1011,Aparati za zavarivanje,1
+1228,Maska za zavarivanje,1011,Aparati za zavarivanje,1
+1229,Ostalo u zavarivanju,1011,Aparati za zavarivanje,1
+1230,Kolica za građevinski otpad,110,Skele i podupirači,1
+1231,Gradilišna ograda,110,Skele i podupirači,1
+1232,Građevinska skela,110,Skele i podupirači,1
+1233,Prekrivači prozora,110,Skele i podupirači,1
+1234,Lift za suvi zid,110,Skele i podupirači,1
+1235,Podupirač,110,Skele i podupirači,1
+1236,Nogari za farbanje,110,Skele i podupirači,1
+1237,Sto za tapete,110,Skele i podupirači,1
+1238,Kolica za gipsane ploče,110,Skele i podupirači,1
+1239,Radna platforma,110,Skele i podupirači,1
+1240,Radni sto,110,Skele i podupirači,1
+1241,Ostalo u skelama,110,Skele i podupirači,1
+1242,Veliki ekran,203,Projektori i televizori,1
+1243,DVD i Blu-ray,203,Projektori i televizori,1
+1244,Media plejeri,203,Projektori i televizori,1
+1245,Grafoskop,203,Projektori i televizori,1
+1246,Projektor,203,Projektori i televizori,1
+1247,Projekciono platno,203,Projektori i televizori,1
+1248,Slajd projektor,203,Projektori i televizori,1
+1249,TV,203,Projektori i televizori,1
+1250,VHS plejer,203,Projektori i televizori,1
+1251,Ostalo u projektorima i TV,203,Projektori i televizori,1
+1252,Kamkorder,301,Fotoaparati i kamere,1
+1253,Kompaktni fotoaparat,301,Fotoaparati i kamere,1
+1254,DSLR fotoaparat,301,Fotoaparati i kamere,1
+1255,Digitalna kino kamera,301,Fotoaparati i kamere,1
+1256,Filmska kamera,301,Fotoaparati i kamere,1
+1257,Mirrorless kamera,301,Fotoaparati i kamere,1
+1258,Polaroid kamera,301,Fotoaparati i kamere,1
+1259,Specijalne kamere,301,Fotoaparati i kamere,1
+1260,Ostale kamere,301,Fotoaparati i kamere,1
+1261,Torba za kameru,301,Fotoaparati i kamere,1
+1262,Senzor boja,301,Fotoaparati i kamere,1
+1263,Follow focus i nosač objektiva,301,Fotoaparati i kamere,1
+1264,Foto štampač,301,Fotoaparati i kamere,1
+1265,Streaming oprema,301,Fotoaparati i kamere,1
+1266,Teleprompter,301,Fotoaparati i kamere,1
+1267,Tela kamera za ronjenje,301,Fotoaparati i kamere,1
+1268,Vikendica,901,Prostori,1
+1269,Kancelarija,901,Prostori,1
+1270,Parking i garaža,901,Prostori,1
+1271,Skladišna jedinica,901,Prostori,1
+1272,Studio,901,Prostori,1
+1273,Ostali prostori,901,Prostori,1
+1274,Kinematografski prime objektivi,302,Objektivi,1
+1275,Konverter,302,Objektivi,1
+1276,DSLR objektivi,302,Objektivi,1
+1277,Filter za objektiv,302,Objektivi,1
+1278,Objektivi za srednji format,302,Objektivi,1
+1279,Mirrorless objektivi,302,Objektivi,1
+1280,Oprema za objektive,302,Objektivi,1
+1281,Ostali objektivi,302,Objektivi,1
+1282,Blic,303,Blicevi i rasveta,1
+1283,Okidač blica,303,Blicevi i rasveta,1
+1284,Reflektorski ekran,303,Blicevi i rasveta,1
+1285,Ring svetlo,303,Blicevi i rasveta,1
+1286,Softbox i kišobran,303,Blicevi i rasveta,1
+1287,Speed Booster,303,Blicevi i rasveta,1
+1288,Studijski blic,303,Blicevi i rasveta,1
+1289,Studijska lampa,303,Blicevi i rasveta,1
+1290,Ostalo u blicevima i rasveti,303,Blicevi i rasveta,1
+1291,C-stalak,304,Stativi i rigovi,1
+1292,Kamera na kablu,304,Stativi i rigovi,1
+1293,Rigovi i ramena za kameru,304,Stativi i rigovi,1
+1294,Nosač za automobil,304,Stativi i rigovi,1
+1295,Stege i hvatači,304,Stativi i rigovi,1
+1296,Kran i jib,304,Stativi i rigovi,1
+1297,Gimbali i stabilizatori,304,Stativi i rigovi,1
+1298,Gorillapod,304,Stativi i rigovi,1
+1299,Monopod,304,Stativi i rigovi,1
+1300,Slajder i dolly,304,Stativi i rigovi,1
+1301,Tronožac,304,Stativi i rigovi,1
+1302,Glava tronošca,304,Stativi i rigovi,1
+1303,Ostalo u stativima,304,Stativi i rigovi,1
+1304,Zeleni ekran,309,Foto pozadine,1
+1305,Jednobojna pozadina,309,Foto pozadine,1
+1306,Pozadina sa motivom,309,Foto pozadine,1
+1307,Pozadina sa uzorkom,309,Foto pozadine,1
+1308,Ostalo u pozadinama,309,Foto pozadine,1
+1309,Motorna testera,401,Baštenske mašine,1
+1310,Trimer za travu,401,Baštenske mašine,1
+1311,Pumpa za odvodnjavanje,401,Baštenske mašine,1
+1312,Mašina za drva,401,Baštenske mašine,1
+1313,Baštensko sito,401,Baštenske mašine,1
+1314,Baštenski drobilica,401,Baštenske mašine,1
+1315,Alati za čišćenje oluka,401,Baštenske mašine,1
+1316,Makaze za živicu,401,Baštenske mašine,1
+1317,Duvač lišća,401,Baštenske mašine,1
+1318,Cepač drva,401,Baštenske mašine,1
+1319,Usisivač za lišće,401,Baštenske mašine,1
+1320,Čistač terasa,401,Baštenske mašine,1
+1321,Robot za bazen,401,Baštenske mašine,1
+1322,Visokotlačni perač,401,Baštenske mašine,1
+1323,Čistač krova,401,Baštenske mašine,1
+1324,Freza,401,Baštenske mašine,1
+1325,Freza za panjeve,401,Baštenske mašine,1
+1326,Mašina za metenje,401,Baštenske mašine,1
+1327,Drobionica drveta,401,Baštenske mašine,1
+1328,Ostalo u baštenskim mašinama,401,Baštenske mašine,1
+1329,Kombinovane merdevine,402,Merdevine,1
+1330,Obične merdevine,402,Merdevine,1
+1331,Merdevine za stepenište,402,Merdevine,1
+1332,Stolica-stepenik,402,Merdevine,1
+1333,Stepenik,402,Merdevine,1
+1334,Teleskopske merdevine,402,Merdevine,1
+1335,Detektor kablova za robotske kosilice,403,Održavanje travnjaka,1
+1336,Mašina za polaganje kablova,403,Održavanje travnjaka,1
+1337,Kompostni valjak,403,Održavanje travnjaka,1
+1338,Baštenski valjak,403,Održavanje travnjaka,1
+1339,Trimer za ivice travnjaka,403,Održavanje travnjaka,1
+1340,Grabulje za nivelisanje,403,Održavanje travnjaka,1
+1341,Kosilica,403,Održavanje travnjaka,1
+1342,Ostalo u održavanju travnjaka,403,Održavanje travnjaka,1
+1343,Skarifajzer,403,Održavanje travnjaka,1
+1344,Rasipač za đubrivo,403,Održavanje travnjaka,1
+1345,Sekira,404,Baštenski alati,1
+1346,Bure za spaljivanje,404,Baštenski alati,1
+1347,Berač voća,404,Baštenski alati,1
+1348,Baštensko crevo,404,Baštenski alati,1
+1349,Leđna prskalica,404,Baštenski alati,1
+1350,Aerator sa šupljim klinovima,404,Baštenski alati,1
+1351,Gvozdena šipka,404,Baštenski alati,1
+1352,Zaštita od štetočina,404,Baštenski alati,1
+1353,Kramp,404,Baštenski alati,1
+1354,Pobijač stubova,404,Baštenski alati,1
+1355,Vrtlarska testera i škare,404,Baštenski alati,1
+1356,Kolica za baštu,404,Baštenski alati,1
+1357,Lopata,404,Baštenski alati,1
+1358,Lopata za sneg,404,Baštenski alati,1
+1359,Nabijač,404,Baštenski alati,1
+1360,Kontrola korova,404,Baštenski alati,1
+1361,Kolica za prevoz,404,Baštenski alati,1
+1362,Ostalo u baštenskim alatima,404,Baštenski alati,1
+1363,Pomoćni krevet,501,Stilizovanje i dekoracija,1
+1364,Nameštaj,501,Stilizovanje i dekoracija,1
+1365,Slike,501,Stilizovanje i dekoracija,1
+1366,Rekviziti,501,Stilizovanje i dekoracija,1
+1367,Stilizovanje,501,Stilizovanje i dekoracija,1
+1368,Ostalo u dekoraciji,501,Stilizovanje i dekoracija,1
+1369,Čistač tepiha i tapaciringa,502,Čišćenje i pranje,1
+1370,Parna presa za odeću,502,Čišćenje i pranje,1
+1371,Čistač odvoda,502,Čišćenje i pranje,1
+1372,Pegla,502,Čišćenje i pranje,1
+1373,Ribač podova,502,Čišćenje i pranje,1
+1374,Parna mašina za čišćenje,502,Čišćenje i pranje,1
+1375,Ultrazvučno čišćenje,502,Čišćenje i pranje,1
+1376,Usisivač,502,Čišćenje i pranje,1
+1377,Čistač prozora,502,Čišćenje i pranje,1
+1378,Ostalo u čišćenju i pranju,502,Čišćenje i pranje,1
+1379,Varenje piva i vinarstvo,503,Kuhinjski aparati,1
+1380,Dehidrator hrane,503,Kuhinjski aparati,1
+1381,Centrifuga za med,503,Kuhinjski aparati,1
+1382,Oštrač noževa,503,Kuhinjski aparati,1
+1383,Mini rerna,503,Kuhinjski aparati,1
+1384,Lonci i tiganje,503,Kuhinjski aparati,1
+1385,Sous Vide aparat,503,Kuhinjski aparati,1
+1386,Sokovnik na paru,503,Kuhinjski aparati,1
+1387,Kuhinjski pribor i aparati,503,Kuhinjski aparati,1
+1388,Ostalo u kuhinji,503,Kuhinjski aparati,1
+1389,Nosiljka i stolica za bebu,504,Oprema za decu,1
+1390,Bebi monitor,504,Oprema za decu,1
+1391,Grejač bočica,504,Oprema za decu,1
+1392,Pumpa za majčino mleko,504,Oprema za decu,1
+1393,Autosedište,504,Oprema za decu,1
+1394,Dečiji bicikli i oprema,504,Oprema za decu,1
+1395,Dečija odeća,504,Oprema za decu,1
+1396,Dečiji nameštaj,504,Oprema za decu,1
+1397,Jastuk za dojenje,504,Oprema za decu,1
+1398,Prostirka za igru,504,Oprema za decu,1
+1399,Kolica i oprema,504,Oprema za decu,1
+1400,Igračke,504,Oprema za decu,1
+1401,Putovanje s decom,504,Oprema za decu,1
+1402,Ostalo za decu,504,Oprema za decu,1
+1403,Merač krvnog pritiska,505,Lična nega,1
+1404,Epilacija,505,Lična nega,1
+1405,Stilizovanje kose,505,Lična nega,1
+1406,Ostalo u ličnoj nezi,505,Lična nega,1
+1407,Kutije za selidbu,507,Oprema za selidbe,1
+1408,Kolica za selidbu,507,Oprema za selidbe,1
+1409,Remeni i pojasevi za selidbu,507,Oprema za selidbe,1
+1410,Kolica za teret,507,Oprema za selidbe,1
+1411,Ostalo u selidbi,507,Oprema za selidbe,1
+1412,Mašinica za šišanje pasa,508,Oprema za kućne ljubimce,1
+1413,Inkubator za jaja,508,Oprema za kućne ljubimce,1
+1414,Torba za kućne ljubimce,508,Oprema za kućne ljubimce,1
+1415,Ostalo za kućne ljubimce,508,Oprema za kućne ljubimce,1
+1416,Mašina za balone,601,"Zvuk, rasveta i bina",1
+1417,Party rasveta,601,"Zvuk, rasveta i bina",1
+1418,Mašina za dim,601,"Zvuk, rasveta i bina",1
+1419,Zvuk,601,"Zvuk, rasveta i bina",1
+1420,Bina,601,"Zvuk, rasveta i bina",1
+1421,Ostalo u rasveti i dimu,601,"Zvuk, rasveta i bina",1
+1422,Dečija odeća,602,Odeća i kostimi,1
+1423,Čuvanje odeće,602,Odeća i kostimi,1
+1424,Kostimi i maskiranje,602,Odeća i kostimi,1
+1425,Party odeća,602,Odeća i kostimi,1
+1426,Ostalo u odeći,602,Odeća i kostimi,1
+1427,Šank,603,Nameštaj za proslave,1
+1428,Bar sto,603,Nameštaj za proslave,1
+1429,Stolice za proslave,603,Nameštaj za proslave,1
+1430,Paket stolovi i stolice,603,Nameštaj za proslave,1
+1431,Sklopivi stolovi,603,Nameštaj za proslave,1
+1432,Ostalo u nameštaju za proslave,603,Nameštaj za proslave,1
+1433,Roštilj,604,Ketering i kuhinja,1
+1434,Chafing dish,604,Ketering i kuhinja,1
+1435,Rešo,604,Ketering i kuhinja,1
+1436,Pića,604,Ketering i kuhinja,1
+1437,Paella tava,604,Ketering i kuhinja,1
+1438,Pizza peć,604,Ketering i kuhinja,1
+1439,Kolica za kobasice,604,Ketering i kuhinja,1
+1440,Lonac za supu,604,Ketering i kuhinja,1
+1441,Posuđe i pribor za jelo,604,Ketering i kuhinja,1
+1442,Dispenser za šlag,604,Ketering i kuhinja,1
+1443,Ostalo u ketering kuhinji,604,Ketering i kuhinja,1
+1444,Beer pong,605,Aktivnosti i zabava,1
+1445,Skakavac,605,Aktivnosti i zabava,1
+1446,Bazen sa mehurićima,605,Aktivnosti i zabava,1
+1447,Fontana od čokolade,605,Aktivnosti i zabava,1
+1448,Mašina za šećernu vunu,605,Aktivnosti i zabava,1
+1449,Nargila,605,Aktivnosti i zabava,1
+1450,Jakuzi,605,Aktivnosti i zabava,1
+1451,Sladoled i slush mašine,605,Aktivnosti i zabava,1
+1452,Karaoke,605,Aktivnosti i zabava,1
+1453,Photo booth,605,Aktivnosti i zabava,1
+1454,Kokičar,605,Aktivnosti i zabava,1
+1455,Sauna,605,Aktivnosti i zabava,1
+1456,Oprema za voditelja,605,Aktivnosti i zabava,1
+1457,Ostalo u aktivnostima,605,Aktivnosti i zabava,1
+1458,Šator 0-23 m²,606,Šatori i tende,1
+1459,Šator 24-32 m²,606,Šatori i tende,1
+1460,Šator preko 32 m²,606,Šatori i tende,1
+1461,Ostalo u šatorima,606,Šatori i tende,1
+1462,Pumpica za balone,607,Dekoracija,1
+1463,Sveća i svećnjak,607,Dekoracija,1
+1464,Diskokugla,607,Dekoracija,1
+1465,Košara za vatru,607,Dekoracija,1
+1466,Crveni tepih,607,Dekoracija,1
+1467,Stilizovanje i dekoracija,607,Dekoracija,1
+1468,Ostalo u dekoraciji,607,Dekoracija,1
+1469,Pojačivač,701,Muzički instrumenti,1
+1470,Bas gitara,701,Muzički instrumenti,1
+1471,Čelo,701,Muzički instrumenti,1
+1472,Drum mašina i sampler,701,Muzički instrumenti,1
+1473,Bubnjevi,701,Muzički instrumenti,1
+1474,Gitara,701,Muzički instrumenti,1
+1475,Gitarni pedal,701,Muzički instrumenti,1
+1476,Instrumentalni mikrofon,701,Muzički instrumenti,1
+1477,Klavijatura,701,Muzički instrumenti,1
+1478,Klavir,701,Muzički instrumenti,1
+1479,Zvučna kartica,701,Muzički instrumenti,1
+1480,Stalak i kabl,701,Muzički instrumenti,1
+1481,Sintisajzer,701,Muzički instrumenti,1
+1482,Ukulele,701,Muzički instrumenti,1
+1483,Violina,701,Muzički instrumenti,1
+1484,Duvački instrument,701,Muzički instrumenti,1
+1485,Ostali muzički instrumenti,701,Muzički instrumenti,1
+1486,Ruksak,702,Kampovanje i outdoor,1
+1487,Berba šumskih plodova,702,Kampovanje i outdoor,1
+1488,Dvogled,702,Kampovanje i outdoor,1
+1489,Kampovanje,702,Kampovanje i outdoor,1
+1490,Kolica za outdoor,702,Kampovanje i outdoor,1
+1491,Nosiljka za dete,702,Kampovanje i outdoor,1
+1492,Rashladna kutija i torba,702,Kampovanje i outdoor,1
+1493,Vodootporne torbe,702,Kampovanje i outdoor,1
+1494,Čeona lampa,702,Kampovanje i outdoor,1
+1495,Planinski štap,702,Kampovanje i outdoor,1
+1496,Planinarsko oruđe,702,Kampovanje i outdoor,1
+1497,Lov i ribolov,702,Kampovanje i outdoor,1
+1498,Zaštita od komaraca,702,Kampovanje i outdoor,1
+1499,Navigacija i komunikacija,702,Kampovanje i outdoor,1
+1500,Outdoor odeća,702,Kampovanje i outdoor,1
+1501,Outdoor paket,702,Kampovanje i outdoor,1
+1502,Ostalo u outdoor-u,702,Kampovanje i outdoor,1
+1503,Prikolica za teret na biciklu,703,Biciklizam,1
+1504,Nosač bicikla,703,Biciklizam,1
+1505,Prikolica za dete (bicikl),703,Biciklizam,1
+1506,Torba za transport bicikla,703,Biciklizam,1
+1507,Bicikli,703,Biciklizam,1
+1508,Dečiji bicikl,703,Biciklizam,1
+1509,Ostalo u biciklizmu,703,Biciklizam,1
+1510,Air track,704,Igra i hobi,1
+1511,Airsoft,704,Igra i hobi,1
+1512,Društvene igre i slagalice,704,Igra i hobi,1
+1513,Bumper ball,704,Igra i hobi,1
+1514,Štafelaj,704,Igra i hobi,1
+1515,Fly jumpers,704,Igra i hobi,1
+1516,Stoni fudbal,704,Igra i hobi,1
+1517,Termopresa,704,Igra i hobi,1
+1518,Vozila za hobi,704,Igra i hobi,1
+1519,Longboard i skejtbord,704,Igra i hobi,1
+1520,Ribolov magnetom,704,Igra i hobi,1
+1521,Mikroskop,704,Igra i hobi,1
+1522,Igre na otvorenom,704,Igra i hobi,1
+1523,Paintball,704,Igra i hobi,1
+1524,Poker set,704,Igra i hobi,1
+1525,Stoni hokej,704,Igra i hobi,1
+1526,Mašina za tetoviranje,704,Igra i hobi,1
+1527,Trampolin,704,Igra i hobi,1
+1528,Vodene igre,704,Igra i hobi,1
+1529,Ostalo u igranju i hobiju,704,Igra i hobi,1
+1530,Odbojka na pesku,705,Sportski rekviziti,1
+1531,Penjanje,705,Sportski rekviziti,1
+1532,Jahanje,705,Sportski rekviziti,1
+1533,Floorball,705,Sportski rekviziti,1
+1534,Fudbal,705,Sportski rekviziti,1
+1535,Golf,705,Sportski rekviziti,1
+1536,Roleri,705,Sportski rekviziti,1
+1537,Reket sportovi,705,Sportski rekviziti,1
+1538,Slackline,705,Sportski rekviziti,1
+1539,Ostalo u sportu,705,Sportski rekviziti,1
+1540,Čamac na gumu,706,Sportovi na vodi,1
+1541,Ronilačka oprema,706,Sportovi na vodi,1
+1542,Električni surfboard,706,Sportovi na vodi,1
+1543,Jetski,706,Sportovi na vodi,1
+1544,Kajak,706,Sportovi na vodi,1
+1545,Kiteboarding,706,Sportovi na vodi,1
+1546,Paddleboard,706,Sportovi na vodi,1
+1547,Surfanje,706,Sportovi na vodi,1
+1548,Vodni ski i wakeboard,706,Sportovi na vodi,1
+1549,Odeća za vodene sportove,706,Sportovi na vodi,1
+1550,Windsurfing,706,Sportovi na vodi,1
+1551,Wing surf,706,Sportovi na vodi,1
+1552,Ostalo u vodenim sportovima,706,Sportovi na vodi,1
+1553,Crosstrainer,707,Trening i teretana,1
+1554,"Bučice, tegovi i kettlebells",707,Trening i teretana,1
+1555,Sobni bicikl,707,Trening i teretana,1
+1556,Sprave za vežbanje,707,Trening i teretana,1
+1557,Pojas za hidrataciju,707,Trening i teretana,1
+1558,Masaža,707,Trening i teretana,1
+1559,Šipka za zgibove,707,Trening i teretana,1
+1560,Prsluk sa tegovima,707,Trening i teretana,1
+1561,Yoga prostirka,707,Trening i teretana,1
+1562,Ostalo u vežbanju i teretani,707,Trening i teretana,1
+1563,Oprema za lavine,708,Zimski sportovi,1
+1564,Ekspedicione sanke,708,Zimski sportovi,1
+1565,Hokej,708,Zimski sportovi,1
+1566,Skijaški roleri,708,Zimski sportovi,1
+1567,Klizaljke,708,Zimski sportovi,1
+1568,Skijanje i snowboard,708,Zimski sportovi,1
+1569,Sanke,708,Zimski sportovi,1
+1570,Penjanje po snegu i ledu,708,Zimski sportovi,1
+1571,Snowracer,708,Zimski sportovi,1
+1572,Zimska odeća,708,Zimski sportovi,1
+1573,Ostalo u zimskim sportovima,708,Zimski sportovi,1
+1574,Kofer za bicikl,709,Putovanja i koferi,1
+1575,Nosiljka za kućnog ljubimca,709,Putovanja i koferi,1
+1576,Specijalni kofer,709,Putovanja i koferi,1
+1577,Koferi,709,Putovanja i koferi,1
+1578,Putni adapter,709,Putovanja i koferi,1
+1579,Putovanje s decom,709,Putovanja i koferi,1
+1580,Ostalo u putovanjima,709,Putovanja i koferi,1
+1581,Štake,710,Mobilnost i medicinska nega,1
+1582,Električna invalidska kolica,710,Mobilnost i medicinska nega,1
+1583,Prva pomoć i CPR,710,Mobilnost i medicinska nega,1
+1584,Hodalica,710,Mobilnost i medicinska nega,1
+1585,Invalidska kolica,710,Mobilnost i medicinska nega,1
+1586,Ostalo u mobilnosti,710,Mobilnost i medicinska nega,1
+1587,Punjač baterija za vozila,801,Auto oprema,1
+1588,Nosač bicikla na automobilu,801,Auto oprema,1
+1589,Nosač za kanu i kajak,801,Auto oprema,1
+1590,Grejač kabine,801,Auto oprema,1
+1591,Autosedište,801,Auto oprema,1
+1592,Punjač za električni auto,801,Auto oprema,1
+1593,Jump starter,801,Auto oprema,1
+1594,Nosač tereta za kuku,801,Auto oprema,1
+1595,Krovni kofer,801,Auto oprema,1
+1596,Krovni nosač za ski,801,Auto oprema,1
+1597,Krovni nosač,801,Auto oprema,1
+1598,Lanci za sneg,801,Auto oprema,1
+1599,Ostalo u auto opremi,801,Auto oprema,1
+1600,Kolica za montažu,802,Alati za radionicu,1
+1601,Punjač baterija za vozila,802,Alati za radionicu,1
+1602,Auto alati,802,Alati za radionicu,1
+1603,Dijagnostički alat,802,Alati za radionicu,1
+1604,Dizalice,802,Alati za radionicu,1
+1605,Indukcioni grejač,802,Alati za radionicu,1
+1606,Dizalica i stalci,802,Alati za radionicu,1
+1607,Jump starter,802,Alati za radionicu,1
+1608,Alat za lanac motocikla,802,Alati za radionicu,1
+1609,Dizalica za motocikl,802,Alati za radionicu,1
+1610,Menjanje ulja,802,Alati za radionicu,1
+1611,Rampa,802,Alati za radionicu,1
+1612,Vakuum tester,802,Alati za radionicu,1
+1613,Alati za točkove i gume,802,Alati za radionicu,1
+1614,Radioničarska dizalica,802,Alati za radionicu,1
+1615,Radioničarska presa,802,Alati za radionicu,1
+1616,Ostalo u radionici,802,Alati za radionicu,1
+1617,Oprema za čamce,803,Čamci i plovila,1
+1618,Prikolica za čamac,803,Čamci i plovila,1
+1619,Kanu,803,Čamci i plovila,1
+1620,Jetski,803,Čamci i plovila,1
+1621,Motorni čamac,803,Čamci i plovila,1
+1622,Čamac na vesla i dinghy,803,Čamci i plovila,1
+1623,Jedrilica,803,Čamci i plovila,1
+1624,Jedriličarska odeća,803,Čamci i plovila,1
+1625,Prikolica za čamac,804,Prikolice,1
+1626,Prikolica sa kavezom,804,Prikolice,1
+1627,Transporter za automobile,804,Prikolice,1
+1628,Zatvorena prikolica,804,Prikolice,1
+1629,Prikolica za motocikl,804,Prikolice,1
+1630,Otvorena prikolica,804,Prikolice,1
+1631,Prikolica za drvo,804,Prikolice,1
+1632,Tow dolly,804,Prikolice,1
+1633,Prikolica s pokrivačem,804,Prikolice,1
+1634,Ostalo u prikolicama,804,Prikolice,1
+1635,Kamp prikolica,805,Kamperi i kamp prikolice,1
+1636,Ostalo u kamperima,805,Kamperi i kamp prikolice,1
+1637,Motociklistička oprema,806,Motocikli i oprema,1
+1638,Prikolica za motocikl,806,Motocikli i oprema,1
+1639,Ostalo u motociklima,806,Motocikli i oprema,1
+1640,Prikolica za konje,807,Prikolice za konje,1
