@@ -43,54 +43,35 @@ def _check_rate_limit(user_id: str) -> None:
     bucket.append(now)
 
 
-# ─── Category prediction: multilingual encoder + trained MLP head ────────────
-# Pipeline: title -> sentence-transformer (frozen) -> 768d embedding
-#                -> MLP head -> softmax over 644 leaf categories
-_encoder = None
-_head = None
+# ─── Category prediction: ONNX encoder + ONNX classifier head ────────────────
+# Pipeline: title -> tokenizer -> encoder.onnx (768d) -> classifier_head.onnx -> softmax
+_tokenizer = None
+_encoder_session = None
+_head_session = None
 _label_encoder = None
 _CONFIDENCE_THRESHOLD = float(os.getenv("CATEGORY_CONFIDENCE_THRESHOLD", "0.15"))
 _TOP_K = int(os.getenv("CATEGORY_TOP_K", "5"))
 
 try:
-    import torch
-    import torch.nn as nn
+    import numpy as np
     import joblib
-    from sentence_transformers import SentenceTransformer
+    import onnxruntime as ort
+    from transformers import AutoTokenizer
 
-    class ClassifierHead(nn.Module):
-        def __init__(self, in_dim, num_classes):
-            super().__init__()
-            self.net = nn.Sequential(
-                nn.Linear(in_dim, 384),
-                nn.GELU(),
-                nn.Dropout(0.2),
-                nn.Linear(384, num_classes),
-            )
-
-        def forward(self, x):
-            return self.net(x)
-
-    encoder_name = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
-    print(f"Loading sentence-transformer encoder: {encoder_name}")
-    _encoder = SentenceTransformer(encoder_name, device="cpu")
-
-    print("Loading classifier head and label encoder...")
+    _tokenizer = AutoTokenizer.from_pretrained("tokenizer/")
+    _encoder_session = ort.InferenceSession("encoder.onnx", providers=["CPUExecutionProvider"])
     _label_encoder = joblib.load("label_encoder.pkl")
-    ckpt = torch.load("classifier_head.pth", map_location="cpu", weights_only=True)
-    _head = ClassifierHead(ckpt["in_dim"], ckpt["num_classes"])
-    _head.load_state_dict(ckpt["state_dict"])
-    _head.eval()
+    _head_session = ort.InferenceSession("classifier_head.onnx", providers=["CPUExecutionProvider"])
 
-    # warmup na prvom pozivu je spor - odmah radimo dry run
-    with torch.no_grad():
-        warm = _encoder.encode(
-            ["warmup"], convert_to_tensor=True, normalize_embeddings=True,
-            show_progress_bar=False,
-        )
-        _head(warm)
+    # warmup
+    _wi = _tokenizer(["warmup"], return_tensors="np", padding=True, truncation=True, max_length=128)
+    _wf = {"input_ids": _wi["input_ids"].astype(np.int64), "attention_mask": _wi["attention_mask"].astype(np.int64)}
+    _wh = _encoder_session.run(["last_hidden_state"], _wf)[0]
+    _wm = _wi["attention_mask"][:, :, np.newaxis].astype(np.float32)
+    _we = ((_wh * _wm).sum(1) / _wm.sum(1)).astype(np.float32)
+    _head_session.run(["logits"], {"embedding": _we})
 
-    print(f"Category model ready. Classes: {len(_label_encoder.classes_)}")
+    print(f"Category model ready (ONNX). Classes: {len(_label_encoder.classes_)}")
 except Exception as e:
     print(f"Category model not loaded (chatbot-only mode): {e}")
 
@@ -100,7 +81,7 @@ except Exception as e:
 def health():
     return {
         "status": "ok",
-        "category_model": _encoder is not None and _head is not None,
+        "category_model": _encoder_session is not None and _head_session is not None,
         "chatbot": True,
         "auth_enabled": bool(_API_KEY),
     }
@@ -113,10 +94,11 @@ class AdRequest(BaseModel):
 
 @app.post("/api/predict-category")
 def predict_category(request: AdRequest):
-    if _encoder is None or _head is None:
+    if _encoder_session is None or _head_session is None:
         return {"error": "Category model not available."}
 
-    import torch
+    import numpy as np
+
     title = (request.title or "").strip()
     if not title:
         return {
@@ -127,28 +109,36 @@ def predict_category(request: AdRequest):
             "threshold": _CONFIDENCE_THRESHOLD,
         }
 
-    with torch.no_grad():
-        emb = _encoder.encode(
-            [title],
-            convert_to_tensor=True,
-            normalize_embeddings=True,
-            show_progress_bar=False,
-        )
-        logits = _head(emb)
-        probs = torch.softmax(logits, dim=1)[0]
-        k = min(_TOP_K, probs.numel())
-        top = torch.topk(probs, k=k)
-        top_indices = top.indices.tolist()
-        top_scores = top.values.tolist()
+    # Tokenize + encode
+    inputs = _tokenizer([title], return_tensors="np", padding=True, truncation=True, max_length=128)
+    feed = {
+        "input_ids": inputs["input_ids"].astype(np.int64),
+        "attention_mask": inputs["attention_mask"].astype(np.int64),
+    }
+    hidden = _encoder_session.run(["last_hidden_state"], feed)[0]  # [1, seq, 768]
 
-    suggestions = []
-    for idx, score in zip(top_indices, top_scores):
-        cat_id = int(_label_encoder.inverse_transform([idx])[0])
-        suggestions.append({
-            "category_id": cat_id,
-            "confidence": round(float(score), 4),
-        })
+    # Mean pooling + L2 normalize
+    mask = inputs["attention_mask"][:, :, np.newaxis].astype(np.float32)
+    emb = (hidden * mask).sum(1) / mask.sum(1)
+    emb = (emb / (np.linalg.norm(emb, axis=1, keepdims=True) + 1e-8)).astype(np.float32)
 
+    # Classify
+    logits = _head_session.run(["logits"], {"embedding": emb})[0][0]
+    logits -= logits.max()
+    probs = np.exp(logits)
+    probs /= probs.sum()
+
+    k = min(_TOP_K, len(probs))
+    top_idx = np.argpartition(probs, -k)[-k:]
+    top_idx = top_idx[np.argsort(probs[top_idx])[::-1]]
+
+    suggestions = [
+        {
+            "category_id": int(_label_encoder.inverse_transform([i])[0]),
+            "confidence": round(float(probs[i]), 4),
+        }
+        for i in top_idx
+    ]
     filtered = [s for s in suggestions if s["confidence"] >= _CONFIDENCE_THRESHOLD]
 
     return {

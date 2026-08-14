@@ -1,0 +1,882 @@
+﻿ ,hygglo_name,matched_category_id,matched_category_name,matched_parent,similarity,alt1_id,alt1_name,alt1_sim,alt2_id,alt2_name,alt2_sim,override_category_id
+3943,Water Skiing and Wakeboard,1548,Vodni ski i wakeboard,Sportovi na vodi,0.9452,1550,Windsurfing,0.8587,1545,Kiteboarding,0.824,
+9405,Baby Monitor,1390,Bebi monitor,Oprema za decu,0.9376,1389,Nosiljka i stolica za bebu,0.6555,1397,Jastuk za dojenje,0.6036,
+8592,Radon Detector,1074,Detektor radona,Merni instrumenti,0.9323,1612,Vakuum tester,0.5922,1070,Detektor metala,0.5898,
+9462,DSLR Lenses,1276,DSLR objektivi,Objektivi,0.9265,1254,DSLR fotoaparat,0.8327,1253,Kompaktni fotoaparat,0.7602,
+8449,Metal Detector,1070,Detektor metala,Merni instrumenti,0.9246,1034,Kružna testera za metal,0.6958,1074,Detektor radona,0.6413,
+8524,Other Drones,1143,Ostali dronovi,Dronovi,0.9225,1134,Oprema za dronove,0.8767,1135,DJI Avata,0.8479,
+9031,Softbox & umbrella,1286,Softbox i kišobran,Blicevi i rasveta,0.9219,1633,Prikolica s pokrivačem,0.5757,1020,Skidač izolacije,0.5691,
+9120,Blood Pressure Monitor,1403,Merač krvnog pritiska,Lična nega,0.9197,1221,Tester pritiska,0.5283,1071,Merač vlage,0.5103,
+9032,Speed Booster,1287,Speed Booster,Blicevi i rasveta,0.9161,1607,Jump starter,0.5542,1593,Jump starter,0.5468,
+8527,Accessories For Drones,1134,Oprema za dronove,Dronovi,0.9159,1135,DJI Avata,0.8012,1138,DJI Mavic,0.7903,
+2913,PC Monitors,1150,PC monitori,Računari i oprema,0.9144,1242,Veliki ekran,0.7172,306,Monitori,0.6962,
+4632,Children's Bike,1508,Dečiji bicikl,Biciklizam,0.9117,1505,Prikolica za dete (bicikl),0.8613,1394,Dečiji bicikli i oprema,0.8363,
+8608,Battery Charger For Vehicles,1587,Punjač baterija za vozila,Auto oprema,0.9113,1601,Punjač baterija za vozila,0.8882,1019,Baterije i punjači,0.8034,
+9034,Camera Battery,307,Baterije za kamere,Foto i Video,0.9109,1261,Torba za kameru,0.6753,1253,Kompaktni fotoaparat,0.6547,
+9453,Mirrorless Camera,1257,Mirrorless kamera,Fotoaparati i kamere,0.9095,1279,Mirrorless objektivi,0.8289,1253,Kompaktni fotoaparat,0.6101,
+8487,Car Transporter,1627,Transporter za automobile,Prikolice,0.9083,1594,Nosač tereta za kuku,0.742,1294,Nosač za automobil,0.7143,
+9467,Ukulele,1482,Ukulele,Muzički instrumenti,0.9082,1484,Duvački instrument,0.8183,1471,Čelo,0.8149,
+3963,Exercise Bike,1555,Sobni bicikl,Trening i teretana,0.9068,1504,Nosač bicikla,0.8061,1509,Ostalo u biciklizmu,0.7906,
+9119,Hair Styling,1405,Stilizovanje kose,Lična nega,0.9068,1366,Rekviziti,0.4694,1412,Mašinica za šišanje pasa,0.4441,
+8874,Polaroid Camera,1258,Polaroid kamera,Fotoaparati i kamere,0.905,1253,Kompaktni fotoaparat,0.6614,1254,DSLR fotoaparat,0.6613,
+9493,Electric surfboard ,1542,Električni surfboard,Sportovi na vodi,0.901,1547,Surfanje,0.6815,1548,Vodni ski i wakeboard,0.6488,
+9459,Digital Cinema Cameras,1255,Digitalna kino kamera,Fotoaparati i kamere,0.9003,1265,Streaming oprema,0.7965,1256,Filmska kamera,0.7834,
+2982,Accessories For Mobiles & Tablets,1159,Oprema za mobilne i tablete,Mobilni telefoni i tableti,0.8972,1164,Tablet,0.8495,1161,Mobilni telefon,0.8268,
+8470,Paddleboard,1546,Paddleboard,Sportovi na vodi,0.8966,1545,Kiteboarding,0.7202,1542,Električni surfboard,0.6492,
+9439,Wing surf,1551,Wing surf,Sportovi na vodi,0.8946,1550,Windsurfing,0.7301,1547,Surfanje,0.7256,
+8955,Red Carpet,1466,Crveni tepih,Dekoracija,0.893,1109,Skidač tapeta,0.5697,1106,Sto za tapete,0.5462,
+9025,Violin,1483,Violina,Muzički instrumenti,0.8926,1484,Duvački instrument,0.6855,1482,Ukulele,0.6375,
+2934,Other in Projector and TV,1247,Projekciono platno,Projektori i televizori,0.8918,1251,Ostalo u projektorima i TV,0.885,1246,Projektor,0.8762,1251
+9466,Ring Light,1285,Ring svetlo,Blicevi i rasveta,0.8917,1289,Studijska lampa,0.551,1283,Okidač blica,0.5397,
+2922,DSLR Cameras,1254,DSLR fotoaparat,Fotoaparati i kamere,0.8906,1276,DSLR objektivi,0.8793,1253,Kompaktni fotoaparat,0.831,
+8517,Instrument Microphone,1476,Instrumentalni mikrofon,Muzički instrumenti,0.8902,1127,Mikrofon,0.8705,1128,Muzički instrumenti,0.7037,
+8563,Other in Kitchen Utensils and Kitchen Appliances,1384,Lonci i tiganje,Kuhinjski aparati,0.8889,1388,Ostalo u kuhinji,0.8455,1386,Sokovnik na paru,0.8229,1388
+8864,Sound Card,1131,Zvučna kartica,Audio oprema i zvuk,0.888,1479,Zvučna kartica,0.8187,1132,Zvučnik,0.7951,
+8712,Piano,1478,Klavir,Muzički instrumenti,0.8852,1477,Klavijatura,0.8709,1484,Duvački instrument,0.6647,
+2911,Laptops,1148,Laptop,Računari i oprema,0.8838,1149,Mrežna oprema,0.6958,1151,Ostalo u računarima,0.6902,
+8959,Parking / Garage,1270,Parking i garaža,Prostori,0.8838,1591,Autosedište,0.639,1590,Grejač kabine,0.6351,
+9007,Camera Bag,1261,Torba za kameru,Fotoaparati i kamere,0.8831,1253,Kompaktni fotoaparat,0.7039,1254,DSLR fotoaparat,0.6669,
+1788,Other in hand tools,1090,Klješta,Ručni alati,0.8829,1091,Izvlakač,0.8812,1089,Udarni odvijač,0.875,1099
+8606,Other in Batteries and Battery Chargers,1019,Baterije i punjači,Struja i agregati,0.8816,1601,Punjač baterija za vozila,0.8168,1587,Punjač baterija za vozila,0.8071,
+9045,Gorillapod,1298,Gorillapod,Stativi i rigovi,0.8812,1025,Aligator testera,0.3865,1321,Robot za bazen,0.3592,
+183,Other in Construction & Tools,1012,Radna rasveta,Građevinska oprema i alati,0.8804,1013,Ostalo u građevini i alatima,0.8774,1199,Ostalo u građevinskoj mehanizaciji,0.7806,1013
+8980,Other in mobility & care,1586,Ostalo u mobilnosti,Mobilnost i medicinska nega,0.8804,1581,Štake,0.8773,1584,Hodalica,0.8654,
+9363,Bike bag,1506,Torba za transport bicikla,Biciklizam,0.8803,1503,Prikolica za teret na biciklu,0.7976,1504,Nosač bicikla,0.7371,
+8423,Styling & Decor,1364,Nameštaj,Stilizovanje i dekoracija,0.8787,1366,Rekviziti,0.8592,1467,Stilizovanje i dekoracija,0.8355,1467
+8677,Other Musical Instruments,1485,Ostali muzički instrumenti,Muzički instrumenti,0.8784,1484,Duvački instrument,0.8765,1481,Sintisajzer,0.8576,
+9410,Air quality meter,1061,Merač kvaliteta vazduha,Merni instrumenti,0.8783,1060,Merač protoka vazduha,0.7472,1191,Kompresor,0.5876,
+8748,Other in Compressed Air,1192,Ostalo u komprimovanom vazduhu,Komprimovani vazduh,0.8781,1191,Kompresor,0.8183,1190,Crevo za komprimovani vazduh,0.7885,
+9384,Chafing Dish,1434,Chafing dish,Ketering i kuhinja,0.878,1435,Rešo,0.6653,1442,Dispenser za šlag,0.6549,
+253,Rowing Boat & Dinghy,1622,Čamac na vesla i dinghy,Čamci i plovila,0.8774,1618,Prikolica za čamac,0.8198,1617,Oprema za čamce,0.7984,
+4646,Other in Children Furniture,1396,Dečiji nameštaj,Oprema za decu,0.8765,1389,Nosiljka i stolica za bebu,0.73,1395,Dečija odeća,0.7012,
+3915,Bike Travel Bags,1506,Torba za transport bicikla,Biciklizam,0.8762,1574,Kofer za bicikl,0.8361,1503,Prikolica za teret na biciklu,0.8013,
+8465,Big tents,1460,Šator preko 32 m²,Šatori i tende,0.8759,1459,Šator 24-32 m²,0.8552,1461,Ostalo u šatorima,0.8362,
+1741,Heat Gun,1054,Toplotni pištolj,Brušenje i poliranje,0.8756,1087,Pištolj za lepak,0.6706,1189,Vazdušni pištolj,0.6602,
+3953,Bass Guitar,1470,Bas gitara,Muzički instrumenti,0.8755,1474,Gitara,0.7376,1475,Gitarni pedal,0.6379,
+8645,Package: Tables and Chairs,1430,Paket stolovi i stolice,Nameštaj za proslave,0.8743,1431,Sklopivi stolovi,0.7863,1429,Stolice za proslave,0.7574,
+3921,Camping Tent,1461,Ostalo u šatorima,Šatori i tende,0.8742,1459,Šator 24-32 m²,0.8591,1460,Šator preko 32 m²,0.8536,
+8679,Travel Adapter,1578,Putni adapter,Putovanja i koferi,0.8741,1410,Kolica za teret,0.6938,1409,Remeni i pojasevi za selidbu,0.6875,
+2912,Desktop Computer,1146,Desktop računar,Računari i oprema,0.8728,1150,PC monitori,0.7745,1151,Ostalo u računarima,0.7064,
+8463,Other in Camping Tents,1461,Ostalo u šatorima,Šatori i tende,0.8724,1636,Ostalo u kamperima,0.8112,1460,Šator preko 32 m²,0.7734,
+1803,Tractor,1198,Traktor,Građevinska mehanizacija,0.8719,1213,Ostalo u mehanizaciji terena,0.6464,1211,Svrdlo za zemlju,0.6161,
+8421,Other in Ski & Snowboard,1568,Skijanje i snowboard,Zimski sportovi,0.8718,1571,Snowracer,0.8686,1566,Skijaški roleri,0.8606,
+1792,Drywall lift,1234,Lift za suvi zid,Skele i podupirači,0.8711,1051,Brusilica za suvi zid,0.7132,1118,Vakuumski podizač stakla,0.6209,
+8535,Monopod,1299,Monopod,Stativi i rigovi,0.8709,1072,Multimetar,0.4609,1298,Gorillapod,0.4527,
+2225,Other in Garden Tools,1356,Kolica za baštu,Baštenski alati,0.8703,1355,Vrtlarska testera i škare,0.7689,1344,Rasipač za đubrivo,0.7124,
+9501,Guitar Pedal,1475,Gitarni pedal,Muzički instrumenti,0.8694,1474,Gitara,0.7063,1469,Pojačivač,0.6461,
+8607,Battery Charger For Tools,1601,Punjač baterija za vozila,Alati za radionicu,0.8669,1019,Baterije i punjači,0.8394,1587,Punjač baterija za vozila,0.8079,1019
+9455,Other Cameras,1260,Ostale kamere,Fotoaparati i kamere,0.8658,1253,Kompaktni fotoaparat,0.8454,1265,Streaming oprema,0.8387,
+22211,Window Cleaner,1377,Čistač prozora,Čišćenje i pranje,0.8649,1371,Čistač odvoda,0.6967,1323,Čistač krova,0.6677,
+1731,Laser Rangefinders,1066,Laserski daljinomer,Merni instrumenti,0.8636,1067,Laserski nivelator,0.8167,1075,Rotirajući laser,0.803,
+3957,Other in Musical Instrument,1485,Ostali muzički instrumenti,Muzički instrumenti,0.8634,1484,Duvački instrument,0.8571,1481,Sintisajzer,0.827,
+9454,Film Cameras,1255,Digitalna kino kamera,Fotoaparati i kamere,0.8626,1256,Filmska kamera,0.8493,1259,Specijalne kamere,0.8132,1256
+9464,Mirrorless Lenses,1279,Mirrorless objektivi,Objektivi,0.8623,1257,Mirrorless kamera,0.7928,1284,Reflektorski ekran,0.6064,
+9232,Pizza Oven,1438,Pizza peć,Ketering i kuhinja,0.8603,1436,Pića,0.6485,1435,Rešo,0.6116,
+9011,Photo Background with Motif,1306,Pozadina sa motivom,Foto pozadine,0.8601,1307,Pozadina sa uzorkom,0.8383,1305,Jednobojna pozadina,0.7876,
+3964,Other in Exercise & Gym,1556,Sprave za vežbanje,Trening i teretana,0.8599,1562,Ostalo u vežbanju i teretani,0.8454,1559,Šipka za zgibove,0.8445,1562
+8472,Surfing,1547,Surfanje,Sportovi na vodi,0.8595,1542,Električni surfboard,0.8049,1551,Wing surf,0.8017,
+8565,Kitchen aid,1384,Lonci i tiganje,Kuhinjski aparati,0.8591,1388,Ostalo u kuhinji,0.8459,1386,Sokovnik na paru,0.8365,1387
+9297,Crosstrainer,1553,Crosstrainer,Trening i teretana,0.8581,1560,Prsluk sa tegovima,0.6971,1559,Šipka za zgibove,0.689,
+8825,Other in Special Cameras,1259,Specijalne kamere,Fotoaparati i kamere,0.8578,1260,Ostale kamere,0.8401,1253,Kompaktni fotoaparat,0.8124,
+9399,Lasercutter,1067,Laserski nivelator,Merni instrumenti,0.8562,1168,Laserski rezač,0.834,1075,Rotirajući laser,0.8184,1168
+8662,Dj Equipment,1124,DJ oprema,Audio oprema i zvuk,0.8561,1125,Slušalice,0.628,1126,Luper,0.6279,
+2921,Compact Camera,1253,Kompaktni fotoaparat,Fotoaparati i kamere,0.8556,1254,DSLR fotoaparat,0.7735,1264,Foto štampač,0.7705,
+3951,Guitar,1474,Gitara,Muzički instrumenti,0.8551,1470,Bas gitara,0.7635,1475,Gitarni pedal,0.7518,
+9516,Drum Machine,1472,Drum mašina i sampler,Muzički instrumenti,0.8544,1473,Bubnjevi,0.7215,1077,Merač buke,0.5778,
+8453,Other in Game Consoles,1158,Ostalo u video igrama,Video igre i konzole,0.8539,1152,Arkadna mašina,0.8489,1154,Konzola,0.8098,
+8467,Poker Set,1524,Poker set,Igra i hobi,0.8539,1522,Igre na otvorenom,0.4964,1176,Set bitova,0.4696,
+2941,3D Printer,1165,3D štampač,Kancelarijske mašine,0.8525,1052,Mašina za graviranje,0.6252,1168,Laserski rezač,0.5571,
+9366,Lawn Edge Trimmers,1339,Trimer za ivice travnjaka,Održavanje travnjaka,0.8503,1344,Rasipač za đubrivo,0.7341,1310,Trimer za travu,0.7283,
+246,Other Vehicles,808,Ostala vozila,Vozila i oprema,0.8497,1627,Transporter za automobile,0.7884,1591,Autosedište,0.7364,
+2981,Mobile Phones,1161,Mobilni telefon,Mobilni telefoni i tableti,0.8496,1162,Pametni sat,0.7845,1160,Gimbal za mobilni,0.7837,
+2943,Other in Office Machinery,1174,Ostalo u kancelarijskim mašinama,Kancelarijske mašine,0.8494,1167,Mašina za laminiranje,0.7714,1171,Štampač,0.7509,
+8807,Ski Clothing,1572,Zimska odeća,Zimski sportovi,0.8479,1566,Skijaški roleri,0.8474,1571,Snowracer,0.8407,
+9121,Other Diagnostic Tools,1603,Dijagnostički alat,Alati za radionicu,0.8475,1032,Ubodna testera,0.6646,1042,Sabljasta testera,0.6512,
+3955,Drums,1473,Bubnjevi,Muzički instrumenti,0.8473,1472,Drum mašina i sampler,0.809,1471,Čelo,0.5901,
+8982,Electric wheelchair,1582,Električna invalidska kolica,Mobilnost i medicinska nega,0.8471,1585,Invalidska kolica,0.7402,1399,Kolica i oprema,0.574,
+9425,Countertop stove,1386,Sokovnik na paru,Kuhinjski aparati,0.8455,1384,Lonci i tiganje,0.7846,1383,Mini rerna,0.7507,1435
+9186,Stereo microphone,1127,Mikrofon,Audio oprema i zvuk,0.8453,1476,Instrumentalni mikrofon,0.7663,1132,Zvučnik,0.6731,
+9008,Green Screen,1304,Zeleni ekran,Foto pozadine,0.8452,1245,Grafoskop,0.5812,306,Monitori,0.559,
+9264,Engraving Machine,1052,Mašina za graviranje,Brušenje i poliranje,0.8445,1165,3D štampač,0.7767,1322,Visokotlačni perač,0.704,
+8984,Projector screen,1248,Slajd projektor,Projektori i televizori,0.8432,1247,Projekciono platno,0.8116,1246,Projektor,0.7769,1247
+8454,IR Thermometer,1065,IC termometar,Merni instrumenti,0.8429,1080,Termovizijska kamera,0.6918,1605,Indukcioni grejač,0.6466,
+8675,Drainage Pump,1311,Pumpa za odvodnjavanje,Baštenske mašine,0.8427,1219,Savijač cevi,0.6749,1217,Rezač cevi,0.6461,
+8443,Other Bicycle Bags,1506,Torba za transport bicikla,Biciklizam,0.8427,1503,Prikolica za teret na biciklu,0.7603,1574,Kofer za bicikl,0.726,
+9305,Soup Kettle,1440,Lonac za supu,Ketering i kuhinja,0.8404,1442,Dispenser za šlag,0.6739,1434,Chafing dish,0.6309,
+8551,Moisture Meter,1071,Merač vlage,Merni instrumenti,0.84,1221,Tester pritiska,0.7041,1311,Pumpa za odvodnjavanje,0.6679,
+9244,Camera rigs and shoulder frames,1293,Rigovi i ramena za kameru,Stativi i rigovi,0.8398,1261,Torba za kameru,0.7441,1292,Kamera na kablu,0.7292,
+8664,Beer Brewing and Wine Making,1379,Varenje piva i vinarstvo,Kuhinjski aparati,0.8397,1443,Ostalo u ketering kuhinji,0.5,1325,Freza za panjeve,0.4856,
+8471,Kiteboarding,1545,Kiteboarding,Sportovi na vodi,0.8396,1548,Vodni ski i wakeboard,0.6686,1550,Windsurfing,0.6591,
+2942,Printer,1165,3D štampač,Kancelarijske mašine,0.8372,1166,Štampač nalepnica,0.6956,1052,Mašina za graviranje,0.6852,1171
+9036,Photo booth,1453,Photo booth,Aktivnosti i zabava,0.8371,1170,Skener za fotografije,0.7261,1264,Foto štampač,0.6676,
+8968,Beer pong,1444,Beer pong,Aktivnosti i zabava,0.8366,1513,Bumper ball,0.5442,1522,Igre na otvorenom,0.5083,
+8937,Other Bicycles,1504,Nosač bicikla,Biciklizam,0.8364,1509,Ostalo u biciklizmu,0.8258,1507,Bicikli,0.8145,1509
+8605,Battery,1019,Baterije i punjači,Struja i agregati,0.8349,1601,Punjač baterija za vozila,0.787,1587,Punjač baterija za vozila,0.7795,
+9239,4G router,1144,4G ruter,Računari i oprema,0.8348,1149,Mrežna oprema,0.4649,1336,Mašina za polaganje kablova,0.3795,
+9073,Accessories kayak,1589,Nosač za kanu i kajak,Auto oprema,0.8346,1541,Ronilačka oprema,0.6948,1625,Prikolica za čamac,0.6914,1617
+4613,Accessories For Strollers,1399,Kolica i oprema,Oprema za decu,0.8345,1582,Električna invalidska kolica,0.7324,1585,Invalidska kolica,0.7181,
+4533,Styling,1366,Rekviziti,Stilizovanje i dekoracija,0.8342,1367,Stilizovanje,0.8005,1365,Slike,0.7916,1367
+8730,Other VR Glasses,1157,VR naočale,Video igre i konzole,0.8339,1284,Reflektorski ekran,0.5568,1276,DSLR objektivi,0.5488,
+8917,Other Suitcases,1576,Specijalni kofer,Putovanja i koferi,0.8334,1575,Nosiljka za kućnog ljubimca,0.8012,1577,Koferi,0.7911,1577
+3335,Other in Kitchen,1388,Ostalo u kuhinji,Kuhinjski aparati,0.8331,1384,Lonci i tiganje,0.7797,1386,Sokovnik na paru,0.7491,
+3917,Bicycle Accessories,1503,Prikolica za teret na biciklu,Biciklizam,0.8322,1506,Torba za transport bicikla,0.8279,1504,Nosač bicikla,0.8243,1509
+9009,Other in Photo Background,1308,Ostalo u pozadinama,Foto pozadine,0.8316,1305,Jednobojna pozadina,0.8139,1307,Pozadina sa uzorkom,0.8129,
+9000,Reflective Screen,1284,Reflektorski ekran,Blicevi i rasveta,0.8311,1247,Projekciono platno,0.657,1248,Slajd projektor,0.6309,
+8896,Gimbal For Mobile Phone,1160,Gimbal za mobilni,Mobilni telefoni i tableti,0.8309,1161,Mobilni telefon,0.5652,1162,Pametni sat,0.5607,
+8505,Food Dehydrator,1380,Dehidrator hrane,Kuhinjski aparati,0.8308,1442,Dispenser za šlag,0.5655,1557,Pojas za hidrataciju,0.5138,
+8981,Wheelchair,1582,Električna invalidska kolica,Mobilnost i medicinska nega,0.8304,1585,Invalidska kolica,0.8134,1584,Hodalica,0.6004,
+9393,Fruit Picker,1347,Berač voća,Baštenski alati,0.83,1487,Berba šumskih plodova,0.5137,1319,Usisivač za lišće,0.4827,
+9049,Other in Plumbing Tools,1217,Rezač cevi,Vodoinstalaterski alati,0.8298,1219,Savijač cevi,0.8227,1218,Ključ za cevi,0.7787,
+8660,Big Screen,1242,Veliki ekran,Projektori i televizori,0.8295,1247,Projekciono platno,0.6812,1244,Media plejeri,0.6646,
+9362,Vacuum tester,1612,Vakuum tester,Alati za radionicu,0.8292,1042,Sabljasta testera,0.5984,1028,Cirkularna testera,0.5657,
+8503,Carpet & Upholstery Cleaners,1369,Čistač tepiha i tapaciringa,Čišćenje i pranje,0.8278,1109,Skidač tapeta,0.7299,1202,Mašina za skidanje podova,0.7044,
+2954,Other in Video Games,1158,Ostalo u video igrama,Video igre i konzole,0.827,1152,Arkadna mašina,0.8017,1154,Konzola,0.7744,
+9490,Other in DJ Equipment,1124,DJ oprema,Audio oprema i zvuk,0.8267,1126,Luper,0.6217,1125,Slušalice,0.6196,
+8834,Work Platform,1239,Radna platforma,Skele i podupirači,0.8261,1193,Platforma za rad na visini,0.6771,1240,Radni sto,0.6346,
+9334,Outdoor package,1501,Outdoor paket,Kampovanje i outdoor,0.8257,1492,Rashladna kutija i torba,0.7108,1490,Kolica za outdoor,0.6715,
+9457,Cameras With Operator,1253,Kompaktni fotoaparat,Fotoaparati i kamere,0.825,1266,Teleprompter,0.8173,1256,Filmska kamera,0.8045,
+8424,Other in Styling & Decor,1366,Rekviziti,Stilizovanje i dekoracija,0.825,1364,Nameštaj,0.8066,1467,Stilizovanje i dekoracija,0.7914,
+8420,Snowboard,1568,Skijanje i snowboard,Zimski sportovi,0.825,1571,Snowracer,0.7727,1570,Penjanje po snegu i ledu,0.7337,
+8856,Other in Travel With Children,1579,Putovanje s decom,Putovanja i koferi,0.8248,1401,Putovanje s decom,0.7912,1580,Ostalo u putovanjima,0.6431,
+2923,Camcorder,1265,Streaming oprema,Fotoaparati i kamere,0.824,1252,Kamkorder,0.7868,1256,Filmska kamera,0.7779,
+8992,Studio lamp,1289,Studijska lampa,Blicevi i rasveta,0.8219,1284,Reflektorski ekran,0.6573,1285,Ring svetlo,0.6169,
+9354,Oscilloscope,1073,Osciloskop,Merni instrumenti,0.8213,1068,Fotometar,0.4631,1603,Dijagnostički alat,0.4581,
+3946,Other in Watersports,1552,Ostalo u vodenim sportovima,Sportovi na vodi,0.8211,1544,Kajak,0.8195,1549,Odeća za vodene sportove,0.7922,
+9286,Mountain ski,1570,Penjanje po snegu i ledu,Zimski sportovi,0.8204,1566,Skijaški roleri,0.8129,1571,Snowracer,0.8008,
+9460,Follow Focus & Lens Support,1263,Follow focus i nosač objektiva,Fotoaparati i kamere,0.8202,1280,Oprema za objektive,0.6972,1277,Filter za objektiv,0.6903,
+8829,Water Pump Pliers,1311,Pumpa za odvodnjavanje,Baštenske mašine,0.8201,1219,Savijač cevi,0.744,1217,Rezač cevi,0.7293,1090
+8970,Egg Incubator,1413,Inkubator za jaja,Oprema za kućne ljubimce,0.8195,1404,Epilacija,0.4448,1381,Centrifuga za med,0.435,
+9192,Cable cam,1292,Kamera na kablu,Stativi i rigovi,0.8189,1265,Streaming oprema,0.6598,1266,Teleprompter,0.613,
+8430,Other in Play & Hobby,1514,Štafelaj,Igra i hobi,0.8186,1529,Ostalo u igranju i hobiju,0.792,1522,Igre na otvorenom,0.7641,1529
+9350,Smartwatch,1162,Pametni sat,Mobilni telefoni i tableti,0.8186,1160,Gimbal za mobilni,0.5741,1161,Mobilni telefon,0.558,
+9400,Sound meter,1077,Merač buke,Merni instrumenti,0.8168,1132,Zvučnik,0.7053,1125,Slušalice,0.6821,
+2914,Computer Accessories,1145,Računarska oprema,Računari i oprema,0.8155,1148,Laptop,0.8136,1151,Ostalo u računarima,0.806,
+8750,Other in Transportation & Lifting,1121,Kolica za teret,Transport i dizanje,0.8149,1123,Ostalo u transportu,0.7922,1117,Viljuškar,0.7899,1123
+8870,Other in Vehicle Tools,1602,Auto alati,Alati za radionicu,0.8147,808,Ostala vozila,0.7861,1591,Autosedište,0.7783,
+8950,Other in Camping,1636,Ostalo u kamperima,Kamperi i kamp prikolice,0.8134,1488,Dvogled,0.8091,1486,Ruksak,0.8078,1502
+254,Jetski,1620,Jetski,Čamci i plovila,0.813,1543,Jetski,0.7528,1350,Aerator sa šupljim klinovima,0.6758,
+466,Baby Carrier and Carrying Chairs,1389,Nosiljka i stolica za bebu,Oprema za decu,0.8122,1399,Kolica i oprema,0.7243,1401,Putovanje s decom,0.6081,
+8601,Tools Package,1010,Paketi alata,Građevinska oprema i alati,0.8122,1095,Kofer za alat,0.7522,1600,Kolica za montažu,0.7388,
+223,Other in Garden,406,Ostalo u bašti,Bašta,0.8119,1338,Baštenski valjak,0.7179,1356,Kolica za baštu,0.7106,
+8880,Sound Recorder,1126,Luper,Audio oprema i zvuk,0.8094,1125,Slušalice,0.8088,1132,Zvučnik,0.8073,1133
+8643,Chairs For Party,1429,Stolice za proslave,Nameštaj za proslave,0.8085,1430,Paket stolovi i stolice,0.7868,1431,Sklopivi stolovi,0.7332,
+8442,Bike Travel Case,1506,Torba za transport bicikla,Biciklizam,0.8082,1503,Prikolica za teret na biciklu,0.7937,1574,Kofer za bicikl,0.7755,
+9429,Hiking tools,1496,Planinarsko oruđe,Kampovanje i outdoor,0.8082,1495,Planinski štap,0.7593,1501,Outdoor paket,0.7163,
+8806,Other in Winter Clothing,1572,Zimska odeća,Zimski sportovi,0.8076,1567,Klizaljke,0.7095,1564,Ekspedicione sanke,0.687,
+8646,Bar Table,1428,Bar sto,Nameštaj za proslave,0.8072,1431,Sklopivi stolovi,0.6264,1114,Stol za glodalicu,0.6245,
+9294,Balloon pump,1462,Pumpica za balone,Dekoracija,0.8041,1416,Mašina za balone,0.7041,1311,Pumpa za odvodnjavanje,0.5626,
+8824,Network Equipment,1149,Mrežna oprema,Računari i oprema,0.8037,1144,4G ruter,0.6809,1017,Satelitska oprema,0.6022,
+3914,Cargo bike,1503,Prikolica za teret na biciklu,Biciklizam,0.8029,1506,Torba za transport bicikla,0.7778,1638,Prikolica za motocikl,0.7134,1507
+9358,Color chart NCS,1101,NCS karta boja,Krečenje i tapete,0.8022,1102,Merač boja,0.5488,1100,Mešalica boje,0.5377,
+3912,Road bike,1504,Nosač bicikla,Biciklizam,0.8016,1509,Ostalo u biciklizmu,0.7848,1503,Prikolica za teret na biciklu,0.782,1507
+9341,Pressure tester,1221,Tester pritiska,Vodoinstalaterski alati,0.8011,1403,Merač krvnog pritiska,0.7375,1034,Kružna testera za metal,0.5862,
+8783,Snowshoes,1571,Snowracer,Zimski sportovi,0.8006,1570,Penjanje po snegu i ledu,0.7758,1568,Skijanje i snowboard,0.7593,1570
+9182,DVD & blu-ray,1243,DVD i Blu-ray,Projektori i televizori,0.7997,1250,VHS plejer,0.6177,1244,Media plejeri,0.4879,
+8642,Other in Party Furniture,1431,Sklopivi stolovi,Nameštaj za proslave,0.7997,1430,Paket stolovi i stolice,0.7923,1427,Šank,0.7773,1432
+8891,Other Action Cameras,1255,Digitalna kino kamera,Fotoaparati i kamere,0.7994,1256,Filmska kamera,0.7979,1253,Kompaktni fotoaparat,0.7949,1259
+2931,Projector,1248,Slajd projektor,Projektori i televizori,0.7993,1246,Projektor,0.7781,1247,Projekciono platno,0.7716,1246
+9135,Sauna,1455,Sauna,Aktivnosti i zabava,0.7987,1558,Masaža,0.604,1557,Pojas za hidrataciju,0.5938,
+2425,Other in Car accessories,1599,Ostalo u auto opremi,Auto oprema,0.7978,1591,Autosedište,0.768,1590,Grejač kabine,0.7479,
+8843,Bicycle tools,1503,Prikolica za teret na biciklu,Biciklizam,0.7967,1504,Nosač bicikla,0.786,1608,Alat za lanac motocikla,0.7809,1509
+8744,Staple Gun,1087,Pištolj za lepak,Ručni alati,0.7966,1215,Pištolj za klamerice,0.7658,1054,Toplotni pištolj,0.7553,1215
+9289,Pist Skis (Carving),1566,Skijaški roleri,Zimski sportovi,0.7965,1571,Snowracer,0.7804,1563,Oprema za lavine,0.7744,1568
+9037,Accessories to Photo Booth,1453,Photo booth,Aktivnosti i zabava,0.7964,1170,Skener za fotografije,0.7923,1264,Foto štampač,0.7502,
+8681,Dress,1426,Ostalo u odeći,Odeća i kostimi,0.7964,1425,Party odeća,0.759,1423,Čuvanje odeće,0.7315,
+8804,Ski Helmet,1596,Krovni nosač za ski,Auto oprema,0.7958,1571,Snowracer,0.7824,1566,Skijaški roleri,0.7738,1572
+9376,Mini oven,1383,Mini rerna,Kuhinjski aparati,0.7951,1386,Sokovnik na paru,0.7327,1384,Lonci i tiganje,0.6635,
+8793,Alpine ski boots,1570,Penjanje po snegu i ledu,Zimski sportovi,0.795,1566,Skijaški roleri,0.7846,1571,Snowracer,0.773,1568
+9394,Hollow tine aerator,1350,Aerator sa šupljim klinovima,Baštenski alati,0.7948,1191,Kompresor,0.6729,1060,Merač protoka vazduha,0.664,
+8526,DJI Phantom,1140,DJI Phantom,Dronovi,0.7947,1138,DJI Mavic,0.6107,1139,DJI Mavic 3,0.5936,
+9010,Photo Background with Pattern,1305,Jednobojna pozadina,Foto pozadine,0.7942,1307,Pozadina sa uzorkom,0.7906,1306,Pozadina sa motivom,0.7758,1307
+8415,Other in Laundry & Cleaning,1370,Parna presa za odeću,Čišćenje i pranje,0.7936,1373,Ribač podova,0.7531,1376,Usisivač,0.7508,1378
+8649,Karaoke,1452,Karaoke,Aktivnosti i zabava,0.7934,1476,Instrumentalni mikrofon,0.5378,1127,Mikrofon,0.5136,
+8802,Other in Hockey,1565,Hokej,Zimski sportovi,0.7932,1525,Stoni hokej,0.7926,1573,Ostalo u zimskim sportovima,0.6277,
+8947,Paintball,1523,Paintball,Igra i hobi,0.7921,1513,Bumper ball,0.6076,1533,Floorball,0.5728,
+9395,Lawn leveling rake,1344,Rasipač za đubrivo,Održavanje travnjaka,0.7919,1340,Grabulje za nivelisanje,0.7822,1339,Trimer za ivice travnjaka,0.742,1340
+9035,Photo Printer,1264,Foto štampač,Fotoaparati i kamere,0.7919,1165,3D štampač,0.7589,1170,Skener za fotografije,0.7339,
+9422,E-car charger ,1587,Punjač baterija za vozila,Auto oprema,0.7915,1592,Punjač za električni auto,0.787,1601,Punjač baterija za vozila,0.7619,1592
+453,Home,509,Ostalo u kući,Kuća i dom,0.7911,506,Mašine za šivenje,0.5985,1406,Ostalo u ličnoj nezi,0.5423,
+8977,Roof Tent,1459,Šator 24-32 m²,Šatori i tende,0.7907,1460,Šator preko 32 m²,0.7817,1458,Šator 0-23 m²,0.7801,
+8469,Aerial work platform,1193,Platforma za rad na visini,Građevinska mehanizacija,0.7903,1239,Radna platforma,0.6679,1350,Aerator sa šupljim klinovima,0.6529,
+9417,Underwater Camera Bodies,1267,Tela kamera za ronjenje,Fotoaparati i kamere,0.7894,1293,Rigovi i ramena za kameru,0.5772,1292,Kamera na kablu,0.5651,
+9521,Smart Speaker,1018,Pametni zvučnik,Elektronika,0.7892,1130,Prenosni zvučnik,0.6963,1127,Mikrofon,0.687,
+8847,Other Hobby Vehicles,808,Ostala vozila,Vozila i oprema,0.7885,1518,Vozila za hobi,0.7645,1591,Autosedište,0.7257,1518
+8629,Laser line level,1067,Laserski nivelator,Merni instrumenti,0.788,1066,Laserski daljinomer,0.7583,1075,Rotirajući laser,0.7007,
+3977,Other in Sports,1539,Ostalo u sportu,Sportski rekviziti,0.7874,1537,Reket sportovi,0.7737,1534,Fudbal,0.71,
+9401,Party combos,608,Party paketi,Proslave i događaji,0.7865,1417,Party rasveta,0.7118,1425,Party odeća,0.678,
+3961,Exercise machines,1559,Šipka za zgibove,Trening i teretana,0.7857,1560,Prsluk sa tegovima,0.7735,1556,Sprave za vežbanje,0.7398,1556
+9083,Yoga mats,1561,Yoga prostirka,Trening i teretana,0.7845,1558,Masaža,0.6938,1560,Prsluk sa tegovima,0.6092,
+9370,Sailing clothes,1624,Jedriličarska odeća,Čamci i plovila,0.7844,1622,Čamac na vesla i dinghy,0.7513,1618,Prikolica za čamac,0.7483,
+4656,Other in Toys,1400,Igračke,Oprema za decu,0.7842,1398,Prostirka za igru,0.7292,1179,Mašina za bušenje,0.6228,
+2932,TV,1249,TV,Projektori i televizori,0.7842,1244,Media plejeri,0.7498,1247,Projekciono platno,0.7184,
+8497,Other in Vehicles,808,Ostala vozila,Vozila i oprema,0.784,1627,Transporter za automobile,0.7532,1294,Nosač za automobil,0.7081,
+9465,Lens Accessories,1276,DSLR objektivi,Objektivi,0.7835,1280,Oprema za objektive,0.7094,1274,Kinematografski prime objektivi,0.6946,1280
+8848,Trampoline,1527,Trampolin,Igra i hobi,0.7835,1119,Paletni viljuškar,0.6483,1560,Prsluk sa tegovima,0.6317,
+9260,Sweeping machine,1374,Parna mašina za čišćenje,Čišćenje i pranje,0.7823,1323,Čistač krova,0.7489,1371,Čistač odvoda,0.7303,1326
+9180,Monochrome Photo Background,1305,Jednobojna pozadina,Foto pozadine,0.7821,1307,Pozadina sa uzorkom,0.6823,1306,Pozadina sa motivom,0.6742,
+3911,Standard Bike,1503,Prikolica za teret na biciklu,Biciklizam,0.7818,1504,Nosač bicikla,0.7749,1638,Prikolica za motocikl,0.7616,
+8989,Arcade game,1152,Arkadna mašina,Video igre i konzole,0.7814,1158,Ostalo u video igrama,0.7201,1154,Konzola,0.701,
+8614,Tailgate Mounted Bike Rack,1503,Prikolica za teret na biciklu,Biciklizam,0.7811,1638,Prikolica za motocikl,0.7529,1629,Prikolica za motocikl,0.7393,
+9397,Inverter,1015,Inverter,Elektronika,0.781,1191,Kompresor,0.5982,1275,Konverter,0.592,
+9486,DJ Equipment Package Deals,1124,DJ oprema,Audio oprema i zvuk,0.7809,1125,Slušalice,0.581,1126,Luper,0.5757,
+9487,Decks & Turntable,1200,Alat za decking,Podne obloge i pločice,0.7806,1625,Prikolica za čamac,0.6581,1295,Stege i hvatači,0.6507,1124
+8462,Tent for six people,1459,Šator 24-32 m²,Šatori i tende,0.7805,1460,Šator preko 32 m²,0.7791,1458,Šator 0-23 m²,0.7305,
+8960,Office,1174,Ostalo u kancelarijskim mašinama,Kancelarijske mašine,0.7801,1173,Rezač dokumenata,0.7554,1171,Štampač,0.7395,1269
+2965,Headphones,1125,Slušalice,Audio oprema i zvuk,0.7798,1130,Prenosni zvučnik,0.7189,1132,Zvučnik,0.701,
+299,Other in Electronics,210,Ostalo u elektronici,Elektronika,0.7797,1149,Mrežna oprema,0.6869,1145,Računarska oprema,0.685,
+9355,Air blaster,1189,Vazdušni pištolj,Komprimovani vazduh,0.7792,1350,Aerator sa šupljim klinovima,0.6621,1191,Kompresor,0.602,
+8520,Handheld Mic,1127,Mikrofon,Audio oprema i zvuk,0.7769,1476,Instrumentalni mikrofon,0.7579,1125,Slušalice,0.6687,
+9175,Filter,1277,Filter za objektiv,Objektivi,0.7766,1228,Maska za zavarivanje,0.4999,1226,MIG aparat,0.4896,
+4534,Extra Bed,1363,Pomoćni krevet,Stilizovanje i dekoracija,0.7764,1633,Prikolica s pokrivačem,0.5449,1427,Šank,0.5004,
+1805,Other in Construction Machinery,1012,Radna rasveta,Građevinska oprema i alati,0.7764,1199,Ostalo u građevinskoj mehanizaciji,0.77,1196,Utovarivač,0.7484,1199
+8952,Tarp,1116,Ostalo u glodanju,Glodanje i hoblovanje,0.7761,1290,Ostalo u blicevima i rasveti,0.7643,1241,Ostalo u skelama,0.7635,1502
+9440,Camping trailer,1461,Ostalo u šatorima,Šatori i tende,0.7759,1490,Kolica za outdoor,0.7534,1459,Šator 24-32 m²,0.7523,1635
+3994,Other in Sports and Leisure,1539,Ostalo u sportu,Sportski rekviziti,0.7748,1537,Reket sportovi,0.7609,1516,Stoni fudbal,0.7297,
+9398,VHS-player,1250,VHS plejer,Projektori i televizori,0.7746,1243,DVD i Blu-ray,0.6304,308,Memorijske kartice,0.5747,
+8516,Broadcast Microphone,1127,Mikrofon,Audio oprema i zvuk,0.774,1476,Instrumentalni mikrofon,0.6497,1133,Ostalo u zvuku,0.5601,
+8528,DJI Spark,1141,DJI Spark,Dronovi,0.7735,1137,DJI Inspire,0.5089,1067,Laserski nivelator,0.497,
+8740,Other in construction machinery,1012,Radna rasveta,Građevinska oprema i alati,0.7729,1199,Ostalo u građevinskoj mehanizaciji,0.761,1196,Utovarivač,0.7501,1199
+3992,Other in travelling,1580,Ostalo u putovanjima,Putovanja i koferi,0.7727,1577,Koferi,0.702,1579,Putovanje s decom,0.7002,
+9290,Freeride and allmountain skis,1570,Penjanje po snegu i ledu,Zimski sportovi,0.7724,1566,Skijaški roleri,0.7641,1564,Ekspedicione sanke,0.7595,1568
+8461,Four Person Tent,1459,Šator 24-32 m²,Šatori i tende,0.7719,1460,Šator preko 32 m²,0.7658,1458,Šator 0-23 m²,0.7313,
+9474,C-stand,1291,C-stalak,Stativi i rigovi,0.7715,1271,Skladišna jedinica,0.4242,1634,Ostalo u prikolicama,0.4224,
+8792,Snowboard Boots,1568,Skijanje i snowboard,Zimski sportovi,0.7704,1571,Snowracer,0.7633,1570,Penjanje po snegu i ledu,0.7503,
+8996,Laminate Cutter,1204,Rezač laminata,Podne obloge i pločice,0.7703,1039,Plazma rezač,0.6986,1044,Rezač pločica,0.6892,
+8948,Camping furniture,1490,Kolica za outdoor,Kampovanje i outdoor,0.7693,1459,Šator 24-32 m²,0.7481,1486,Ruksak,0.7424,
+8417,Costumes & Fancy Dress,1425,Party odeća,Odeća i kostimi,0.7687,1424,Kostimi i maskiranje,0.7467,1426,Ostalo u odeći,0.7351,1424
+8523,Portable Speakers,1130,Prenosni zvučnik,Audio oprema i zvuk,0.7687,1125,Slušalice,0.7291,1132,Zvučnik,0.7081,
+9436,Simulator equipment,1156,Simulator oprema,Video igre i konzole,0.7684,1600,Kolica za montažu,0.6664,1602,Auto alati,0.6395,
+9255,Other in motorcycle,1639,Ostalo u motociklima,Motocikli i oprema,0.768,1638,Prikolica za motocikl,0.7432,1629,Prikolica za motocikl,0.7221,
+4633,Tricycle,1503,Prikolica za teret na biciklu,Biciklizam,0.7677,1504,Nosač bicikla,0.7513,1506,Torba za transport bicikla,0.7183,1507
+8720,Other Nintendo Consoles,1152,Arkadna mašina,Video igre i konzole,0.7675,1154,Konzola,0.7467,1158,Ostalo u video igrama,0.7425,1154
+9006,Paper Cutter,1169,Rezač papira,Kancelarijske mašine,0.7674,1052,Mašina za graviranje,0.6642,1039,Plazma rezač,0.6617,
+2915,Other in Computers,1151,Ostalo u računarima,Računari i oprema,0.7671,1145,Računarska oprema,0.7236,1148,Laptop,0.7045,
+9138,Satellite instrument,1017,Satelitska oprema,Elektronika,0.7666,1055,Orbitalna brusilica,0.5494,1334,Teleskopske merdevine,0.5448,
+8995,"Other in Flooring, Tiling & Carpeting",1201,Brusilica za podove,Podne obloge i pločice,0.7659,1053,Brusilica za podove,0.7466,1202,Mašina za skidanje podova,0.73,1207
+8571,Snow Chains,1598,Lanci za sneg,Auto oprema,0.7655,1571,Snowracer,0.7602,1570,Penjanje po snegu i ledu,0.7548,
+9361,Lawn mower,1344,Rasipač za đubrivo,Održavanje travnjaka,0.7654,1341,Kosilica,0.7052,1339,Trimer za ivice travnjaka,0.703,1341
+3918,Tandem,1241,Ostalo u skelama,Skele i podupirači,0.7651,1116,Ostalo u glodanju,0.7624,1290,Ostalo u blicevima i rasveti,0.7321,1507
+8727,PlayStation VR,1157,VR naočale,Video igre i konzole,0.765,1156,Simulator oprema,0.6297,1152,Arkadna mašina,0.574,
+8840,Bike Helmet,1638,Prikolica za motocikl,Motocikli i oprema,0.7644,1504,Nosač bicikla,0.7572,1637,Motociklistička oprema,0.7555,1509
+8910,Golf Clubs,1535,Golf,Sportski rekviziti,0.7644,1537,Reket sportovi,0.409,1444,Beer pong,0.3977,
+1817,Other in Ventilation,105,Ventilacija i grejanje,Građevinska oprema i alati,0.7643,1191,Kompresor,0.7473,1192,Ostalo u komprimovanom vazduhu,0.7075,
+8911,Other in Golf,1535,Golf,Sportski rekviziti,0.7642,1539,Ostalo u sportu,0.4716,1537,Reket sportovi,0.4688,
+2983,Tablets,1164,Tablet,Mobilni telefoni i tableti,0.7637,1159,Oprema za mobilne i tablete,0.7472,1161,Mobilni telefon,0.6378,
+1764,Other in Paint,1110,Ostalo u farbanju,Krečenje i tapete,0.7632,1100,Mešalica boje,0.7328,1104,Nogari za farbanje,0.727,
+2966,Other in Sound,1419,Zvuk,"Zvuk, rasveta i bina",0.7624,1133,Ostalo u zvuku,0.724,1132,Zvučnik,0.7031,1133
+467,Other in Children's Things,1402,Ostalo za decu,Oprema za decu,0.7621,1398,Prostirka za igru,0.7484,1395,Dečija odeća,0.721,
+8556,Accessories For Camping Stoves,1346,Bure za spaljivanje,Baštenski alati,0.7617,1386,Sokovnik na paru,0.6816,1486,Ruksak,0.653,1489
+9418,Microphone stand,1127,Mikrofon,Audio oprema i zvuk,0.7617,1476,Instrumentalni mikrofon,0.6946,1133,Ostalo u zvuku,0.5469,1480
+8729,Smartphone VR Glasses,1157,VR naočale,Video igre i konzole,0.7615,1161,Mobilni telefon,0.5165,1164,Tablet,0.5114,
+2924,Thermal Imaging Camera,1080,Termovizijska kamera,Merni instrumenti,0.7615,1065,IC termometar,0.6083,1258,Polaroid kamera,0.5795,
+8972,Water Play,1528,Vodene igre,Igra i hobi,0.7615,1552,Ostalo u vodenim sportovima,0.7308,1549,Odeća za vodene sportove,0.7213,
+8486,Motorcycle Trailer,1638,Prikolica za motocikl,Motocikli i oprema,0.7613,1639,Ostalo u motociklima,0.7355,1629,Prikolica za motocikl,0.7268,
+8508,Folding Bed,1363,Pomoćni krevet,Stilizovanje i dekoracija,0.761,1633,Prikolica s pokrivačem,0.6005,1108,Kutija za valjak,0.5178,
+9238,Solar Charger,1163,Solarni punjač,Mobilni telefoni i tableti,0.7605,1019,Baterije i punjači,0.7273,1601,Punjač baterija za vozila,0.6599,
+8456,Ice Hockey Skates,1565,Hokej,Zimski sportovi,0.7603,1525,Stoni hokej,0.6675,1567,Klizaljke,0.6471,1567
+8411,Party Activities,608,Party paketi,Proslave i događaji,0.7588,609,Grejalice i pečurke,0.6532,610,Ostalo za proslave,0.6444,
+1749,Orbital Sander,1055,Orbitalna brusilica,Brušenje i poliranje,0.7586,1334,Teleskopske merdevine,0.5301,1017,Satelitska oprema,0.48,
+8602,Laminating Machine,1322,Visokotlačni perač,Baštenske mašine,0.7585,1167,Mašina za laminiranje,0.7414,1315,Alati za čišćenje oluka,0.7082,1167
+1762,Paint Trestles,1236,Nogari za farbanje,Skele i podupirači,0.7583,1104,Nogari za farbanje,0.7203,1110,Ostalo u farbanju,0.7048,1104
+8644,Trestle tables,1114,Stol za glodalicu,Glodanje i hoblovanje,0.758,1431,Sklopivi stolovi,0.7125,1430,Paket stolovi i stolice,0.6663,1431
+9302,Others in longboard & skateboard,1519,Longboard i skejtbord,Igra i hobi,0.7579,1546,Paddleboard,0.6026,1545,Kiteboarding,0.6,
+2211,Pressure Washer,1221,Tester pritiska,Vodoinstalaterski alati,0.7575,1371,Čistač odvoda,0.6689,1374,Parna mašina za čišćenje,0.6627,1322
+8985,Folding bike,1503,Prikolica za teret na biciklu,Biciklizam,0.7569,1629,Prikolica za motocikl,0.7098,1506,Torba za transport bicikla,0.7048,1507
+9041,Accessories to National costume,1424,Kostimi i maskiranje,Odeća i kostimi,0.7568,1426,Ostalo u odeći,0.7003,1425,Party odeća,0.6945,
+8609,Jump Starter,1593,Jump starter,Auto oprema,0.7568,1607,Jump starter,0.7564,1515,Fly jumpers,0.5639,
+9030,Monitor,1150,PC monitori,Računari i oprema,0.7567,306,Monitori,0.7376,1390,Bebi monitor,0.6761,
+8961,Studio,1272,Studio,Prostori,0.7562,1052,Mašina za graviranje,0.5276,1611,Rampa,0.5189,
+2927,Other in Film & Photography,1256,Filmska kamera,Fotoaparati i kamere,0.7559,1260,Ostale kamere,0.7436,1255,Digitalna kino kamera,0.7434,310
+9017,Soft Shell Bike Travel Case,1506,Torba za transport bicikla,Biciklizam,0.7559,1503,Prikolica za teret na biciklu,0.739,1574,Kofer za bicikl,0.679,
+8976,Cello,1483,Violina,Muzički instrumenti,0.7556,1484,Duvački instrument,0.7517,1477,Klavijatura,0.735,1471
+3313,Smoke Machine,1418,Mašina za dim,"Zvuk, rasveta i bina",0.7556,1326,Mašina za metenje,0.6532,1312,Mašina za drva,0.6463,
+8686,Chocolate Fountain,1447,Fontana od čokolade,Aktivnosti i zabava,0.7548,1311,Pumpa za odvodnjavanje,0.4604,1451,Sladoled i slush mašine,0.4328,
+8742,Drain Cleaners,1371,Čistač odvoda,Čišćenje i pranje,0.7545,1219,Savijač cevi,0.7035,1217,Rezač cevi,0.7024,
+8419,Other in Clothes,1426,Ostalo u odeći,Odeća i kostimi,0.7543,1423,Čuvanje odeće,0.6956,1425,Party odeća,0.6705,
+8812,Other in Outdoor Games,1522,Igre na otvorenom,Igra i hobi,0.7541,1516,Stoni fudbal,0.6752,1515,Fly jumpers,0.6534,
+9048,Plumbing Bender,1219,Savijač cevi,Vodoinstalaterski alati,0.7535,1217,Rezač cevi,0.7509,1218,Ključ za cevi,0.6974,
+8690,Personal Care,1406,Ostalo u ličnoj nezi,Lična nega,0.7533,1581,Štake,0.5069,1404,Epilacija,0.4924,
+337,BBQ & Grill,1433,Roštilj,Ketering i kuhinja,0.7524,1439,Kolica za kobasice,0.7009,1441,Posuđe i pribor za jelo,0.58,
+1787,Tool Box,1095,Kofer za alat,Ručni alati,0.7523,1091,Izvlakač,0.7377,1407,Kutije za selidbu,0.7329,
+9473,DJI FPV,1136,DJI FPV,Dronovi,0.7505,1139,DJI Mavic 3,0.5955,1138,DJI Mavic,0.5938,
+8785,Snow and Ice Ax,1358,Lopata za sneg,Baštenski alati,0.7504,1570,Penjanje po snegu i ledu,0.7363,1563,Oprema za lavine,0.7346,1570
+9134,Caulking gun,1054,Toplotni pištolj,Brušenje i poliranje,0.7495,1215,Pištolj za klamerice,0.7115,1087,Pištolj za lepak,0.7003,1083
+8586,Avalanche Kit,1563,Oprema za lavine,Zimski sportovi,0.7469,1598,Lanci za sneg,0.7421,1358,Lopata za sneg,0.7179,
+9458,Camera Package Deals,1253,Kompaktni fotoaparat,Fotoaparati i kamere,0.7469,1265,Streaming oprema,0.707,1261,Torba za kameru,0.7007,305
+9385,Robot Lawn Mower,1335,Detektor kablova za robotske kosilice,Održavanje travnjaka,0.7464,1310,Trimer za travu,0.6565,1213,Ostalo u mehanizaciji terena,0.6274,1341
+9187,Patio Cleaner,1320,Čistač terasa,Baštenske mašine,0.7455,1373,Ribač podova,0.6981,1371,Čistač odvoda,0.6746,
+8464,Three Person Tent,1458,Šator 0-23 m²,Šatori i tende,0.7454,1459,Šator 24-32 m²,0.7434,1460,Šator preko 32 m²,0.7428,
+22213,Other in Garden Machinery ,1213,Ostalo u mehanizaciji terena,Mašine za uređenje terena,0.7452,1211,Svrdlo za zemlju,0.7393,1356,Kolica za baštu,0.7387,1328
+8639,Patio Heater,105,Ventilacija i grejanje,Građevinska oprema i alati,0.7452,1320,Čistač terasa,0.6774,1386,Sokovnik na paru,0.6503,
+8837,Other in Massage,1558,Masaža,Trening i teretana,0.7451,1561,Yoga prostirka,0.6397,1560,Prsluk sa tegovima,0.5547,
+8951,Hammock Tent,1460,Šator preko 32 m²,Šatori i tende,0.7449,1459,Šator 24-32 m²,0.7274,1458,Šator 0-23 m²,0.7045,1458
+9263,Dog Clipper,1412,Mašinica za šišanje pasa,Oprema za kućne ljubimce,0.7434,1415,Ostalo za kućne ljubimce,0.526,1039,Plazma rezač,0.493,
+1734,Multimeter,1072,Multimetar,Merni instrumenti,0.7433,1069,Metar,0.5741,1038,Oscilirajući višenamenski alat / Multialat,0.5641,
+4535,Sewing Machine,506,Mašine za šivenje,Kuća i dom,0.7433,1322,Visokotlačni perač,0.6719,1312,Mašina za drva,0.6347,
+8733,Color Sensor,1262,Senzor boja,Fotoaparati i kamere,0.743,1102,Merač boja,0.629,1101,NCS karta boja,0.535,
+8659,Overhead Projector,1248,Slajd projektor,Projektori i televizori,0.7429,1247,Projekciono platno,0.725,1246,Projektor,0.7199,1245
+4532,Paintings,1365,Slike,Stilizovanje i dekoracija,0.7426,1110,Ostalo u farbanju,0.6749,1100,Mešalica boje,0.6659,
+1813,Air Purifier,1191,Kompresor,Komprimovani vazduh,0.7416,1371,Čistač odvoda,0.6629,1192,Ostalo u komprimovanom vazduhu,0.6524,105
+8849,Bit Set,1176,Set bitova,Bušilice i šrafilice,0.7416,1182,Udarni ključ,0.4104,1096,Moment ključ,0.4096,
+8628,Other Lenses,1276,DSLR objektivi,Objektivi,0.7415,1274,Kinematografski prime objektivi,0.708,1280,Oprema za objektive,0.6661,1281
+8426,Metal Shears,1033,Makaze za metal,Testerisanje i sečenje,0.741,1034,Kružna testera za metal,0.699,1050,Precizna brusilica,0.649,
+8460,Two Person tent,1460,Šator preko 32 m²,Šatori i tende,0.741,1459,Šator 24-32 m²,0.738,1461,Ostalo u šatorima,0.7255,1458
+8657,Paella Pan & Griddle,1437,Paella tava,Ketering i kuhinja,0.7408,1436,Pića,0.5876,1177,Pikamer,0.5862,
+9040,National costume for children,1422,Dečija odeća,Odeća i kostimi,0.7406,1424,Kostimi i maskiranje,0.6605,1395,Dečija odeća,0.6252,1424
+8466,Five Person Tent,1459,Šator 24-32 m²,Šatori i tende,0.7395,1460,Šator preko 32 m²,0.7351,1458,Šator 0-23 m²,0.7243,
+9510,Garden Sieve,406,Ostalo u bašti,Bašta,0.7393,1338,Baštenski valjak,0.7166,1356,Kolica za baštu,0.6969,1313
+3971,Football,1516,Stoni fudbal,Igra i hobi,0.7389,1534,Fudbal,0.702,1513,Bumper ball,0.5559,1534
+8852,Sun Protection Tent,1459,Šator 24-32 m²,Šatori i tende,0.7384,1460,Šator preko 32 m²,0.7242,1458,Šator 0-23 m²,0.7146,
+8963,Storage unit,1271,Skladišna jedinica,Prostori,0.7383,1022,Razvodni ormar,0.617,1270,Parking i garaža,0.5023,
+8695,Ultrasonic Cleaning,1375,Ultrazvučno čišćenje,Čišćenje i pranje,0.7376,1315,Alati za čišćenje oluka,0.6194,1371,Čistač odvoda,0.5853,
+8548,Air Conditioning,1191,Kompresor,Komprimovani vazduh,0.7367,105,Ventilacija i grejanje,0.7162,1192,Ostalo u komprimovanom vazduhu,0.671,105
+8637,Stone drilling machine,1212,Rezač kamena,Mašine za uređenje terena,0.7363,1049,Stona brusilica,0.688,1187,Mašina za bušenje kamena,0.6313,1187
+8475,Bike Trailer,1638,Prikolica za motocikl,Motocikli i oprema,0.7362,1503,Prikolica za teret na biciklu,0.7334,1629,Prikolica za motocikl,0.7219,1503
+1742,Angle grinder,1185,Rotacioni čekić,Bušilice i šrafilice,0.7361,1050,Precizna brusilica,0.6855,1606,Dizalica i stalci,0.6634,1046
+8684,Suit,1426,Ostalo u odeći,Odeća i kostimi,0.735,1423,Čuvanje odeće,0.6475,1425,Party odeća,0.6037,
+8946,Airsoft,1511,Airsoft,Igra i hobi,0.7344,1350,Aerator sa šupljim klinovima,0.7243,1189,Vazdušni pištolj,0.6769,
+9364,Gutter cleaning tools,1315,Alati za čišćenje oluka,Baštenske mašine,0.7342,1371,Čistač odvoda,0.7219,1373,Ribač podova,0.703,
+3913,Mountain Bike,1503,Prikolica za teret na biciklu,Biciklizam,0.7337,1504,Nosač bicikla,0.7253,1509,Ostalo u biciklizmu,0.7147,1507
+9430,Humidifier,1191,Kompresor,Komprimovani vazduh,0.7333,1190,Crevo za komprimovani vazduh,0.6591,1311,Pumpa za odvodnjavanje,0.649,105
+8692,Other Tableware,1431,Sklopivi stolovi,Nameštaj za proslave,0.7333,1114,Stol za glodalicu,0.6973,1237,Sto za tapete,0.6966,1441
+9380,Wheel & tire tools,1613,Alati za točkove i gume,Alati za radionicu,0.7332,1602,Auto alati,0.6238,1185,Rotacioni čekić,0.6237,
+1744,Drywall Sander,1051,Brusilica za suvi zid,Brušenje i poliranje,0.7329,1234,Lift za suvi zid,0.7091,1053,Brusilica za podove,0.5588,
+8434,Oscillating Multi tool,1038,Oscilirajući višenamenski alat / Multialat,Testerisanje i sečenje,0.7329,1072,Multimetar,0.582,1073,Osciloskop,0.5439,
+8412,Other in Light & Smoke,1421,Ostalo u rasveti i dimu,"Zvuk, rasveta i bina",0.7325,1418,Mašina za dim,0.718,1285,Ring svetlo,0.6575,
+8495,Weed Burner,1346,Bure za spaljivanje,Baštenski alati,0.7323,1344,Rasipač za đubrivo,0.6115,1310,Trimer za travu,0.5877,1360
+8612,Towbar/Hitch Mounted Bike rack,1503,Prikolica za teret na biciklu,Biciklizam,0.7321,1609,Dizalica za motocikl,0.729,1629,Prikolica za motocikl,0.7227,1588
+8650,Serving Thermos,1386,Sokovnik na paru,Kuhinjski aparati,0.7318,1065,IC termometar,0.7198,1605,Indukcioni grejač,0.7162,1441
+9042,Large Suitcase,1576,Specijalni kofer,Putovanja i koferi,0.7316,1575,Nosiljka za kućnog ljubimca,0.6855,1577,Koferi,0.6798,1577
+9426,Knife sharpener,1382,Oštrač noževa,Kuhinjski aparati,0.7314,1039,Plazma rezač,0.6762,1040,Narezač,0.6712,
+8521,Other in Microphone,1127,Mikrofon,Audio oprema i zvuk,0.7313,1476,Instrumentalni mikrofon,0.704,1133,Ostalo u zvuku,0.5559,
+9388,Tiling package,1203,Paket za podove,Podne obloge i pločice,0.7306,1206,Paket za keramiku,0.6848,1201,Brusilica za podove,0.6594,1206
+9228,Bubble Machine,1416,Mašina za balone,"Zvuk, rasveta i bina",0.7305,1446,Bazen sa mehurićima,0.6916,1462,Pumpica za balone,0.6725,
+9261,Weeder,1338,Baštenski valjak,Održavanje travnjaka,0.7299,1112,Strug,0.7272,406,Ostalo u bašti,0.726,1360
+9236,Pop rivet pliers,1185,Rotacioni čekić,Bušilice i šrafilice,0.7295,1089,Udarni odvijač,0.6471,1091,Izvlakač,0.6416,1090
+1812,Heater,105,Ventilacija i grejanje,Građevinska oprema i alati,0.7293,1605,Indukcioni grejač,0.6947,1386,Sokovnik na paru,0.6848,
+3323,Chairs For Styling,1429,Stolice za proslave,Nameštaj za proslave,0.729,1430,Paket stolovi i stolice,0.7119,1364,Nameštaj,0.6512,1364
+3952,Amplifier,1469,Pojačivač,Muzički instrumenti,0.7289,1125,Slušalice,0.6995,1126,Luper,0.6971,
+9292,BMX,1504,Nosač bicikla,Biciklizam,0.7286,1509,Ostalo u biciklizmu,0.7026,1555,Sobni bicikl,0.7025,1507
+9520,Hair Removal ,1405,Stilizovanje kose,Lična nega,0.7277,1039,Plazma rezač,0.4826,1412,Mašinica za šišanje pasa,0.4396,1404
+9184,"Teepee & Bell tent, 8+ ppl.",1459,Šator 24-32 m²,Šatori i tende,0.7276,1460,Šator preko 32 m²,0.7145,1458,Šator 0-23 m²,0.6985,
+8437,Ice Cream and Slushy Machines,1451,Sladoled i slush mašine,Aktivnosti i zabava,0.7267,1325,Freza za panjeve,0.5909,1326,Mašina za metenje,0.5809,
+332,Furniture,1430,Paket stolovi i stolice,Nameštaj za proslave,0.7265,1429,Stolice za proslave,0.7258,1396,Dečiji nameštaj,0.7129,1364
+9118,Other in Personal Care,1406,Ostalo u ličnoj nezi,Lična nega,0.7263,1581,Štake,0.4815,1586,Ostalo u mobilnosti,0.474,
+9301,Skateboards,1519,Longboard i skejtbord,Igra i hobi,0.7254,1545,Kiteboarding,0.599,1546,Paddleboard,0.5975,
+3324,Other in Furniture,1430,Paket stolovi i stolice,Nameštaj za proslave,0.7253,1429,Stolice za proslave,0.7184,1431,Sklopivi stolovi,0.706,1364
+8507,Pots and Pans,1440,Lonac za supu,Ketering i kuhinja,0.7252,1442,Dispenser za šlag,0.7137,1441,Posuđe i pribor za jelo,0.7033,1384
+8873,Wheel Tools,1185,Rotacioni čekić,Bušilice i šrafilice,0.7245,1613,Alati za točkove i gume,0.7178,1600,Kolica za montažu,0.6957,1613
+9522,Platform trolley,1120,Platforma za prevoz,Transport i dizanje,0.7244,1121,Kolica za teret,0.5844,1361,Kolica za prevoz,0.5777,
+8613,Roof Mounted Bike Rack,1503,Prikolica za teret na biciklu,Biciklizam,0.7243,1638,Prikolica za motocikl,0.6878,1629,Prikolica za motocikl,0.6877,1588
+9311,Construction rake,1209,Beton i armatura,Mašine za uređenje terena,0.7242,1230,Kolica za građevinski otpad,0.7096,1210,Građevinska grabulja,0.7096,1210
+8678,Fruit Press and Fruit Crusher,1347,Berač voća,Baštenski alati,0.7239,1319,Usisivač za lišće,0.5538,1317,Duvač lišća,0.5078,1387
+9423,Hand controller,1155,Ručni kontroler,Video igre i konzole,0.7227,1086,Regulator šarki,0.6837,1089,Udarni odvijač,0.6578,
+8734,Oil Change,1610,Menjanje ulja,Alati za radionicu,0.7224,1225,Gasni aparat za zavarivanje,0.3953,1058,Ostalo u brušenju,0.3652,
+9461,Cinema Prime Lenses,1274,Kinematografski prime objektivi,Objektivi,0.7223,1255,Digitalna kino kamera,0.655,1256,Filmska kamera,0.6538,
+1728,Other in Saws & Cutting ,1039,Plazma rezač,Testerisanje i sečenje,0.7219,1036,Ručni ger za drvo,0.6986,1035,Stoni ger za drvo,0.6854,1045
+9386,DJI Mavic 3,1139,DJI Mavic 3,Dronovi,0.7213,1138,DJI Mavic,0.6219,1140,DJI Phantom,0.5284,
+9057,Kids and junior skis,1566,Skijaški roleri,Zimski sportovi,0.7213,1570,Penjanje po snegu i ledu,0.6916,1571,Snowracer,0.6793,1568
+4611,Stroller,1582,Električna invalidska kolica,Mobilnost i medicinska nega,0.7212,1585,Invalidska kolica,0.7141,1399,Kolica i oprema,0.7136,1399
+8706,Manual Tile Cutter,1204,Rezač laminata,Podne obloge i pločice,0.7209,1205,Rezač pločica,0.6974,1202,Mašina za skidanje podova,0.6953,1205
+8653,Stools,1185,Rotacioni čekić,Bušilice i šrafilice,0.7203,1238,Kolica za gipsane ploče,0.7202,1200,Alat za decking,0.7163,1364
+8696,Teleprompter,1266,Teleprompter,Fotoaparati i kamere,0.7198,1063,Tražač kabla,0.5601,1292,Kamera na kablu,0.5266,
+8557,Other in Outdoor Clothing,1500,Outdoor odeća,Kampovanje i outdoor,0.7191,1426,Ostalo u odeći,0.6395,1423,Čuvanje odeće,0.5985,
+8745,Screw Gun,1087,Pištolj za lepak,Ručni alati,0.7188,1215,Pištolj za klamerice,0.7028,1054,Toplotni pištolj,0.6933,1186
+8594,Ski Case & Ski Bag,1596,Krovni nosač za ski,Auto oprema,0.7185,1563,Oprema za lavine,0.6957,1492,Rashladna kutija i torba,0.6846,1576
+9005,Label Printer,1165,3D štampač,Kancelarijske mašine,0.7183,1166,Štampač nalepnica,0.6651,1052,Mašina za graviranje,0.6598,1166
+3322,Table For Styling,1366,Rekviziti,Stilizovanje i dekoracija,0.7178,1431,Sklopivi stolovi,0.7148,1364,Nameštaj,0.7037,1364
+1736,Other in Measuring Instrument,1064,Merač energije,Merni instrumenti,0.7174,1077,Merač buke,0.6948,1071,Merač vlage,0.6859,1082
+8957,Physical Games,1522,Igre na otvorenom,Igra i hobi,0.7169,1513,Bumper ball,0.671,1512,Društvene igre i slagalice,0.6572,
+8554,Primus Stove,1386,Sokovnik na paru,Kuhinjski aparati,0.7167,1442,Dispenser za šlag,0.6777,1433,Roštilj,0.6761,1489
+1832,Wallpaper Stripper,1103,Skidač boje,Krečenje i tapete,0.7165,1104,Nogari za farbanje,0.6847,1110,Ostalo u farbanju,0.6599,1109
+1771,Mig Welder,1226,MIG aparat,Aparati za zavarivanje,0.7155,1318,Cepač drva,0.6982,1322,Visokotlačni perač,0.6721,
+8562,Household Mixer,1386,Sokovnik na paru,Kuhinjski aparati,0.7151,1384,Lonci i tiganje,0.7132,1383,Mini rerna,0.7055,1387
+8697,Concrete Grinder,1209,Beton i armatura,Mašine za uređenje terena,0.715,1194,Damper,0.6683,1212,Rezač kamena,0.6678,1201
+331,"Sound, Light & Scene",1419,Zvuk,"Zvuk, rasveta i bina",0.7143,1133,Ostalo u zvuku,0.6671,1132,Zvučnik,0.666,
+8801,Hockey Stick,1525,Stoni hokej,Igra i hobi,0.7141,1565,Hokej,0.704,1567,Klizaljke,0.5752,1565
+8515,Inline skates,1519,Longboard i skejtbord,Igra i hobi,0.714,1545,Kiteboarding,0.6072,1546,Paddleboard,0.5982,1536
+8903,Glidecam,1545,Kiteboarding,Sportovi na vodi,0.7135,1551,Wing surf,0.6821,1119,Paletni viljuškar,0.6782,1297
+8484,Travel Stroller,1582,Električna invalidska kolica,Mobilnost i medicinska nega,0.7135,1585,Invalidska kolica,0.7102,1584,Hodalica,0.6984,1399
+9018,Hard Shell Bike Travel Case,1503,Prikolica za teret na biciklu,Biciklizam,0.7132,1506,Torba za transport bicikla,0.7114,1574,Kofer za bicikl,0.6525,1506
+1834,Wet Vacuum Cleaner,1371,Čistač odvoda,Čišćenje i pranje,0.7131,1374,Parna mašina za čišćenje,0.6919,1376,Usisivač,0.6629,1376
+3916,Bike Cargo Trailer,1503,Prikolica za teret na biciklu,Biciklizam,0.7122,1506,Torba za transport bicikla,0.7025,1121,Kolica za teret,0.6664,
+8747,Drill bits,1050,Precizna brusilica,Brušenje i poliranje,0.7121,1048,Trakasta brusilica,0.7096,1049,Stona brusilica,0.7052,1178
+9012,Paint Stripper,1104,Nogari za farbanje,Krečenje i tapete,0.7111,1236,Nogari za farbanje,0.6902,1103,Skidač boje,0.683,1103
+8816,Frisbee / Disc Golf,1535,Golf,Sportski rekviziti,0.7109,1513,Bumper ball,0.5594,1444,Beer pong,0.5137,1522
+3945,Diving Equipment,1541,Ronilačka oprema,Sportovi na vodi,0.7108,1267,Tela kamera za ronjenje,0.6749,1548,Vodni ski i wakeboard,0.605,
+8564,Juicer,1347,Berač voća,Baštenski alati,0.7108,1178,Burgije,0.6409,1181,Udarna bušilica,0.639,1386
+8861,Other in Clothes Storage,1423,Čuvanje odeće,Odeća i kostimi,0.7107,1426,Ostalo u odeći,0.6477,1624,Jedriličarska odeća,0.62,
+8555,Other Camping Stoves,1346,Bure za spaljivanje,Baštenski alati,0.7105,1494,Čeona lampa,0.6678,1461,Ostalo u šatorima,0.6546,1489
+8990,Camera Flash,1262,Senzor boja,Fotoaparati i kamere,0.7104,1253,Kompaktni fotoaparat,0.7012,1265,Streaming oprema,0.6987,1282
+9346,Color measuring tool,1102,Merač boja,Krečenje i tapete,0.7104,1262,Senzor boja,0.6343,1100,Mešalica boje,0.5544,
+8573,Hiking Pole,1495,Planinski štap,Kampovanje i outdoor,0.7094,1488,Dvogled,0.6192,1494,Čeona lampa,0.6058,
+9293,Burning Barrel,1346,Bure za spaljivanje,Baštenski alati,0.7093,1610,Menjanje ulja,0.584,1054,Toplotni pištolj,0.5794,
+9028,Ramp,1611,Rampa,Alati za radionicu,0.7093,1111,Ručno rende,0.6801,1112,Strug,0.6641,
+9183,"Teepee & Bell tent, 0-7 ppl.",1458,Šator 0-23 m²,Šatori i tende,0.7092,1459,Šator 24-32 m²,0.6927,1460,Šator preko 32 m²,0.6672,
+9518,Cable,1292,Kamera na kablu,Stativi i rigovi,0.7091,1063,Tražač kabla,0.6403,1336,Mašina za polaganje kablova,0.6395,1021
+9448,Microscope ,1521,Mikroskop,Igra i hobi,0.7089,1073,Osciloskop,0.5709,1066,Laserski daljinomer,0.5207,
+9392,Garden Hose,1338,Baštenski valjak,Održavanje travnjaka,0.7087,1344,Rasipač za đubrivo,0.7061,1340,Grabulje za nivelisanje,0.6733,1348
+9300,Longboards,1519,Longboard i skejtbord,Igra i hobi,0.7085,1545,Kiteboarding,0.6153,1295,Stege i hvatači,0.6035,
+9125,Diagnostic Tool OBD2,1603,Dijagnostički alat,Alati za radionicu,0.7082,1070,Detektor metala,0.5135,1031,Ručna testera,0.5102,
+8652,Folding Chairs,1429,Stolice za proslave,Nameštaj za proslave,0.7082,1430,Paket stolovi i stolice,0.6999,1431,Sklopivi stolovi,0.625,
+9413,Boat tubing,1617,Oprema za čamce,Čamci i plovila,0.7073,1618,Prikolica za čamac,0.7037,1625,Prikolica za čamac,0.7022,
+8867,Other in Fishing,1497,Lov i ribolov,Kampovanje i outdoor,0.7073,1622,Čamac na vesla i dinghy,0.5779,1619,Kanu,0.5488,
+9371,Jackets & pants,1426,Ostalo u odeći,Odeća i kostimi,0.7067,1423,Čuvanje odeće,0.6637,1572,Zimska odeća,0.6493,
+8647,Other in Festive Decoration,1463,Sveća i svećnjak,Dekoracija,0.7061,1427,Šank,0.6867,609,Grejalice i pečurke,0.6813,1468
+8736,Other in Vacuum Cleaners,1371,Čistač odvoda,Čišćenje i pranje,0.7058,1374,Parna mašina za čišćenje,0.6944,1369,Čistač tepiha i tapaciringa,0.6887,1376
+9085,Air track,1510,Air track,Igra i hobi,0.7055,1350,Aerator sa šupljim klinovima,0.6062,1060,Merač protoka vazduha,0.5989,
+9273,Cable tracker,1292,Kamera na kablu,Stativi i rigovi,0.7055,1063,Tražač kabla,0.6656,1335,Detektor kablova za robotske kosilice,0.6425,1063
+9504,Battery powered Nailgun ,1019,Baterije i punjači,Struja i agregati,0.705,1601,Punjač baterija za vozila,0.6807,1587,Punjač baterija za vozila,0.6254,1214
+8570,Pasta Machine,1316,Makaze za živicu,Baštenske mašine,0.705,1325,Freza za panjeve,0.6391,1438,Pizza peć,0.6279,1387
+1791,Construction Scaffolding,1012,Radna rasveta,Građevinska oprema i alati,0.7049,1232,Građevinska skela,0.6885,1196,Utovarivač,0.6723,1232
+8715,Nintendo Wii,1155,Ručni kontroler,Video igre i konzole,0.7049,1152,Arkadna mašina,0.6832,1158,Ostalo u video igrama,0.6716,1154
+4622,Baby Car Seat,1389,Nosiljka i stolica za bebu,Oprema za decu,0.7048,1399,Kolica i oprema,0.6205,1393,Autosedište,0.5697,1393
+9324,Surveillance camera,1266,Teleprompter,Fotoaparati i kamere,0.7047,1265,Streaming oprema,0.6991,1263,Follow focus i nosač objektiva,0.6873,1259
+9428,Tent Lights,1494,Čeona lampa,Kampovanje i outdoor,0.7028,1458,Šator 0-23 m²,0.6664,1459,Šator 24-32 m²,0.6647,
+4537,Other in Home,509,Ostalo u kući,Kuća i dom,0.7022,1406,Ostalo u ličnoj nezi,0.6245,506,Mašine za šivenje,0.5451,
+9023,Slackline,1538,Slackline,Sportski rekviziti,0.7022,1296,Kran i jib,0.4575,1295,Stege i hvatači,0.4452,
+8741,Workbench,1240,Radni sto,Skele i podupirači,0.7022,1239,Radna platforma,0.6819,1012,Radna rasveta,0.6476,
+8631,Workshop crane,1012,Radna rasveta,Građevinska oprema i alati,0.702,1193,Platforma za rad na visini,0.6743,1196,Utovarivač,0.6693,1614
+8589,Battery Powered Leaf Blower,1601,Punjač baterija za vozila,Alati za radionicu,0.701,1019,Baterije i punjači,0.6737,1587,Punjač baterija za vozila,0.6397,1317
+8519,Lapel Microphone,1127,Mikrofon,Audio oprema i zvuk,0.7007,1476,Instrumentalni mikrofon,0.673,1126,Luper,0.5673,
+8835,Massage Table,1558,Masaža,Trening i teretana,0.7004,1561,Yoga prostirka,0.5765,1431,Sklopivi stolovi,0.5222,
+8655,Party Kitchen,1388,Ostalo u kuhinji,Kuhinjski aparati,0.7003,1384,Lonci i tiganje,0.6773,1386,Sokovnik na paru,0.662,
+8654,Chair Covers,1633,Prikolica s pokrivačem,Prikolice,0.7001,1429,Stolice za proslave,0.6807,1430,Paket stolovi i stolice,0.65,1432
+9003,Battery Powered Hedge Trimmer,1019,Baterije i punjači,Struja i agregati,0.6997,1601,Punjač baterija za vozila,0.6902,1587,Punjač baterija za vozila,0.6304,1316
+1811,Dehumidifiers,1380,Dehidrator hrane,Kuhinjski aparati,0.6982,1191,Kompresor,0.6263,1190,Crevo za komprimovani vazduh,0.5766,105
+1774,Other in Welding,1318,Cepač drva,Baštenske mašine,0.6982,1012,Radna rasveta,0.6674,1196,Utovarivač,0.6647,1229
+8610,Booster Seat,1408,Kolica za selidbu,Oprema za selidbe,0.6981,1409,Remeni i pojasevi za selidbu,0.6667,1410,Kolica za teret,0.6528,1393
+9181,DJI Mavic Battery,1601,Punjač baterija za vozila,Alati za radionicu,0.6976,1019,Baterije i punjači,0.6974,1587,Punjač baterija za vozila,0.6647,1134
+3919,Electric Bike,1503,Prikolica za teret na biciklu,Biciklizam,0.6976,1504,Nosač bicikla,0.6815,1638,Prikolica za motocikl,0.675,1507
+9225,Excavator tools,1212,Rezač kamena,Mašine za uređenje terena,0.697,1012,Radna rasveta,0.6756,1210,Građevinska grabulja,0.6629,1199
+3332,Plates & Dishes,1434,Chafing dish,Ketering i kuhinja,0.6966,1436,Pića,0.6397,1435,Rešo,0.6393,1441
+8546,Protective Gear,1008,Zaštitna oprema,Građevinska oprema i alati,0.6966,1228,Maska za zavarivanje,0.6883,1227,Plastični zavarivač,0.6745,
+1713,Drilling Machine,1198,Traktor,Građevinska mehanizacija,0.6965,1311,Pumpa za odvodnjavanje,0.6664,1610,Menjanje ulja,0.6544,1179
+8683,Other in Party Wear,1425,Party odeća,Odeća i kostimi,0.6961,608,Party paketi,0.5924,1417,Party rasveta,0.5501,
+8872,Brake Tools,1613,Alati za točkove i gume,Alati za radionicu,0.6955,1602,Auto alati,0.6845,1600,Kolica za montažu,0.6731,
+1843,Glue Gun,1087,Pištolj za lepak,Ručni alati,0.6946,1215,Pištolj za klamerice,0.6922,1214,Pištolj za eksere,0.6623,
+2933,Media Players,1244,Media plejeri,Projektori i televizori,0.6945,1250,VHS plejer,0.6279,1152,Arkadna mašina,0.6157,
+9271,Moving straps & harnesses,1119,Paletni viljuškar,Transport i dizanje,0.6932,1409,Remeni i pojasevi za selidbu,0.6666,1410,Kolica za teret,0.6399,1409
+9281,Other in accessories,1600,Kolica za montažu,Alati za radionicu,0.6932,1179,Mašina za bušenje,0.6883,1606,Dizalica i stalci,0.6789,
+8635,Pillar Drill,1049,Stona brusilica,Brušenje i poliranje,0.6928,1047,Trakasta turpija,0.6592,1050,Precizna brusilica,0.6501,1183
+8543,Pruning Saw & Lopper,1036,Ručni ger za drvo,Testerisanje i sečenje,0.6928,1035,Stoni ger za drvo,0.6852,1057,Listna brusilica,0.668,1355
+8511,Concrete Vibrator,1208,Vibro nabijač,Mašine za uređenje terena,0.6922,1194,Damper,0.6683,1209,Beton i armatura,0.6183,
+8422,Roof Rack for Snowboards and Skis,1563,Oprema za lavine,Zimski sportovi,0.6922,1598,Lanci za sneg,0.6795,1570,Penjanje po snegu i ledu,0.6653,1596
+9229,Cutlery,1384,Lonci i tiganje,Kuhinjski aparati,0.692,1434,Chafing dish,0.6917,1442,Dispenser za šlag,0.6864,1441
+8839,Repair Stand For Bike,1503,Prikolica za teret na biciklu,Biciklizam,0.6918,1638,Prikolica za motocikl,0.6702,1504,Nosač bicikla,0.6643,1509
+9136,Heat press,1605,Indukcioni grejač,Alati za radionicu,0.6909,1054,Toplotni pištolj,0.6465,1065,IC termometar,0.6428,1517
+9248,Other in navigation & communication,1499,Navigacija i komunikacija,Kampovanje i outdoor,0.6908,1617,Oprema za čamce,0.5973,1618,Prikolica za čamac,0.5901,
+9230,Tablecloth,1431,Sklopivi stolovi,Nameštaj za proslave,0.6906,1106,Sto za tapete,0.6464,1114,Stol za glodalicu,0.6444,1441
+8689,Carafes,1178,Burgije,Bušilice i šrafilice,0.6904,1181,Udarna bušilica,0.6605,1188,Ostalo u bušilicama i šrafilicama,0.6488,1441
+2952,Game,1522,Igre na otvorenom,Igra i hobi,0.6904,1158,Ostalo u video igrama,0.6449,1512,Društvene igre i slagalice,0.6433,1512
+9063,Battery powered chainsaw,1601,Punjač baterija za vozila,Alati za radionicu,0.6898,1019,Baterije i punjači,0.6733,1021,Kalemovi i električni kablovi,0.6526,1309
+1839,Compressor,1191,Kompresor,Komprimovani vazduh,0.6898,1605,Indukcioni grejač,0.6798,1015,Inverter,0.6796,
+8860,Clothes Rack,1423,Čuvanje odeće,Odeća i kostimi,0.6897,1426,Ostalo u odeći,0.6298,1624,Jedriličarska odeća,0.6243,
+8481,Open Canoe,1589,Nosač za kanu i kajak,Auto oprema,0.6879,1625,Prikolica za čamac,0.6456,1617,Oprema za čamce,0.6175,1619
+1793,Other in Scaffolding,1012,Radna rasveta,Građevinska oprema i alati,0.6871,1232,Građevinska skela,0.6596,1199,Ostalo u građevinskoj mehanizaciji,0.6501,1241
+8506,Sous Vide,1288,Studijski blic,Blicevi i rasveta,0.6867,1178,Burgije,0.6625,1290,Ostalo u blicevima i rasveti,0.6484,1385
+8942,Wine Cooler & Champagne Cooler,1379,Varenje piva i vinarstvo,Kuhinjski aparati,0.6863,1386,Sokovnik na paru,0.5609,1190,Crevo za komprimovani vazduh,0.5485,1443
+9189,Shot machine,1087,Pištolj za lepak,Ručni alati,0.6861,1326,Mašina za metenje,0.6794,1215,Pištolj za klamerice,0.672,1436
+8969,Charging cable,1019,Baterije i punjači,Struja i agregati,0.6847,1601,Punjač baterija za vozila,0.6193,1587,Punjač baterija za vozila,0.5948,1021
+8767,Other in Card Game,1524,Poker set,Igra i hobi,0.6833,1512,Društvene igre i slagalice,0.5989,1522,Igre na otvorenom,0.5852,1512
+3321,Rugs,1109,Skidač tapeta,Krečenje i tapete,0.6828,1466,Crveni tepih,0.6809,1106,Sto za tapete,0.6486,1368
+8447,Spy Camera,1266,Teleprompter,Fotoaparati i kamere,0.6828,1265,Streaming oprema,0.6688,1259,Specijalne kamere,0.6514,1259
+8914,Other in specialty bags,1414,Torba za kućne ljubimce,Oprema za kućne ljubimce,0.6825,1492,Rashladna kutija i torba,0.6127,1595,Krovni kofer,0.6116,
+9062,Electrical chainsaw,1021,Kalemovi i električni kablovi,Ručni alati,0.6821,1318,Cepač drva,0.6395,1312,Mašina za drva,0.6185,1309
+2219,Wood Chipper,1318,Cepač drva,Baštenske mašine,0.6816,1035,Stoni ger za drvo,0.6598,1631,Prikolica za drvo,0.6594,1327
+8518,Shotgun microphone,1127,Mikrofon,Audio oprema i zvuk,0.6812,1476,Instrumentalni mikrofon,0.661,1215,Pištolj za klamerice,0.5557,
+8648,Bar Counter,1428,Bar sto,Nameštaj za proslave,0.681,1626,Prikolica sa kavezom,0.5594,1384,Lonci i tiganje,0.5465,
+8993,Other in Flash and lights,1285,Ring svetlo,Blicevi i rasveta,0.681,1283,Okidač blica,0.6628,1284,Reflektorski ekran,0.6569,1290
+9434,Foosball,1513,Bumper ball,Igra i hobi,0.6803,1533,Floorball,0.6221,1523,Paintball,0.5933,1516
+1754,Hand planer,1089,Udarni odvijač,Ručni alati,0.6803,1091,Izvlakač,0.6791,1088,Čekić,0.6613,1111
+8841,Bicycle Pump,1504,Nosač bicikla,Biciklizam,0.6802,1503,Prikolica za teret na biciklu,0.6737,1555,Sobni bicikl,0.6522,1509
+8869,Assembly Trolley,1627,Transporter za automobile,Prikolice,0.6798,1198,Traktor,0.6492,1361,Kolica za prevoz,0.6405,1600
+8974,Bedbox,1363,Pomoćni krevet,Stilizovanje i dekoracija,0.6793,1108,Kutija za valjak,0.6373,1407,Kutije za selidbu,0.5818,1401
+8446,Inspection Camera,1253,Kompaktni fotoaparat,Fotoaparati i kamere,0.6793,1259,Specijalne kamere,0.6766,1276,DSLR objektivi,0.673,1259
+9509,Other in lawn care,1341,Kosilica,Održavanje travnjaka,0.6785,1342,Ostalo u održavanju travnjaka,0.6776,1338,Baštenski valjak,0.6775,1342
+9367,Leaf Collector,1319,Usisivač za lišće,Baštenske mašine,0.6784,1057,Listna brusilica,0.5716,1317,Duvač lišća,0.5595,
+8597,Other in Pet,1415,Ostalo za kućne ljubimce,Oprema za kućne ljubimce,0.6783,1412,Mašinica za šišanje pasa,0.586,1414,Torba za kućne ljubimce,0.5693,
+9231,Sausage Cart,1439,Kolica za kobasice,Ketering i kuhinja,0.6777,1433,Roštilj,0.5696,1325,Freza za panjeve,0.5622,
+8588,Electrical Leaf Blower,1319,Usisivač za lišće,Baštenske mašine,0.677,1317,Duvač lišća,0.6487,1057,Listna brusilica,0.5707,1317
+1841,Concrete mixer,1209,Beton i armatura,Mašine za uređenje terena,0.6769,1194,Damper,0.647,1212,Rezač kamena,0.5937,
+9122,Foxwell Diagnostic Tool,1603,Dijagnostički alat,Alati za radionicu,0.6765,1026,Tračna testera,0.5487,1032,Ubodna testera,0.5444,
+9276,Manual earth auger,1211,Svrdlo za zemlju,Mašine za uređenje terena,0.6761,1212,Rezač kamena,0.661,1213,Ostalo u mehanizaciji terena,0.6582,
+8436,Cotton Candy Machine,1448,Mašina za šećernu vunu,Aktivnosti i zabava,0.6759,1179,Mašina za bušenje,0.6219,1326,Mašina za metenje,0.6184,
+8636,Photo and Slide Scanner,1170,Skener za fotografije,Kancelarijske mašine,0.6758,1264,Foto štampač,0.6462,1068,Fotometar,0.6237,
+3925,Binoculars,1276,DSLR objektivi,Objektivi,0.6753,1274,Kinematografski prime objektivi,0.6652,1334,Teleskopske merdevine,0.6274,1488
+8479,Garden shredder,1344,Rasipač za đubrivo,Održavanje travnjaka,0.6752,1339,Trimer za ivice travnjaka,0.6627,1310,Trimer za travu,0.643,1314
+8651,Other in Chairs For Party,1429,Stolice za proslave,Nameštaj za proslave,0.6752,1430,Paket stolovi i stolice,0.6234,1431,Sklopivi stolovi,0.5969,
+8427,Cable reels and Electric Cable,1063,Tražač kabla,Merni instrumenti,0.675,1021,Kalemovi i električni kablovi,0.673,1292,Kamera na kablu,0.669,1021
+8584,Probe,1042,Sabljasta testera,Testerisanje i sečenje,0.675,1026,Tračna testera,0.6728,1045,Ostalo u testerama,0.6685,1082
+8537,Slide Rail & Dolly,1300,Slajder i dolly,Stativi i rigovi,0.6748,1632,Tow dolly,0.6403,1119,Paletni viljuškar,0.558,
+8438,Other in Party Activities,608,Party paketi,Proslave i događaji,0.6746,1444,Beer pong,0.632,1425,Party odeća,0.6212,
+1716,Screwdrivers,1185,Rotacioni čekić,Bušilice i šrafilice,0.6744,1600,Kolica za montažu,0.6589,1602,Auto alati,0.6395,1099
+9404,Bottle Warmer,1391,Grejač bočica,Oprema za decu,0.6743,1386,Sokovnik na paru,0.6057,1379,Varenje piva i vinarstvo,0.5742,
+9396,Garden furniture,1341,Kosilica,Održavanje travnjaka,0.6742,1356,Kolica za baštu,0.6726,1430,Paket stolovi i stolice,0.6586,405
+3926,Other in Outdoor Life,1502,Ostalo u outdoor-u,Kampovanje i outdoor,0.6738,1488,Dvogled,0.6447,1486,Ruksak,0.6444,
+9001,Petrol Powered Hedge Trimmer,1610,Menjanje ulja,Alati za radionicu,0.6738,1310,Trimer za travu,0.6422,1339,Trimer za ivice travnjaka,0.5672,1316
+8705,Electric Tile Cutter,1202,Mašina za skidanje podova,Podne obloge i pločice,0.6737,1053,Brusilica za podove,0.6566,1204,Rezač laminata,0.6372,1205
+9139,Fondue,1436,Pića,Ketering i kuhinja,0.6723,1439,Kolica za kobasice,0.6697,1434,Chafing dish,0.6682,1443
+8714,Clothes Steamer,1624,Jedriličarska odeća,Čamci i plovila,0.6716,1318,Cepač drva,0.6375,1370,Parna presa za odeću,0.6288,1370
+9463,Medium Format Lenses,1276,DSLR objektivi,Objektivi,0.6714,1253,Kompaktni fotoaparat,0.5967,1066,Laserski daljinomer,0.5904,1278
+9039,National costume for women,1424,Kostimi i maskiranje,Odeća i kostimi,0.6713,1425,Party odeća,0.6247,1426,Ostalo u odeći,0.6111,
+8853,Breast Pump,1392,Pumpa za majčino mleko,Oprema za decu,0.6711,1397,Jastuk za dojenje,0.506,1311,Pumpa za odvodnjavanje,0.4774,
+9132,DJI Mavic Air,1138,DJI Mavic,Dronovi,0.6711,1139,DJI Mavic 3,0.6415,1135,DJI Avata,0.5703,
+8932,Bugaboo Compact Transport Bag,1410,Kolica za teret,Oprema za selidbe,0.671,1594,Nosač tereta za kuku,0.6521,1121,Kolica za teret,0.5957,1399
+9245,Streaming,1265,Streaming oprema,Fotoaparati i kamere,0.6703,306,Monitori,0.5015,1292,Kamera na kablu,0.49,
+9084,360 Camera,1265,Streaming oprema,Fotoaparati i kamere,0.6694,1276,DSLR objektivi,0.6682,1253,Kompaktni fotoaparat,0.665,1259
+8944,Fire Basket,1465,Košara za vatru,Dekoracija,0.6674,1346,Bure za spaljivanje,0.6248,1054,Toplotni pištolj,0.5364,
+9176,Converter,1275,Konverter,Objektivi,0.6673,1015,Inverter,0.6302,1322,Visokotlačni perač,0.5434,
+4531,Iron,1351,Gvozdena šipka,Baštenski alati,0.6673,1049,Stona brusilica,0.5275,1033,Makaze za metal,0.5228,1372
+1719,Other in Drills and Screwdrivers,1048,Trakasta brusilica,Brušenje i poliranje,0.6672,1049,Stona brusilica,0.6576,1613,Alati za točkove i gume,0.646,1188
+8845,Hoverboard,1545,Kiteboarding,Sportovi na vodi,0.667,1548,Vodni ski i wakeboard,0.6165,1551,Wing surf,0.6026,1518
+8501,Cooling Box & Cooler Bag,1492,Rashladna kutija i torba,Kampovanje i outdoor,0.6669,1391,Grejač bočica,0.6487,1191,Kompresor,0.6282,
+9446,Bubble Bath,1446,Bazen sa mehurićima,Aktivnosti i zabava,0.6668,1462,Pumpica za balone,0.6099,1416,Mašina za balone,0.5353,
+8915,Duffelbag,1414,Torba za kućne ljubimce,Oprema za kućne ljubimce,0.666,1492,Rashladna kutija i torba,0.6435,1410,Kolica za teret,0.6344,1577
+9068,Sea kayak,1589,Nosač za kanu i kajak,Auto oprema,0.666,1622,Čamac na vesla i dinghy,0.6579,1544,Kajak,0.6481,1544
+9235,Hole plier,1050,Precizna brusilica,Brušenje i poliranje,0.6653,1048,Trakasta brusilica,0.6625,1185,Rotacioni čekić,0.6359,1090
+8776,Moving Boxes,1407,Kutije za selidbu,Oprema za selidbe,0.6653,1108,Kutija za valjak,0.6458,1410,Kolica za teret,0.5665,
+9014,Other in Milling,1048,Trakasta brusilica,Brušenje i poliranje,0.6653,1059,Ostale brusilice,0.6574,1047,Trakasta turpija,0.6533,1116
+8685,Tuxedo,1426,Ostalo u odeći,Odeća i kostimi,0.6645,1425,Party odeća,0.6251,1424,Kostimi i maskiranje,0.624,
+9002,Electrical Hedge Trimmer,1310,Trimer za travu,Baštenske mašine,0.6641,1336,Mašina za polaganje kablova,0.6628,1339,Trimer za ivice travnjaka,0.6517,1316
+9072,Other in kayak,1622,Čamac na vesla i dinghy,Čamci i plovila,0.6631,1589,Nosač za kanu i kajak,0.6546,1544,Kajak,0.6503,1544
+9038,National costume for men,1424,Kostimi i maskiranje,Odeća i kostimi,0.6628,1426,Ostalo u odeći,0.6013,1425,Party odeća,0.5747,
+8611,Agitators,1211,Svrdlo za zemlju,Mašine za uređenje terena,0.6623,1213,Ostalo u mehanizaciji terena,0.635,1210,Građevinska grabulja,0.6339,
+8836,TENS,1290,Ostalo u blicevima i rasveti,Blicevi i rasveta,0.6621,1241,Ostalo u skelama,0.6554,1116,Ostalo u glodanju,0.6512,1406
+9274,Benchtop grinder,1212,Rezač kamena,Mašine za uređenje terena,0.662,1187,Mašina za bušenje kamena,0.6509,1318,Cepač drva,0.6424,1049
+9489,Controller,1086,Regulator šarki,Ručni alati,0.6618,1155,Ručni kontroler,0.6123,1275,Konverter,0.5061,1155
+9519,Props,1240,Radni sto,Skele i podupirači,0.6617,1227,Plastični zavarivač,0.6399,1600,Kolica za montažu,0.638,1366
+8997,Reinforcement cutter,1040,Narezač,Testerisanje i sečenje,0.6617,1044,Rezač pločica,0.6511,1039,Plazma rezač,0.6292,
+8810,Other in Racket Sports,1537,Reket sportovi,Sportski rekviziti,0.6614,1539,Ostalo u sportu,0.6041,1532,Jahanje,0.547,
+8656,Other in Party Kitchen,1388,Ostalo u kuhinji,Kuhinjski aparati,0.6611,1384,Lonci i tiganje,0.6347,1386,Sokovnik na paru,0.6155,
+9335,Cart,1361,Kolica za prevoz,Baštenski alati,0.661,1410,Kolica za teret,0.6035,1594,Nosač tereta za kuku,0.5948,
+8558,Hiking Boots,1495,Planinski štap,Kampovanje i outdoor,0.6609,1486,Ruksak,0.6343,1488,Dvogled,0.6291,1500
+8509,Air Bed,1363,Pomoćni krevet,Stilizovanje i dekoracija,0.6602,1192,Ostalo u komprimovanom vazduhu,0.6312,1191,Kompresor,0.6188,
+9365,Massage gun,1087,Pištolj za lepak,Ručni alati,0.6602,1215,Pištolj za klamerice,0.5726,1054,Toplotni pištolj,0.5704,1558
+8544,Other in Equestrian,1115,Stono rende,Glodanje i hoblovanje,0.6602,1640,Prikolica za konje,0.6407,1111,Ručno rende,0.433,1532
+9507,Electric Nailgun,1087,Pištolj za lepak,Ručni alati,0.6595,1054,Toplotni pištolj,0.6098,1021,Kalemovi i električni kablovi,0.6034,1214
+9431,Electric air pump,1311,Pumpa za odvodnjavanje,Baštenske mašine,0.6592,1191,Kompresor,0.6519,1060,Merač protoka vazduha,0.6016,1191
+8560,Headlamp,1289,Studijska lampa,Blicevi i rasveta,0.6592,1284,Reflektorski ekran,0.6063,1283,Okidač blica,0.584,1494
+9506,Gas powered Nailgun,1054,Toplotni pištolj,Brušenje i poliranje,0.6587,1225,Gasni aparat za zavarivanje,0.635,1087,Pištolj za lepak,0.6072,1214
+8941,Other in Cooling,1605,Indukcioni grejač,Alati za radionicu,0.6585,105,Ventilacija i grejanje,0.6531,1191,Kompresor,0.65,105
+9374,Deep fryer & Airfryer,1442,Dispenser za šlag,Ketering i kuhinja,0.6583,1439,Kolica za kobasice,0.6322,1386,Sokovnik na paru,0.6248,1387
+8458,Figure Skating Skates,1519,Longboard i skejtbord,Igra i hobi,0.6581,1546,Paddleboard,0.5593,1545,Kiteboarding,0.5462,1567
+9309,Rock cutter,1212,Rezač kamena,Mašine za uređenje terena,0.6578,1049,Stona brusilica,0.6478,1187,Mašina za bušenje kamena,0.6172,
+9069,Fishing kayak,1589,Nosač za kanu i kajak,Auto oprema,0.6571,1619,Kanu,0.6057,1622,Čamac na vesla i dinghy,0.6049,1544
+8477,Compost Roller,1230,Kolica za građevinski otpad,Skele i podupirači,0.657,1337,Kompostni valjak,0.6176,1121,Kolica za teret,0.5387,1337
+9308,Handheld Vacuum,1612,Vakuum tester,Alati za radionicu,0.6569,1020,Skidač izolacije,0.6,1118,Vakuumski podizač stakla,0.5597,1376
+3962,"Dumbbells, Weights and Kettlebells",1554,"Bučice, tegovi i kettlebells",Trening i teretana,0.6566,1184,Ankeri i tiplovi,0.6261,1183,Stub bušilica,0.6158,
+8731,Vacuum Sealers,1612,Vakuum tester,Alati za radionicu,0.6563,1118,Vakuumski podizač stakla,0.5678,1227,Plastični zavarivač,0.5579,1387
+9033,Memory Card,308,Memorijske kartice,Foto i Video,0.6556,1131,Zvučna kartica,0.438,307,Baterije za kamere,0.4129,
+9494,Horse trailer,1640,Prikolica za konje,Prikolice za konje,0.6553,1115,Stono rende,0.5449,1490,Kolica za outdoor,0.4923,
+9137,Satellite Phone,1017,Satelitska oprema,Elektronika,0.6549,1160,Gimbal za mobilni,0.5522,1161,Mobilni telefon,0.5494,
+9375,Sandwich maker,1325,Freza za panjeve,Baštenske mašine,0.6547,1439,Kolica za kobasice,0.6489,1316,Makaze za živicu,0.59,1387
+8830,Pipe Wrench,1219,Savijač cevi,Vodoinstalaterski alati,0.6545,1217,Rezač cevi,0.6511,1048,Trakasta brusilica,0.6431,1218
+8673,Other in board games,1512,Društvene igre i slagalice,Igra i hobi,0.6534,1524,Poker set,0.6485,1522,Igre na otvorenom,0.6384,
+8457,Other in Skates,1519,Longboard i skejtbord,Igra i hobi,0.6531,1546,Paddleboard,0.5865,1545,Kiteboarding,0.5609,1536
+1773,Electric Welder,1015,Inverter,Elektronika,0.6526,1318,Cepač drva,0.6465,1312,Mašina za drva,0.6254,1224
+9131,DJI Mavic Mini,1139,DJI Mavic 3,Dronovi,0.6525,1138,DJI Mavic,0.6265,1609,Dizalica za motocikl,0.5291,1138
+8762,Co-op Games,1522,Igre na otvorenom,Igra i hobi,0.652,1512,Društvene igre i slagalice,0.6279,1524,Poker set,0.5665,1512
+8939,Ice Machine,1598,Lanci za sneg,Auto oprema,0.6517,1563,Oprema za lavine,0.6229,1358,Lopata za sneg,0.6211,1443
+8569,Coffee Maker and Espresso Machine,1316,Makaze za živicu,Baštenske mašine,0.6514,1325,Freza za panjeve,0.6265,1315,Alati za čišćenje oluka,0.5644,1387
+4661,Baby Carrier,1389,Nosiljka i stolica za bebu,Oprema za decu,0.6498,1397,Jastuk za dojenje,0.6028,1399,Kolica i oprema,0.5527,
+3334,Steam cleaner,1371,Čistač odvoda,Čišćenje i pranje,0.6497,1315,Alati za čišćenje oluka,0.6425,1374,Parna mašina za čišćenje,0.6377,1374
+8680,Tuxedo Jacket,1426,Ostalo u odeći,Odeća i kostimi,0.6485,1424,Kostimi i maskiranje,0.5885,1425,Party odeća,0.566,
+8694,Candelabra and Candlesticks,1463,Sveća i svećnjak,Dekoracija,0.6484,1289,Studijska lampa,0.5943,1465,Košara za vatru,0.557,
+9409,Guide rail,1120,Platforma za prevoz,Transport i dizanje,0.6482,1361,Kolica za prevoz,0.625,1117,Viljuškar,0.6142,1030
+8716,Nintendo Switch,1155,Ručni kontroler,Video igre i konzole,0.6481,1152,Arkadna mašina,0.5936,1154,Konzola,0.5817,1154
+8975,DJI Inspire,1137,DJI Inspire,Dronovi,0.6475,1141,DJI Spark,0.5198,1450,Jakuzi,0.4676,
+8964,Other Premises,1290,Ostalo u blicevima i rasveti,Blicevi i rasveta,0.6468,1241,Ostalo u skelama,0.6458,1303,Ostalo u stativima,0.6408,1273
+9382,Workshop press,1052,Mašina za graviranje,Brušenje i poliranje,0.6468,1600,Kolica za montažu,0.6145,1166,Štampač nalepnica,0.6123,1615
+8568,Heating Elements,1605,Indukcioni grejač,Alati za radionicu,0.646,105,Ventilacija i grejanje,0.6308,1065,IC termometar,0.6206,
+8710,Wine Glass,1379,Varenje piva i vinarstvo,Kuhinjski aparati,0.646,1428,Bar sto,0.4703,1417,Party rasveta,0.3992,1441
+8547,Segway,1345,Sekira,Baštenski alati,0.6446,1112,Strug,0.5602,1111,Ručno rende,0.501,1518
+9024,Moving Dolly,1632,Tow dolly,Prikolice,0.6432,1300,Slajder i dolly,0.4974,1584,Hodalica,0.4132,1408
+4621,Car Seats,1408,Kolica za selidbu,Oprema za selidbe,0.6431,1409,Remeni i pojasevi za selidbu,0.6347,1627,Transporter za automobile,0.6128,1393
+8850,Axe,1354,Pobijač stubova,Baštenski alati,0.6423,1185,Rotacioni čekić,0.6008,1035,Stoni ger za drvo,0.5853,1345
+8879,Spring compressor,1191,Kompresor,Komprimovani vazduh,0.6422,1197,Mini damper,0.5856,1194,Damper,0.5793,1602
+8496,Garden Pressure Sprayer,1344,Rasipač za đubrivo,Održavanje travnjaka,0.6414,1340,Grabulje za nivelisanje,0.5901,1221,Tester pritiska,0.5877,1349
+8663,Toastmaster Equipment,1386,Sokovnik na paru,Kuhinjski aparati,0.6409,1384,Lonci i tiganje,0.612,1605,Indukcioni grejač,0.5991,1456
+8887,Mini Excavators <4 tons,1230,Kolica za građevinski otpad,Skele i podupirači,0.6405,1197,Mini damper,0.6256,1209,Beton i armatura,0.5818,1195
+9129,DJI Mavic Pro,1139,DJI Mavic 3,Dronovi,0.6404,1138,DJI Mavic,0.6265,1124,DJ oprema,0.5329,
+8552,Paint Remover,1104,Nogari za farbanje,Krečenje i tapete,0.6403,1110,Ostalo u farbanju,0.6343,1236,Nogari za farbanje,0.6217,1103
+8987,Card Terminal,209,POS terminali,Elektronika,0.6401,1479,Zvučna kartica,0.4399,1166,Štampač nalepnica,0.4391,
+8634,Table Planer,1431,Sklopivi stolovi,Nameštaj za proslave,0.64,1240,Radni sto,0.6128,1147,Grafička tabla,0.5939,1115
+9051,Metal chop saw,1033,Makaze za metal,Testerisanje i sečenje,0.6398,1044,Rezač pločica,0.6321,1039,Plazma rezač,0.6181,1034
+8973,Light meter,1285,Ring svetlo,Blicevi i rasveta,0.6395,1064,Merač energije,0.6133,1289,Studijska lampa,0.5749,1068
+8566,Slowcooker,1442,Dispenser za šlag,Ketering i kuhinja,0.6393,1385,Sous Vide aparat,0.6174,1386,Sokovnik na paru,0.6109,1387
+8858,Roof Box Without Roof Racks,1234,Lift za suvi zid,Skele i podupirači,0.6381,1633,Prikolica s pokrivačem,0.5826,1022,Razvodni ormar,0.5785,1595
+3312,Party Lights,608,Party paketi,Proslave i događaji,0.6377,1285,Ring svetlo,0.6038,1428,Bar sto,0.6034,1417
+9475,DJ Booth,1124,DJ oprema,Audio oprema i zvuk,0.6368,1453,Photo booth,0.4335,1472,Drum mašina i sampler,0.4159,
+45,Other,1290,Ostalo u blicevima i rasveti,Blicevi i rasveta,0.6368,1241,Ostalo u skelama,0.6196,1303,Ostalo u stativima,0.5842,
+1727,Power Cutter,1322,Visokotlačni perač,Baštenske mašine,0.6368,1021,Kalemovi i električni kablovi,0.6134,1015,Inverter,0.6048,1045
+8499,Two-way radio,207,Radio stanice i toki-voki,Elektronika,0.6353,1615,Radioničarska presa,0.6128,1614,Radioničarska dizalica,0.5894,
+8452,Xbox,1152,Arkadna mašina,Video igre i konzole,0.6352,1158,Ostalo u video igrama,0.6078,1154,Konzola,0.582,1154
+8857,Roof Box With Roof Racks,1234,Lift za suvi zid,Skele i podupirači,0.6351,1626,Prikolica sa kavezom,0.6152,1238,Kolica za gipsane ploče,0.6138,1595
+8769,Other in Co-op Games,1522,Igre na otvorenom,Igra i hobi,0.6344,1512,Društvene igre i slagalice,0.6113,1158,Ostalo u video igrama,0.5544,1512
+9469,Clamps and Grips,1185,Rotacioni čekić,Bušilice i šrafilice,0.6342,1297,Gimbali i stabilizatori,0.6336,1089,Udarni odvijač,0.6096,1295
+8701,Stepladder,1333,Stepenik,Merdevine,0.6338,1089,Udarni odvijač,0.5845,1200,Alat za decking,0.5836,
+4641,Travel Crib,1580,Ostalo u putovanjima,Putovanja i koferi,0.6335,1578,Putni adapter,0.6083,1577,Koferi,0.6035,1396
+8632,Other in Workshop,1240,Radni sto,Skele i podupirači,0.6331,1616,Ostalo u radionici,0.6081,1362,Ostalo u baštenskim alatima,0.588,1616
+9471,Power Station,1019,Baterije i punjači,Struja i agregati,0.633,1601,Punjač baterija za vozila,0.5989,1592,Punjač za električni auto,0.5184,
+9241,Heater 3-5 kW,105,Ventilacija i grejanje,Građevinska oprema i alati,0.6327,1605,Indukcioni grejač,0.5962,1386,Sokovnik na paru,0.5832,
+9407,Angle drill,1050,Precizna brusilica,Brušenje i poliranje,0.6317,1185,Rotacioni čekić,0.612,1049,Stona brusilica,0.5831,1175
+8638,Pasting table,1114,Stol za glodalicu,Glodanje i hoblovanje,0.6312,1431,Sklopivi stolovi,0.6267,1204,Rezač laminata,0.6099,1106
+1755,Other in Milling & Planing,1199,Ostalo u građevinskoj mehanizaciji,Građevinska mehanizacija,0.6302,1212,Rezač kamena,0.6228,1013,Ostalo u građevini i alatima,0.6215,1116
+8901,Steadicam,1332,Stolica-stepenik,Merdevine,0.6301,1112,Strug,0.63,1288,Studijski blic,0.5929,1297
+8844,Electric Scooter,1638,Prikolica za motocikl,Motocikli i oprema,0.63,1629,Prikolica za motocikl,0.5999,1609,Dizalica za motocikl,0.5818,1518
+1712,Rotary Hammer,1185,Rotacioni čekić,Bušilice i šrafilice,0.6298,1606,Dizalica i stalci,0.5465,1212,Rezač kamena,0.5392,
+9066,Battery powered clearing saw,1601,Punjač baterija za vozila,Alati za radionicu,0.6292,1019,Baterije i punjači,0.6132,1587,Punjač baterija za vozila,0.5455,1310
+182,Work Lights,1289,Studijska lampa,Blicevi i rasveta,0.6284,1285,Ring svetlo,0.618,1284,Reflektorski ekran,0.5632,1012
+8723,PlayStation 2,1158,Ostalo u video igrama,Video igre i konzole,0.6282,1152,Arkadna mašina,0.6172,1156,Simulator oprema,0.5977,
+3976,Badminton,1537,Reket sportovi,Sportski rekviziti,0.6276,1539,Ostalo u sportu,0.5417,1533,Floorball,0.5285,
+8826,Floor stripper,1202,Mašina za skidanje podova,Podne obloge i pločice,0.6272,1053,Brusilica za podove,0.588,1201,Brusilica za podove,0.5586,
+9067,Inflatable kayak,1546,Paddleboard,Sportovi na vodi,0.6272,1589,Nosač za kanu i kajak,0.6244,1545,Kiteboarding,0.6147,1544
+273,Other in Caravan and Motorhome,1294,Nosač za automobil,Stativi i rigovi,0.6266,1627,Transporter za automobile,0.6036,808,Ostala vozila,0.5933,1636
+1842,Industrial & Wet-Dry Vacuum,1051,Brusilica za suvi zid,Brušenje i poliranje,0.6265,1371,Čistač odvoda,0.6241,1219,Savijač cevi,0.6076,1376
+9488,Mixer,1322,Visokotlačni perač,Baštenske mašine,0.6255,1442,Dispenser za šlag,0.614,1385,Sous Vide aparat,0.606,1387
+9359,Robot vacuum,1612,Vakuum tester,Alati za radionicu,0.6244,1321,Robot za bazen,0.5856,1118,Vakuumski podizač stakla,0.5452,1376
+8725,PlayStation Portable,1156,Simulator oprema,Video igre i konzole,0.6234,1152,Arkadna mašina,0.5947,1155,Ručni kontroler,0.5887,1154
+8905,Wrench,1048,Trakasta brusilica,Brušenje i poliranje,0.6232,1050,Precizna brusilica,0.6102,1185,Rotacioni čekić,0.604,1098
+9468,Car Mount,1591,Autosedište,Auto oprema,0.6223,1590,Grejač kabine,0.5844,1594,Nosač tereta za kuku,0.5639,1294
+9360,Riding Lawn Mowers,1341,Kosilica,Održavanje travnjaka,0.622,1344,Rasipač za đubrivo,0.6033,1338,Baštenski valjak,0.5918,
+8751,Plug and feather,1063,Tražač kabla,Merni instrumenti,0.6213,1606,Dizalica i stalci,0.6138,1021,Kalemovi i električni kablovi,0.5989,1212
+9306,Beer glasses,1379,Varenje piva i vinarstvo,Kuhinjski aparati,0.6212,1444,Beer pong,0.5329,1428,Bar sto,0.5155,1441
+8425,Bolt Cutters,1039,Plazma rezač,Testerisanje i sečenje,0.621,1040,Narezač,0.6195,1027,Sekač vijaka,0.6071,1027
+9127,Diagnostic Tool VCDS (VAG-COM),1603,Dijagnostički alat,Alati za radionicu,0.621,1136,DJI FPV,0.4647,1138,DJI Mavic,0.4384,
+9013,Biscuit Joiner,1439,Kolica za kobasice,Ketering i kuhinja,0.6207,1436,Pića,0.5753,1442,Dispenser za šlag,0.5615,1113
+9179,Kayak K2,1589,Nosač za kanu i kajak,Auto oprema,0.6206,1546,Paddleboard,0.5749,1619,Kanu,0.5499,1544
+8538,Other in Backpack,1493,Vodootporne torbe,Kampovanje i outdoor,0.6194,1492,Rashladna kutija i torba,0.6076,1500,Outdoor odeća,0.5982,1486
+9377,Steam Juicer,1442,Dispenser za šlag,Ketering i kuhinja,0.6193,1381,Centrifuga za med,0.5843,1386,Sokovnik na paru,0.5823,1386
+8561,Floor Vacuum,1053,Brusilica za podove,Brušenje i poliranje,0.619,1202,Mašina za skidanje podova,0.5975,1201,Brusilica za podove,0.585,1376
+8919,DJI Osmo Mobile,1162,Pametni sat,Mobilni telefoni i tableti,0.6184,1161,Mobilni telefon,0.6164,1160,Gimbal za mobilni,0.5972,1160
+9472,DJI Avata,1135,DJI Avata,Dronovi,0.6176,1175,Ugaona bušilica,0.4891,1138,DJI Mavic,0.4779,
+9256,MC Clothing,1426,Ostalo u odeći,Odeća i kostimi,0.6169,1425,Party odeća,0.5689,1423,Čuvanje odeće,0.5638,1637
+8709,Other in Glass,1118,Vakuumski podizač stakla,Transport i dizanje,0.6165,1284,Reflektorski ekran,0.6073,1289,Studijska lampa,0.597,1441
+8476,Garden roller,1356,Kolica za baštu,Baštenski alati,0.616,1341,Kosilica,0.6122,1338,Baštenski valjak,0.6111,1338
+9352,Dustcontrol,1191,Kompresor,Komprimovani vazduh,0.6157,1060,Merač protoka vazduha,0.5684,1061,Merač kvaliteta vazduha,0.5437,1376
+9368,Impact screwdriver,1185,Rotacioni čekić,Bušilice i šrafilice,0.6153,1050,Precizna brusilica,0.5971,1197,Mini damper,0.5522,1089
+4612,Jogging Stroller,1560,Prsluk sa tegovima,Trening i teretana,0.6152,1559,Šipka za zgibove,0.6125,1585,Invalidska kolica,0.6123,1399
+8704,Scrubber,1112,Strug,Glodanje i hoblovanje,0.6138,1048,Trakasta brusilica,0.5754,1183,Stub bušilica,0.571,1373
+1717,Concrete Breaker / Kango,1232,Građevinska skela,Skele i podupirači,0.6137,1238,Kolica za gipsane ploče,0.5936,1209,Beton i armatura,0.591,1177
+9349,FM-radio,207,Radio stanice i toki-voki,Elektronika,0.6131,1615,Radioničarska presa,0.6123,1614,Radioničarska dizalica,0.5699,
+338,Other in Party,608,Party paketi,Proslave i događaji,0.6125,1417,Party rasveta,0.5924,1425,Party odeća,0.5918,
+8536,Crane & Jib,1296,Kran i jib,Stativi i rigovi,0.6122,1295,Stege i hvatači,0.4932,1293,Rigovi i ramena za kameru,0.4789,
+8784,Crampon,1112,Strug,Glodanje i hoblovanje,0.6121,1111,Ručno rende,0.6091,1177,Pikamer,0.5975,1570
+8491,Enclosed Trailers,1410,Kolica za teret,Oprema za selidbe,0.6116,1627,Transporter za automobile,0.6039,1594,Nosač tereta za kuku,0.5931,1628
+8938,Party Cooler,1417,Party rasveta,"Zvuk, rasveta i bina",0.6116,608,Party paketi,0.5935,1427,Šank,0.592,1443
+9383,Whipped Cream Dispenser,1442,Dispenser za šlag,Ketering i kuhinja,0.6114,1185,Rotacioni čekić,0.5645,1179,Mašina za bušenje,0.5471,
+8886,Dry Bags,1493,Vodootporne torbe,Kampovanje i outdoor,0.6112,1492,Rashladna kutija i torba,0.5661,1414,Torba za kućne ljubimce,0.5182,
+3954,Keyboard,1098,Ključ,Ručni alati,0.6107,1477,Klavijatura,0.6044,1478,Klavir,0.5995,1477
+1743,Other sanders,1049,Stona brusilica,Brušenje i poliranje,0.6105,1059,Ostale brusilice,0.6097,1241,Ostalo u skelama,0.6001,1059
+8916,Carry-on Case,1594,Nosač tereta za kuku,Auto oprema,0.6103,1595,Krovni kofer,0.6007,1410,Kolica za teret,0.5839,1577
+8846,Electric Unicycle,1592,Punjač za električni auto,Auto oprema,0.6098,1609,Dizalica za motocikl,0.5866,1601,Punjač baterija za vozila,0.5827,1518
+8881,Pick Axe,1036,Ručni ger za drvo,Testerisanje i sečenje,0.6098,1035,Stoni ger za drvo,0.6084,1354,Pobijač stubova,0.5709,1085
+9298,Electric longboards,1519,Longboard i skejtbord,Igra i hobi,0.6093,1542,Električni surfboard,0.6043,1200,Alat za decking,0.5278,
+8703,Step Stool,1200,Alat za decking,Podne obloge i pločice,0.609,1111,Ručno rende,0.6062,1089,Udarni odvijač,0.603,1332
+8700,Telescopic Ladder,1334,Teleskopske merdevine,Merdevine,0.6077,1017,Satelitska oprema,0.5663,1080,Termovizijska kamera,0.5323,
+8719,Super Nintendo,1152,Arkadna mašina,Video igre i konzole,0.6074,1158,Ostalo u video igrama,0.5676,1154,Konzola,0.5676,1154
+9130,DJI Mavic Zoom,1138,DJI Mavic,Dronovi,0.6072,1139,DJI Mavic 3,0.5953,1136,DJI FPV,0.5277,
+9004,Drawing Tablet,1052,Mašina za graviranje,Brušenje i poliranje,0.6067,1164,Tablet,0.5741,1464,Diskokugla,0.5629,1147
+8534,Tripod,1292,Kamera na kablu,Stativi i rigovi,0.6062,1266,Teleprompter,0.5709,1293,Rigovi i ramena za kameru,0.5649,1301
+271,Caravan,1361,Kolica za prevoz,Baštenski alati,0.6055,1627,Transporter za automobile,0.5966,1410,Kolica za teret,0.5828,1635
+8441,Scanner,1603,Dijagnostički alat,Alati za radionicu,0.6053,1226,MIG aparat,0.6,1070,Detektor metala,0.5947,1172
+8590,Petrol Powered Leaf Blower,1317,Duvač lišća,Baštenske mašine,0.6051,1319,Usisivač za lišće,0.6005,1601,Punjač baterija za vozila,0.5897,
+2422,Roof Racks,1323,Čistač krova,Baštenske mašine,0.6048,1238,Kolica za gipsane ploče,0.5984,1232,Građevinska skela,0.597,1597
+2224,Shovel,1047,Trakasta turpija,Brušenje i poliranje,0.6041,1049,Stona brusilica,0.5942,1358,Lopata za sneg,0.5511,1357
+8531,Sleeping Pad,1363,Pomoćni krevet,Stilizovanje i dekoracija,0.6038,1633,Prikolica s pokrivačem,0.4621,1397,Jastuk za dojenje,0.4541,1489
+9178,Kayak 1-man,1546,Paddleboard,Sportovi na vodi,0.6036,1589,Nosač za kanu i kajak,0.5927,1622,Čamac na vesla i dinghy,0.5849,1544
+8819,Waxing Iron,1315,Alati za čišćenje oluka,Baštenske mašine,0.6035,1318,Cepač drva,0.5873,1049,Stona brusilica,0.5832,1372
+8943,Ice Bucket,1358,Lopata za sneg,Baštenski alati,0.6031,1563,Oprema za lavine,0.571,1492,Rashladna kutija i torba,0.5432,1441
+8718,Nintendo 64,1152,Arkadna mašina,Video igre i konzole,0.603,1153,Igrica,0.6017,1155,Ručni kontroler,0.576,1154
+3981,Fishing Rod,1295,Stege i hvatači,Stativi i rigovi,0.6029,1497,Lov i ribolov,0.5994,1617,Oprema za čamce,0.5427,1497
+8971,Hand bag,1095,Kofer za alat,Ručni alati,0.6028,1492,Rashladna kutija i torba,0.5833,1414,Torba za kućne ljubimce,0.5756,1577
+4644,Cradle,1389,Nosiljka i stolica za bebu,Oprema za decu,0.6012,1633,Prikolica s pokrivačem,0.592,1396,Dečiji nameštaj,0.5599,1396
+8478,Spreader,1235,Podupirač,Skele i podupirači,0.6012,1241,Ostalo u skelama,0.5847,1240,Radni sto,0.5823,1344
+3942,Wet & Dry Suit,1426,Ostalo u odeći,Odeća i kostimi,0.601,1423,Čuvanje odeće,0.6008,1493,Vodootporne torbe,0.5544,1549
+8413,Other in Other,1290,Ostalo u blicevima i rasveti,Blicevi i rasveta,0.5999,1241,Ostalo u skelama,0.5881,1116,Ostalo u glodanju,0.5602,
+8809,Beach Volleyball,1530,Odbojka na pesku,Sportski rekviziti,0.5991,1547,Surfanje,0.5058,1551,Wing surf,0.4847,
+8815,Bocce ball,1513,Bumper ball,Igra i hobi,0.5991,1533,Floorball,0.5558,1534,Fudbal,0.5024,1522
+8717,Nintendo Classic / Mini / 8-bit,1155,Ručni kontroler,Video igre i konzole,0.5974,1152,Arkadna mašina,0.5841,1153,Igrica,0.5691,1154
+3956,Wind Instrument,1060,Merač protoka vazduha,Merni instrumenti,0.5968,1350,Aerator sa šupljim klinovima,0.5567,1480,Stalak i kabl,0.5561,1484
+8781,Climbing harness,1119,Paletni viljuškar,Transport i dizanje,0.5965,1531,Penjanje,0.5417,1117,Viljuškar,0.5308,1531
+1831,Sack truck,1594,Nosač tereta za kuku,Auto oprema,0.5963,1198,Traktor,0.5737,1627,Transporter za automobile,0.5316,1410
+9512,Synthesizer,1604,Dizalice,Alati za radionicu,0.5963,1086,Regulator šarki,0.5371,1606,Dizalica i stalci,0.526,1481
+9061,Petrol powered chain saw,1318,Cepač drva,Baštenske mašine,0.596,1610,Menjanje ulja,0.5901,1312,Mašina za drva,0.5877,1309
+8676,Hole in One / Magnetic detector,1070,Detektor metala,Merni instrumenti,0.5958,1074,Detektor radona,0.5081,1612,Vakuum tester,0.4879,
+8823,Other Word Games,1512,Društvene igre i slagalice,Igra i hobi,0.5957,1514,Štafelaj,0.5819,1522,Igre na otvorenom,0.5782,
+8433,Squash,1181,Udarna bušilica,Bušilice i šrafilice,0.5957,1183,Stub bušilica,0.5863,1175,Ugaona bušilica,0.5693,1537
+8574,Outboard motor,1609,Dizalica za motocikl,Alati za radionicu,0.5944,1309,Motorna testera,0.5879,1294,Nosač za automobil,0.5844,1617
+9515,Sampler,1042,Sabljasta testera,Testerisanje i sečenje,0.5936,1043,Stona testera,0.5928,1045,Ostalo u testerama,0.5785,1472
+1781,Hammer,1050,Precizna brusilica,Brušenje i poliranje,0.5926,1049,Stona brusilica,0.5754,1048,Trakasta brusilica,0.5673,1088
+8603,Shredder,1040,Narezač,Testerisanje i sečenje,0.5912,1039,Plazma rezač,0.5878,1027,Sekač vijaka,0.5551,1173
+8868,Hoists,1111,Ručno rende,Glodanje i hoblovanje,0.5908,1115,Stono rende,0.5289,1295,Stege i hvatači,0.5241,1122
+8940,Refrigerator,1380,Dehidrator hrane,Kuhinjski aparati,0.5908,1386,Sokovnik na paru,0.5623,1384,Lonci i tiganje,0.5271,1388
+8428,Ozone Generator,1191,Kompresor,Komprimovani vazduh,0.5903,1418,Mašina za dim,0.5142,1060,Merač protoka vazduha,0.5091,105
+9065,Electrical clearing saw,1036,Ručni ger za drvo,Testerisanje i sečenje,0.5901,1318,Cepač drva,0.5898,1035,Stoni ger za drvo,0.5896,1310
+9056,Cordless drill,1021,Kalemovi i električni kablovi,Ručni alati,0.5897,1063,Tražač kabla,0.5475,1335,Detektor kablova za robotske kosilice,0.5163,1186
+1836,Soldering Iron,1351,Gvozdena šipka,Baštenski alati,0.5896,1033,Makaze za metal,0.5348,1318,Cepač drva,0.5212,1093
+8912,Golf Trolley,1535,Golf,Sportski rekviziti,0.5893,1361,Kolica za prevoz,0.5577,1627,Transporter za automobile,0.5431,
+1726,Hand saw,1031,Ručna testera,Testerisanje i sečenje,0.5893,1089,Udarni odvijač,0.582,1091,Izvlakač,0.5784,
+8827,Torque Wrench,1185,Rotacioni čekić,Bušilice i šrafilice,0.5892,1197,Mini damper,0.5882,1196,Utovarivač,0.5755,1096
+9240,Heater 0-2 kW,105,Ventilacija i grejanje,Građevinska oprema i alati,0.5888,1605,Indukcioni grejač,0.5775,1386,Sokovnik na paru,0.5741,
+1804,Forklift,1198,Traktor,Građevinska mehanizacija,0.5883,1594,Nosač tereta za kuku,0.5602,1196,Utovarivač,0.5249,1117
+9296,DJI Mavic Enterprise,1138,DJI Mavic,Dronovi,0.5881,1139,DJI Mavic 3,0.5779,1140,DJI Phantom,0.4836,
+3975,Tennis,1537,Reket sportovi,Sportski rekviziti,0.5867,1539,Ostalo u sportu,0.5039,1532,Jahanje,0.485,
+8876,Transceiver,1275,Konverter,Objektivi,0.5867,1229,Ostalo u zavarivanju,0.523,1063,Tražač kabla,0.5095,207
+17491,Other in Sanding,1530,Odbojka na pesku,Sportski rekviziti,0.5863,1111,Ručno rende,0.5746,1047,Trakasta turpija,0.5744,1059
+4645,Highchair,1429,Stolice za proslave,Nameštaj za proslave,0.5862,1408,Kolica za selidbu,0.5751,1111,Ručno rende,0.5666,1389
+8724,PlayStation 1,1152,Arkadna mašina,Video igre i konzole,0.5848,1156,Simulator oprema,0.5829,1158,Ostalo u video igrama,0.5745,
+1785,Spanners and Sockets,1022,Razvodni ormar,Struja i agregati,0.5837,1606,Dizalica i stalci,0.5831,1238,Kolica za gipsane ploče,0.5663,1094
+8596,Pet carrier,1414,Torba za kućne ljubimce,Oprema za kućne ljubimce,0.5826,1575,Nosiljka za kućnog ljubimca,0.5662,1594,Nosač tereta za kuku,0.5468,
+9316,Climbing helmet,1531,Penjanje,Sportski rekviziti,0.5825,1637,Motociklistička oprema,0.5324,1629,Prikolica za motocikl,0.5322,
+8485,Hot Tub,1219,Savijač cevi,Vodoinstalaterski alati,0.5821,1391,Grejač bočica,0.5673,1217,Rezač cevi,0.5664,1450
+8533,Other in Stand,1241,Ostalo u skelama,Skele i podupirači,0.5819,1634,Ostalo u prikolicama,0.5189,1116,Ostalo u glodanju,0.5118,1303
+8770,Others in Strategy Games,1522,Igre na otvorenom,Igra i hobi,0.5819,1512,Društvene igre i slagalice,0.5759,1516,Stoni fudbal,0.5374,1512
+9064,Petrol powered clearing saw,1610,Menjanje ulja,Alati za radionicu,0.5816,1318,Cepač drva,0.5417,1035,Stoni ger za drvo,0.5323,1310
+8994,Detail Sander,1050,Precizna brusilica,Brušenje i poliranje,0.5815,1530,Odbojka na pesku,0.5803,1176,Set bitova,0.5365,
+8711,Water Glass,1223,Ostalo u vodoinstalaciji,Vodoinstalaterski alati,0.5815,1118,Vakuumski podizač stakla,0.5558,1217,Rezač cevi,0.5454,1441
+9321,Rounders,1185,Rotacioni čekić,Bušilice i šrafilice,0.5807,1184,Ankeri i tiplovi,0.5654,1111,Ručno rende,0.546,1539
+8525,DJI Mavic,1138,DJI Mavic,Dronovi,0.5802,1139,DJI Mavic 3,0.5264,1333,Stepenik,0.4648,
+8722,PlayStation 3,1152,Arkadna mašina,Video igre i konzole,0.5795,1158,Ostalo u video igrama,0.5718,1156,Simulator oprema,0.5684,
+1715,Impact Wrench,1197,Mini damper,Građevinska mehanizacija,0.5793,1194,Damper,0.5676,1185,Rotacioni čekić,0.5616,1182
+9387,Fish tape puller,1295,Stege i hvatači,Stativi i rigovi,0.5784,1063,Tražač kabla,0.5389,1297,Gimbali i stabilizatori,0.5257,1063
+9369,Push Cart,1627,Transporter za automobile,Prikolice,0.5784,1361,Kolica za prevoz,0.5682,1121,Kolica za teret,0.5477,1361
+2215,Generator,1611,Rampa,Alati za radionicu,0.578,1600,Kolica za montažu,0.5667,1196,Utovarivač,0.5522,1024
+9420,Pull-up bar,1626,Prikolica sa kavezom,Prikolice,0.5774,1234,Lift za suvi zid,0.5166,1428,Bar sto,0.5122,1559
+8923,Padel,1288,Studijski blic,Blicevi i rasveta,0.5773,1116,Ostalo u glodanju,0.5734,1112,Strug,0.5729,1537
+9275,Petrol Powered Earth Auger,1610,Menjanje ulja,Alati za radionicu,0.5771,1225,Gasni aparat za zavarivanje,0.5593,1601,Punjač baterija za vozila,0.5371,1211
+8494,Other in Moving,1586,Ostalo u mobilnosti,Mobilnost i medicinska nega,0.5767,1123,Ostalo u transportu,0.5766,1117,Viljuškar,0.5665,1411
+8897,Gimbal For GoPro / Action Camera,1266,Teleprompter,Fotoaparati i kamere,0.5763,1267,Tela kamera za ronjenje,0.5729,1265,Streaming oprema,0.5688,1297
+2223,Wheelbarrow,1049,Stona brusilica,Brušenje i poliranje,0.5763,1111,Ručno rende,0.5755,1212,Rezač kamena,0.5645,1356
+8945,Megaphone,1018,Pametni zvučnik,Elektronika,0.5759,1130,Prenosni zvučnik,0.5635,1125,Slušalice,0.5614,1129
+1816,Distribution box,1407,Kutije za selidbu,Oprema za selidbe,0.5756,1108,Kutija za valjak,0.5095,1022,Razvodni ormar,0.4569,1022
+8432,Table Tennis,1537,Reket sportovi,Sportski rekviziti,0.5753,1444,Beer pong,0.5388,1533,Floorball,0.5332,
+1840,Compactor,1227,Plastični zavarivač,Aparati za zavarivanje,0.574,1606,Dizalica i stalci,0.5581,1600,Kolica za montažu,0.5435,1208
+9325,Airplane crib,1410,Kolica za teret,Oprema za selidbe,0.5729,1350,Aerator sa šupljim klinovima,0.5483,1408,Kolica za selidbu,0.5321,1396
+1761,Paint sprayer,1236,Nogari za farbanje,Skele i podupirači,0.5724,1104,Nogari za farbanje,0.5718,1110,Ostalo u farbanju,0.5478,1105
+4662,Child carrier,1401,Putovanje s decom,Oprema za decu,0.5708,1579,Putovanje s decom,0.5501,1399,Kolica i oprema,0.5183,
+9026,CHAdeMO adapter,1611,Rampa,Alati za radionicu,0.5706,1600,Kolica za montažu,0.5684,1601,Punjač baterija za vozila,0.5383,1592
+9345,Plasma torch,1346,Bure za spaljivanje,Baštenski alati,0.5704,1465,Košara za vatru,0.5288,1054,Toplotni pištolj,0.5242,1039
+8803,Goggles,1157,VR naočale,Video igre i konzole,0.5695,1228,Maska za zavarivanje,0.4993,1274,Kinematografski prime objektivi,0.4992,1549
+8492,Other in Trailers,1636,Ostalo u kamperima,Kamperi i kamp prikolice,0.5686,1293,Rigovi i ramena za kameru,0.5682,1294,Nosač za automobil,0.5681,1634
+8721,PlayStation 4,1158,Ostalo u video igrama,Video igre i konzole,0.5672,1152,Arkadna mašina,0.5599,1156,Simulator oprema,0.5335,
+8898,Other Gimbals,1113,Glodalica,Glodanje i hoblovanje,0.5669,1175,Ugaona bušilica,0.5556,1297,Gimbali i stabilizatori,0.5345,1297
+3923,Sleeping Bag,1492,Rashladna kutija i torba,Kampovanje i outdoor,0.5653,1493,Vodootporne torbe,0.5516,1410,Kolica za teret,0.4853,1489
+8698,Stairwell Ladder,1193,Platforma za rad na visini,Građevinska mehanizacija,0.564,1331,Merdevine za stepenište,0.5583,1234,Lift za suvi zid,0.518,1331
+1725,Table Saw,1114,Stol za glodalicu,Glodanje i hoblovanje,0.5621,1431,Sklopivi stolovi,0.5453,1240,Radni sto,0.5219,1043
+1747,Sheet Sander,1530,Odbojka na pesku,Sportski rekviziti,0.5615,1048,Trakasta brusilica,0.5109,1049,Stona brusilica,0.4968,1057
+8488,Open Trailer,1630,Otvorena prikolica,Prikolice,0.5602,305,Foto/Video paketi,0.444,1490,Kolica za outdoor,0.4154,
+22210,Scarifier,1039,Plazma rezač,Testerisanje i sečenje,0.5602,1319,Usisivač za lišće,0.5586,1228,Maska za zavarivanje,0.555,1343
+9022,Powerbank,1019,Baterije i punjači,Struja i agregati,0.5601,1601,Punjač baterija za vozila,0.5146,1592,Punjač za električni auto,0.4874,
+9285,PlayStation 5,1158,Ostalo u video igrama,Video igre i konzole,0.5598,1152,Arkadna mašina,0.5409,1156,Simulator oprema,0.5328,
+8954,Spikeball,1513,Bumper ball,Igra i hobi,0.5598,1533,Floorball,0.493,1283,Okidač blica,0.4828,1522
+1782,Sledgehammer,1050,Precizna brusilica,Brušenje i poliranje,0.5591,1112,Strug,0.5537,1048,Trakasta brusilica,0.5524,1092
+1748,Belt Sander,1530,Odbojka na pesku,Sportski rekviziti,0.5586,1055,Orbitalna brusilica,0.485,1187,Mašina za bušenje kamena,0.4831,1048
+8702,Regular ladder,1193,Platforma za rad na visini,Građevinska mehanizacija,0.5584,1232,Građevinska skela,0.5278,1200,Alat za decking,0.5201,1330
+8851,Tamper,1111,Ručno rende,Glodanje i hoblovanje,0.5583,1048,Trakasta brusilica,0.5312,1184,Ankeri i tiplovi,0.5308,1359
+1735,Stud finder,1079,Tražač greda,Merni instrumenti,0.558,1288,Studijski blic,0.5354,1283,Okidač blica,0.5135,
+9333,Camo Tarp,1177,Pikamer,Bušilice i šrafilice,0.5559,1301,Tronožac,0.5043,1175,Ugaona bušilica,0.4845,1502
+3974,Climbing,1531,Penjanje,Sportski rekviziti,0.5556,1570,Penjanje po snegu i ledu,0.5194,1495,Planinski štap,0.5127,
+9313,Glass suction cups,1118,Vakuumski podizač stakla,Transport i dizanje,0.5548,1442,Dispenser za šlag,0.541,1227,Plastični zavarivač,0.5083,
+9050,Manual Mitre Saw,1033,Makaze za metal,Testerisanje i sečenje,0.5545,1034,Kružna testera za metal,0.5435,1070,Detektor metala,0.5397,1036
+8782,Other in Climbing,1495,Planinski štap,Kampovanje i outdoor,0.5535,1531,Penjanje,0.5471,1570,Penjanje po snegu i ledu,0.5318,1531
+8882,Sodastreamer,1311,Pumpa za odvodnjavanje,Baštenske mašine,0.5532,1220,Presa,0.5188,1217,Rezač cevi,0.5067,1387
+8541,Backpack 51 - 74 Liters,1493,Vodootporne torbe,Kampovanje i outdoor,0.5529,1557,Pojas za hidrataciju,0.5156,1492,Rashladna kutija i torba,0.485,
+8468,Other in Car Seat,1588,Nosač bicikla na automobilu,Auto oprema,0.5527,1627,Transporter za automobile,0.5508,1408,Kolica za selidbu,0.547,1393
+8682,Shoes,1426,Ostalo u odeći,Odeća i kostimi,0.5527,1236,Nogari za farbanje,0.5519,1530,Odbojka na pesku,0.5499,
+9079,Bridal gown,1425,Party odeća,Odeća i kostimi,0.5517,1426,Ostalo u odeći,0.4941,1423,Čuvanje odeće,0.4212,
+8899,DJI Ronin & DJI RS,1138,DJI Mavic,Dronovi,0.5497,1139,DJI Mavic 3,0.5239,1140,DJI Phantom,0.5148,1297
+8774,Measuring Tape,1077,Merač buke,Merni instrumenti,0.5495,1063,Tražač kabla,0.5403,1071,Merač vlage,0.5283,1069
+9080,Ball dress,1533,Floorball,Sportski rekviziti,0.5494,1425,Party odeća,0.5288,1426,Ostalo u odeći,0.5246,1425
+9140,Raclette,1178,Burgije,Bušilice i šrafilice,0.5482,1177,Pikamer,0.5427,1074,Detektor radona,0.5426,1387
+9027,Post Pounder,1116,Ostalo u glodanju,Glodanje i hoblovanje,0.5478,1112,Strug,0.5386,1111,Ručno rende,0.5372,1354
+9243,Heater more than 10 kW,105,Ventilacija i grejanje,Građevinska oprema i alati,0.5452,1605,Indukcioni grejač,0.5035,1065,IC termometar,0.4901,
+8756,Scrabble,1524,Poker set,Igra i hobi,0.5444,1512,Društvene igre i slagalice,0.5381,1514,Štafelaj,0.5094,1512
+4643,Bouncing Cradle,1527,Trampolin,Igra i hobi,0.5442,1515,Fly jumpers,0.5418,1513,Bumper ball,0.4818,
+22212,Log Splitter,1035,Stoni ger za drvo,Testerisanje i sečenje,0.5442,1036,Ručni ger za drvo,0.5379,1040,Narezač,0.4666,1318
+9419,Weighted vest ,1410,Kolica za teret,Oprema za selidbe,0.5439,1594,Nosač tereta za kuku,0.5419,1119,Paletni viljuškar,0.5165,1560
+8580,Other in Marquees,1330,Obične merdevine,Merdevine,0.5438,1290,Ostalo u blicevima i rasveti,0.5319,1623,Jedrilica,0.5248,1461
+8540,Backpack 0 - 50 Liters,1493,Vodootporne torbe,Kampovanje i outdoor,0.5409,1557,Pojas za hidrataciju,0.4993,1492,Rashladna kutija i torba,0.4752,
+2212,Rototiller,1301,Tronožac,Stativi i rigovi,0.5393,1177,Pikamer,0.5367,1056,Polirka,0.5344,1324
+9044,GoPro,1265,Streaming oprema,Fotoaparati i kamere,0.5386,1267,Tela kamera za ronjenje,0.5175,1266,Teleprompter,0.5133,1259
+9456,Tripod Head,1292,Kamera na kablu,Stativi i rigovi,0.5383,1293,Rigovi i ramena za kameru,0.5365,1302,Glava tronošca,0.5233,1302
+8763,Forbidden Island,1619,Kanu,Čamci i plovila,0.5382,1623,Jedrilica,0.4883,1618,Prikolica za čamac,0.4837,1512
+1711,Impact Drill,1047,Trakasta turpija,Brušenje i poliranje,0.5373,1050,Precizna brusilica,0.5212,1048,Trakasta brusilica,0.519,1181
+9424,Cloth napkin,1107,Prskalica za malter,Krečenje i tapete,0.5367,1370,Parna presa za odeću,0.5307,1369,Čistač tepiha i tapaciringa,0.5286,1441
+8688,Other in Drink,1444,Beer pong,Aktivnosti i zabava,0.5367,1447,Fontana od čokolade,0.5142,1428,Bar sto,0.4788,1436
+4542,Other in Literature,1290,Ostalo u blicevima i rasveti,Blicevi i rasveta,0.5366,1288,Studijski blic,0.5258,1116,Ostalo u glodanju,0.5222,1529
+8978,Compression tester,1026,Tračna testera,Testerisanje i sečenje,0.5365,1042,Sabljasta testera,0.5315,1043,Stona testera,0.5199,1612
+8699,Combination Ladder,1232,Građevinska skela,Skele i podupirači,0.5364,1024,Agregat,0.5328,1329,Kombinovane merdevine,0.5306,1329
+8754,Dixit,1604,Dizalice,Alati za radionicu,0.5356,1333,Stepenik,0.4417,1329,Kombinovane merdevine,0.4204,1512
+2962,Speaker,1127,Mikrofon,Audio oprema i zvuk,0.5344,1419,Zvuk,0.4559,1476,Instrumentalni mikrofon,0.4518,1132
+8755,Cluedo,1241,Ostalo u skelama,Skele i podupirači,0.5333,1116,Ostalo u glodanju,0.5287,1283,Okidač blica,0.5263,1512
+8633,Crowbar,1626,Prikolica sa kavezom,Prikolice,0.533,1111,Ručno rende,0.5174,1631,Prikolica za drvo,0.4976,1351
+8667,Ticket To Ride,1409,Remeni i pojasevi za selidbu,Oprema za selidbe,0.5328,1574,Kofer za bicikl,0.5201,1119,Paletni viljuškar,0.5142,1512
+8440,Pallet truck,1627,Transporter za automobile,Prikolice,0.5324,1198,Traktor,0.5161,808,Ostala vozila,0.5049,1119
+9432,Play Mat,1398,Prostirka za igru,Oprema za decu,0.5317,1533,Floorball,0.521,1109,Skidač tapeta,0.4777,
+9470,Disco Ball,1513,Bumper ball,Igra i hobi,0.5313,1464,Diskokugla,0.5011,1533,Floorball,0.4837,1464
+8435,Popcorn Wagon,1448,Mašina za šećernu vunu,Aktivnosti i zabava,0.5307,1361,Kolica za prevoz,0.4942,1179,Mašina za bušenje,0.469,
+9357,Kick Scooter,1629,Prikolica za motocikl,Prikolice,0.5253,1638,Prikolica za motocikl,0.5084,1639,Ostalo u motociklima,0.4679,1518
+8999,Easyrig,1604,Dizalice,Alati za radionicu,0.5238,1359,Nabijač,0.5218,1611,Rampa,0.5217,1297
+8708,Champagne Glass,1379,Varenje piva i vinarstvo,Kuhinjski aparati,0.5227,1428,Bar sto,0.4737,1427,Šank,0.4411,1441
+9280,Wedding umbrella,1286,Softbox i kišobran,Blicevi i rasveta,0.5225,1425,Party odeća,0.403,1633,Prikolica s pokrivačem,0.388,1468
+8672,Jigsaw puzzles,1176,Set bitova,Bušilice i šrafilice,0.5191,1184,Ankeri i tiplovi,0.4636,1111,Ručno rende,0.4536,1512
+9029,Flash trigger,1141,DJI Spark,Dronovi,0.5172,1096,Moment ključ,0.508,1283,Okidač blica,0.5043,1283
+9055,Impact driver,1197,Mini damper,Građevinska mehanizacija,0.517,1194,Damper,0.4842,1597,Krovni nosač,0.4796,1089
+8983,Crutches,1585,Invalidska kolica,Mobilnost i medicinska nega,0.5161,1582,Električna invalidska kolica,0.4563,1111,Ručno rende,0.4183,1581
+8490,Trailer With Cover,1306,Pozadina sa motivom,Foto pozadine,0.5149,1633,Prikolica s pokrivačem,0.5129,1307,Pozadina sa uzorkom,0.5124,1633
+8489,Cage Trailer,1626,Prikolica sa kavezom,Prikolice,0.5147,1627,Transporter za automobile,0.4903,1594,Nosač tereta za kuku,0.4807,
+8542,Backpack 75 Liters Or Larger,1493,Vodootporne torbe,Kampovanje i outdoor,0.5145,1410,Kolica za teret,0.4797,1557,Pojas za hidrataciju,0.4617,
+1835,Polisher,1359,Nabijač,Baštenski alati,0.5126,1351,Gvozdena šipka,0.5115,1353,Kramp,0.5098,1056
+9412,Router table,1147,Grafička tabla,Računari i oprema,0.506,1144,4G ruter,0.4983,1149,Mrežna oprema,0.4655,1114
+8862,Mannequin,1424,Kostimi i maskiranje,Odeća i kostimi,0.5027,1426,Ostalo u odeći,0.4879,1624,Jedriličarska odeća,0.4569,
+8567,Waffle Iron,1439,Kolica za kobasice,Ketering i kuhinja,0.4989,1325,Freza za panjeve,0.4857,1433,Roštilj,0.4464,1387
+9502,Apple Vision Pro,306,Monitori,Foto i Video,0.4975,1266,Teleprompter,0.4818,1245,Grafoskop,0.4574,1529
+8579,Marquees Larger Than 32 Sqm (345 sqft),1460,Šator preko 32 m²,Šatori i tende,0.4954,1459,Šator 24-32 m²,0.4528,1458,Šator 0-23 m²,0.4364,
+2963,PA,1437,Paella tava,Ketering i kuhinja,0.495,1116,Ostalo u glodanju,0.4616,1056,Polirka,0.45,1129
+8991,Studio Flash,1287,Speed Booster,Blicevi i rasveta,0.4943,1265,Streaming oprema,0.4774,308,Memorijske kartice,0.4756,1288
+1721,Circular Saw,1285,Ring svetlo,Blicevi i rasveta,0.4933,1028,Cirkularna testera,0.4788,1185,Rotacioni čekić,0.4715,1028
+1724,Jigsaw,1185,Rotacioni čekić,Bušilice i šrafilice,0.4911,1176,Set bitova,0.4896,1111,Ručno rende,0.4828,1032
+8668,Trivial Pursuit,1529,Ostalo u igranju i hobiju,Igra i hobi,0.4878,1518,Vozila za hobi,0.4838,1281,Ostali objektivi,0.4792,
+2563,Life Jacket,1572,Zimska odeća,Zimski sportovi,0.4867,1424,Kostimi i maskiranje,0.479,1596,Krovni nosač za ski,0.4779,1549
+8900,Zhiyun,1450,Jakuzi,Aktivnosti i zabava,0.4866,1296,Kran i jib,0.3616,1175,Ugaona bušilica,0.3583,1297
+1784,Clamp,1112,Strug,Glodanje i hoblovanje,0.4838,1215,Pištolj za klamerice,0.4828,1048,Trakasta brusilica,0.4785,1084
+4642,Crib,1178,Burgije,Bušilice i šrafilice,0.4785,1282,Blic,0.4565,1059,Ostale brusilice,0.4432,1396
+8728,HTC Vive,1161,Mobilni telefon,Mobilni telefoni i tableti,0.4765,1164,Tablet,0.4288,1160,Gimbal za mobilni,0.428,1157
+9020,Total Station,209,POS terminali,Elektronika,0.4738,1303,Ostalo u stativima,0.4697,405,Baštenski nameštaj,0.4367,1081
+8693,Cake platters and Cake Stands,1325,Freza za panjeve,Baštenske mašine,0.4737,609,Grejalice i pečurke,0.4698,1188,Ostalo u bušilicama i šrafilicama,0.4697,1441
+9015,Ace Router,1149,Mrežna oprema,Računari i oprema,0.4717,1144,4G ruter,0.4652,1148,Laptop,0.4217,
+8918,DJI Osmo Pocket,1182,Udarni ključ,Bušilice i šrafilice,0.4684,1139,DJI Mavic 3,0.4638,1138,DJI Mavic,0.4399,1259
+9174,Easel,1078,Libela,Merni instrumenti,0.4683,1360,Kontrola korova,0.4674,1330,Obične merdevine,0.4637,1514
+9500,DJI Osmo Action,1138,DJI Mavic,Dronovi,0.468,1139,DJI Mavic 3,0.4676,1140,DJI Phantom,0.4491,1259
+8578,Marquees 24 - 32 Sqm (250-344 sqft),1459,Šator 24-32 m²,Šatori i tende,0.4665,1458,Šator 0-23 m²,0.4662,1460,Šator preko 32 m²,0.4626,
+8889,Winch,1112,Strug,Glodanje i hoblovanje,0.4664,1111,Ručno rende,0.447,1116,Ostalo u glodanju,0.4405,1122
+9517,Stand,1241,Ostalo u skelama,Skele i podupirači,0.4631,1634,Ostalo u prikolicama,0.4457,1116,Ostalo u glodanju,0.4276,1303
+8780,Crashpad,1147,Grafička tabla,Računari i oprema,0.4586,1287,Speed Booster,0.4585,1148,Laptop,0.44,1531
+1722,Reciprocating Saw,1283,Okidač blica,Blicevi i rasveta,0.4551,1275,Konverter,0.4139,1241,Ostalo u skelama,0.4088,1042
+8549,Fan,1191,Kompresor,Komprimovani vazduh,0.4545,1517,Termopresa,0.4356,1235,Podupirač,0.4328,105
+8665,Settlers of Catan,1619,Kanu,Čamci i plovila,0.4513,1635,Kamp prikolica,0.4143,1623,Jedrilica,0.3992,1512
+9336,Walker,1331,Merdevine za stepenište,Merdevine,0.441,1111,Ručno rende,0.4379,1116,Ostalo u glodanju,0.3976,1584
+8988,Loop Station,209,POS terminali,Elektronika,0.4397,1611,Rampa,0.4329,1303,Ostalo u stativima,0.4302,1126
+9142,Induction Hob,1240,Radni sto,Skele i podupirači,0.4336,1296,Kran i jib,0.4241,1605,Indukcioni grejač,0.416,1435
+9342,GPS,1017,Satelitska oprema,Elektronika,0.4331,1499,Navigacija i komunikacija,0.4186,1361,Kolica za prevoz,0.4126,1499
+8746,Hole Saw,1058,Ostalo u brušenju,Brušenje i poliranje,0.4318,1046,Ugaona brusilica,0.4239,1047,Trakasta turpija,0.4218,1180
+4541,Textbooks,1288,Studijski blic,Blicevi i rasveta,0.4311,1289,Studijska lampa,0.3985,1362,Ostalo u baštenskim alatima,0.3613,1529
+8577,Marquees 0 - 23 Sqm (0-249 sqft),1458,Šator 0-23 m²,Šatori i tende,0.431,1050,Precizna brusilica,0.4244,1205,Rezač pločica,0.3813,
+8902,Feiyu,1175,Ugaona bušilica,Bušilice i šrafilice,0.4296,1450,Jakuzi,0.4188,1288,Studijski blic,0.398,1297
+4651,Bouncy Castle,1231,Gradilišna ograda,Skele i podupirači,0.4267,405,Baštenski nameštaj,0.3931,1427,Šank,0.3925,1445
+8758,Scale,1072,Multimetar,Merni instrumenti,0.4166,1064,Merač energije,0.4064,1079,Tražač greda,0.4062,1076
+8661,Stage,1303,Ostalo u stativima,Stativi i rigovi,0.4134,1116,Ostalo u glodanju,0.4057,1634,Ostalo u prikolicama,0.3996,1420
+8726,Meta Quest,1024,Agregat,Struja i agregati,0.4114,1241,Ostalo u skelama,0.4096,1235,Podupirač,0.4053,1157
+8813,Croquet,1177,Pikamer,Bušilice i šrafilice,0.4095,1178,Burgije,0.4059,1537,Reket sportovi,0.3754,1522
+8753,Monopoly,1512,Društvene igre i slagalice,Igra i hobi,0.4079,1522,Igre na otvorenom,0.404,1524,Poker set,0.3999,
+8671,Chess,1524,Poker set,Igra i hobi,0.3978,1522,Igre na otvorenom,0.3947,1512,Društvene igre i slagalice,0.375,1512
+9052,Mitre Saw with Stand,1283,Okidač blica,Blicevi i rasveta,0.3862,1302,Glava tronošca,0.3406,1111,Ručno rende,0.3336,1029
+9269,Cards Against Humanity,1512,Društvene igre i slagalice,Igra i hobi,0.3793,1241,Ostalo u skelama,0.3705,1524,Poker set,0.3604,1512
+9053,Mitre Saw without Stand,1283,Okidač blica,Blicevi i rasveta,0.3782,1285,Ring svetlo,0.3452,1279,Mirrorless objektivi,0.3346,1029
+8576,Jack post,1296,Kran i jib,Stativi i rigovi,0.3778,1303,Ostalo u stativima,0.3763,1302,Glava tronošca,0.3677,1235
+8752,Risk,1229,Ostalo u zavarivanju,Aparati za zavarivanje,0.3697,1228,Maska za zavarivanje,0.3612,1241,Ostalo u skelama,0.3479,1512
+1733,Spirit level,1241,Ostalo u skelama,Skele i podupirači,0.3588,1118,Vakuumski podizač stakla,0.3469,1116,Ostalo u glodanju,0.3402,1078
+8666,Pandemic,1352,Zaštita od štetočina,Baštenski alati,0.3334,1498,Zaštita od komaraca,0.316,1581,Štake,0.2921,1512
+8493,Jack & Pallet Stands,1241,Ostalo u skelama,Skele i podupirači,0.2684,1426,Ostalo u odeći,0.2507,1188,Ostalo u bušilicama i šrafilicama,0.2502,1606

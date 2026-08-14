@@ -15,29 +15,26 @@
   background: linear-gradient(145deg, #f0f2ff 0%, #f5f0ff 45%, #eefdf4 100%);
   display: flex;
   flex-direction: column;
-  overflow-x: clip; /* clip ne kreira scroll container — ne kvari position:sticky na wizard-header */
+  /* overflow-x: clip was removed — it implicitly set overflow-y: clip too (per CSS spec),
+     clipping the sticky wizard-header when scrolled. Body overflow-x: hidden handles clipping. */
 }
 
 /* ════════════════════════════════════════════════════════
-   HEADER
+   PAGE HEADER — inline, bez sticky, bez razmaka
    ════════════════════════════════════════════════════════ */
-.wizard-header {
-  background: var(--color-white);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 2px 12px rgba(0,0,0,.06);
-  position: sticky;
-  top: 140px; /* -2px overlap sa site-headerom (z-index 99999 prekriva) — eliminiše prozirnu prugu */
-  z-index: 100;
-  padding: 0 40px;
-}
-
-.header-inner {
+.wizard-page-header {
+  max-width: 1100px;
+  margin: 0 auto 20px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 18px 0 14px;
+  gap: 16px;
+}
+
+.wizard-page-header h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
 }
 
 .back-btn {
@@ -48,7 +45,7 @@
   height: 38px;
   border-radius: 50%;
   border: 2px solid var(--color-border);
-  background: var(--color-surface);
+  background: var(--color-white);
   color: var(--color-text-body);
   text-decoration: none;
   flex-shrink: 0;
@@ -59,92 +56,6 @@
   border-color: var(--color-primary);
   color: var(--color-white);
   transform: translateX(-2px);
-}
-
-.header-center {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-
-.header-center h1 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text);
-  white-space: nowrap;
-}
-
-.step-pills {
-  display: flex;
-  gap: 8px;
-}
-
-.step-pill {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 14px;
-  border-radius: 24px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  background: var(--color-surface-alt);
-  border: 1.5px solid transparent;
-  cursor: default;
-  transition: all .2s;
-  white-space: nowrap;
-}
-.step-pill.active {
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  border-color: var(--color-primary-border-pill);
-}
-.step-pill.done {
-  background: var(--color-secondary-light);
-  color: var(--color-success-dark);
-  border-color: var(--color-secondary-border);
-  cursor: pointer;
-}
-.step-pill.done:hover { opacity: .8; }
-
-.pill-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--color-border-medium);
-  color: var(--color-white);
-  font-size: 11px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-.step-pill.active .pill-num { background: var(--color-primary); }
-.step-pill.done .pill-num   { background: var(--color-success-dark); }
-
-.step-counter {
-  background: linear-gradient(135deg, var(--color-primary), #a855a7);
-  color: var(--color-white);
-  font-size: 13px;
-  font-weight: 700;
-  padding: 5px 14px;
-  border-radius: 20px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.progress-track {
-  height: 3px;
-  background: var(--color-border);
-  margin: 0 -40px;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), #a855a7 50%, var(--color-secondary));
-  transition: width .5s cubic-bezier(.4,0,.2,1);
 }
 
 /* ════════════════════════════════════════════════════════
@@ -1512,10 +1423,8 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
 
 /* ── 1500px: smanji unutrašnju marginu ── */
 @media (max-width: 1500px) {
-  .wizard-header { padding: 0 32px; }
   .wizard-body   { padding: 28px 32px 300px; }
   .section-block { padding: 28px 36px; }
-  .progress-track { margin: 0 -32px; }
 }
 
 /* ── ≤1400px: gap 24px, padding-right 40px ── */
@@ -1531,10 +1440,8 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
     margin-left: -16px;
     width: calc(100% + 16px + 28px);
   }
-  .wizard-header { padding: 0 24px; top: 100px; }
   .wizard-body   { padding: 24px 24px 280px; }
   .section-block { padding: 24px 28px; }
-  .progress-track { margin: 0 -24px; }
 }
 
 @media (max-width: 1000px) {
@@ -1542,10 +1449,8 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
     margin-left: -12px;
     width: calc(100% + 12px + 20px);
   }
-  .wizard-header { padding: 0 20px; top: 88px; }
   .wizard-body   { padding: 20px 20px 260px; }
   .section-block { padding: 20px 24px; }
-  .progress-track { margin: 0 -20px; }
 }
 
 /* Ispod 900px sidebar ide u column, resetuj offset */
@@ -1556,18 +1461,9 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
     max-width: 100%;
     min-width: 0;
     margin-top: 0;
-    /* clip — ne kreira scroll container, ne kvari position:sticky na wizard-header */
   }
-  .wizard-header { padding: 0 16px; top: 66px; }
   .wizard-body   { padding: 20px 14px 60px; }
   .section-block { padding: 20px 14px; }
-  .progress-track { margin: 0 -16px; }
-  .step-pills { display: none; }
-}
-
-@media (max-width: 768px) {
-  /* Ispod search bara (top: 60px + visina ~56px = 116px) */
-  .wizard-header { top: 116px; }
 }
 
 @media (max-width: 640px) {
@@ -1603,7 +1499,7 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
     gap: 8px;
   }
 
-  /* Sticky bottom nav — dugmad "Nazad / Dalje" uvek vidljiva */
+  /* Sticky bottom nav — Otkaži + Objavi uvek vidljiva */
   .wizard-nav {
     position: fixed;
     left: 0;
@@ -1617,14 +1513,15 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
     box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.06);
     gap: 10px;
   }
-  .btn-prev, .btn-next {
+  .btn-submit {
     padding: 11px 18px;
     font-size: 14px;
     height: 46px;
     border-radius: 24px;
+    flex: 1;
+    justify-content: center;
   }
-  .btn-next { flex: 1; justify-content: center; }
-  .btn-prev { flex: 0 0 auto; }
+  .btn-save-template { display: none; }
 }
 
 /* ── 27" (1921px+): gap 48px, padding-right 80px ── */

@@ -43,7 +43,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'Device: {device}')
 
 # ---------- 1) Load data ----------
-df = pd.read_csv('training_data.csv')
+df = pd.read_csv('training_data.csv', encoding='latin-1')
 print(f'Loaded {len(df)} training rows')
 
 le = LabelEncoder()

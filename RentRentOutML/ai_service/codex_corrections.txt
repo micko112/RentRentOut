@@ -1,0 +1,462 @@
+2934|1251|Other in Projector and TV treba da ide u ostalo u projektorima i TV
+8563|1388|Other in Kitchen Utensils and Kitchen Appliances treba da ide u ostalo u kuhinji
+1788|1099|Other in hand tools treba da ide u ostalo u ručnim alatima
+183|1013|Other in Construction & Tools treba da ide u ostalo u građevini i alatima
+8423|1467|Styling & Decor ima direktnu kategoriju
+8607|1019|Punjač za alate nije punjač za vozila
+9454|1256|Film Cameras su filmske kamere
+3964|1562|Other in Exercise & Gym treba da ide u ostalo u vežbanju
+8565|1387|Kitchen aid je kuhinjski pribor/aparat
+9399|1168|Lasercutter je laserski rezač
+9425|1435|Countertop stove je rešo
+8984|1247|Projector screen je projekciono platno
+2942|1171|Printer nije 3D štampač
+8937|1509|Other Bicycles treba da ide u ostalo u biciklizmu
+9073|1617|Accessories kayak nije nosač za auto
+4533|1367|Styling ima direktnu kategoriju
+8917|1577|Other Suitcases je opšta kategorija kofera
+3917|1509|Bicycle Accessories nema užu kategoriju, ide u ostalo u biciklizmu
+8829|1090|Water Pump Pliers su klješta, ne pumpa
+8430|1529|Other in Play & Hobby treba da ide u ostalo u igranju i hobiju
+8750|1123|Other in Transportation & Lifting treba da ide u ostalo u transportu
+8950|1502|Other in Camping nije kamp prikolica
+8880|1133|Sound Recorder nije luper
+3914|1507|Cargo bike je bicikl, ne prikolica
+3912|1507|Road bike je bicikl, ne nosač
+8783|1570|Snowshoes bliže snežnom/ledenom penjanju nego snowracer
+8642|1432|Other in Party Furniture treba da ide u ostalo u nameštaju za proslave
+8891|1259|Other Action Cameras su specijalne kamere
+2931|1246|Projector je projektor
+8843|1509|Bicycle tools nema užu kategoriju, ide u ostalo u biciklizmu
+8744|1215|Staple Gun je pištolj za klamerice
+9289|1568|Pist Skis su skije/snowboard
+8804|1572|Ski Helmet je zimska oprema/odeća, ne krovni nosač
+8793|1568|Alpine ski boots pripadaju skijanju
+9010|1307|Photo Background with Pattern je pozadina sa uzorkom
+8415|1378|Other in Laundry & Cleaning treba da ide u ostalo u čišćenju
+9395|1340|Lawn leveling rake je grabulja za nivelisanje
+9422|1592|E-car charger je punjač za električni auto
+8847|1518|Other Hobby Vehicles treba da ide u vozila za hobi
+3961|1556|Exercise machines su sprave za vežbanje
+9465|1280|Lens Accessories ima direktnu kategoriju
+9260|1326|Sweeping machine je mašina za metenje
+9487|1124|Decks & Turntable je DJ oprema
+8960|1269|Office je prostor kancelarija, ne kancelarijska mašina
+1805|1199|Other in Construction Machinery treba da ide u ostalo u građevinskoj mehanizaciji
+8952|1502|Tarp pripada outdoor/kamp opremi
+9440|1635|Camping trailer je kamp prikolica
+8740|1199|Other in construction machinery treba da ide u ostalo u građevinskoj mehanizaciji
+9290|1568|Freeride/allmountain skis su skijanje i snowboard
+8417|1424|Costumes & Fancy Dress su kostimi i maskiranje
+4633|1507|Tricycle je bicikl, ne prikolica
+8720|1154|Other Nintendo Consoles su konzole
+8995|1207|Other flooring/tiling/carpeting treba da ide u ostalo u podnim oblogama
+9361|1341|Lawn mower je kosilica
+3918|1507|Tandem je bicikl
+8840|1509|Bike Helmet pripada biciklizmu, nema užu kacigu
+2966|1133|Other in Sound treba da ide u ostalo u zvuku
+8556|1489|Accessories For Camping Stoves pripadaju kampovanju
+9418|1480|Microphone stand je stalak/kabl
+8456|1567|Ice Hockey Skates su klizaljke
+8602|1167|Laminating Machine ima direktnu kategoriju
+1762|1104|Paint Trestles su nogari za farbanje
+8644|1431|Trestle tables su sklopivi stolovi
+2211|1322|Pressure Washer je visokotlačni perač
+8985|1507|Folding bike je bicikl
+2927|310|Other in Film & Photography treba da ide u ostalo u foto i video
+8976|1471|Cello je čelo
+8785|1570|Snow and Ice Ax pripada penjanju po snegu i ledu
+9134|1083|Caulking gun je pištolj za silikon
+9458|305|Camera Package Deals su foto/video paketi
+9385|1341|Robot Lawn Mower je kosilica
+22213|1328|Other in Garden Machinery treba da ide u ostalo u baštenskim mašinama
+8951|1458|Hammock Tent je mali šator, ne preko 32 m²
+8659|1245|Overhead Projector je grafoskop
+1813|105|Air Purifier pripada ventilaciji
+8628|1281|Other Lenses treba da ide u ostali objektivi
+8460|1458|Two Person tent je šator 0-23 m²
+9040|1424|National costume for children je kostim
+9510|1313|Garden Sieve ima direktnu kategoriju
+3971|1534|Football je fudbal
+8548|105|Air Conditioning pripada ventilaciji i grejanju
+8637|1187|Stone drilling machine je mašina za bušenje kamena
+8475|1503|Bike Trailer je prikolica za teret na biciklu
+1742|1046|Angle grinder je ugaona brusilica
+3913|1507|Mountain Bike je bicikl
+9430|105|Humidifier pripada ventilaciji
+8692|1441|Other Tableware treba da ide u posuđe i pribor
+8495|1360|Weed Burner je kontrola korova
+8612|1588|Towbar/Hitch Mounted Bike rack je nosač bicikla na automobilu
+8650|1441|Serving Thermos je posuđe/pribor
+9042|1577|Large Suitcase je kofer
+9388|1206|Tiling package je paket za keramiku
+9261|1360|Weeder je kontrola korova
+9236|1090|Pop rivet pliers su klješta
+3323|1364|Chairs For Styling pripadaju nameštaju za stilizovanje
+9292|1507|BMX je bicikl
+9520|1404|Hair Removal je epilacija
+332|1364|Furniture treba da ide u nameštaj
+3324|1364|Other in Furniture treba da ide u nameštaj
+8507|1384|Pots and Pans ima direktnu kategoriju
+8873|1613|Wheel Tools su alati za točkove i gume
+8613|1588|Roof Mounted Bike Rack je nosač bicikla na automobilu
+9311|1210|Construction rake je građevinska grabulja
+8678|1387|Fruit Press and Fruit Crusher je kuhinjski aparat
+1728|1045|Other in Saws & Cutting treba da ide u ostalo u testerama
+9057|1568|Kids and junior skis su skijanje i snowboard
+4611|1399|Stroller su kolica i oprema
+8706|1205|Manual Tile Cutter je rezač pločica
+8653|1364|Stools su nameštaj
+8745|1186|Screw Gun je šrafilica
+8594|1576|Ski Case & Ski Bag je specijalni kofer
+9005|1166|Label Printer je štampač nalepnica
+3322|1364|Table For Styling pripada nameštaju
+1736|1082|Other in Measuring Instrument treba da ide u ostalo u mernim instrumentima
+8554|1489|Primus Stove je kamp oprema
+1832|1109|Wallpaper Stripper je skidač tapeta
+8562|1387|Household Mixer je kuhinjski pribor/aparat
+8697|1201|Concrete Grinder je brusilica za podove
+8801|1565|Hockey Stick pripada hokeju
+8515|1536|Inline skates su roleri
+8903|1297|Glidecam je gimbal/stabilizator
+8484|1399|Travel Stroller su kolica i oprema
+9018|1506|Hard Shell Bike Travel Case je torba/kofer za bicikl
+1834|1376|Wet Vacuum Cleaner je usisivač
+8747|1178|Drill bits su burgije
+9012|1103|Paint Stripper je skidač boje
+8816|1522|Frisbee/Disc Golf je igra na otvorenom
+8564|1386|Juicer je sokovnik
+8555|1489|Other Camping Stoves pripada kampovanju
+8990|1282|Camera Flash je blic
+9518|1021|Cable su kalemovi i električni kablovi
+9392|1348|Garden Hose je baštensko crevo
+8647|1468|Other in Festive Decoration treba da ide u ostalo u dekoraciji
+8736|1376|Other in Vacuum Cleaners treba da ide u usisivače
+9273|1063|Cable tracker je tražač kabla
+9504|1214|Battery powered Nailgun je pištolj za eksere
+8570|1387|Pasta Machine je kuhinjski aparat
+1791|1232|Construction Scaffolding je građevinska skela
+8715|1154|Nintendo Wii je konzola
+4622|1393|Baby Car Seat je autosedište za decu
+9324|1259|Surveillance camera je specijalna kamera
+8631|1614|Workshop crane je radioničarska dizalica
+8589|1317|Battery Powered Leaf Blower je duvač lišća
+8654|1432|Chair Covers pripadaju nameštaju za proslave
+9003|1316|Battery Powered Hedge Trimmer su makaze za živicu
+1811|105|Dehumidifiers pripadaju ventilaciji i grejanju
+1774|1229|Other in Welding treba da ide u ostalo u zavarivanju
+8610|1393|Booster Seat je autosedište za decu
+9181|1134|DJI Mavic Battery je oprema za dronove
+3919|1507|Electric Bike je bicikl
+9225|1199|Excavator tools pripada građevinskoj mehanizaciji
+3332|1441|Plates & Dishes su posuđe i pribor za jelo
+1713|1179|Drilling Machine je mašina za bušenje
+9271|1409|Moving straps & harnesses su remeni/pojasevi za selidbu
+8635|1183|Pillar Drill je stub bušilica
+8543|1355|Pruning Saw & Lopper su vrtlarska testera i škare
+8422|1596|Roof Rack for Snowboards and Skis je krovni nosač za ski
+9229|1441|Cutlery je posuđe i pribor za jelo
+8839|1509|Repair Stand For Bike ide u ostalo u biciklizmu
+9136|1517|Heat press je termopresa
+9230|1441|Tablecloth pripada posuđu/priboru za jelo
+8689|1441|Carafes pripadaju posuđu/priboru za jelo
+2952|1512|Game je društvena igra, ne igra na otvorenom
+9063|1309|Battery powered chainsaw je motorna testera
+8481|1619|Open Canoe je kanu
+1793|1241|Other in Scaffolding treba da ide u ostalo u skelama
+8506|1385|Sous Vide ima direktnu kategoriju
+8942|1443|Wine Cooler & Champagne Cooler pripada ketering kuhinji
+9189|1436|Shot machine pripada pićima
+8969|1021|Charging cable je kabl
+8767|1512|Other in Card Game ide u društvene igre i slagalice
+3321|1368|Rugs pripadaju ostaloj dekoraciji
+8447|1259|Spy Camera je specijalna kamera
+9062|1309|Electrical chainsaw je motorna testera
+2219|1327|Wood Chipper je drobilica drveta
+8993|1290|Other in Flash and lights treba da ide u ostalo u blicevima
+9434|1516|Foosball je stoni fudbal
+1754|1111|Hand planer je ručno rende
+8841|1509|Bicycle Pump ide u ostalo u biciklizmu
+8869|1600|Assembly Trolley ima direktnu kategoriju
+8974|1401|Bedbox je za putovanje s decom
+8446|1259|Inspection Camera je specijalna kamera
+9509|1342|Other in lawn care treba da ide u ostalo u održavanju travnjaka
+8588|1317|Electrical Leaf Blower je duvač lišća
+3925|1488|Binoculars je dvogled
+8479|1314|Garden shredder je baštenska drobilica
+8427|1021|Cable reels and Electric Cable ima direktnu kategoriju
+8584|1082|Probe ide u ostalo u mernim instrumentima
+1716|1099|Screwdrivers idu u ostalo u ručnim alatima
+9396|405|Garden furniture je baštenski nameštaj
+9001|1316|Petrol Powered Hedge Trimmer su makaze za živicu
+8705|1205|Electric Tile Cutter je rezač pločica
+9139|1443|Fondue ide u ostalo u ketering kuhinji
+8714|1370|Clothes Steamer je parna presa za odeću
+9463|1278|Medium Format Lenses su objektivi za srednji format
+8932|1399|Bugaboo Compact Transport Bag je oprema za kolica
+9084|1259|360 Camera je specijalna kamera
+4531|1372|Iron je pegla
+1719|1188|Other in Drills and Screwdrivers treba da ide u ostalo u bušilicama
+8845|1518|Hoverboard je vozilo za hobi
+8915|1577|Duffelbag je kofer/putna torba
+9068|1544|Sea kayak je kajak
+9235|1090|Hole plier su klješta
+9014|1116|Other in Milling treba da ide u ostalo u glodanju
+9002|1316|Electrical Hedge Trimmer su makaze za živicu
+9072|1544|Other in kayak ide u kajak
+8836|1406|TENS pripada ličnoj nezi
+9274|1049|Benchtop grinder je stona brusilica
+9489|1155|Controller je ručni kontroler
+9519|1366|Props su rekviziti
+8558|1500|Hiking Boots pripadaju outdoor odeći
+9365|1558|Massage gun pripada masaži
+8544|1532|Other in Equestrian pripada jahanju
+9507|1214|Electric Nailgun je pištolj za eksere
+9431|1191|Electric air pump je kompresor/pumpa za vazduh
+8560|1494|Headlamp je čeona lampa
+9506|1214|Gas powered Nailgun je pištolj za eksere
+8941|105|Other in Cooling pripada ventilaciji i grejanju
+9374|1387|Deep fryer & Airfryer su kuhinjski aparati
+8458|1567|Figure Skating Skates su klizaljke
+9069|1544|Fishing kayak je kajak
+8477|1337|Compost Roller ima direktnu kategoriju
+9308|1376|Handheld Vacuum je usisivač
+8731|1387|Vacuum Sealers su kuhinjski aparati
+9375|1387|Sandwich maker je kuhinjski aparat
+8830|1218|Pipe Wrench je ključ za cevi
+8457|1536|Other in Skates ide u rolere
+1773|1224|Electric Welder je električni aparat za zavarivanje
+9131|1138|DJI Mavic Mini je DJI Mavic
+8762|1512|Co-op Games su društvene igre
+8939|1443|Ice Machine pripada ketering kuhinji
+8569|1387|Coffee Maker and Espresso Machine su kuhinjski aparati
+3334|1374|Steam cleaner je parna mašina za čišćenje
+9409|1030|Guide rail je vodilica
+8716|1154|Nintendo Switch je konzola
+8964|1273|Other Premises treba da ide u ostali prostori
+9382|1615|Workshop press je radioničarska presa
+8710|1441|Wine Glass je posuđe/pribor za jelo
+8547|1518|Segway je vozilo za hobi
+9024|1408|Moving Dolly su kolica za selidbu
+4621|1393|Car Seats je autosedište
+8850|1345|Axe je sekira
+8879|1602|Spring compressor je auto alat
+8496|1349|Garden Pressure Sprayer je leđna prskalica
+8663|1456|Toastmaster Equipment je oprema za voditelja
+8887|1195|Mini Excavators su bageri
+8552|1103|Paint Remover je skidač boje
+8634|1115|Table Planer je stono rende
+9051|1034|Metal chop saw je kružna testera za metal
+8973|1068|Light meter je fotometar
+8566|1387|Slowcooker je kuhinjski aparat
+8858|1595|Roof Box Without Roof Racks je krovni kofer
+3312|1417|Party Lights je party rasveta
+1727|1045|Power Cutter pripada testerama/sečenju
+8452|1154|Xbox je konzola
+8857|1595|Roof Box With Roof Racks je krovni kofer
+8769|1512|Other in Co-op Games su društvene igre
+9469|1295|Clamps and Grips su stege i hvatači
+4641|1396|Travel Crib je dečiji nameštaj
+8632|1616|Other in Workshop treba da ide u ostalo u radionici
+9407|1175|Angle drill je ugaona bušilica
+8638|1106|Pasting table je sto za tapete
+1755|1116|Other in Milling & Planing treba da ide u ostalo u glodanju
+8901|1297|Steadicam je gimbal/stabilizator
+8844|1518|Electric Scooter je vozilo za hobi
+9066|1310|Battery powered clearing saw je trimer/čistač rastinja
+182|1012|Work Lights je radna rasveta
+9067|1544|Inflatable kayak je kajak
+273|1636|Other in Caravan and Motorhome treba da ide u ostalo u kamperima
+1842|1376|Industrial & Wet-Dry Vacuum je usisivač
+9488|1387|Mixer je kuhinjski aparat
+9359|1376|Robot vacuum je usisivač
+8725|1154|PlayStation Portable je konzola
+8905|1098|Wrench je ključ
+9468|1294|Car Mount je nosač za automobil
+8751|1212|Plug and feather je alat za kamen
+9306|1441|Beer glasses su posuđe/pribor za jelo
+8425|1027|Bolt Cutters je sekač vijaka
+9013|1113|Biscuit Joiner pripada glodalicama
+9179|1544|Kayak K2 je kajak
+8538|1486|Other in Backpack treba da ide u ruksak
+9377|1386|Steam Juicer je sokovnik na paru
+8561|1376|Floor Vacuum je usisivač
+8919|1160|DJI Osmo Mobile je gimbal za mobilni
+9256|1637|MC Clothing je motociklistička oprema
+8709|1441|Other in Glass pripada posuđu/priboru za jelo
+8476|1338|Garden roller je baštenski valjak
+9352|1376|Dustcontrol je usisivač/čišćenje prašine
+9368|1089|Impact screwdriver je udarni odvijač
+4612|1399|Jogging Stroller su kolica i oprema
+8704|1373|Scrubber je ribač podova
+1717|1177|Concrete Breaker / Kango je pikamer
+8784|1570|Crampon pripada penjanju po snegu i ledu
+8491|1628|Enclosed Trailers je zatvorena prikolica
+8938|1443|Party Cooler pripada ketering kuhinji
+3954|1477|Keyboard je klavijatura
+1743|1059|Other sanders su ostale brusilice
+8916|1577|Carry-on Case je kofer
+8846|1518|Electric Unicycle je vozilo za hobi
+8881|1085|Pick Axe je pijuk
+8703|1332|Step Stool je stolica-stepenik
+8719|1154|Super Nintendo je konzola
+9004|1147|Drawing Tablet je grafička tabla
+8534|1301|Tripod je tronožac
+271|1635|Caravan je kamp prikolica
+8441|1172|Scanner je skener
+2422|1597|Roof Racks je krovni nosač
+2224|1357|Shovel je lopata
+8531|1489|Sleeping Pad pripada kampovanju
+9178|1544|Kayak 1-man je kajak
+8819|1372|Waxing Iron je pegla
+8943|1441|Ice Bucket je posuđe/pribor za jelo
+8718|1154|Nintendo 64 je konzola
+3981|1497|Fishing Rod pripada lovu i ribolovu
+8971|1577|Hand bag je putna torba/kofer
+4644|1396|Cradle je dečiji nameštaj
+8478|1344|Spreader je rasipač za đubrivo
+3942|1549|Wet & Dry Suit je odeća za vodene sportove
+8815|1522|Bocce ball je igra na otvorenom
+8717|1154|Nintendo Classic/Mini/8-bit je konzola
+3956|1484|Wind Instrument je duvački instrument
+8781|1531|Climbing harness pripada penjanju
+1831|1410|Sack truck su kolica za teret
+9512|1481|Synthesizer je sintisajzer
+9061|1309|Petrol powered chain saw je motorna testera
+8433|1537|Squash je reket sport
+8574|1617|Outboard motor je oprema za čamce
+9515|1472|Sampler je drum mašina i sampler
+1781|1088|Hammer je čekić
+8603|1173|Shredder je rezač dokumenata
+8868|1122|Hoists je vitlo
+8940|1388|Refrigerator ide u ostalo u kuhinji
+8428|105|Ozone Generator pripada ventilaciji
+9065|1310|Electrical clearing saw je trimer/čistač rastinja
+9056|1186|Cordless drill je šrafilica/bušilica
+1836|1093|Soldering Iron je lemilica
+8827|1096|Torque Wrench je moment ključ
+1804|1117|Forklift je viljuškar
+8876|207|Transceiver je radio stanica/toki-voki
+17491|1059|Other in Sanding su ostale brusilice
+4645|1389|Highchair je stolica za bebu
+1785|1094|Spanners and Sockets su ključevi i gedore
+8485|1450|Hot Tub je jakuzi
+8533|1303|Other in Stand ide u ostalo u stativima
+8770|1512|Strategy Games su društvene igre
+9064|1310|Petrol powered clearing saw je trimer/čistač rastinja
+8711|1441|Water Glass je posuđe/pribor za jelo
+9321|1539|Rounders ide u ostalo u sportu
+1715|1182|Impact Wrench je udarni ključ
+9387|1063|Fish tape puller je tražač kabla
+9369|1361|Push Cart su kolica za prevoz
+2215|1024|Generator je agregat
+9420|1559|Pull-up bar je šipka za zgibove
+8923|1537|Padel je reket sport
+9275|1211|Petrol Powered Earth Auger je svrdlo za zemlju
+8494|1411|Other in Moving treba da ide u ostalo u selidbi
+8897|1297|Gimbal For GoPro/Action Camera je gimbal/stabilizator
+2223|1356|Wheelbarrow su kolica za baštu
+8945|1129|Megaphone pripada PA/zvučnoj opremi
+1816|1022|Distribution box je razvodni ormar
+1840|1208|Compactor je vibro nabijač
+9325|1396|Airplane crib je dečiji nameštaj
+1761|1105|Paint sprayer je pištolj za boju
+9026|1592|CHAdeMO adapter je oprema za punjenje električnog auta
+9345|1039|Plasma torch je plazma rezač
+8803|1549|Goggles pripada odeći za vodene sportove
+8492|1634|Other in Trailers treba da ide u ostalo u prikolicama
+8898|1297|Other Gimbals treba da ide u gimbale i stabilizatore
+3923|1489|Sleeping Bag pripada kampovanju
+8698|1331|Stairwell Ladder su merdevine za stepenište
+1725|1043|Table Saw je stona testera
+1747|1057|Sheet Sander je listna brusilica
+22210|1343|Scarifier je skarifajzer
+8954|1522|Spikeball je igra na otvorenom
+1782|1092|Sledgehammer je macola
+1748|1048|Belt Sander je trakasta brusilica
+8702|1330|Regular ladder su obične merdevine
+8851|1359|Tamper je nabijač
+9333|1502|Camo Tarp ide u ostalo u outdoor-u
+9050|1036|Manual Mitre Saw je ručni ger za drvo
+8782|1531|Other in Climbing pripada penjanju
+8882|1387|Sodastreamer je kuhinjski aparat
+8468|1393|Other in Car Seat treba da ide u autosedište
+8899|1297|DJI Ronin & DJI RS su gimbali/stabilizatori
+8774|1069|Measuring Tape je metar
+9080|1425|Ball dress je party odeća
+9140|1387|Raclette je kuhinjski aparat
+9027|1354|Post Pounder je pobijač stubova
+8756|1512|Scrabble je društvena igra
+22212|1318|Log Splitter je cepač drva
+9419|1560|Weighted vest je prsluk sa tegovima
+8580|1461|Other in Marquees ide u ostalo u šatorima
+2212|1324|Rototiller je freza
+9044|1259|GoPro je specijalna/action kamera
+9456|1302|Tripod Head je glava tronošca
+8763|1512|Forbidden Island je društvena igra
+1711|1181|Impact Drill je udarna bušilica
+9424|1441|Cloth napkin je posuđe/pribor za jelo
+8688|1436|Other in Drink treba da ide u pića
+4542|1529|Other in Literature nema knjige; najbliže ostalo u igranju i hobiju
+8978|1612|Compression tester je vakuum/kompresioni tester
+8699|1329|Combination Ladder su kombinovane merdevine
+8754|1512|Dixit je društvena igra
+2962|1132|Speaker je zvučnik
+8755|1512|Cluedo je društvena igra
+8633|1351|Crowbar je gvozdena šipka/pajser
+8667|1512|Ticket To Ride je društvena igra
+8440|1119|Pallet truck je paletni viljuškar
+9470|1464|Disco Ball je diskokugla
+9357|1518|Kick Scooter je vozilo za hobi
+8999|1297|Easyrig je stabilizacioni rig
+8708|1441|Champagne Glass je posuđe/pribor za jelo
+9280|1468|Wedding umbrella pripada dekoraciji
+8672|1512|Jigsaw puzzles su društvene igre i slagalice
+9029|1283|Flash trigger je okidač blica
+9055|1089|Impact driver je udarni odvijač
+8983|1581|Crutches su štake
+8490|1633|Trailer With Cover je prikolica s pokrivačem
+1835|1056|Polisher je polirka
+9412|1114|Router table je stol za glodalicu
+8567|1387|Waffle Iron je kuhinjski aparat
+9502|1529|Apple Vision Pro je VR/AR uređaj, najbliže ostalo u igranju i hobiju
+2963|1129|PA je PA sistem
+8991|1288|Studio Flash je studijski blic
+1721|1028|Circular Saw je cirkularna testera
+1724|1032|Jigsaw je ubodna testera
+2563|1549|Life Jacket je odeća/oprema za vodene sportove
+8900|1297|Zhiyun je gimbal/stabilizator
+1784|1084|Clamp je stega/mengel
+4642|1396|Crib je dečiji nameštaj
+8728|1157|HTC Vive su VR naočale
+9020|1081|Total Station je tahimetar
+8693|1441|Cake platters and Cake Stands su posuđe i pribor
+8918|1259|DJI Osmo Pocket je specijalna kamera
+9174|1514|Easel je štafelaj
+9500|1259|DJI Osmo Action je specijalna/action kamera
+8889|1122|Winch je vitlo
+9517|1303|Stand ide u ostalo u stativima
+8780|1531|Crashpad pripada penjanju
+1722|1042|Reciprocating Saw je sabljasta testera
+8549|105|Fan pripada ventilaciji
+8665|1512|Settlers of Catan je društvena igra
+9336|1584|Walker je hodalica
+8988|1126|Loop Station je luper
+9142|1435|Induction Hob je rešo
+9342|1499|GPS pripada navigaciji i komunikaciji
+8746|1180|Hole Saw je krunska testera
+4541|1529|Textbooks nema knjige; najbliže ostalo u igranju i hobiju
+8902|1297|Feiyu je gimbal/stabilizator
+4651|1445|Bouncy Castle je skakavac
+8758|1076|Scale je vaga
+8661|1420|Stage je bina
+8726|1157|Meta Quest su VR naočale
+8813|1522|Croquet je igra na otvorenom
+8671|1512|Chess je društvena igra
+9052|1029|Mitre Saw with Stand je kombinovana testera
+9053|1029|Mitre Saw without Stand je kombinovana testera
+8576|1235|Jack post je podupirač
+8752|1512|Risk je društvena igra
+1733|1078|Spirit level je libela
+8666|1512|Pandemic je društvena igra
+8493|1606|Jack & Pallet Stands su dizalica i stalci

@@ -27,9 +27,6 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class CreateAdComponent implements OnInit, OnDestroy {
 
-  // ── Step state ──────────────────────────────────────────────────────────
-  currentStep = 1;
-  readonly totalSteps = 2;
   isSubmitting = false;
 
   // ── Template state ──────────────────────────────────────────────────────
@@ -349,11 +346,6 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     { value: PriceInterval.PER_MONTH, label: 'Po mesecu', unit: '/mes' },
   ];
 
-  readonly stepConfig = [
-    { label: 'Kategorija' },
-    { label: 'Detalji oglasa' },
-  ];
-
   private readonly catIconMap: Record<string, string> = {
     alat: 'build', bušil: 'build', mašin: 'settings',
     vozil: 'directions_car', automobil: 'directions_car', motor: 'two_wheeler', bicikl: 'pedal_bike',
@@ -537,59 +529,6 @@ export class CreateAdComponent implements OnInit, OnDestroy {
   }
 
   // ════════════════════════════════════════════════════════
-  //  NAVIGATION
-  // ════════════════════════════════════════════════════════
-
-  get stepProgress(): number {
-    return Math.round(((this.currentStep - 1) / (this.totalSteps - 1)) * 100);
-  }
-
-  get stepValid(): boolean {
-    switch (this.currentStep) {
-      case 1: return !!this.form.get('categoryId')?.value;
-      case 2: return this.selectedFiles.length > 0
-                     && !this.form.get('title')?.invalid
-                     && !this.form.get('description')?.invalid
-                     && !this.form.get('price')?.invalid
-                     && !!this.form.get('currency')?.value
-                     && !!this.form.get('locationId')?.value;
-      default: return false;
-    }
-  }
-
-  nextStep(): void {
-    if (!this.stepValid) { this.markCurrentStepTouched(); return; }
-    if (this.currentStep < this.totalSteps) {
-      this.currentStep++;
-      window.scrollTo(0, 0);
-      if (this.currentStep === 2) setTimeout(() => this.populateDescEditor());
-    }
-  }
-
-  private populateDescEditor(): void {
-    const html = this.form.get('description')?.value;
-    if (this.descEditorRef && html && !this.descEditorRef.nativeElement.innerHTML.trim()) {
-      this.descEditorRef.nativeElement.innerHTML = html;
-    }
-  }
-
-  prevStep(): void {
-    if (this.currentStep > 1) { this.currentStep--; window.scrollTo(0, 0); }
-  }
-
-  goToStep(step: number): void {
-    if (step < this.currentStep) this.currentStep = step;
-  }
-
-  private markCurrentStepTouched(): void {
-    const map: Record<number, string[]> = {
-      1: ['categoryId'],
-      2: ['title', 'description', 'images', 'price', 'currency', 'locationId'],
-    };
-    (map[this.currentStep] ?? []).forEach(f => this.form.get(f)?.markAsTouched());
-  }
-
-  // ════════════════════════════════════════════════════════
   //  CATEGORIES — 3 levels
   // ════════════════════════════════════════════════════════
 
@@ -654,7 +593,10 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     if (!confirm(`Obrisati šablon "${t.name}"?`)) return;
     this.adTemplateService.delete(t.id).subscribe({
-      next: () => this.toastService.showSuccess('Šablon obrisan.'),
+      next: () => {
+        this.toastService.showSuccess('Šablon obrisan.');
+        this.adTemplateService.refresh();
+      },
       error: () => this.toastService.showError('Greška pri brisanju šablona.'),
     });
   }
@@ -738,7 +680,7 @@ export class CreateAdComponent implements OnInit, OnDestroy {
     if (e.dataTransfer?.files) this.addFiles(e.dataTransfer.files);
   }
 
-  private addFiles(files: FileList): void {
+  private async addFiles(files: FileList): Promise<void> {
     const remaining = this.MAX_IMAGES - this.selectedFiles.length;
     let added = 0;
     for (let i = 0; i < files.length && added < remaining; i++) {
@@ -747,11 +689,43 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       const isHeic = ext === 'heic' || ext === 'heif';
       if (!file.type.match(/^image\//i) && !isHeic) { this.toastService.showError(`"${file.name}" nije slika.`); continue; }
       if (file.size > 10 * 1024 * 1024) { this.toastService.showError(`"${file.name}" premašuje 10MB.`); continue; }
-      this.selectedFiles.push(file);
-      this.previewUrls.push(isHeic ? '__heic__' : URL.createObjectURL(file));
+      const compressed = isHeic ? file : await this.compressImage(file);
+      this.selectedFiles.push(compressed);
+      this.previewUrls.push(isHeic ? '__heic__' : URL.createObjectURL(compressed));
       added++;
     }
     this.form.patchValue({ images: this.previewUrls });
+  }
+
+  private compressImage(file: File): Promise<File> {
+    return new Promise(resolve => {
+      if (!file.type.match(/^image\/(jpeg|jpg|png|webp|bmp)/i)) { resolve(file); return; }
+      const img = new Image();
+      const blobUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(blobUrl);
+        const MAX = 1920;
+        let { naturalWidth: w, naturalHeight: h } = img;
+        if (w <= MAX && h <= MAX && file.size < 300 * 1024) { resolve(file); return; }
+        if (w > MAX || h > MAX) {
+          const ratio = Math.min(MAX / w, MAX / h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+        canvas.toBlob(blob => {
+          if (!blob) { resolve(file); return; }
+          const name = file.name.replace(/\.[^.]+$/, '.jpg');
+          const out = new File([blob], name, { type: 'image/jpeg' });
+          resolve(out.size < file.size ? out : file);
+        }, 'image/jpeg', 0.85);
+      };
+      img.onerror = () => { URL.revokeObjectURL(blobUrl); resolve(file); };
+      img.src = blobUrl;
+    });
   }
 
   removeImage(index: number): void {

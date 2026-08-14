@@ -1,141 +1,55 @@
 <div class="wizard-page">
 
   <!-- ══════════════════════════════════════
-       HEADER
+       BODY (jedna stranica, bez koraka)
        ══════════════════════════════════════ -->
-  <header class="wizard-header">
-    <div class="header-inner">
+  <main class="wizard-body">
+
+    <div class="wizard-page-header">
       <a routerLink=".." class="back-btn" [title]="'common.back' | translate">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
           <path d="M11 14L7 9l4-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
-
-      <div class="header-center">
-        <h1>{{ 'ads.create.title' | translate }}</h1>
-        <div class="step-pills">
-          <span *ngFor="let s of stepConfig; let i = index"
-                class="step-pill"
-                [class.active]="currentStep === i + 1"
-                [class.done]="currentStep > i + 1"
-                (click)="goToStep(i + 1)">
-            <span class="pill-num">{{ currentStep > i + 1 ? '✓' : i + 1 }}</span>
-            {{ s.label }}
-          </span>
-        </div>
-      </div>
-
-      <div class="step-counter">{{ currentStep }}/{{ totalSteps }}</div>
+      <h1>{{ 'ads.create.title' | translate }}</h1>
     </div>
 
-    <div class="progress-track">
-      <div class="progress-fill" [style.width.%]="stepProgress"></div>
-    </div>
-  </header>
-
-  <!-- ══════════════════════════════════════
-       BODY
-       ══════════════════════════════════════ -->
-  <main class="wizard-body">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-      <!-- ──────────────────────────────────
-           KORAK 1 · KATEGORIJA
-           ────────────────────────────────── -->
-      <div class="step-panel" *ngIf="currentStep === 1">
+      <!-- ŠABLONI PANEL (samo ako ima sačuvanih) -->
+      <ng-container *ngIf="(templates$ | async) as templates">
+        <section class="templates-panel" *ngIf="templates.length > 0">
+          <button type="button"
+                  class="templates-toggle"
+                  [class.is-open]="templatesPanelOpen"
+                  (click)="templatesPanelOpen = !templatesPanelOpen">
+            <span class="material-icons templates-toggle__icon">bookmarks</span>
+            <span class="templates-toggle__text">{{ 'ads.create.saved_templates' | translate }} ({{ templates.length }})</span>
+            <span class="material-icons templates-toggle__caret">{{ templatesPanelOpen ? 'expand_less' : 'expand_more' }}</span>
+          </button>
 
-        <!-- ŠABLONI PANEL (samo ako ima sačuvanih) -->
-        <ng-container *ngIf="(templates$ | async) as templates">
-          <section class="templates-panel" *ngIf="templates.length > 0">
-            <button type="button"
-                    class="templates-toggle"
-                    [class.is-open]="templatesPanelOpen"
-                    (click)="templatesPanelOpen = !templatesPanelOpen">
-              <span class="material-icons templates-toggle__icon">bookmarks</span>
-              <span class="templates-toggle__text">{{ 'ads.create.saved_templates' | translate }} ({{ templates.length }})</span>
-              <span class="material-icons templates-toggle__caret">{{ templatesPanelOpen ? 'expand_less' : 'expand_more' }}</span>
-            </button>
-
-            <div class="templates-list" *ngIf="templatesPanelOpen">
-              <p class="templates-list__hint">{{ 'ads.create.templates_hint' | translate }}</p>
-              <div *ngFor="let t of templates" class="template-row" (click)="useTemplate(t)">
-                <span class="template-row__icon material-icons">play_circle</span>
-                <div class="template-row__info">
-                  <div class="template-row__name">{{ t.name }}</div>
-                  <div class="template-row__meta" *ngIf="t.data?.['title']">{{ t.data['title'] }}</div>
-                </div>
-                <button type="button"
-                        class="template-row__delete"
-                        (click)="deleteTemplate($event, t)"
-                        [title]="'ads.create.delete_template' | translate">
-                  <span class="material-icons">delete_outline</span>
-                </button>
+          <div class="templates-list" *ngIf="templatesPanelOpen">
+            <p class="templates-list__hint">{{ 'ads.create.templates_hint' | translate }}</p>
+            <div *ngFor="let t of templates" class="template-row" (click)="useTemplate(t)">
+              <span class="template-row__icon material-icons">play_circle</span>
+              <div class="template-row__info">
+                <div class="template-row__name">{{ t.name }}</div>
+                <div class="template-row__meta" *ngIf="t.data?.['title']">{{ t.data['title'] }}</div>
               </div>
-            </div>
-          </section>
-        </ng-container>
-
-        <!-- KATEGORIJA -->
-        <section class="section-block">
-          <div class="section-title">
-            <span class="section-num">1</span>
-            {{ 'ads.create.category' | translate }}
-          </div>
-          <p class="section-hint">{{ 'ads.create.category_hint' | translate }}</p>
-
-          <div class="category-grid">
-            <button type="button"
-                    *ngFor="let cat of parentCategories"
-                    class="cat-card"
-                    [class.selected]="isParentSelected(cat)"
-                    (click)="selectParentCategory(cat)">
-              <span class="cat-icon material-symbols-outlined">{{ getCategoryIcon(cat.name) }}</span>
-              <span class="cat-name">{{ cat.name }}</span>
-              <div class="cat-check" *ngIf="isParentSelected(cat)">✓</div>
-            </button>
-          </div>
-
-          <!-- Level-2 chips -->
-          <div #subcategorySection class="subcategory-section" *ngIf="childCategories.length > 0">
-            <div class="sub-label">{{ 'ads.create.subcategory' | translate }} <span class="req">*</span></div>
-            <div class="subcategory-chips">
               <button type="button"
-                      *ngFor="let child of childCategories"
-                      class="sub-chip"
-                      [class.selected]="isChildSelected(child)"
-                      (click)="selectChildCategory(child)">
-                {{ child.name }}
+                      class="template-row__delete"
+                      (click)="deleteTemplate($event, t)"
+                      [title]="'ads.create.delete_template' | translate">
+                <span class="material-icons">delete_outline</span>
               </button>
             </div>
           </div>
-
-          <!-- Level-3 chips -->
-          <div #grandchildSection class="subcategory-section subcategory-section--l3" *ngIf="grandchildCategories.length > 0">
-            <div class="sub-label">{{ 'ads.create.sub_subcategory' | translate }} <span class="req">*</span></div>
-            <div class="subcategory-chips">
-              <button type="button"
-                      *ngFor="let gc of grandchildCategories"
-                      class="sub-chip sub-chip--l3"
-                      [class.selected]="isGrandchildSelected(gc)"
-                      (click)="selectGrandchildCategory(gc)">
-                {{ gc.name }}
-              </button>
-            </div>
-          </div>
-
-          <small class="field-error" *ngIf="form.get('categoryId')?.touched && !form.get('categoryId')?.value">
-            {{ 'ads.create.err_category_required' | translate }}
-          </small>
         </section>
+      </ng-container>
 
-      </div>
+      <div class="step-panel">
 
-      <!-- ──────────────────────────────────
-           KORAK 2 · NASLOV + SLIKE + CENA + LOKACIJA + OPIS
-           ────────────────────────────────── -->
-      <div class="step-panel" *ngIf="currentStep === 2">
-
-        <!-- NASLOV -->
+        <!-- ──────────────── 1. NASLOV + PREPORUKA ──────────────── -->
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">1</span>
@@ -194,15 +108,69 @@
               </div>
             </div>
           </div>
-
         </section>
 
         <div class="section-divider"></div>
 
-        <!-- SLIKE -->
+        <!-- ──────────────── 2. KATEGORIJA ──────────────── -->
         <section class="section-block">
           <div class="section-title">
             <span class="section-num">2</span>
+            {{ 'ads.create.category' | translate }}
+          </div>
+          <p class="section-hint">{{ 'ads.create.category_hint' | translate }}</p>
+
+          <div class="category-grid">
+            <button type="button"
+                    *ngFor="let cat of parentCategories"
+                    class="cat-card"
+                    [class.selected]="isParentSelected(cat)"
+                    (click)="selectParentCategory(cat)">
+              <span class="cat-icon material-symbols-outlined">{{ getCategoryIcon(cat.name) }}</span>
+              <span class="cat-name">{{ cat.name }}</span>
+              <div class="cat-check" *ngIf="isParentSelected(cat)">✓</div>
+            </button>
+          </div>
+
+          <!-- Level-2 chips -->
+          <div #subcategorySection class="subcategory-section" *ngIf="childCategories.length > 0">
+            <div class="sub-label">{{ 'ads.create.subcategory' | translate }} <span class="req">*</span></div>
+            <div class="subcategory-chips">
+              <button type="button"
+                      *ngFor="let child of childCategories"
+                      class="sub-chip"
+                      [class.selected]="isChildSelected(child)"
+                      (click)="selectChildCategory(child)">
+                {{ child.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Level-3 chips -->
+          <div #grandchildSection class="subcategory-section subcategory-section--l3" *ngIf="grandchildCategories.length > 0">
+            <div class="sub-label">{{ 'ads.create.sub_subcategory' | translate }} <span class="req">*</span></div>
+            <div class="subcategory-chips">
+              <button type="button"
+                      *ngFor="let gc of grandchildCategories"
+                      class="sub-chip sub-chip--l3"
+                      [class.selected]="isGrandchildSelected(gc)"
+                      (click)="selectGrandchildCategory(gc)">
+                {{ gc.name }}
+              </button>
+            </div>
+          </div>
+
+          <small class="field-error" *ngIf="form.get('categoryId')?.touched && !form.get('categoryId')?.value">
+            {{ 'ads.create.err_category_required' | translate }}
+          </small>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- ──────────────── 3. SLIKE ──────────────── -->
+        <section class="section-block">
+          <div class="section-title">
+            <span class="section-num">3</span>
             {{ 'ads.create.section_photos' | translate }}
           </div>
           <p class="section-hint">{{ 'ads.create.photos_hint' | translate:{ n: MAX_IMAGES } }}</p>
@@ -267,10 +235,10 @@
 
         <div class="section-divider"></div>
 
-        <!-- CENA -->
+        <!-- ──────────────── 4. CENA ──────────────── -->
         <section class="section-block">
           <div class="section-title">
-            <span class="section-num">3</span>
+            <span class="section-num">4</span>
             {{ 'ads.create.section_price' | translate }}
           </div>
 
@@ -369,10 +337,10 @@
 
         <div class="section-divider"></div>
 
-        <!-- LOKACIJA & KOLIČINA -->
+        <!-- ──────────────── 5. LOKACIJA & KOLIČINA ──────────────── -->
         <section class="section-block">
           <div class="section-title">
-            <span class="section-num">4</span>
+            <span class="section-num">5</span>
             {{ 'ads.create.section_location_qty' | translate }}
           </div>
 
@@ -416,7 +384,7 @@
 
           <section class="section-block">
             <div class="section-title">
-              <span class="section-num">5</span>
+              <span class="section-num">6</span>
               Lokacija nekretnine
             </div>
 
@@ -440,7 +408,7 @@
 
           <section class="section-block">
             <div class="section-title">
-              <span class="section-num">6</span>
+              <span class="section-num">7</span>
               Osnovne informacije
             </div>
 
@@ -460,7 +428,7 @@
                 </div>
               </div>
 
-              <!-- Broj soba — kuće: 1/2/3/4/5+soba · sobe, garaže, poslovni: nema -->
+              <!-- Broj soba -->
               <div class="form-field" *ngIf="!isGarageParking && !isCommercial && reSubcategoryName !== 'Sobe'">
                 <label class="field-label">Broj soba</label>
                 <select formControlName="roomCount" class="re-select">
@@ -474,7 +442,7 @@
                 </select>
               </div>
 
-              <!-- Površina (m²) — uvek vidljiva -->
+              <!-- Površina -->
               <div class="form-field">
                 <label class="field-label">Površina</label>
                 <div class="re-input-unit">
@@ -483,7 +451,7 @@
                 </div>
               </div>
 
-              <!-- Površina zemljišta — samo za kuće -->
+              <!-- Površina zemljišta -->
               <div class="form-field" *ngIf="isHouse">
                 <label class="field-label">Površina zemljišta</label>
                 <div class="re-input-unit">
@@ -494,7 +462,6 @@
                 </div>
               </div>
 
-              <!-- Vrsta gradnje — ne za garaže/parking -->
               <div class="form-field" *ngIf="!isGarageParking">
                 <label class="field-label">Vrsta gradnje <span class="field-opt">(opciono)</span></label>
                 <select formControlName="constructionType" class="re-select">
@@ -503,7 +470,6 @@
                 </select>
               </div>
 
-              <!-- Stanje nekretnine — ne za garaže/parking -->
               <div class="form-field" *ngIf="!isGarageParking">
                 <label class="field-label">Stanje nekretnine <span class="field-opt">(opciono)</span></label>
                 <select formControlName="propertyCondition" class="re-select">
@@ -512,7 +478,6 @@
                 </select>
               </div>
 
-              <!-- Spratnost — kuće: prizemna/1/2/3+ · ostalo: 1-30+ · garaže: nema -->
               <div class="form-field" *ngIf="!isGarageParking">
                 <label class="field-label">Spratnost objekta <span class="field-opt">(opciono)</span></label>
                 <select formControlName="totalFloors" class="re-select">
@@ -526,7 +491,6 @@
                 </select>
               </div>
 
-              <!-- Sprat — ne za kuće, garaže/parking i poslovni prostor -->
               <div class="form-field" *ngIf="!isHouse && !isGarageParking && !isCommercial">
                 <label class="field-label">Sprat <span class="field-opt">(opciono)</span></label>
                 <select formControlName="floorNumber" class="re-select">
@@ -535,7 +499,6 @@
                 </select>
               </div>
 
-              <!-- Nameštenost — ne za garaže/parking -->
               <div class="form-field" *ngIf="!isGarageParking">
                 <label class="field-label">Nameštenost <span class="field-opt">(opciono)</span></label>
                 <select formControlName="furnished" class="re-select">
@@ -544,7 +507,6 @@
                 </select>
               </div>
 
-              <!-- Grejanje — ne za garaže/parking -->
               <div class="form-field re-full" *ngIf="!isGarageParking">
                 <label class="field-label">Grejanje <span class="field-opt">(opciono)</span></label>
                 <div class="re-heating-grid">
@@ -560,12 +522,11 @@
             </div>
           </section>
 
-          <!-- DODATNE INFORMACIJE — za kuće i poslovni prostor -->
           <ng-container *ngIf="isHouse || isCommercial">
             <div class="section-divider"></div>
             <section class="section-block">
               <div class="section-title">
-                <span class="section-num">7</span>
+                <span class="section-num">8</span>
                 Dodatne informacije
               </div>
               <div class="re-features-grid">
@@ -591,14 +552,14 @@
 
         </ng-container>
 
-        <!-- DETALJI AUTOMOBILA (samo za Automobili kategoriju) -->
+        <!-- DETALJI AUTOMOBILA (samo za Automobili) -->
         <ng-container *ngIf="isCar">
 
           <div class="section-divider"></div>
 
           <section class="section-block">
             <div class="section-title">
-              <span class="section-num">5</span>
+              <span class="section-num">6</span>
               Detalji automobila
             </div>
 
@@ -770,7 +731,6 @@
                 </select>
               </div>
 
-              <!-- Oprema -->
               <div class="form-field re-full">
                 <label class="field-label">Oprema <span class="field-opt">(opciono)</span></label>
                 <div class="re-features-grid">
@@ -790,7 +750,7 @@
 
         <div class="section-divider"></div>
 
-        <!-- OPIS -->
+        <!-- ──────────────── OPIS ──────────────── -->
         <section class="section-block">
           <div class="section-title">
             {{ 'ads.create.section_description' | translate }}
@@ -826,38 +786,22 @@
       </div>
 
       <!-- ══════════════════════════════════════
-           NAVIGACIJA
+           NAVIGACIJA — Otkaži + Sačuvaj šablon + Objavi
            ══════════════════════════════════════ -->
       <div class="wizard-nav">
-        <button type="button" class="btn-prev" (click)="prevStep()" *ngIf="currentStep > 1">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          {{ 'common.back' | translate }}
-        </button>
+        <a class="btn-cancel" routerLink="..">{{ 'common.cancel' | translate }}</a>
 
         <div class="nav-right">
-          <a class="btn-cancel" routerLink=".." *ngIf="currentStep === 1">{{ 'common.cancel' | translate }}</a>
-
           <button type="button"
                   class="btn-save-template"
-                  *ngIf="currentStep === totalSteps"
                   (click)="openSaveTemplateModal()"
                   [title]="'ads.create.save_as_template_title' | translate">
             <span class="material-icons">bookmark_add</span>
             {{ 'ads.create.save_as_template' | translate }}
           </button>
 
-          <button type="button" class="btn-next" (click)="nextStep()" *ngIf="currentStep < totalSteps">
-            {{ 'common.next' | translate }}
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-
           <button type="submit"
                   class="btn-submit"
-                  *ngIf="currentStep === totalSteps"
                   [disabled]="isSubmitting || form.invalid || selectedFiles.length === 0">
             <span class="submit-spinner" *ngIf="isSubmitting"></span>
             {{ isSubmitting ? ('ads.create.publishing' | translate) : ('ads.create.publish' | translate) }}
