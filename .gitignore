@@ -53,4 +53,41 @@ RentRentOutML/ai_service/.env
 # ML training artifacts koji se regenerisu (cache embeddings-a)
 RentRentOutML/ai_service/embeddings_cache.npz
 CLAUDE.md
-/
+
+# Veliki scraped datasetovi (probijaju GitHub 100MB limit; regenerisu se scraperom)
+RentRentOutML/ai_service/Hygglo_Ultimativna_Baza_*.csv
+RentRentOutML/ai_service/Hygglo_Ultimativna_Baza_*.xlsx
+RentRentOutML/ai_service/Hygglo_Dubinsko_Skeniranje.xlsx
+RentRentOutML/ai_service/Hygglo_Sve_Kategorije.xlsx
+RentRentOutML/ai_service/Swappko_Kompletni_Oglasi.xlsx
+RentRentOutML/ai_service/dajnadan_oglasi.xlsx
+RentRentOutML/ai_service/oglasi_podaci.xlsx
+
+# Intermediate/backup CSV-ovi (finalni je training_data.csv)
+RentRentOutML/ai_service/hygglo_translated_checkpoint.csv
+RentRentOutML/ai_service/hygglo_training_data.csv
+RentRentOutML/ai_service/training_data_backup_*.csv
+RentRentOutML/ai_service/*_backup.csv
+
+# One-off / duplirane skripte (finalni je hygglo_finalni_skraper.py)
+RentRentOutML/ai_service/fix_pip.py
+RentRentOutML/ai_service/finalni hygglo scraper 2.py
+RentRentOutML/ai_service/hygglo fetch valjda svi oglasi.py
+RentRentOutML/ai_service/hygglo oglasi.py
+RentRentOutML/ai_service/sve kategorije 600+.py
+RentRentOutML/ai_service/import requests.py
+RentRentOutML/ai_service/skripta za swappko scrapovanje.py
+RentRentOutML/ai_service/swappko i dajnadan oglasi scraper.py
+RentRentOutML/ai_service/view_logs.py
+
+# Chatbot lokalna baza znanja / vektor store
+RentRentOutML/ai_service/chroma_db/
+RentRentOutML/ai_service/data/
+RentRentOutML/ai_service/baza_znanja.txt
+
+# Notebooks (development, ne runtime)
+RentRentOutML/ai_service/*.ipynb
+
+# Junk / random assets u root-u
+/FreeSample-Vectorizer-io-*.svg
+/Logo *.png
