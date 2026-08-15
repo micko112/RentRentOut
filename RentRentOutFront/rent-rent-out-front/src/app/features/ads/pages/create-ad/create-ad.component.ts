@@ -512,12 +512,13 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       debounceTime(800),
       distinctUntilChanged(),
       filter(title => title && title.length > 5),
-      switchMap(title => this.categoryService.suggestCategory(title)),
+      switchMap(title => this.categoryService.suggestCategoryDetailed(title)),
       takeUntil(this.destroy$)
     ).subscribe({
-      next: (categoryIds) => {
-        if (categoryIds?.length) {
-          const found = this.categories.find(c => c.id === categoryIds[0]);
+      next: (suggestions) => {
+        const top = suggestions?.[0];
+        if (top && top.confidence >= 0.4) {
+          const found = this.categories.find(c => c.id === top.categoryId);
           if (found) {
             this.applySuggestedCategory(found);
             this.toastService.showSuccess('AI je automatski prepoznao kategoriju!');

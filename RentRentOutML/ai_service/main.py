@@ -143,9 +143,10 @@ def predict_category(request: AdRequest):
 
     return {
         "title": request.title,
-        "predicted_category_ids": [s["category_id"] for s in filtered],
-        "suggestions": filtered,
+        "predicted_category_ids": [s["category_id"] for s in suggestions],
+        "suggestions": suggestions,
         "all_suggestions": suggestions,
+        "filtered_suggestions": filtered,
         "threshold": _CONFIDENCE_THRESHOLD,
     }
 
