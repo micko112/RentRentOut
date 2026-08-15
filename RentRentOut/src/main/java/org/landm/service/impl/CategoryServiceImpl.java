@@ -9,9 +9,11 @@ import org.landm.repository.CategoryRepository;
 import org.landm.service.CategoryService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,14 @@ public class CategoryServiceImpl implements CategoryService{
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final RestClient restClient = RestClient.create();
+    // FastAPI/Uvicorn puca ("Invalid HTTP request received") kad JDK HttpClient
+    // pokušava HTTP/2 upgrade preko HTTP/1.1 — telo se izgubi i backend dobija 422.
+    // Force HTTP/1.1 na JDK klijentu rešava problem bez dodatnih dependency-ja.
+    private final RestClient restClient = RestClient.builder()
+            .requestFactory(new JdkClientHttpRequestFactory(
+                    HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build()
+            ))
+            .build();
 
     @Value("${ai.service.url}")
     private String aiServiceUrl;
