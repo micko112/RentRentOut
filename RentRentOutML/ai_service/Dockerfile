@@ -5,7 +5,7 @@ FROM python:3.11-slim AS exporter
 WORKDIR /app
 
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir sentence-transformers>=3.0.0 onnxruntime joblib onnxscript
+    pip install --no-cache-dir sentence-transformers>=3.0.0 onnxruntime joblib onnxscript onnx
 
 COPY classifier_head.pth label_encoder.pkl export_onnx.py ./
 RUN python export_onnx.py

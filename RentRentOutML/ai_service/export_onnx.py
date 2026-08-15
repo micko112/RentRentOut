@@ -47,6 +47,11 @@ with torch.no_grad():
         dynamic_axes={"embedding": {0: "batch"}, "logits": {0: "batch"}},
         opset_version=14,
     )
+# Inline external data into a single self-contained file (torch may split it).
+import onnx as _onnx
+_onnx.save_model(_onnx.load("classifier_head.onnx"), "classifier_head.onnx", save_as_external_data=False)
+if os.path.exists("classifier_head.onnx.data"):
+    os.remove("classifier_head.onnx.data")
 print(f"  classifier_head.onnx: {os.path.getsize('classifier_head.onnx') / 1e3:.0f}KB")
 
 # ── Encoder ───────────────────────────────────────────────────────────────────
