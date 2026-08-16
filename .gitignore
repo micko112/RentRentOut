@@ -91,3 +91,4 @@ RentRentOutML/ai_service/*.ipynb
 # Junk / random assets u root-u
 /FreeSample-Vectorizer-io-*.svg
 /Logo *.png
+RentRentOutML/ai_service/hygglo_sr_checkpoint.csv

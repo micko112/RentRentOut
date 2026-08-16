@@ -58,53 +58,58 @@
 
           <div class="form-field">
             <label class="field-label">{{ 'ads.create.title_label' | translate }} <span class="req">*</span></label>
-            <div class="counted-wrap" [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
-              <input type="text"
-                     formControlName="title"
-                     [placeholder]="'ads.create.title_placeholder' | translate"
-                     [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
-              <span class="char-count"
-                    [class.near]="titleLength > MAX_TITLE * 0.8"
-                    [class.over]="titleLength >= MAX_TITLE">{{ titleLength }}/{{ MAX_TITLE }}</span>
-            </div>
-            <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['minlength']">
-              {{ 'ads.create.err_title_min' | translate }}
-            </small>
-            <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
-              {{ 'ads.create.err_title_required' | translate }}
-            </small>
 
-            <div class="suggest-row">
-              <button type="button"
-                      class="btn-suggest"
-                      (click)="suggestCategories()"
-                      [disabled]="!canSuggest || isSuggestingCategories">
-                <ng-container *ngIf="!isSuggestingCategories; else suggestingTpl">
-                  <span class="material-icons suggest-icon">auto_awesome</span>
-                  {{ 'ads.create.suggest_button' | translate }}
-                </ng-container>
-                <ng-template #suggestingTpl>
-                  <span class="suggest-spinner"></span>
-                  {{ 'ads.create.suggest_loading' | translate }}
-                </ng-template>
-              </button>
-              <span class="suggest-hint">{{ 'ads.create.suggest_hint' | translate }}</span>
-            </div>
+            <div class="title-suggest-layout" [class.has-chips]="suggestedCategories.length">
+              <div class="title-suggest-left">
+                <div class="counted-wrap" [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
+                  <input type="text"
+                         formControlName="title"
+                         [placeholder]="'ads.create.title_placeholder' | translate"
+                         [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
+                  <span class="char-count"
+                        [class.near]="titleLength > MAX_TITLE * 0.8"
+                        [class.over]="titleLength >= MAX_TITLE">{{ titleLength }}/{{ MAX_TITLE }}</span>
+                </div>
+                <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['minlength']">
+                  {{ 'ads.create.err_title_min' | translate }}
+                </small>
+                <small class="field-error" *ngIf="form.get('title')?.touched && form.get('title')?.errors?.['required']">
+                  {{ 'ads.create.err_title_required' | translate }}
+                </small>
 
-            <div class="suggest-results" *ngIf="suggestedCategories.length">
-              <div class="suggest-results-label">
-                <span class="material-icons suggest-results-icon">lightbulb</span>
-                {{ 'ads.create.suggest_results_label' | translate }}
+                <div class="suggest-row">
+                  <button type="button"
+                          class="btn-suggest"
+                          (click)="suggestCategories()"
+                          [disabled]="!canSuggest || isSuggestingCategories">
+                    <ng-container *ngIf="!isSuggestingCategories; else suggestingTpl">
+                      <span class="material-icons suggest-icon">auto_awesome</span>
+                      {{ 'ads.create.suggest_button' | translate }}
+                    </ng-container>
+                    <ng-template #suggestingTpl>
+                      <span class="suggest-spinner"></span>
+                      {{ 'ads.create.suggest_loading' | translate }}
+                    </ng-template>
+                  </button>
+                  <span class="suggest-hint">{{ 'ads.create.suggest_hint' | translate }}</span>
+                </div>
               </div>
-              <div class="suggest-chips">
-                <button type="button"
-                        *ngFor="let cat of suggestedCategories; let i = index"
-                        class="suggest-chip"
-                        (click)="applySuggestedCategory(cat)">
-                  <span class="suggest-chip-rank">{{ i + 1 }}</span>
-                  <span class="suggest-chip-path">{{ cat.name }}</span>
-                  <span class="material-icons suggest-chip-arrow">arrow_forward</span>
-                </button>
+
+              <div class="suggest-results" *ngIf="suggestedCategories.length">
+                <div class="suggest-results-label">
+                  <span class="material-icons suggest-results-icon">lightbulb</span>
+                  {{ 'ads.create.suggest_results_label' | translate }}
+                </div>
+                <div class="suggest-chips">
+                  <button type="button"
+                          *ngFor="let cat of suggestedCategories; let i = index"
+                          class="suggest-chip"
+                          (click)="applySuggestedCategory(cat)">
+                    <span class="suggest-chip-rank">{{ i + 1 }}</span>
+                    <span class="suggest-chip-path">{{ cat.name }}</span>
+                    <span class="material-icons suggest-chip-arrow">arrow_forward</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

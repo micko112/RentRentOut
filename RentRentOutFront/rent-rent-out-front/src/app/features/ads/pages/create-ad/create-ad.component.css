@@ -1130,6 +1130,36 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
    CATEGORY SUGGEST
    ════════════════════════════════════════════════════════ */
 
+.title-suggest-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.title-suggest-left {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.title-suggest-layout > .suggest-results {
+  flex: 0 0 340px;
+  max-width: 340px;
+  margin-top: 0;
+}
+
+@media (max-width: 900px) {
+  .title-suggest-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+  .title-suggest-layout > .suggest-results {
+    flex: 1 1 auto;
+    max-width: 100%;
+    width: 100%;
+    margin-top: 14px;
+  }
+}
+
 .suggest-row {
   display: flex;
   align-items: center;
@@ -1253,6 +1283,24 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   opacity: 0.4;
   flex-shrink: 0;
   transition: color .13s, opacity .13s;
+}
+
+/* Uže chip-ove kad su u desnoj koloni pored input-a — kompaktniji vertikalni prostor */
+@media (min-width: 901px) {
+  .title-suggest-layout.has-chips .suggest-chip {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .title-suggest-layout.has-chips .suggest-chip-path {
+    font-size: 13px;
+  }
+  .title-suggest-layout.has-chips .suggest-chip-arrow {
+    display: none;
+  }
+  .title-suggest-layout.has-chips .suggest-results-label {
+    padding: 8px 12px 6px;
+    font-size: 10px;
+  }
 }
 
 /* ════════════════════════════════════════════════════════

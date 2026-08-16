@@ -43,28 +43,35 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'Device: {device}')
 
 # ---------- 1) Load data ----------
-df = pd.read_csv('training_data.csv', encoding='latin-1')
+df = pd.read_csv('training_data.csv', encoding='utf-8-sig')
+n_real = (df['source'] == 'real').sum()
 print(f'Loaded {len(df)} training rows')
+print(f'  real: {n_real}, '
+      f'hygglo: {(df["source"]=="hygglo").sum()}, '
+      f'synthetic_sr: {(df["source"]=="synthetic_sr").sum()}')
 
 le = LabelEncoder()
 df['label'] = le.fit_transform(df['category_id'])
 num_classes = len(le.classes_)
 print(f'Num classes: {num_classes}')
 
-# ---------- 2) Compute (or load cached) embeddings ----------
+# ---------- 2) Compute (or load cached) embeddings — samo unikalni redovi ----------
+# Cache je baziran na ORIGINALNOM df (bez oversampling-a) da enkodovanje traje
+# ~35 min umesto ~60 min. Oversample se radi posle, na numpy nivouu.
 CACHE = 'embeddings_cache.npz'
+X = None
 if os.path.exists(CACHE):
     print(f'Loading cached embeddings from {CACHE}')
     with np.load(CACHE) as data:
         X_cached = data['X']
         cached_titles = data['titles'].tolist()
-    if cached_titles != df['title'].tolist():
+    if cached_titles == df['title'].tolist():
+        X = X_cached
+    else:
         print('Cache mismatch, recomputing.')
         os.remove(CACHE)
-    else:
-        X = X_cached
 
-if not os.path.exists(CACHE):
+if X is None:
     print(f'Downloading encoder: {ENCODER_NAME} (~470MB, first time only)')
     from sentence_transformers import SentenceTransformer
     encoder = SentenceTransformer(ENCODER_NAME, device=str(device))
@@ -78,6 +85,15 @@ if not os.path.exists(CACHE):
     )
     np.savez_compressed(CACHE, X=X, titles=np.array(df['title'].tolist()))
     print(f'Cached embeddings to {CACHE}')
+
+# Oversample real examples 100x — na numpy nivouu, bez ponovnog enkodovanja
+real_mask = (df['source'] == 'real').values
+if n_real > 0:
+    real_idx = np.where(real_mask)[0]
+    rep_idx = np.tile(real_idx, 100)
+    X = np.concatenate([X, X[rep_idx]], axis=0)
+    df = pd.concat([df] + [df.iloc[real_idx]] * 100, ignore_index=True)
+    print(f'After oversampling real 100x: {len(df)} rows')
 
 y = df['label'].values
 assert X.shape == (len(df), EMB_DIM)
