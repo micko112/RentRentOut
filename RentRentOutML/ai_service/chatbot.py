@@ -1,13 +1,13 @@
 import os
-import sqlite3
 from typing import TypedDict, List, Annotated, AsyncIterator
 
+import aiosqlite
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
 from langgraph.graph import StateGraph, START, END
-from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from chatbot_logger import log_event
 
@@ -223,11 +223,11 @@ workflow.add_edge("escalate_node", END)
 workflow.add_edge("chat_node", END)
 
 os.makedirs(_CHECKPOINT_DIR, exist_ok=True)
-_checkpoint_conn = sqlite3.connect(_CHECKPOINT_PATH, check_same_thread=False)
-checkpointer = SqliteSaver(_checkpoint_conn)
+_checkpoint_conn = aiosqlite.connect(_CHECKPOINT_PATH, check_same_thread=False)
+checkpointer = AsyncSqliteSaver(_checkpoint_conn)
 
 agent = workflow.compile(checkpointer=checkpointer)
-print("LangGraph agent compiled (async, SQLite checkpointer, logger wired).")
+print("LangGraph agent compiled (async, AsyncSQLite checkpointer, logger wired).")
 
 
 # ─── Streaming helpers ───────────────────────────────────────────────────────

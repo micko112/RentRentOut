@@ -1,18 +1,18 @@
 Encoder: sentence-transformers/paraphrase-multilingual-mpnet-base-v2
-Total training rows: 175039
-  real: 84436, synthetic: 0
+Total training rows: 194229
+  real: 103626, synthetic: 0
 Num classes: 644
-Train / Val split: 174395 / 644
+Train / Val split: 193585 / 644
 
 === OVERALL VAL METRICS ===
-Top-1: 64.13%
-Top-3: 76.40%
-Top-5: 80.43%
+Top-1: 63.20%
+Top-3: 76.86%
+Top-5: 80.75%
 
 === BY SOURCE (val subset) ===
-REAL (89 val examples):
+REAL (97 val examples):
   Top-1: 100.00%
   Top-3: 100.00%
-SYNTHETIC (555 val examples):
-  Top-1: 58.38%
-  Top-3: 72.61%
+SYNTHETIC (547 val examples):
+  Top-1: 56.67%
+  Top-3: 72.76%

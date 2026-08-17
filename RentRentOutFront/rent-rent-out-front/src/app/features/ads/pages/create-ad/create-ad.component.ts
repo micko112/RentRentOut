@@ -441,15 +441,6 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       error: () => this.toastService.showError('Greška pri učitavanju lokacija.'),
     });
 
-    this.authService.currentUser$.pipe(
-      filter(u => u !== null),
-      take(1)
-    ).subscribe(user => {
-      if (user?.locationId && !this.initialLocationId) {
-        this.initialLocationId = user.locationId;
-      }
-    });
-
     this.form = this.fb.group({
       title:         ['', [Validators.required, Validators.minLength(5), Validators.maxLength(this.MAX_TITLE)]],
       description:   ['', [
@@ -526,6 +517,19 @@ export class CreateAdComponent implements OnInit, OnDestroy {
         }
       },
       error: () => {},
+    });
+
+    this.authService.currentUser$.pipe(
+      filter(u => u !== null),
+      take(1),
+      takeUntil(this.destroy$)
+    ).subscribe(user => {
+      if (user?.locationId && !this.initialLocationId) {
+        this.initialLocationId = user.locationId;
+        if (!this.form.get('locationId')?.value) {
+          this.form.patchValue({ locationId: user.locationId });
+        }
+      }
     });
   }
 

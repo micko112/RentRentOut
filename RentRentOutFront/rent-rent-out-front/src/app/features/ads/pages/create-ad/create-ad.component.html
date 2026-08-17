@@ -57,10 +57,9 @@
           </div>
 
           <div class="form-field">
-            <label class="field-label">{{ 'ads.create.title_label' | translate }} <span class="req">*</span></label>
-
             <div class="title-suggest-layout" [class.has-chips]="suggestedCategories.length">
               <div class="title-suggest-left">
+                <label class="field-label">{{ 'ads.create.title_label' | translate }} <span class="req">*</span></label>
                 <div class="counted-wrap" [class.invalid]="form.get('title')?.touched && form.get('title')?.invalid">
                   <input type="text"
                          formControlName="title"
