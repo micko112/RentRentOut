@@ -197,6 +197,8 @@ async def chat_stream(
                 yield f"data: {safe}\n\n"
             yield "event: done\ndata: [DONE]\n\n"
         except Exception as e:
+            import traceback
+            print(f"[CHATBOT ERROR] user={request.userId} msg={request.message!r}\n{traceback.format_exc()}", flush=True)
             yield f"event: error\ndata: {str(e)}\n\n"
 
     return StreamingResponse(
