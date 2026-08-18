@@ -1,5 +1,5 @@
 import os
-from typing import TypedDict, List, Annotated, AsyncIterator
+from typing import TypedDict, List, Dict, Annotated, AsyncIterator
 
 import aiosqlite
 from langchain_community.document_loaders import TextLoader
