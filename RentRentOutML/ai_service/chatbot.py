@@ -246,13 +246,14 @@ Odgovori ISKLJUČIVO jednom rečju."""
     return "retrieve" if "retrieve" in decision else "chat"
 
 
-async def stream_answer(question: str, thread_id: str, user_context: str) -> AsyncIterator[str]:
-    """Yield answer token-by-token. State history is loaded/saved via checkpointer."""
-    config = {"configurable": {"thread_id": thread_id}}
+# In-memory conversation history for the streaming path (keyed by thread_id).
+# Lost on restart, which is acceptable for a chat widget.
+_stream_history: Dict[str, List[str]] = {}
 
-    snapshot = await agent.aget_state(config)
-    prior = snapshot.values if snapshot and snapshot.values else {}
-    history_lines: List[str] = list(prior.get("chat_history", []))
+
+async def stream_answer(question: str, thread_id: str, user_context: str) -> AsyncIterator[str]:
+    """Yield answer token-by-token."""
+    history_lines: List[str] = _stream_history.get(thread_id, [])
 
     route = await _classify_route(question, history_lines)
     log_event(thread_id, "router_stream", {"question": question, "route": route})
@@ -291,20 +292,6 @@ async def stream_answer(question: str, thread_id: str, user_context: str) -> Asy
     full_answer = "".join(collected)
     log_event(thread_id, event, {"question": question, "answer_len": len(full_answer)})
 
-    # Persist to checkpointer so future turns see this exchange in history.
-    new_history = _merge_history(history_lines, [f"Korisnik: {question}", f"Bot: {full_answer}"])
-    _node_for_event = {
-        "generate_stream": "generate_node",
-        "escalate_stream": "escalate_node",
-        "chat_stream": "chat_node",
-    }
-    await agent.aupdate_state(
-        config,
-        {
-            "question": question,
-            "user_context": user_context,
-            "answer": full_answer,
-            "chat_history": new_history,
-        },
-        as_node=_node_for_event.get(event, "chat_node"),
+    _stream_history[thread_id] = _merge_history(
+        history_lines, [f"Korisnik: {question}", f"Bot: {full_answer}"]
     )

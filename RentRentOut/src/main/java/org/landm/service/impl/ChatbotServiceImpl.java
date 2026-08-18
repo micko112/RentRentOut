@@ -134,7 +134,8 @@ public class ChatbotServiceImpl implements ChatbotService {
                         if (line.startsWith("event:")) {
                             currentEvent = line.substring(6).trim();
                         } else if (line.startsWith("data:")) {
-                            String payload = line.substring(5).stripLeading();
+                            String raw = line.substring(5);
+                            String payload = !raw.isEmpty() && raw.charAt(0) == ' ' ? raw.substring(1) : raw;
                             emitter.send(SseEmitter.event().name(currentEvent).data(payload));
                             if ("done".equals(currentEvent)) {
                                 break;

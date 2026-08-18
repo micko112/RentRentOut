@@ -183,6 +183,7 @@
 .messages-list {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -217,6 +218,7 @@
 .msg {
   display: flex;
   max-width: 85%;
+  min-width: 0;
 }
 
 .msg-user {
@@ -235,6 +237,8 @@
   font-size: 14px;
   line-height: 1.45;
   word-wrap: break-word;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .msg-user .msg-bubble {
