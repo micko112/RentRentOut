@@ -301,4 +301,5 @@ async def stream_answer(question: str, thread_id: str, user_context: str) -> Asy
             "answer": full_answer,
             "chat_history": new_history,
         },
+        as_node="__end__",
     )
