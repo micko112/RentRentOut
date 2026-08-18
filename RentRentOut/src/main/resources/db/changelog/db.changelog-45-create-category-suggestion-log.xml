@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="45-create-category-suggestion-log" author="landm">
+        <createTable tableName="category_suggestion_log">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="query_text" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="suggestions_json" type="VARCHAR(2000)"/>
+            <column name="top_category_id" type="BIGINT"/>
+            <column name="top_confidence" type="DOUBLE"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_suggestion_log_user"
+                             references="user(id)"
+                             deleteCascade="true"/>
+            </column>
+            <column name="created_at" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="category_suggestion_log" indexName="idx_suggestion_log_created_at">
+            <column name="created_at"/>
+        </createIndex>
+        <createIndex tableName="category_suggestion_log" indexName="idx_suggestion_log_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
