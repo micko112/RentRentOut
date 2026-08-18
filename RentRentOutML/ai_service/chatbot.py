@@ -293,6 +293,11 @@ async def stream_answer(question: str, thread_id: str, user_context: str) -> Asy
 
     # Persist to checkpointer so future turns see this exchange in history.
     new_history = _merge_history(history_lines, [f"Korisnik: {question}", f"Bot: {full_answer}"])
+    _node_for_event = {
+        "generate_stream": "generate_node",
+        "escalate_stream": "escalate_node",
+        "chat_stream": "chat_node",
+    }
     await agent.aupdate_state(
         config,
         {
@@ -301,5 +306,5 @@ async def stream_answer(question: str, thread_id: str, user_context: str) -> Asy
             "answer": full_answer,
             "chat_history": new_history,
         },
-        as_node="__end__",
+        as_node=_node_for_event.get(event, "chat_node"),
     )
