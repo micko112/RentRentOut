@@ -65,6 +65,8 @@
     <include file="/db/changelog/db.changelog-42-add-category-name-en.xml"/>
     <include file="/db/changelog/db.changelog-43-populate-category-name-en.xml"/>
     <include file="/db/changelog/db.changelog-44-populate-missing-category-name-en.xml"/>
+    <include file="/db/changelog/db.changelog-45-create-category-suggestion-log.xml"/>
+    <include file="/db/changelog/db.changelog-46-add-accepted-to-suggestion-log.xml"/>
 
     <!-- Onda korisnike (kojima treba lokacija) -->
     <include file="/db/changelog/db.changelog-seed-user.xml"/>

@@ -7,9 +7,12 @@ import org.landm.entity.Category;
 import org.landm.mapper.CategoryMapper;
 import org.landm.repository.CategoryRepository;
 import org.landm.service.CategoryService;
+import org.landm.service.CategorySuggestionLogService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -24,6 +27,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final CategorySuggestionLogService suggestionLogService;
     // FastAPI/Uvicorn puca ("Invalid HTTP request received") kad JDK HttpClient
     // pokušava HTTP/2 upgrade preko HTTP/1.1 — telo se izgubi i backend dobija 422.
     // Force HTTP/1.1 na JDK klijentu rešava problem bez dodatnih dependency-ja.
@@ -36,9 +40,12 @@ public class CategoryServiceImpl implements CategoryService{
     @Value("${ai.service.url}")
     private String aiServiceUrl;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository,
+                               CategoryMapper categoryMapper,
+                               CategorySuggestionLogService suggestionLogService) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
+        this.suggestionLogService = suggestionLogService;
     }
 
     @Override
@@ -87,6 +94,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<Long> suggestCategory(String title) {
         Map response = callPredictCategory(title);
+        logSuggestion(title, response);
         if (response != null && response.containsKey("predicted_category_ids")) {
             List<Number> ids = (List<Number>) response.get("predicted_category_ids");
             return ids.stream().map(Number::longValue).toList();
@@ -97,6 +105,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<CategorySuggestionDto> suggestCategoryDetailed(String title) {
         Map response = callPredictCategory(title);
+        logSuggestion(title, response);
         if (response != null && response.containsKey("suggestions")) {
             List<Map<String, Object>> raw = (List<Map<String, Object>>) response.get("suggestions");
             return raw.stream()
@@ -107,6 +116,27 @@ public class CategoryServiceImpl implements CategoryService{
                     .toList();
         }
         return List.of();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void logSuggestion(String title, Map response) {
+        List<Map<String, Object>> suggestions = null;
+        if (response != null && response.get("suggestions") instanceof List<?> raw) {
+            suggestions = (List<Map<String, Object>>) raw;
+        }
+        suggestionLogService.logSuggestion(title, suggestions, getCurrentUserId());
+    }
+
+    private Long getCurrentUserId() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated()) return null;
+            Object principal = auth.getPrincipal();
+            if (principal instanceof Long id) return id;
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private Map callPredictCategory(String title) {

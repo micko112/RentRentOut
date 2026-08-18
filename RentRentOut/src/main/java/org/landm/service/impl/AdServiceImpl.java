@@ -16,6 +16,7 @@ import org.landm.util.HtmlSanitizer;
 import org.landm.exception.UserNotFoundException;
 import org.landm.service.AdService;
 import org.landm.service.CategoryService;
+import org.landm.service.CategorySuggestionLogService;
 import org.landm.service.NotificationPersistenceService;
 import org.landm.service.RentalContractService;
 import org.springframework.data.domain.Page;
@@ -53,6 +54,7 @@ public class AdServiceImpl implements AdService {
     private final SavedAdRepository savedAdRepository;
     private final NotificationPersistenceService notificationPersistenceService;
     private final MessageSource messageSource;
+    private final CategorySuggestionLogService suggestionLogService;
 
     public AdServiceImpl(AdRepository adRepository, UserRepository userRepository,
                          AdMapper adMapper, LocationMapper locationMapper,
@@ -61,7 +63,8 @@ public class AdServiceImpl implements AdService {
                          RentalContractService rentalContractService, CategoryService categoryService,
                          AdViewRepository adViewRepository, SavedAdRepository savedAdRepository,
                          NotificationPersistenceService notificationPersistenceService,
-                         MessageSource messageSource) {
+                         MessageSource messageSource,
+                         CategorySuggestionLogService suggestionLogService) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
         this.adMapper = adMapper;
@@ -75,6 +78,7 @@ public class AdServiceImpl implements AdService {
         this.savedAdRepository = savedAdRepository;
         this.notificationPersistenceService = notificationPersistenceService;
         this.messageSource = messageSource;
+        this.suggestionLogService = suggestionLogService;
     }
 
     private String msg(String key, Object... args) {
@@ -154,7 +158,9 @@ public class AdServiceImpl implements AdService {
         adToCreate.setCarLabel(req.getCarLabel());
         adToCreate.setCarInteriorMaterial(req.getCarInteriorMaterial());
         adToCreate.setCarInteriorColor(req.getCarInteriorColor());
-        return adMapper.toDto(adRepository.save(adToCreate));
+        Ad saved = adRepository.save(adToCreate);
+        suggestionLogService.markAccepted(userId, category.getId());
+        return adMapper.toDto(saved);
     }
 
     @Override
