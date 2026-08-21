@@ -3,10 +3,8 @@ package org.landm.service.impl;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.landm.dto.user.UserDto;
 import org.landm.entity.EmailVerificationToken;
 import org.landm.entity.User;
-import org.landm.mapper.UserMapper;
 import org.landm.repository.EmailVerificationRepository;
 import org.landm.repository.UserRepository;
 import org.landm.service.EmailVerificationService;
@@ -22,18 +20,15 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 	private final EmailVerificationRepository tokenRepository;
 	private final UserRepository userRepository;
 	private final HtmlEmailService htmlEmailService;
-	private final UserMapper userMapper;
 
 	@Value("${app.frontend.base-url:http://localhost:4200}")
 	private String frontendBaseUrl;
 
 	public EmailVerificationServiceImpl(EmailVerificationRepository tokenRepo,
-			UserRepository userRepository, HtmlEmailService htmlEmailService,
-			UserMapper userMapper) {
+			UserRepository userRepository, HtmlEmailService htmlEmailService) {
 		this.htmlEmailService = htmlEmailService;
 		this.tokenRepository = tokenRepo;
 		this.userRepository = userRepository;
-		this.userMapper = userMapper;
 	}
 	
 	@Override
@@ -58,27 +53,26 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
 	@Transactional
 	@Override
-	public UserDto verifyEmail(String token) {
-		
+	public User verifyEmail(String token) {
+
 		EmailVerificationToken verificationToken = tokenRepository.findByToken(token)
 				.orElseThrow(() -> new IllegalArgumentException("Token is not valid."));
-		
-		if(verificationToken.isUsed()) {
+
+		if (verificationToken.isUsed()) {
 			throw new IllegalStateException("Token already used.");
 		}
 
-		if(verificationToken.getExpiresAt().isBefore(LocalDate.now())) {
+		if (verificationToken.getExpiresAt().isBefore(LocalDate.now())) {
 			throw new IllegalStateException("Token is expired.");
 		}
-		
+
 		verificationToken.setUsed(true);
 		tokenRepository.save(verificationToken);
-		
+
 		User user = verificationToken.getUser();
 		user.setEnabled(true);
-		
 		userRepository.save(user);
-		
-		return userMapper.toDto(user);
+
+		return user;
 	}
 }

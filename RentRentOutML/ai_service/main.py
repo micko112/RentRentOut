@@ -50,7 +50,7 @@ _tokenizer = None
 _encoder_session = None
 _head_session = None
 _label_encoder = None
-_CONFIDENCE_THRESHOLD = float(os.getenv("CATEGORY_CONFIDENCE_THRESHOLD", "0.15"))
+_CONFIDENCE_THRESHOLD = float(os.getenv("CATEGORY_CONFIDENCE_THRESHOLD", "0.03"))
 _TOP_K = int(os.getenv("CATEGORY_TOP_K", "5"))
 
 try:

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {AuthService} from '../../services/auth.service';
 
@@ -17,6 +17,7 @@ export class VerifyEmailComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private authService: AuthService,
+              private router: Router,
               private translate: TranslateService) {
     this.message = this.translate.instant('verifyEmail.loading');
   }
@@ -33,11 +34,11 @@ export class VerifyEmailComponent implements OnInit {
     this.authService.verifyEmail(token).subscribe({
       next: () => {
         this.status = 'success';
-        this.message = this.translate.instant('verifyEmail.success');
+        setTimeout(() => this.router.navigate(['/']), 1500);
       },
       error: (err) => {
         this.status = 'error';
-        this.message = err?.error || this.translate.instant('verifyEmail.error_generic');
+        this.message = err?.error?.message || err?.error || this.translate.instant('verifyEmail.error_generic');
       }
     });
   }

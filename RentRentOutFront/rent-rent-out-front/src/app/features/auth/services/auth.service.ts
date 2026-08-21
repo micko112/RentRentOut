@@ -82,8 +82,13 @@ export class AuthService {
       }));
   }
 
-  verifyEmail(token: string): Observable<User> {
-    return this.http.get<User>(`${API_BASE_URL}/auth/validate-email`, { params: { token }, withCredentials: true });
+  verifyEmail(token: string): Observable<LoginResponse> {
+    return this.http.get<LoginResponse>(`${API_BASE_URL}/auth/validate-email`, { params: { token }, withCredentials: true }).pipe(
+      tap(res => {
+        this.currentUserSubject.next(res.user);
+        this.wsToken = res.wsToken;
+      })
+    );
   }
 
   forgotPassword(email: string): Observable<string> {
