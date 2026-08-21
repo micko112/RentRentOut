@@ -1201,9 +1201,6 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
   color: var(--color-text-light);
 }
 
-@media (max-width: 900px) {
-  .suggest-row { display: none; }
-}
 
 .suggest-results {
   margin-top: 14px;

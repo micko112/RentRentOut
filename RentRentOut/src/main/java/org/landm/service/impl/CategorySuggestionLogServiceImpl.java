@@ -8,7 +8,6 @@ import org.landm.repository.CategorySuggestionLogRepository;
 import org.landm.service.CategorySuggestionLogService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -66,7 +65,6 @@ public class CategorySuggestionLogServiceImpl implements CategorySuggestionLogSe
     }
 
     @Async
-    @Transactional
     @Override
     public void markAccepted(Long userId, Long chosenCategoryId) {
         if (userId == null || chosenCategoryId == null) return;

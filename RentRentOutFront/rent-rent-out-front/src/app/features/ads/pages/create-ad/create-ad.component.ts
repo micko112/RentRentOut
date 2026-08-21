@@ -8,7 +8,7 @@ import { PriceInterval } from '../../../../shared/models/price-interval.enum';
 import { CategoryService } from '../../services/category.service';
 import { LocationService } from '../../services/location.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { debounceTime, distinctUntilChanged, filter, Observable, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { filter, Observable, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { Location } from '../../../../shared/models/location.model';
 import { CityPickerComponent, CityPickerOption } from '../../../../shared/components/city-picker/city-picker.component';
@@ -499,26 +499,6 @@ export class CreateAdComponent implements OnInit, OnDestroy {
       carInteriorMaterial: [null],
       carInteriorColor:    [null],
     });
-    this.form.get('title')?.valueChanges.pipe(
-      debounceTime(800),
-      distinctUntilChanged(),
-      filter(title => title && title.length > 5),
-      switchMap(title => this.categoryService.suggestCategoryDetailed(title)),
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (suggestions) => {
-        const top = suggestions?.[0];
-        if (top && top.confidence >= 0.4) {
-          const found = this.categories.find(c => c.id === top.categoryId);
-          if (found) {
-            this.applySuggestedCategory(found);
-            this.toastService.showSuccess('AI je automatski prepoznao kategoriju!');
-          }
-        }
-      },
-      error: () => {},
-    });
-
     this.authService.currentUser$.pipe(
       filter(u => u !== null),
       take(1),
