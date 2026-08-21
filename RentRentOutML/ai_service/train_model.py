@@ -86,6 +86,8 @@ if X is None:
     np.savez_compressed(CACHE, X=X, titles=np.array(df['title'].tolist()))
     print(f'Cached embeddings to {CACHE}')
 
+
+
 # Oversample real examples 100x — na numpy nivouu, bez ponovnog enkodovanja
 real_mask = (df['source'] == 'real').values
 if n_real > 0:

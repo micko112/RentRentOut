@@ -217,7 +217,7 @@
   .site-header { padding: 10px 14px 10px 0; }
   .logo .logo-img { width: auto; height: 78px; margin: 0; }
   .user-actions { display: none; }
-  .search-bar { height: 42px; }
+  .search-bar { display: none; }
 
   /* Show mobile action bar (menu + saved + lang) so the drawer can be opened */
   .mobile-actions {

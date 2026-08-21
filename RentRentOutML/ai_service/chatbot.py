@@ -251,6 +251,32 @@ Odgovori ISKLJUČIVO jednom rečju."""
 _stream_history: Dict[str, List[str]] = {}
 
 
+async def _expand_queries_stream(question: str, history_lines: List[str]) -> List[str]:
+    history = "\n".join(history_lines[-6:])
+    prompt = f"""Korisnik je postavio pitanje: '{question}'.
+Prethodni razgovor: {history}
+Preformuliši pitanje na 3 različita načina (sinonimi, profesionalniji rečnik) da poboljšamo pretragu baze znanja.
+Vrati ISKLJUČIVO ta 3 pitanja, svako u novom redu, bez dodatnog teksta ili rednih brojeva."""
+    expanded_text = (await llm.ainvoke(prompt)).content.strip()
+    queries = [q.strip() for q in expanded_text.split("\n") if q.strip()]
+    queries.append(question)
+    return queries
+
+
+async def _grade_stream(question: str, docs: List[str]) -> bool:
+    context = "\n".join(docs)
+    prompt = f"""Da li TEKST sadrži informacije koje mogu pomoći u odgovoru na PITANJE — čak i delimično, indirektno, ili povezane informacije koje bi korisnik mogao smatrati korisnim?
+Budi blag u oceni — ako ima i najmanja relevantna informacija, odgovori yes.
+Odgovori NO samo ako je TEKST potpuno nepovezan sa pitanjem.
+
+TEKST: {context}
+PITANJE: {question}
+
+Odgovori ISKLJUČIVO sa: yes ili no."""
+    decision = (await llm.ainvoke(prompt)).content.strip().lower()
+    return "yes" in decision
+
+
 async def stream_answer(question: str, thread_id: str, user_context: str) -> AsyncIterator[str]:
     """Yield answer token-by-token."""
     history_lines: List[str] = _stream_history.get(thread_id, [])
@@ -259,20 +285,41 @@ async def stream_answer(question: str, thread_id: str, user_context: str) -> Asy
     log_event(thread_id, "router_stream", {"question": question, "route": route})
 
     if route == "retrieve":
+        # Query expansion — identično kao retrieve_node
+        queries = await _expand_queries_stream(question, history_lines)
+        log_event(thread_id, "expand_stream", {"question": question, "expanded_queries": queries})
+
         docs_state: List[str] = []
+        seen: set = set()
         try:
-            for d in await retriever.ainvoke(question):
-                docs_state.append(d.page_content)
+            for q in queries:
+                for d in await retriever.ainvoke(q):
+                    if d.page_content not in seen:
+                        seen.add(d.page_content)
+                        docs_state.append(d.page_content)
         except Exception as e:
             log_event(thread_id, "retrieve_stream_error", {"error": str(e)})
+
+        docs_state = docs_state[:6]
+
+        # Grade — identično kao grade_node
+        is_relevant = False
+        if docs_state:
+            is_relevant = await _grade_stream(question, docs_state)
+        log_event(thread_id, "grade_stream", {
+            "question": question,
+            "is_relevant": is_relevant,
+            "doc_count": len(docs_state),
+        })
+
         state = {
             "question": question,
             "user_context": user_context,
-            "documents": docs_state[:6],
+            "documents": docs_state,
             "chat_history": history_lines,
         }
-        prompt = _build_answer_prompt(state, escalate=(len(docs_state) == 0))
-        event = "generate_stream" if docs_state else "escalate_stream"
+        prompt = _build_answer_prompt(state, escalate=not is_relevant)
+        event = "generate_stream" if is_relevant else "escalate_stream"
     else:
         state = {
             "question": question,

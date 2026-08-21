@@ -8,6 +8,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from chatbot import agent, stream_answer
+from chatbot_logger import log_event
 
 app = FastAPI(title="RentRentOut AI Service")
 
@@ -140,6 +141,11 @@ def predict_category(request: AdRequest):
         for i in top_idx
     ]
     filtered = [s for s in suggestions if s["confidence"] >= _CONFIDENCE_THRESHOLD]
+
+    log_event("system", "predict_category", {
+        "title": request.title,
+        "top5": suggestions[:5],
+    })
 
     return {
         "title": request.title,

@@ -242,7 +242,7 @@
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .mobile-search-bar {
     display: flex;
     align-items: center;
@@ -251,8 +251,9 @@
     background: var(--color-white);
     border-bottom: 1px solid #eee;
     position: sticky;
-    top: 60px; /* visina headera na mobilnom */
+    top: 98px; /* visina headera na mobilnom: 78px logo + 20px padding */
     z-index: 9998;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
 
   .msb-input-wrap {
@@ -311,6 +312,12 @@
 
   /* Nema padding-top — category strip ide odmah ispod search bara */
   .page-content { padding-top: 0; }
+}
+
+@media (max-width: 480px) {
+  .mobile-search-bar {
+    top: 90px; /* na ≤480px logo je 70px + 20px padding */
+  }
 }
 
 /* ═══════════════════════════════════════════════════

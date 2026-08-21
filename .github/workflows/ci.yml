@@ -35,6 +35,7 @@ jobs:
         working-directory: ./RentRentOut
         run: mvn -B test
 
+
   # ─── 2. Frontend build check ─────────────────────────────────────────────────
   test-frontend:
     name: Frontend build check (Angular)
