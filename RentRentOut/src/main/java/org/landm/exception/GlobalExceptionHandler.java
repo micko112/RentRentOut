@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -29,64 +31,68 @@ public class GlobalExceptionHandler {
         return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
     }
 
+    private static Map<String, String> err(String message) {
+        return Map.of("message", message);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handle(UserNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> handle(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err(ex.getMessage()));
     }
 
     @ExceptionHandler(WrongCredentialsException.class)
-    public ResponseEntity<String> handle(WrongCredentialsException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<Map<String, String>> handle(WrongCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err(ex.getMessage()));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handle(AccessDeniedException ex) {
-        return new ResponseEntity<>(msg("error.global.no_permission"), HttpStatus.FORBIDDEN);
+    public ResponseEntity<Map<String, String>> handle(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err(msg("error.global.no_permission")));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handle(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, String>> handle(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .findFirst()
                 .orElse(msg("error.global.invalid_data"));
-        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(err(message));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handle(HttpMessageNotReadableException ex) {
-        return new ResponseEntity<>(msg("error.global.invalid_request_format"), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> handle(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest().body(err(msg("error.global.invalid_request_format")));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<String> handle(MethodArgumentTypeMismatchException ex) {
-        return new ResponseEntity<>(msg("error.global.invalid_param_type", ex.getName()), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> handle(MethodArgumentTypeMismatchException ex) {
+        return ResponseEntity.badRequest().body(err(msg("error.global.invalid_param_type", ex.getName())));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<String> handle(MissingServletRequestParameterException ex) {
-        return new ResponseEntity<>(msg("error.global.missing_param", ex.getParameterName()), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> handle(MissingServletRequestParameterException ex) {
+        return ResponseEntity.badRequest().body(err(msg("error.global.missing_param", ex.getParameterName())));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handle(IllegalArgumentException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, String>> handle(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(err(ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handle(IllegalStateException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    public ResponseEntity<Map<String, String>> handle(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(err(ex.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handle(RuntimeException ex) {
+    public ResponseEntity<Map<String, String>> handle(RuntimeException ex) {
         log.error("Unhandled runtime exception", ex);
-        return new ResponseEntity<>(msg("error.global.internal_server"), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.internalServerError().body(err(msg("error.global.internal_server")));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handle(Exception ex) {
+    public ResponseEntity<Map<String, String>> handle(Exception ex) {
         log.error("Unhandled exception", ex);
-        return new ResponseEntity<>(msg("error.global.internal_server"), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.internalServerError().body(err(msg("error.global.internal_server")));
     }
 }
