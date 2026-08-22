@@ -35,7 +35,7 @@ _CSV_HEADER = ["timestamp", "naslov",
 def _append_eval_row(title: str, suggestions: list) -> None:
     write_header = not os.path.exists(_EVAL_CSV) or os.path.getsize(_EVAL_CSV) == 0
     try:
-        with open(_EVAL_CSV, "a", newline="", encoding="utf-8") as f:
+        with open(_EVAL_CSV, "a", newline="", encoding="utf-8-sig") as f:
             w = csv.writer(f)
             if write_header:
                 w.writerow(_CSV_HEADER)
