@@ -1,6 +1,6 @@
 import {
-  Component, ElementRef, EventEmitter, HostListener, Input,
-  OnChanges, Output, SimpleChanges
+  ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input,
+  OnChanges, OnDestroy, Output, SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Location } from '../../models/location.model';
@@ -12,6 +12,16 @@ export interface CityPickerOption {
   isCityOnly: boolean;
 }
 
+/**
+ * Broj kolona u kojima se renderuje `.city-grid`.
+ * MORA da ostane usklađeno sa `grid-template-columns` u city-picker.component.css —
+ * `columnSortedOptions` na osnovu ovoga računa column-major raspored, pa neslaganje
+ * razbija abecedni red (vidi #11).
+ */
+const GRID_COLUMNS_DESKTOP = 4;
+const GRID_COLUMNS_MOBILE = 2;
+const MOBILE_BREAKPOINT = '(max-width: 600px)';
+
 @Component({
   selector: 'app-city-picker',
   standalone: true,
@@ -19,7 +29,7 @@ export interface CityPickerOption {
   templateUrl: './city-picker.component.html',
   styleUrl: './city-picker.component.css'
 })
-export class CityPickerComponent implements OnChanges {
+export class CityPickerComponent implements OnChanges, OnDestroy {
 
   @Input() locations: Location[] = [];
   @Input() allowCityOnly = false;
@@ -34,7 +44,28 @@ export class CityPickerComponent implements OnChanges {
   showDropdown = false;
   citySearch = '';
 
-  constructor(private el: ElementRef) {}
+  private readonly mobileQuery: MediaQueryList | null =
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia(MOBILE_BREAKPOINT)
+      : null;
+
+  private gridColumns = GRID_COLUMNS_DESKTOP;
+
+  private readonly onBreakpointChange = (e: MediaQueryListEvent): void => {
+    this.gridColumns = e.matches ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP;
+    this.cdr.markForCheck();
+  };
+
+  constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {
+    if (this.mobileQuery) {
+      this.gridColumns = this.mobileQuery.matches ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP;
+      this.mobileQuery.addEventListener('change', this.onBreakpointChange);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.mobileQuery?.removeEventListener('change', this.onBreakpointChange);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if ((changes['initialLocationId'] || changes['locations'])
@@ -106,7 +137,7 @@ export class CityPickerComponent implements OnChanges {
 
   get columnSortedOptions(): CityPickerOption[] {
     const items = this.filteredOptions;
-    const cols = 4;
+    const cols = this.gridColumns;
     const rows = Math.ceil(items.length / cols);
     if (rows === 0) return items;
     const result: (CityPickerOption | null)[] = new Array(items.length).fill(null);
