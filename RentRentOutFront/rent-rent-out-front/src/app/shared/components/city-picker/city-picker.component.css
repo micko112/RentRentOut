@@ -84,6 +84,9 @@
   .material-icons { font-size: 15px; }
 }
 
+/* Broj kolona je uparen sa GRID_COLUMNS_DESKTOP / GRID_COLUMNS_MOBILE u
+   city-picker.component.ts — komponenta na osnovu njega računa column-major
+   raspored. Menjaš li ovde, promeni i tamo (vidi #11). */
 .city-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -137,6 +140,7 @@
     right: 0;
   }
 
+  /* upareno sa GRID_COLUMNS_MOBILE i MOBILE_BREAKPOINT u .ts */
   .city-grid {
     grid-template-columns: repeat(2, 1fr);
   }
