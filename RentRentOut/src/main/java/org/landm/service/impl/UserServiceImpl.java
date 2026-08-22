@@ -255,12 +255,26 @@ public class UserServiceImpl implements UserService {
 	public String updatePassword(ChangeUserPasswordDto data, Long userId) {
     	User user = userRepository.findById(userId)
     			.orElseThrow(() -> new UserNotFoundException("User not found"));
-    	if(passwordEncoder.matches(data.getOldPassword(), user.getPassword())) {
+
+    	boolean hasPassword = user.getPassword() != null && !user.getPassword().isBlank();
+
+    	if (!hasPassword) {
+    		// Nalog je napravljen socijalnom prijavom i jos nema lozinku, pa nema
+    		// sta da se poredi. Bezbedno je jer je korisnik vec autentikovan
+    		// sesijom - ovo NIJE put za zaobilazenje stare lozinke, sto stiti
+    		// uslov iznad: cim lozinka postoji, trazi se i potvrda.
     		user.setPassword(passwordEncoder.encode(data.getNewPassword()));
-    		return "Successfully changed password!";
-    	}else {
+    		userRepository.save(user);
+    		return "Successfully set password!";
+    	}
+
+    	if (!passwordEncoder.matches(data.getOldPassword(), user.getPassword())) {
     		throw new WrongCredentialsException("Error while changing password!");
     	}
+
+    	user.setPassword(passwordEncoder.encode(data.getNewPassword()));
+    	userRepository.save(user);
+    	return "Successfully changed password!";
 	}
 
     @Transactional

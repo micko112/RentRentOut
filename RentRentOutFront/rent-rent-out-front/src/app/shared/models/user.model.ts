@@ -17,4 +17,6 @@ export interface User{
   role: string;
   enabled: boolean;
   createdAt?: string;
+  /** false za naloge napravljene socijalnom prijavom - oni jos nemaju lozinku. */
+  hasPassword?: boolean;
 }

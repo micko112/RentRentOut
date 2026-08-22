@@ -5,7 +5,10 @@ import jakarta.validation.constraints.Size;
 
 public class ChangeUserPasswordDto {
 
-	@NotBlank
+	/**
+	 * Prazno je dozvoljeno samo kad nalog jos nema lozinku (socijalna prijava).
+	 * Servis to proverava - validacija ovde ne sme da bude jedina prepreka.
+	 */
 	private String oldPassword;
 	@NotBlank
 	@Size(min = 8)
