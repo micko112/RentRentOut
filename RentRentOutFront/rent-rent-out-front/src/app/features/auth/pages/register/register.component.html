@@ -2,6 +2,8 @@
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <h2>{{ 'auth.register.title' | translate }}</h2>
 
+    <app-social-auth-buttons dividerLabelKey="auth.register.or_email"></app-social-auth-buttons>
+
     <div class="form-field">
       <label for="firstname">{{ 'auth.register.firstname_label' | translate }}</label>
       <input id="firstname" type="text" formControlName="firstname">
