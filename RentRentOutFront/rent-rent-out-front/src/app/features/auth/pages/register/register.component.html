@@ -31,10 +31,19 @@
 
     <div class="form-field">
       <label for="password">{{ 'auth.register.password_label' | translate }}</label>
-      <input id="password" type="password" formControlName="password">
+      <input id="password" type="password" formControlName="password" autocomplete="new-password">
       <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-message">
         <small *ngIf="password?.errors?.['required']">{{ 'auth.register.err_password_required' | translate }}</small>
         <small *ngIf="password?.errors?.['minlength']">{{ 'auth.register.err_password_minlength' | translate }}</small>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="confirmPassword">{{ 'auth.register.confirm_password_label' | translate }}</label>
+      <input id="confirmPassword" type="password" formControlName="confirmPassword" autocomplete="new-password">
+      <div *ngIf="confirmPassword?.dirty || confirmPassword?.touched" class="error-message">
+        <small *ngIf="confirmPassword?.errors?.['required']">{{ 'auth.register.err_confirm_password_required' | translate }}</small>
+        <small *ngIf="!confirmPassword?.errors?.['required'] && registerForm.errors?.['passwordMismatch']">{{ 'auth.register.err_passwords_mismatch' | translate }}</small>
       </div>
     </div>
 
