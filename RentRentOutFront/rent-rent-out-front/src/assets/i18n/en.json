@@ -108,6 +108,7 @@
     },
     "register": {
       "title": "Register",
+      "or_email": "or sign up with email",
       "firstname_label": "First name",
       "lastname_label": "Last name",
       "email_label": "Email",

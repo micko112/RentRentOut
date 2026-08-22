@@ -108,6 +108,7 @@
     },
     "register": {
       "title": "Registracija",
+      "or_email": "ili se registruj mejlom",
       "firstname_label": "Ime",
       "lastname_label": "Prezime",
       "email_label": "Email",

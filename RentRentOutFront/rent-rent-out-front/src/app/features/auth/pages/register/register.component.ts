@@ -5,13 +5,15 @@ import {Router, RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {ToastService} from '../../../../shared/services/toast.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { SocialAuthButtonsComponent } from '../../components/social-auth-buttons/social-auth-buttons.component';
 @Component({
   selector: 'app-register',
   imports: [
     ReactiveFormsModule,
     CommonModule,
     RouterModule,
-    TranslateModule
+    TranslateModule,
+    SocialAuthButtonsComponent
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
