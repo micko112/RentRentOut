@@ -1,5 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Router, RouterOutlet, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive, NavigationEnd, NavigationSkipped } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './core/layout/navbar/navbar.component';
 import { FooterComponent } from './core/layout/footer/footer.component';
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit {
   private capacitorApp = inject(CapacitorAppService);
   private mobilePush = inject(MobilePushService);
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.capacitorApp.initialize();
@@ -40,6 +42,17 @@ export class AppComponent implements OnInit {
     // Push notifikacije se registruju tek nakon uspešnog login-a
     this.authService.currentUser$.subscribe(user => {
       if (user) this.mobilePush.initialize();
+    });
+
+    // Mobilni drawer se zatvara pri svakoj navigaciji. Zakaceno je na router,
+    // a ne na (click) po stavkama menija, da se ne zaboravi pri dodavanju nove.
+    // NavigationSkipped pokriva klik na stavku koja vodi na vec aktivnu rutu -
+    // tada NavigationEnd ne stize, a drawer bi ostao otvoren.
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd || e instanceof NavigationSkipped),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.mobileMenuOpen = false;
     });
   }
 
