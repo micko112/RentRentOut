@@ -1553,7 +1553,7 @@ textarea { resize: vertical; min-height: 140px; line-height: 1.65; }
     position: fixed;
     left: 0;
     right: 0;
-    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+    bottom: var(--mobile-nav-height); /* safe-area je vec u visini trake */
     z-index: 8500;
     background: #fff;
     border-top: 1px solid var(--color-border);

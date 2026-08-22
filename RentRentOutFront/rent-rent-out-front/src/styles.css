@@ -165,6 +165,14 @@ body.drawer-open {
   --overlay-dark:               rgba(0, 0, 0, 0.45);      /* modalni overlay */
   --overlay-image:              rgba(0, 0, 0, 0.90);      /* fullscreen pregled slike */
   --overlay-light:              rgba(255, 255, 255, 0.85); /* save dugme na thumbnail slici */
+
+  /* ── Mobilna donja navigacija ────────────────────────────
+     UKUPNA visina .mobile-nav trake, safe-area ukljucena.
+     Zbog globalnog box-sizing: border-box, padding-bottom sa
+     env(safe-area-inset-bottom) staje UNUTAR ove visine - zato
+     elementi koji se kace iznad trake NE smeju ponovo da dodaju
+     safe-area, inace se broji dvaput i nastaje procep (vidi #16). */
+  --mobile-nav-height:          60px;
 }
 
 .list-layout {
