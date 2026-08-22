@@ -37,6 +37,7 @@
               class="city-chip"
               type="button"
               [class.city-only]="option.isCityOnly"
+              [class.priority]="option.isPriority"
               [class.selected]="selectedOption?.label === option.label"
               (mousedown)="select(option); $event.preventDefault()">
         {{ option.label }}

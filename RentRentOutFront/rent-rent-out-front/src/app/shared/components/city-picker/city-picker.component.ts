@@ -10,7 +10,12 @@ export interface CityPickerOption {
   city: string;
   locationId?: number;
   isCityOnly: boolean;
+  /** Grad je u brzom izboru (korisnikov grad ili veliki grad) - koristi se za vizuelno isticanje. */
+  isPriority?: boolean;
 }
+
+/** Gradovi koji uvek idu na vrh liste, redom. Vecina oglasa dolazi odavde. */
+const DEFAULT_QUICK_ACCESS_CITIES = ['Beograd', 'Novi Sad'];
 
 @Component({
   selector: 'app-city-picker',
@@ -26,7 +31,11 @@ export class CityPickerComponent implements OnChanges {
   @Input() placeholder = 'Svi gradovi';
   @Input() initialLocationId: number | null = null;
   @Input() isInvalid = false;
+  /** Korisnikov grad - ide iznad svih ostalih. */
   @Input() priorityCity: string | null = null;
+
+  /** Veliki gradovi odmah ispod korisnikovog. Prosledi [] da se iskljuce. */
+  @Input() quickAccessCities: string[] = DEFAULT_QUICK_ACCESS_CITIES;
 
   @Output() selectionChange = new EventEmitter<CityPickerOption | null>();
 
@@ -57,17 +66,30 @@ export class CityPickerComponent implements OnChanges {
     };
   }
 
+  /**
+   * Gradovi koji idu na vrh, redom: prvo korisnikov, pa veliki gradovi.
+   * Dedupe cuva prvo pojavljivanje, pa korisnikov grad ostaje najvisi i
+   * kad je istovremeno i u quickAccessCities.
+   */
+  private get priorityOrder(): string[] {
+    const wanted = [this.priorityCity, ...this.quickAccessCities]
+      .map(c => c?.trim().toLowerCase())
+      .filter((c): c is string => !!c);
+    return Array.from(new Set(wanted));
+  }
+
   get allOptions(): CityPickerOption[] {
     const result: CityPickerOption[] = [];
-    const priority = this.priorityCity?.trim().toLowerCase() || null;
+    const priorityOrder = this.priorityOrder;
+    const rank = (city: string) => priorityOrder.indexOf(city.toLowerCase());
+
     const uniqueCities = Array.from(new Set(this.locations.map(l => l.city)))
       .sort((a, b) => {
-        if (priority) {
-          const aP = a.toLowerCase() === priority;
-          const bP = b.toLowerCase() === priority;
-          if (aP && !bP) return -1;
-          if (!aP && bP) return 1;
-        }
+        const aRank = rank(a);
+        const bRank = rank(b);
+        if (aRank !== -1 && bRank !== -1) return aRank - bRank;
+        if (aRank !== -1) return -1;
+        if (bRank !== -1) return 1;
         return a.localeCompare(b, 'sr');
       });
 
@@ -76,8 +98,10 @@ export class CityPickerComponent implements OnChanges {
         .filter(l => l.city === city)
         .sort((a, b) => (a.municipality || '').localeCompare(b.municipality || '', 'sr'));
 
+      const isPriority = rank(city) !== -1;
+
       if (this.allowCityOnly && cityLocs.length > 1) {
-        result.push({ label: city, city, isCityOnly: true });
+        result.push({ label: city, city, isCityOnly: true, isPriority });
       }
 
       for (const loc of cityLocs) {
@@ -87,7 +111,8 @@ export class CityPickerComponent implements OnChanges {
           label: showMuni ? `${city} | ${muni}` : city,
           city,
           locationId: loc.id,
-          isCityOnly: false
+          isCityOnly: false,
+          isPriority
         });
       }
     }
