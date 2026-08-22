@@ -416,6 +416,14 @@
     bottom: 80px;
     right: 16px;
   }
+
+  /* Stranice sa sticky trakom akcija (Objavi u wizard-u, CTA na detaljima):
+     fab se penje iznad trake da ne prekriva dugmad.
+     Racunica: visina nav trake + visina trake akcija (~68px) + razmak.
+     Fallback 60px vazi dok --mobile-nav-height ne udje u main (#16). */
+  :host(.lifted-above-action-bar) .support-fab {
+    bottom: calc(var(--mobile-nav-height, 60px) + 68px + 12px);
+  }
 }
 
 /* Mobilni bottom sheet */

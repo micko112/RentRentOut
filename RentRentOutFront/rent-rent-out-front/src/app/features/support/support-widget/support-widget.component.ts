@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, inject, AfterViewChecked } from '@angular/core';
+import { Component, ElementRef, HostBinding, Input, ViewChild, inject, AfterViewChecked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -15,6 +15,17 @@ import { MarkdownPipe } from './markdown.pipe';
 export class SupportWidgetComponent implements AfterViewChecked {
   private supportService = inject(SupportService);
   private translate = inject(TranslateService);
+
+  /**
+   * Stranica ispod ima sticky traku sa akcijama pri dnu (npr. Objavi u
+   * wizard-u), pa se plutajuce dugme mora podici da je ne prekriva.
+   */
+  @Input() liftedAboveActionBar = false;
+
+  @HostBinding('class.lifted-above-action-bar')
+  get isLifted(): boolean {
+    return this.liftedAboveActionBar;
+  }
 
   isOpen = false;
   draft = '';

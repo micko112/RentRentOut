@@ -79,6 +79,17 @@ export class AppComponent implements OnInit {
     map(url => !url.startsWith('/admin') && !url.startsWith('/messages'))
   );
 
+  /**
+   * Rute koje na mobilnom imaju sticky traku sa akcijama pri dnu:
+   * /ads/create i /ads/edit/:id (.wizard-nav) i /ads/:id (.mobile-cta-bar).
+   * Lista oglasa (/ads) je namerno izostavljena - ona nema takvu traku.
+   */
+  private readonly STICKY_ACTION_BAR_URL = /^\/ads\/(create|edit\/\d+|\d+)/;
+
+  hasStickyActionBar$ = this.route$.pipe(
+    map(url => this.STICKY_ACTION_BAR_URL.test(url))
+  );
+
   onMobileSearch(term: string): void {
     if (term.trim()) {
       this.router.navigate(['/ads'], { queryParams: { keyword: term.trim() } });
