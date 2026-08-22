@@ -1,6 +1,9 @@
+import csv
+import json
 import os
 import time
 from collections import deque
+from datetime import datetime, timezone
 from typing import Deque, Dict, Optional
 
 from fastapi import FastAPI, Header, HTTPException, Request
@@ -9,6 +12,44 @@ from pydantic import BaseModel
 
 from chatbot import agent, stream_answer
 from chatbot_logger import log_event
+
+# ─── Eval CSV (auto-appended on every prediction) ────────────────────────────
+_EVAL_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "eval_predictions.csv")
+os.makedirs(os.path.dirname(_EVAL_CSV), exist_ok=True)
+
+_CAT_NAMES: Dict[str, str] = {}
+try:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "category_names.json"), encoding="utf-8") as _f:
+        _raw = json.load(_f)
+        _CAT_NAMES = {str(k): str(v) for k, v in _raw.items()}
+except Exception as _e:
+    print(f"category_names.json not loaded: {_e}")
+
+_CSV_HEADER = ["timestamp", "naslov",
+               "top1_kategorija", "top1_%",
+               "top2_kategorija", "top2_%",
+               "top3_kategorija", "top3_%",
+               "tacno_top1", "tacno_top3"]
+
+
+def _append_eval_row(title: str, suggestions: list) -> None:
+    write_header = not os.path.exists(_EVAL_CSV) or os.path.getsize(_EVAL_CSV) == 0
+    try:
+        with open(_EVAL_CSV, "a", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            if write_header:
+                w.writerow(_CSV_HEADER)
+            row = [datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), title]
+            for i in range(3):
+                if i < len(suggestions):
+                    cid = str(suggestions[i]["category_id"])
+                    row += [_CAT_NAMES.get(cid, cid), f"{suggestions[i]['confidence'] * 100:.1f}%"]
+                else:
+                    row += ["", ""]
+            row += ["", ""]
+            w.writerow(row)
+    except Exception as e:
+        print(f"_append_eval_row failed: {e}")
 
 app = FastAPI(title="RentRentOut AI Service")
 
@@ -146,6 +187,7 @@ def predict_category(request: AdRequest):
         "title": request.title,
         "top5": suggestions[:5],
     })
+    _append_eval_row(request.title, suggestions)
 
     return {
         "title": request.title,
