@@ -5,9 +5,10 @@ DB_PASS = "Izdajica112!"
 def sql(query):
     r = subprocess.run(
         ["docker", "exec", "rentrentout-db", "mysql", "-h", "127.0.0.1",
-         "-uroot", f"-p{DB_PASS}", "--skip-column-names", "-e", query, "rent_rent_out"],
-        capture_output=True, text=True)
-    return r.stdout.strip()
+         "-uroot", f"-p{DB_PASS}", "--skip-column-names",
+         "--default-character-set=utf8mb4", "-e", query, "rent_rent_out"],
+        capture_output=True)
+    return r.stdout.decode("utf-8", errors="replace").strip()
 
 cats = {}
 for line in sql("SELECT id, name FROM category;").splitlines():

@@ -17,7 +17,7 @@ public class HtmlEmailServiceImpl implements HtmlEmailService {
 
     private static final Logger log = LoggerFactory.getLogger(HtmlEmailServiceImpl.class);
 
-    private static final String FROM = "izdajemiznajmljujem.rs@gmail.com";
+    private static final String FROM = "noreply@izdajemiznajmljujem.com";
     private static final String SITE_NAME = "Izdajem Iznajmljujem";
     private static final String COLOR_PRIMARY = "#813181";
     private static final String COLOR_BTN_HOVER = "#6a276a";
