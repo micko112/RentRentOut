@@ -26,6 +26,8 @@ public class UserDto {
     private boolean enabled;
     private String description;
     private LocalDateTime createdAt;
+    /** false za naloge napravljene socijalnom prijavom - oni jos nemaju lozinku. */
+    private boolean hasPassword;
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -49,6 +51,14 @@ public class UserDto {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isHasPassword() {
+        return hasPassword;
+    }
+
+    public void setHasPassword(boolean hasPassword) {
+        this.hasPassword = hasPassword;
     }
 
     public String getAvatarUrl() {

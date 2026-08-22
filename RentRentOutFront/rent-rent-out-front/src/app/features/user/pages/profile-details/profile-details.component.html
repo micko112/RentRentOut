@@ -151,19 +151,24 @@
     <!-- Password panel -->
     <div class="panel">
       <div class="panel-head">
-        <h3>{{ 'profile.password_change' | translate }}</h3>
+        <h3>{{ (hasPassword ? 'profile.password_change' : 'profile.password_set') | translate }}</h3>
       </div>
       <form class="edit-form" [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
-        <div class="form-row">
+        <p class="password-hint" *ngIf="!hasPassword">
+          {{ 'profile.password_set_hint' | translate }}
+        </p>
+        <div class="form-row" *ngIf="hasPassword">
           <label>{{ 'profile.old_password' | translate }}</label>
-          <input type="password" formControlName="oldPassword" />
+          <input type="password" formControlName="oldPassword" autocomplete="current-password" />
         </div>
         <div class="form-row">
           <label>{{ 'profile.new_password' | translate }}</label>
-          <input type="password" formControlName="newPassword" />
+          <input type="password" formControlName="newPassword" autocomplete="new-password" />
         </div>
         <div class="form-actions">
-          <button type="submit" class="btn-save">{{ 'profile.change_password_btn' | translate }}</button>
+          <button type="submit" class="btn-save">
+            {{ (hasPassword ? 'profile.change_password_btn' : 'profile.set_password_btn') | translate }}
+          </button>
         </div>
       </form>
     </div>

@@ -29,6 +29,9 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   user$!: Observable<User | null>;
   currentUser: User | null = null;
 
+  /** Podrazumevano true - dok se korisnik ne ucita, forma trazi staru lozinku. */
+  hasPassword = true;
+
   isEditing = false;
   isSaving = false;
   isChangingPassword = false;
@@ -69,17 +72,29 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       address: ['', [Validators.maxLength(255)]]
     });
 
+    // oldPassword se ne trazi od naloga koji jos nema lozinku (socijalna prijava);
+    // validator se dodaje tek kad se sazna stanje korisnika (vidi user$ ispod).
     this.passwordForm = this.fb.group({
-      oldPassword: ['', [Validators.required]],
+      oldPassword: [''],
       newPassword: ['', [Validators.required, Validators.minLength(8)]]
     });
 
     this.locationService.getAll().subscribe(locs => { this.locations = locs; });
 
     this.user$ = this.authService.currentUser$;
+
     this.userSub = this.user$.subscribe(user => {
       if (!user) return;
       this.currentUser = user;
+
+      // Nalozi napravljeni socijalnom prijavom jos nemaju lozinku - od njih se
+      // stara lozinka ne trazi. hasPassword je undefined na starijim odgovorima
+      // servera, pa se samo eksplicitno false tretira kao "nema lozinku".
+      this.hasPassword = user.hasPassword !== false;
+      const oldPassword = this.passwordForm.get('oldPassword');
+      oldPassword?.setValidators(this.hasPassword ? [Validators.required] : []);
+      oldPassword?.updateValueAndValidity({ emitEvent: false });
+
       this.selectedLocationId = user.locationId ?? null;
       this.profileForm.patchValue({
         firstname: user.firstname,
