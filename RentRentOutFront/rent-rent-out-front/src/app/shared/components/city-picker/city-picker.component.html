@@ -16,20 +16,24 @@
 
   <div class="city-dropdown"
        *ngIf="showDropdown"
-       tabindex="0"
        (keydown)="onDropdownKey($event)">
 
-    <div class="city-search-indicator" *ngIf="citySearch">
+    <div class="city-search">
       <span class="material-icons">search</span>
-      <span class="csi-text">{{ citySearch }}</span>
-      <button class="csi-clear" type="button"
-              (mousedown)="citySearch = ''; $event.preventDefault()">
+      <input #searchInput
+             type="text"
+             class="city-search-input"
+             [(ngModel)]="citySearch"
+             [placeholder]="searchPlaceholder"
+             autocomplete="off"
+             autocorrect="off"
+             autocapitalize="off"
+             spellcheck="false"
+             enterkeyhint="search" />
+      <button class="csi-clear" type="button" *ngIf="citySearch"
+              (mousedown)="citySearch = ''; searchInput.focus(); $event.preventDefault()">
         <span class="material-icons">close</span>
       </button>
-    </div>
-    <div class="city-search-hint" *ngIf="!citySearch">
-      <span class="material-icons">keyboard</span>
-      <span>Počni da kucaš za pretragu</span>
     </div>
 
     <div class="city-grid">

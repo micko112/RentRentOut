@@ -1,8 +1,9 @@
 import {
   Component, ElementRef, EventEmitter, HostListener, Input,
-  OnChanges, Output, SimpleChanges
+  OnChanges, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Location } from '../../models/location.model';
 
 export interface CityPickerOption {
@@ -15,7 +16,7 @@ export interface CityPickerOption {
 @Component({
   selector: 'app-city-picker',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './city-picker.component.html',
   styleUrl: './city-picker.component.css'
 })
@@ -27,6 +28,9 @@ export class CityPickerComponent implements OnChanges {
   @Input() initialLocationId: number | null = null;
   @Input() isInvalid = false;
   @Input() priorityCity: string | null = null;
+  @Input() searchPlaceholder = 'Pretraži grad ili opštinu...';
+
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
   @Output() selectionChange = new EventEmitter<CityPickerOption | null>();
 
@@ -123,24 +127,23 @@ export class CityPickerComponent implements OnChanges {
     this.showDropdown = !this.showDropdown;
     if (this.showDropdown) {
       this.citySearch = '';
-      setTimeout(() => {
-        const el = this.el.nativeElement.querySelector('.city-dropdown') as HTMLElement;
-        if (el) el.focus({ preventScroll: true });
-      }, 0);
+      // Fokus mora na <input> - fokusiran <div> ne otvara softversku
+      // tastaturu na mobilnim browserima (vidi #10).
+      setTimeout(() => this.searchInput?.nativeElement.focus({ preventScroll: true }), 0);
     }
   }
 
   onDropdownKey(event: KeyboardEvent): void {
     event.stopPropagation();
-    if (event.key === 'Escape') { this.showDropdown = false; return; }
-    if (event.key === 'Backspace') {
-      this.citySearch = this.citySearch.slice(0, -1);
-      event.preventDefault();
+    if (event.key === 'Escape') {
+      this.showDropdown = false;
       return;
     }
-    if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-      this.citySearch += event.key.toLowerCase();
+    // Enter na jedinom preostalom rezultatu ga bira - stedi jedan tap na telefonu.
+    if (event.key === 'Enter') {
       event.preventDefault();
+      const matches = this.filteredOptions;
+      if (matches.length === 1) this.select(matches[0]);
     }
   }
 
